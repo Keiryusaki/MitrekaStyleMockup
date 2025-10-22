@@ -1,0 +1,193 @@
+/* aggrid-soft.css (v2.8)
+   Fix: dark mode cell background still light.
+   Approach: explicitly paint grid surfaces with theme variables.
+*/
+
+/* === Core tokens === */
+.agx {
+  --ag-border-radius: 12px;
+  /* --ag-font-size: 13px; */
+  --ag-col-border-color: #e5e7eb;
+  --ag-col-border-width: 1px;
+  --ag-row-border-color: #e5e7eb;
+  --ag-row-border-width: 1px;
+
+  /* header padding (fixed) */
+  --agx-header-gap: 6px;
+
+  /* floating filter input (cozy default) */
+  --agx-ff-height: 22px;
+  --agx-ff-margin: 6px;
+  --agx-ff-pad-x: 10px;
+}
+
+/* === Card & wrapper === */
+.agx :is(.ag-root-wrapper, .ag-root) {
+  border-radius: 12px;
+  border: 1px solid var(--ag-col-border-color);
+  overflow: hidden;
+  box-shadow: 0 6px 24px -8px rgba(0, 0, 0, 0.04);
+}
+
+/* === Paint all grid surfaces using theme variables
+   Ensures dark mode doesn't show light cells even if parent CSS leaks bg.
+   We rely on AG Grid's CSS vars: --ag-background-color & --ag-odd-row-background-color. */
+.agx
+  :is(
+    .ag-root,
+    .ag-root-wrapper,
+    .ag-center-cols-viewport,
+    .ag-center-cols-container,
+    .ag-pinned-left-cols-viewport,
+    .ag-pinned-right-cols-viewport,
+    .ag-pinned-left-cols-container,
+    .ag-pinned-right-cols-container,
+    .ag-body-viewport,
+    .ag-overlay,
+    .ag-header,
+    .ag-pinned-left-header,
+    .ag-pinned-right-header
+  ) {
+  background-color: var(--ag-background-color) !important;
+}
+/* Row cells */
+.agx .ag-row .ag-cell {
+  background-color: var(--ag-background-color) !important;
+}
+.agx .ag-row-odd .ag-cell {
+  background-color: var(
+    --ag-odd-row-background-color,
+    color-mix(in srgb, var(--ag-background-color) 88%, #000 12%)
+  ) !important;
+}
+/* Hover (keeps theme hover color) */
+.agx .ag-row-hover .ag-cell {
+  background-color: var(
+    --ag-row-hover-color,
+    color-mix(in srgb, var(--ag-background-color) 84%, #000 16%)
+  ) !important;
+}
+
+/* === Vertical dividers === */
+.agx
+  :is(
+    .ag-center-cols-container,
+    .ag-pinned-left-cols-container,
+    .ag-pinned-right-cols-container
+  )
+  .ag-cell {
+  border-right: var(--ag-col-border-width) solid var(--ag-col-border-color);
+}
+
+/* === Header separators === */
+.agx .ag-header {
+  border-bottom: var(--ag-row-border-width) solid var(--ag-row-border-color);
+}
+.agx .ag-header-cell,
+.agx .ag-header-group-cell {
+  border-right: var(--ag-col-border-width) solid var(--ag-col-border-color);
+  padding-block: var(--agx-header-gap);
+}
+.agx .ag-header-cell-text,
+.agx .ag-header-group-text {
+  font-weight: 600;
+}
+
+/* === Row separators (center & pinned) === */
+.agx
+  :is(
+    .ag-center-cols-container,
+    .ag-pinned-left-cols-container,
+    .ag-pinned-right-cols-container
+  )
+  .ag-row {
+  border-bottom: var(--ag-row-border-width) solid var(--ag-row-border-color);
+}
+
+/* === Floating filter === */
+.agx .ag-header-cell .ag-floating-filter-body,
+.agx .ag-header-group-cell .ag-floating-filter-body {
+  padding: 0 var(--agx-ff-pad-x);
+  display: flex;
+  align-items: center;
+}
+.agx .ag-floating-filter-body input.ag-input-field-input,
+.agx .ag-floating-filter-body .ag-text-field-input {
+  height: var(--agx-ff-height);
+  line-height: var(--agx-ff-height);
+  margin-block: var(--agx-ff-margin);
+  border-radius: 9999px;
+  border: 2px solid #cbd5e1;
+  background: #fff;
+  width: 100%;
+  padding: 0 12px;
+  box-shadow: inset 0 1px 0 rgba(0, 0, 0, 0.02);
+}
+.agx .ag-floating-filter-body input.ag-input-field-input:focus,
+.agx .ag-floating-filter-body .ag-text-field-input:focus {
+  outline: none;
+  border-color: #60a5fa;
+  box-shadow: 0 0 0 3px rgba(96, 165, 250, 0.25);
+}
+
+/* === Density classes (body-only) === */
+.agx-compact {
+  --agx-ff-height: 18px;
+}
+.agx-compact .ag-cell {
+  padding-top: 0;
+  padding-bottom: 0;
+}
+.agx-spacious {
+  --agx-ff-height: 26px;
+}
+
+/* === Dark mode === */
+.dark .agx,
+.agx.dark {
+  --ag-col-border-color: #4b5563;
+  --ag-row-border-color: #4b5563;
+}
+.dark .agx :is(.ag-root-wrapper, .ag-root) {
+  box-shadow: 0 8px 28px -10px rgba(0, 0, 0, 0.45);
+}
+
+/* v2.9 — force header layers to use header background token */
+.agx
+  :is(
+    .ag-header,
+    .ag-header-viewport,
+    .ag-header-container,
+    .ag-header-row,
+    .ag-header-cell,
+    .ag-pinned-left-header,
+    .ag-pinned-right-header
+  ) {
+  /* pakai warna header dari Theming API; fallback ke background grid */
+  background: var(
+    --ag-header-background-color,
+    var(--ag-background-color)
+  ) !important;
+}
+
+/* (opsional) kalau ada garis terang di cell header tertentu, samakan juga */
+.agx .ag-header-cell,
+.agx .ag-header-group-cell {
+  background: var(
+    --ag-header-background-color,
+    var(--ag-background-color)
+  ) !important;
+}
+
+/* Paksa input filter ikut dark tokens */
+.dark .agx .ag-input-field-input,
+.dark .agx .ag-text-field-input {
+  background-color: var(--ag-input-background-color, #0f172a) !important;
+  color: var(--ag-input-foreground-color, #e5e7eb) !important;
+  border-color: var(--ag-input-border-color, #64748b) !important;
+}
+.dark .agx .ag-input-field-input:focus,
+.dark .agx .ag-text-field-input:focus {
+  border-color: var(--ag-input-focus-border-color, #93c5fd) !important;
+  box-shadow: 0 0 0 3px rgba(147, 197, 253, 0.25);
+}
