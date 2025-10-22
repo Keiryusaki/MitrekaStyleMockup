@@ -27,6 +27,21 @@ export const NAV: NavItem[] = [
     children: [{ id: "aggrid", label: "AG Grid", to: "/aggrid" }],
   },
   {
+    id: "componen",
+    label: "Components",
+    icon: "users",
+    children: [
+      { id: "button", label: "Button", to: "/button" },
+      { id: "badge", label: "Badge", to: "/badge" },
+      { id: "input", label: "Input", to: "/input" },
+      {
+        id: "SelectionControls",
+        label: "SelectionControls",
+        to: "/SelectionControls",
+      },
+    ],
+  },
+  {
     id: "users",
     label: "Management",
     icon: "users",

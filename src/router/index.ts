@@ -43,6 +43,30 @@ const routes: RouteRecordRaw[] = [
     component: () => import("@/pages/Aggrid/AGGridDemo.vue"),
     meta: { title: "AG Grid", icon: "clipboard" },
   },
+  {
+    path: "/button",
+    name: "button",
+    component: () => import("@/pages/Buttons/Buttons.vue"),
+    meta: { title: "Button", icon: "clipboard" },
+  },
+  {
+    path: "/badge",
+    name: "badge",
+    component: () => import("@/pages/Badge/Badge.vue"),
+    meta: { title: "Badge", icon: "clipboard" },
+  },
+  {
+    path: "/input",
+    name: "input",
+    component: () => import("@/pages/Input/Input.vue"),
+    meta: { title: "Input", icon: "clipboard" },
+  },
+  {
+    path: "/SelectionControls",
+    name: "SelectionControls",
+    component: () => import("@/pages/SelectionControls/SelectionControls.vue"),
+    meta: { title: "Selection Control", icon: "clipboard" },
+  },
 ];
 
 const router = createRouter({
