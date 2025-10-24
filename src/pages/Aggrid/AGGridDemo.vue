@@ -8,7 +8,8 @@ import {
   themeQuartz,
 } from "ag-grid-community";
 import "@/styles/aggrid-soft.css";
-
+import DevGuide from "./DevGuide.vue";
+import { iconRegistry } from "@/composables/Icon";
 ModuleRegistry.registerModules([AllCommunityModule]);
 
 /* -------------------------
@@ -172,19 +173,21 @@ const columnDefs = ref([
       root.className =
         "flex items-center justify-end gap-2 h-full items-center";
 
+      const toSvg = (name: keyof typeof iconRegistry, cls = "w-6 h-6") =>
+        iconRegistry[name]?.replace("<svg", `<svg class="${cls}"`) ?? "";
+
       const mkBtn = (cls: string, title: string, action: "edit" | "delete") => {
         const b = document.createElement("button");
-        b.className = `icon-btn ${cls} icon-btn-sm`;
+        b.type = "button";
+        b.className = `btn ${cls} btn-sm inline-flex items-center justify-center p-[3%]`;
         b.title = title;
-        b.innerHTML =
+        // tambahkan text-white di SVG agar pasti terlihat
+        const svg =
           action === "edit"
-            ? "✎" // atau sisipkan SVG icon kamu di sini
-            : "🗑";
-        b.addEventListener("click", (e) => {
-          e.stopPropagation();
-          // panggil handler kamu di sini
-          // onEdit(params.data) / onDelete(params.data)
-        });
+            ? toSvg("edit", "w-6 h-6")
+            : toSvg("delete", "w-6 h-6");
+        b.innerHTML = svg;
+        b.addEventListener("click", (e) => e.stopPropagation());
         return b;
       };
 
@@ -200,8 +203,8 @@ const columnDefs = ref([
           : "h-[28px] w-[28px]";
 
       root.append(
-        mkBtn(`icon-btn-outline-warning ${sizeClass}`, "Edit", "edit"),
-        mkBtn(`icon-btn-outline-error ${sizeClass}`, "Hapus", "delete")
+        mkBtn(`btn-warning ${sizeClass}`, "Edit", "edit"),
+        mkBtn(`btn-error ${sizeClass}`, "Hapus", "delete")
       );
       return root;
     },
@@ -234,8 +237,8 @@ const gridOptions: any = {
     },
   },
   pagination: true,
-  paginationPageSize: 10,
-  paginationPageSizeSelector: [10, 20, 50, 100],
+  paginationPageSize: 50,
+  paginationPageSizeSelector: [50, 100],
 };
 
 /* Apply density → hanya rowHeight; header fixed */
@@ -263,7 +266,7 @@ watch(density, applyDensityToApi);
 </script>
 
 <template>
-  <div class="space-y-3">
+  <div class="space-y-3 flex-1 flex flex-col h-[80%]">
     <div class="flex flex-wrap items-center gap-3">
       <input type="text" placeholder="Search…" class="input w-64 max-w-full" />
       <div class="flex items-center gap-2">
@@ -282,7 +285,7 @@ watch(density, applyDensityToApi);
 
     <AgGridVue
       :key="gridKey"
-      :class="['agx', densityClass, 'w-full', 'h-[560px]']"
+      :class="['agx', densityClass, 'w-full', 'flex-1', 'min-h-0']"
       :theme="gridTheme"
       :rowData="rowData"
       :columnDefs="columnDefs"
@@ -291,4 +294,5 @@ watch(density, applyDensityToApi);
       @grid-ready="onGridReady"
     />
   </div>
+  <DevGuide />
 </template>

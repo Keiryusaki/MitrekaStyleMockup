@@ -12,7 +12,7 @@ type Tone =
   | "warning"
   | "error";
 
-const tab = ref<"toggle" | "checkbox" | "radio">("toggle");
+const tab = ref<"switch" | "checkbox" | "radio">("switch");
 
 const size = ref<Size>("md");
 const disabled = ref(false);
@@ -62,21 +62,21 @@ watch(indeterminate, (v) => {
       class="card inline-flex overflow-hidden rounded-lg border border-base-300 rounded-box border border-base-300 p-4"
     >
       <button
-        class="btn btn-sm rounded-none"
-        :class="tab === 'toggle' && 'btn-primary'"
-        @click="tab = 'toggle'"
+        class="btn btn-sm rounded-none first:rounded-l-lg last:rounded-r-lg"
+        :class="tab === 'switch' && 'btn-primary'"
+        @click="tab = 'switch'"
       >
         Toggle
       </button>
       <button
-        class="btn btn-sm rounded-none"
+        class="btn btn-sm rounded-none first:rounded-l-lg last:rounded-r-lg"
         :class="tab === 'checkbox' && 'btn-primary'"
         @click="tab = 'checkbox'"
       >
         Checkbox
       </button>
       <button
-        class="btn btn-sm rounded-none"
+        class="btn btn-sm rounded-none first:rounded-l-lg last:rounded-r-lg"
         :class="tab === 'radio' && 'btn-primary'"
         @click="tab = 'radio'"
       >
@@ -152,7 +152,7 @@ watch(indeterminate, (v) => {
 
         <!-- TOGGLE -->
         <div
-          v-if="tab === 'toggle'"
+          v-if="tab === 'switch'"
           class="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4"
         >
           <label
@@ -162,7 +162,7 @@ watch(indeterminate, (v) => {
           >
             <input
               type="checkbox"
-              :class="toneClass(`toggle toggle${sizeClass}`, t.tone)"
+              :class="toneClass(`switch switch${sizeClass}`, t.tone)"
               :disabled="disabled"
               :readonly="readonly"
               checked
@@ -223,21 +223,21 @@ watch(indeterminate, (v) => {
             Toggle
           </h3>
           <div class="flex flex-wrap items-center gap-3">
-            <input type="checkbox" class="toggle" checked />
-            <input type="checkbox" class="toggle toggle-primary" checked />
-            <input type="checkbox" class="toggle toggle-secondary" checked />
-            <input type="checkbox" class="toggle toggle-accent" checked />
-            <input type="checkbox" class="toggle toggle-info" checked />
-            <input type="checkbox" class="toggle toggle-success" checked />
-            <input type="checkbox" class="toggle toggle-warning" checked />
-            <input type="checkbox" class="toggle toggle-error" checked />
+            <input type="checkbox" class="switch" checked />
+            <input type="checkbox" class="switch switch-primary" checked />
+            <input type="checkbox" class="switch switch-secondary" checked />
+            <input type="checkbox" class="switch switch-accent" checked />
+            <input type="checkbox" class="switch switch-info" checked />
+            <input type="checkbox" class="switch switch-success" checked />
+            <input type="checkbox" class="switch switch-warning" checked />
+            <input type="checkbox" class="switch switch-error" checked />
           </div>
           <div class="mt-2 flex flex-wrap items-end gap-3">
-            <input type="checkbox" class="toggle toggle-xs" checked />
-            <input type="checkbox" class="toggle toggle-sm" checked />
-            <input type="checkbox" class="toggle" checked />
-            <input type="checkbox" class="toggle toggle-lg" checked />
-            <input type="checkbox" class="toggle toggle-xl" checked />
+            <input type="checkbox" class="switch switch-xs" checked />
+            <input type="checkbox" class="switch switch-sm" checked />
+            <input type="checkbox" class="switch" checked />
+            <input type="checkbox" class="switch switch-lg" checked />
+            <input type="checkbox" class="switch switch-xl" checked />
           </div>
         </div>
 

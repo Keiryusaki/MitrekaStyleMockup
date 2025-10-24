@@ -448,25 +448,25 @@
   }
 
   .btn-primary:hover {
-    background: color-mix(in oklch, var(--color-primary), white 8%);
+    background: color-mix(in oklch, var(--color-primary), black 15%);
   }
   .btn-secondary:hover {
-    background: color-mix(in oklch, var(--color-secondary), white 8%);
+    background: color-mix(in oklch, var(--color-secondary), black 15%);
   }
   .btn-accent:hover {
-    background: color-mix(in oklch, var(--color-accent), white 8%);
+    background: color-mix(in oklch, var(--color-accent), black 15%);
   }
   .btn-info:hover {
-    background: color-mix(in oklch, var(--color-info), white 8%);
+    background: color-mix(in oklch, var(--color-info), black 15%);
   }
   .btn-success:hover {
-    background: color-mix(in oklch, var(--color-success), white 8%);
+    background: color-mix(in oklch, var(--color-success), black 15%);
   }
   .btn-warning:hover {
-    background: color-mix(in oklch, var(--color-warning), white 8%);
+    background: color-mix(in oklch, var(--color-warning), black 15%);
   }
   .btn-error:hover {
-    background: color-mix(in oklch, var(--color-error), white 8%);
+    background: color-mix(in oklch, var(--color-error), black 15%);
   }
 
   /* Ghost (transparent) */
@@ -483,18 +483,30 @@
   .btn-outline {
     background: transparent;
     color: var(--color-base-content);
-    border-color: var(--color-base-300);
+    border-color: color-mix(
+      in oklch,
+      var(--color-base-300),
+      var(--color-base-content) 28%
+    );
   }
   .btn-outline:hover {
-    background: color-mix(in oklch, var(--color-base-200), transparent 60%);
+    background: color-mix(in oklch, var(--color-base-200), transparent 40%);
   }
   .btn-outline-primary {
     color: var(--color-primary);
     border-color: var(--color-primary);
   }
   .btn-outline-secondary {
-    color: var(--color-secondary);
-    border-color: var(--color-secondary);
+    color: color-mix(
+      in oklch,
+      var(--color-secondary-content),
+      var(--color-base-content) 55%
+    );
+    border-color: color-mix(
+      in oklch,
+      var(--color-secondary),
+      var(--color-base-content) 60%
+    );
   }
   .btn-outline-accent {
     color: var(--color-accent);
@@ -520,7 +532,12 @@
     background: color-mix(in oklch, var(--color-primary), white 88%);
   }
   .btn-outline-secondary:hover {
-    background: color-mix(in oklch, var(--color-secondary), white 88%);
+    background: color-mix(in oklch, var(--color-secondary), white 10%);
+    border-color: color-mix(
+      in oklch,
+      var(--color-secondary),
+      var(--color-base-content) 68%
+    );
   }
   .btn-outline-accent:hover {
     background: color-mix(in oklch, var(--color-accent), white 88%);
@@ -856,15 +873,32 @@
   /* Badge outline & soft */
   .badge-outline {
     background: transparent;
-    border-color: var(--color-base-300);
+    border-color: color-mix(
+      in oklch,
+      var(--color-base-300),
+      var(--color-base-content) 28%
+    );
+    color: color-mix(
+      in oklch,
+      var(--color-base-content),
+      var(--color-base-500, var(--color-base-300)) 8%
+    );
   }
   .badge-outline-primary {
     color: var(--color-primary);
     border-color: var(--color-primary);
   }
   .badge-outline-secondary {
-    color: var(--color-secondary);
-    border-color: var(--color-secondary);
+    color: color-mix(
+      in oklch,
+      var(--color-secondary-content),
+      var(--color-base-content) 55%
+    );
+    border-color: color-mix(
+      in oklch,
+      var(--color-secondary),
+      var(--color-base-content) 60%
+    );
   }
   .badge-outline-accent {
     color: var(--color-accent);
@@ -892,8 +926,8 @@
     color: var(--color-primary);
   }
   .badge-soft-secondary {
-    background: color-mix(in oklch, var(--color-secondary), transparent 85%);
-    color: var(--color-secondary);
+    background: color-mix(in oklch, var(--color-secondary), transparent 25%);
+    color: color-mix(in oklch, var(--color-secondary), black 35%);
   }
   .badge-soft-accent {
     background: color-mix(in oklch, var(--color-accent), transparent 85%);
@@ -1233,5 +1267,138 @@
       var(--color-neutral),
       transparent 90%
     );
+  }
+}
+
+/* =========================================
+   ICON BUTTONS (outline, compact, table-friendly)
+   ========================================= */
+@layer components {
+  /* Base square icon button (outline) */
+  .icon-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0;
+    width: calc(var(--size-field-md) - 0.5rem);
+    height: calc(var(--size-field-md) - 0.5rem);
+    border: var(--border) solid var(--color-base-300);
+    border-radius: var(--radius-field-md);
+    background: transparent;
+    color: var(--color-base-content);
+    line-height: 1;
+    user-select: none;
+    transition: background-color 0.15s, color 0.15s, border-color 0.15s,
+      box-shadow 0.15s, transform 0.02s;
+  }
+  .icon-btn:active {
+    transform: translateY(0.5px);
+  }
+  .icon-btn:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 3px color-mix(in oklch, var(--color-primary), white 78%);
+  }
+  .icon-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+  .icon-btn:hover {
+    background: color-mix(in oklch, var(--color-base-200), transparent 60%);
+  }
+
+  /* Sizes */
+  .icon-btn-xs {
+    width: calc(var(--size-field-xs) - 0.35rem);
+    height: calc(var(--size-field-xs) - 0.35rem);
+    border-radius: var(--radius-field-xs);
+    font-size: var(--font-size-xs);
+  }
+  .icon-btn-sm {
+    width: calc(var(--size-field-sm) - 0.4rem);
+    height: calc(var(--size-field-sm) - 0.4rem);
+    border-radius: var(--radius-field-sm);
+    font-size: var(--font-size-sm);
+  }
+  .icon-btn-lg {
+    width: calc(var(--size-field-lg) - 0.6rem);
+    height: calc(var(--size-field-lg) - 0.6rem);
+    border-radius: var(--radius-field-lg);
+    font-size: var(--font-size-lg);
+  }
+  .icon-btn-xl {
+    width: calc(var(--size-field-xl) - 0.7rem);
+    height: calc(var(--size-field-xl) - 0.7rem);
+    border-radius: var(--radius-field-xl);
+    font-size: var(--font-size-xl);
+  }
+
+  /* Shape helper */
+  .icon-btn-round {
+    border-radius: 9999px;
+  }
+
+  /* Color outline variants */
+  .icon-btn-outline {
+    border-color: var(--color-base-300);
+    color: var(--color-base-content);
+  }
+  .icon-btn-outline:hover {
+    background: color-mix(in oklch, var(--color-base-200), transparent 60%);
+  }
+
+  .icon-btn-outline-primary {
+    border-color: var(--color-primary);
+    color: var(--color-primary);
+  }
+  .icon-btn-outline-primary:hover {
+    background: color-mix(in oklch, var(--color-primary), white 88%);
+  }
+
+  .icon-btn-outline-secondary {
+    border-color: var(--color-secondary);
+    color: var(--color-secondary);
+  }
+  .icon-btn-outline-secondary:hover {
+    background: color-mix(in oklch, var(--color-secondary), white 88%);
+  }
+
+  .icon-btn-outline-accent {
+    border-color: var(--color-accent);
+    color: var(--color-accent);
+  }
+  .icon-btn-outline-accent:hover {
+    background: color-mix(in oklch, var(--color-accent), white 88%);
+  }
+
+  .icon-btn-outline-info {
+    border-color: var(--color-info);
+    color: var(--color-info);
+  }
+  .icon-btn-outline-info:hover {
+    background: color-mix(in oklch, var(--color-info), white 88%);
+  }
+
+  .icon-btn-outline-success {
+    border-color: var(--color-success);
+    color: var(--color-success);
+  }
+  .icon-btn-outline-success:hover {
+    background: color-mix(in oklch, var(--color-success), white 88%);
+  }
+
+  .icon-btn-outline-warning {
+    border-color: var(--color-warning);
+    color: var(--color-warning);
+  }
+  .icon-btn-outline-warning:hover {
+    background: color-mix(in oklch, var(--color-warning), white 88%);
+  }
+
+  .icon-btn-outline-error {
+    border-color: var(--color-error);
+    color: var(--color-error);
+  }
+  .icon-btn-outline-error:hover {
+    background: color-mix(in oklch, var(--color-error), white 88%);
   }
 }

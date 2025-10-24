@@ -67,6 +67,11 @@ const routes: RouteRecordRaw[] = [
     component: () => import("@/pages/SelectionControls/SelectionControls.vue"),
     meta: { title: "Selection Control", icon: "clipboard" },
   },
+  {
+    path: "/icon",
+    component: () => import("@/pages/Icons/Icons.vue"),
+    meta: { title: "Icons", icon: "Icons" },
+  },
 ];
 
 const router = createRouter({

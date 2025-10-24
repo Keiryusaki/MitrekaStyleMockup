@@ -1,21 +1,31 @@
 <template>
   <header
-    class="px-4 md:px-6 h-15 flex items-center justify-between bg-transparent glass glass-border sticky top-0 z-30 isolate"
+    class="bg-primary text-white px-4 md:px-6 h-15 flex items-center justify-between bg-transparent glass glass-border sticky top-0 z-30 isolate"
   >
-    <div class="flex items-center gap-3">
+    <div class="flex items-center gap-3 z-10">
       <button
         class="md:hidden btn btn-ghost"
         @click="ui.sidebarOpen = !ui.sidebarOpen"
       >
         ☰
       </button>
-      <strong>Admin Starter</strong>
+      <RouterLink to="/" class="flex items-center gap-2">
+        <img
+          :src="logoUrl"
+          alt="Admin Starter"
+          class="h-7 w-auto select-none"
+          draggable="false"
+        />
+        <!-- kalau mau teks kecil di layar besar, hapus kalau nggak perlu -->
+        <!-- <span class="hidden md:inline font-semibold">Admin Starter</span> -->
+        <span class="sr-only">Admin Starter</span>
+      </RouterLink>
     </div>
-    <div class="flex items-center gap-2">
+    <div class="flex items-center gap-2 z-10">
       <input class="input w-64 hidden md:block" placeholder="Search…" />
       <!-- Toggle theme: icon only -->
       <button
-        class="btn btn-ghost"
+        class="btn btn-ghost text-white"
         :title="`Switch to ${
           ui.theme === 'mitrekalight' ? 'dark' : 'light'
         } mode`"
@@ -45,24 +55,19 @@
         </svg>
       </button>
       <!-- Logout button -->
-      <button class="btn btn-ghost" @click="logout">
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          viewBox="0 0 24 24"
-          class="w-5 h-5 mr-1"
-        >
-          <path
-            fill="currentColor"
-            d="M16 17v-2H9v-2h7V9l5 4zM14 7V5H5v14h9v-2h2v3a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h11a1 1 0 0 1 1 1v3z"
-          />
-        </svg>
+      <button class="btn btn-ghost text-white" @click="logout">
+        <Icon name="logout" class="w-6 h-6 text-white" />
         <span class="hidden sm:inline">Logout</span>
       </button>
     </div>
+    <div
+      class="absolute inset-0 bg-gradient-to-b from-black/30 via-black/30 via-40% to-black/50"
+    ></div>
   </header>
 </template>
 <script setup lang="ts">
 import { useUi } from "@/stores/ui";
+import logoUrl from "@/assets/logo.png";
 const ui = useUi();
 
 function logout() {

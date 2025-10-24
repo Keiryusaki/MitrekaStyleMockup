@@ -19,26 +19,27 @@ export type NavItem = {
 
 // Data Navigasi
 export const NAV: NavItem[] = [
-  { id: "dash", label: "Dashboard", icon: "home", to: "/", exact: true },
+  { id: "dash", label: "Dashboard", icon: "dashboard", to: "/", exact: true },
   {
     id: "mockup",
     label: "Mockup",
-    icon: "clipboard",
+    icon: "layout",
     children: [{ id: "aggrid", label: "AG Grid", to: "/aggrid" }],
   },
   {
     id: "componen",
     label: "Components",
-    icon: "users",
+    icon: "component",
     children: [
       { id: "button", label: "Button", to: "/button" },
       { id: "badge", label: "Badge", to: "/badge" },
       { id: "input", label: "Input", to: "/input" },
       {
         id: "SelectionControls",
-        label: "SelectionControls",
+        label: "Selection Controls",
         to: "/SelectionControls",
       },
+      { id: "icon", label: "Icons", to: "/icon" },
     ],
   },
   {
