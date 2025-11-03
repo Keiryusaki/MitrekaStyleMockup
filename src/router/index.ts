@@ -72,6 +72,11 @@ const routes: RouteRecordRaw[] = [
     component: () => import("@/pages/Icons/Icons.vue"),
     meta: { title: "Icons", icon: "Icons" },
   },
+  {
+    path: "/ChangeLog",
+    component: () => import("@/pages/Changelog/Changelog.vue"),
+    meta: { title: "Changelog", icon: "Icons" },
+  },
 ];
 
 const router = createRouter({

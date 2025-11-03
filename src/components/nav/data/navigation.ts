@@ -21,6 +21,13 @@ export type NavItem = {
 export const NAV: NavItem[] = [
   { id: "dash", label: "Dashboard", icon: "dashboard", to: "/", exact: true },
   {
+    id: "ChangeLog",
+    label: "Change Log",
+    icon: "dashboard",
+    to: "/ChangeLog",
+    exact: true,
+  },
+  {
     id: "mockup",
     label: "Mockup",
     icon: "layout",

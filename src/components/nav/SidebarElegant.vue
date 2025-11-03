@@ -65,7 +65,7 @@ export default defineComponent({
                     "relative flex items-center gap-3 h-field rounded-field cursor-pointer",
                     "px-3 border border-transparent",
                     active
-                      ? "bg-primary/10 text-primary border-l-[5px] border-primary pl-[10px]"
+                      ? "bg-primary/10 text-primary dark:text-accent border-l-[5px] border-primary dark:border-accent pl-[10px]"
                       : "hover:bg-gray-200/30",
                   ],
                   "aria-current": active ? "page" : undefined,
@@ -74,7 +74,10 @@ export default defineComponent({
                   onMouseleave: hideTip,
                 },
                 [
-                  h(Icon, { name: item.icon || "dot", class: "w-5 h-5" }),
+                  h(Icon, {
+                    name: item.icon || "dot",
+                    class: "w-5 h-5",
+                  }),
                   !props.collapsed &&
                     h("span", { class: "font-medium" }, item.label),
                 ]
@@ -100,7 +103,10 @@ export default defineComponent({
                   onMouseleave: hideTip,
                 },
                 [
-                  h(Icon, { name: item.icon || "dot", class: "w-5 h-5" }),
+                  h(Icon, {
+                    name: item.icon || "dot",
+                    class: "w-5 h-5",
+                  }),
                   !props.collapsed &&
                     h(
                       "span",
@@ -155,7 +161,10 @@ export default defineComponent({
                             onMouseleave: hideTip,
                           },
                           [
-                            h(Icon, { name: "dot", class: "w-5 h-5" }),
+                            h(Icon, {
+                              name: "dot",
+                              class: "w-5 h-5",
+                            }),
                             !props.collapsed &&
                               h("span", { class: "font-medium" }, child.label),
                           ]

@@ -169,127 +169,119 @@
 
   /* Backgrounds */
   .bg-base-100 {
-    background-color: var(--color-base-100);
+    background-color: var(--color-base-100) !important;
   }
   .bg-base-200 {
-    background-color: var(--color-base-200);
+    background-color: var(--color-base-200) !important;
   }
   .bg-base-300 {
-    background-color: var(--color-base-300);
+    background-color: var(--color-base-300) !important;
   }
   .bg-primary {
-    background-color: var(--color-primary);
+    background-color: var(--color-primary) !important;
   }
   .bg-secondary {
-    background-color: var(--color-secondary);
+    background-color: var(--color-secondary) !important;
   }
   .bg-accent {
-    background-color: var(--color-accent);
+    background-color: var(--color-accent) !important;
   }
   .bg-neutral {
-    background-color: var(--color-neutral);
+    background-color: var(--color-neutral) !important;
   }
   .bg-info {
-    background-color: var(--color-info);
+    background-color: var(--color-info) !important;
   }
   .bg-success {
-    background-color: var(--color-success);
+    background-color: var(--color-success) !important;
   }
   .bg-warning {
-    background-color: var(--color-warning);
+    background-color: var(--color-warning) !important;
   }
   .bg-error {
-    background-color: var(--color-error);
+    background-color: var(--color-error) !important;
   }
 
   /* Text colors (base token) */
   .text-base {
-    color: var(--color-base-content);
-  }
-  .text-primary {
-    color: var(--color-primary);
-  }
+    color: var(--color-base-content) !important;
+  }/* removed conflicting rule: .text-primary */
+
   .text-secondary {
-    color: var(--color-secondary);
-  }
-  .text-accent {
-    color: var(--color-accent);
-  }
+    color: var(--color-secondary) !important;
+  }/* removed conflicting rule: .text-accent */
+
   .text-neutral {
-    color: var(--color-neutral);
+    color: var(--color-neutral) !important;
   }
   .text-info {
-    color: var(--color-info);
+    color: var(--color-info) !important;
   }
   .text-success {
-    color: var(--color-success);
+    color: var(--color-success) !important;
   }
   .text-warning {
-    color: var(--color-warning);
+    color: var(--color-warning) !important;
   }
   .text-error {
-    color: var(--color-error);
+    color: var(--color-error) !important;
   }
 
   /* Text colors (contrast/content token) */
   .text-base-content {
-    color: var(--color-base-content);
-  }
-  .text-primary-content {
-    color: var(--color-primary-content);
-  }
+    color: var(--color-base-content) !important;
+  }/* removed conflicting rule: .text-primary-content */
+
   .text-secondary-content {
-    color: var(--color-secondary-content);
-  }
-  .text-accent-content {
-    color: var(--color-accent-content);
-  }
+    color: var(--color-secondary-content) !important;
+  }/* removed conflicting rule: .text-accent-content */
+
   .text-neutral-content {
-    color: var(--color-neutral-content);
+    color: var(--color-neutral-content) !important;
   }
   .text-info-content {
-    color: var(--color-info-content);
+    color: var(--color-info-content) !important;
   }
   .text-success-content {
-    color: var(--color-success-content);
+    color: var(--color-success-content) !important;
   }
   .text-warning-content {
-    color: var(--color-warning-content);
+    color: var(--color-warning-content) !important;
   }
   .text-error-content {
-    color: var(--color-error-content);
+    color: var(--color-error-content) !important;
   }
 
   /* Border colors */
   .border-base-100 {
-    border-color: var(--color-base-100);
+    border-color: var(--color-base-100) !important;
   }
   .border-base-200 {
-    border-color: var(--color-base-200);
+    border-color: var(--color-base-200) !important;
   }
   .border-base-300 {
-    border-color: var(--color-base-300);
+    border-color: var(--color-base-300) !important;
   }
   .border-primary {
-    border-color: var(--color-primary);
+    border-color: var(--color-primary) !important;
   }
   .border-secondary {
-    border-color: var(--color-secondary);
+    border-color: var(--color-secondary) !important;
   }
   .border-accent {
-    border-color: var(--color-accent);
+    border-color: var(--color-accent) !important;
   }
   .border-info {
-    border-color: var(--color-info);
+    border-color: var(--color-info) !important;
   }
   .border-success {
-    border-color: var(--color-success);
+    border-color: var(--color-success) !important;
   }
   .border-warning {
-    border-color: var(--color-warning);
+    border-color: var(--color-warning) !important;
   }
   .border-error {
-    border-color: var(--color-error);
+    border-color: var(--color-error) !important;
   }
 
   /* Radius tokens */
@@ -1192,17 +1184,13 @@
 }
 
 /* === Custom token utilities patch ====================================== */
-@layer utilities {
-  /* Text colors for token roots (were missing in some builds) */
-  .text-primary {
-    color: var(--color-primary);
-  }
+@layer utilities {/* removed conflicting rule: /* Text colors for token roots (were missing in some builds) */
+  .text-primary */
+
   .text-secondary {
     color: var(--color-secondary);
-  }
-  .text-accent {
-    color: var(--color-accent);
-  }
+  }/* removed conflicting rule: .text-accent */
+
   .text-info {
     color: var(--color-info);
   }
@@ -1217,10 +1205,6 @@
   }
   .text-neutral {
     color: var(--color-neutral);
-  }
-
-  [data-theme="mitrekadark"] .dark\:text-accent {
-    color: var(--color-accent);
   }
 
   /* Soft backgrounds using slash syntax (e.g. bg-primary/10) */
