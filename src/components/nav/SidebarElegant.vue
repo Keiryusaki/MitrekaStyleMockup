@@ -151,7 +151,7 @@ export default defineComponent({
                               "border border-transparent",
                               "pl-3 pr-[.75rem]",
                               active
-                                ? "bg-primary/10 text-primary border-l-[5px] border-primary" // Style Child Active
+                                ? "bg-primary/10 text-primary dark:text-accent border-l-[5px] border-primary" // Style Child Active
                                 : "hover:bg-gray-200/50 dark:hover:bg-gray-200/20", // Style Child Inactive (hover)
                             ],
                             "aria-current": active ? "page" : undefined,

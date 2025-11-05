@@ -1,0 +1,36 @@
+[
+  {
+    "version": "1.1",
+    "date": "2025-11-05",
+    "label": "Stable",
+    "items": [
+      {
+        "type": "Changed",
+        "text": "Update tailwind.css ke v1.1 (token + tweaks warna)."
+      },
+      { "type": "Added", "text": "Komponen Icon.", "href": "/icon" },
+      {
+        "type": "Added",
+        "text": "Komponen Select Option.",
+        "href": "/SelectOption"
+      }
+    ],
+    "assets": [
+      { "name": "latest.css", "href": "/releases/tailwind/latest.css" }
+    ]
+  },
+  {
+    "version": "1.0",
+    "date": "2025-11-03",
+    "label": "Stable",
+    "items": [
+      { "type": "Docs", "text": "Rilis awal style base + tailwind.css v1.0." }
+    ],
+    "assets": [
+      {
+        "name": "tailwind.css (1.0)",
+        "href": "/releases/tailwind/tailwind.v1.0.css"
+      }
+    ]
+  }
+]

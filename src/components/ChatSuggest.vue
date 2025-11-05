@@ -99,6 +99,42 @@
           </span>
         </div>
 
+        <!-- Lampiran (opsional) -->
+        <div class="space-y-2">
+          <label class="text-sm">Lampiran (gambar)</label>
+          <input
+            type="file"
+            accept="image/*"
+            multiple
+            @change="onPickFiles"
+            :disabled="loading"
+          />
+
+          <!-- preview nama file -->
+          <div v-if="files.length" class="flex flex-wrap gap-2">
+            <span
+              v-for="(f, i) in files"
+              :key="f.name + i"
+              class="text-xs border rounded px-2 py-1 flex items-center gap-1"
+              :title="`${f.name} • ${Math.round(f.size / 1024)}KB`"
+            >
+              {{ f.name }}
+              <button
+                type="button"
+                @click="removeFile(i)"
+                aria-label="Hapus lampiran"
+              >
+                ×
+              </button>
+            </span>
+          </div>
+
+          <p v-if="fileErr" class="text-xs text-red-600">{{ fileErr }}</p>
+          <p class="text-[11px] text-neutral-500">
+            Maks 5 file, total ≤ 20&nbsp;MB. Hanya gambar.
+          </p>
+        </div>
+
         <!-- Honeypot -->
         <input
           v-model="form.website"
@@ -156,13 +192,66 @@
 import { ref, computed } from "vue";
 
 // GANTI ke URL Worker kamu:
-const WORKER_URL = "https://royal-unit-882c.hatsukei0001.workers.dev";
+const WORKER_URL =
+  import.meta.env.VITE_CHAT_SUGGEST_URL ??
+  "https://royal-unit-882c.hatsukei0001.workers.dev";
 
 const MAX = 2000;
 const open = ref(false);
 const loading = ref(false);
 const ok = ref(false);
 const err = ref("");
+
+// files state (JS)
+const files = ref([]);
+const fileErr = ref("");
+
+const FILES_MAX_COUNT = 5;
+const FILES_MAX_TOTAL = 20 * 1024 * 1024; // 20 MB
+
+function onPickFiles(e) {
+  fileErr.value = "";
+  const input = e && e.target ? e.target : null;
+  const list = input && input.files ? input.files : null;
+  if (!list) return;
+
+  // gabungkan file baru dengan yang sudah ada
+  const next = [...files.value];
+  for (let i = 0; i < list.length; i++) next.push(list[i]);
+
+  // hanya image/*
+  const imgs = next.filter((f) => f && f.type && f.type.startsWith("image/"));
+
+  // batas jumlah
+  if (imgs.length > FILES_MAX_COUNT) {
+    fileErr.value = `Maksimal ${FILES_MAX_COUNT} file.`;
+    imgs.length = FILES_MAX_COUNT;
+  }
+
+  // batas total size
+  const total = imgs.reduce((a, f) => a + (f.size || 0), 0);
+  if (total > FILES_MAX_TOTAL) {
+    fileErr.value = `Total ukuran melebihi ${Math.round(
+      FILES_MAX_TOTAL / 1024 / 1024
+    )}MB.`;
+    // keep sampai batas
+    let sum = 0;
+    const kept = [];
+    for (const f of imgs) {
+      if (sum + f.size > FILES_MAX_TOTAL) break;
+      kept.push(f);
+      sum += f.size;
+    }
+    files.value = kept;
+    return;
+  }
+
+  files.value = imgs;
+}
+
+function removeFile(i) {
+  files.value.splice(i, 1);
+}
 
 const form = ref({
   nama: "",
@@ -173,35 +262,76 @@ const form = ref({
 
 const canSend = computed(
   () =>
-    form.value.nama.trim().length > 0 && form.value.deskripsi.trim().length > 0
+    form.value.website === "" && // honeypot harus kosong
+    form.value.nama.trim().length > 0 &&
+    form.value.deskripsi.trim().length > 0 &&
+    form.value.deskripsi.length <= MAX
 );
 
 async function submit() {
-  if (!canSend.value) return;
+  if (!canSend.value || loading.value) return;
   loading.value = true;
   ok.value = false;
   err.value = "";
+
+  const ac = new AbortController();
+  const t = setTimeout(() => ac.abort("timeout"), 15000);
+
   try {
-    const res = await fetch(WORKER_URL, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        nama: form.value.nama.trim(),
-        jenis: form.value.jenis,
-        deskripsi: form.value.deskripsi.trim(),
-        fromPage: location.pathname,
-        website: form.value.website,
-      }),
-    });
-    if (!res.ok) throw new Error(await res.text());
+    const payload = {
+      nama: form.value.nama.trim(),
+      jenis: form.value.jenis,
+      deskripsi: form.value.deskripsi.trim(),
+      meta: {
+        url: typeof location !== "undefined" ? location.href : "",
+        tz: Intl.DateTimeFormat().resolvedOptions().timeZone,
+        ua: navigator.userAgent,
+      },
+    };
+
+    let res;
+
+    if (!files.value.length) {
+      // Tanpa lampiran: JSON
+      res = await fetch(WORKER_URL, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+        signal: ac.signal,
+      });
+    } else {
+      // Dengan lampiran: multipart/form-data
+      const fd = new FormData();
+      fd.append("payload_json", JSON.stringify(payload));
+      files.value.forEach((f, i) => fd.append(`files[${i}]`, f, f.name));
+      res = await fetch(WORKER_URL, {
+        method: "POST",
+        body: fd,
+        signal: ac.signal,
+      });
+    }
+
+    if (!res.ok) {
+      let msg = "";
+      try {
+        msg = (await res.json()).error ?? (await res.text());
+      } catch {}
+      throw new Error(msg || `HTTP ${res.status}`);
+    }
+
     ok.value = true;
     form.value.deskripsi = "";
+    files.value = [];
     setTimeout(() => {
       ok.value = false;
     }, 2500);
   } catch (e) {
-    err.value = "Gagal kirim. Coba lagi ya.";
+    err.value =
+      e && e.name === "AbortError"
+        ? "Timeout. Coba lagi ya."
+        : (e && e.message) || "Gagal kirim. Coba lagi ya.";
   } finally {
+    clearTimeout(t);
     loading.value = false;
   }
 }

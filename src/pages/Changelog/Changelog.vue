@@ -1,140 +1,135 @@
-<!-- src/pages/Changelog.vue -->
 <script setup lang="ts">
-// URL untuk download langsung (Vite handle dev & build)
-import tailwindCssUrl from "@/assets/tailwind.css?url";
+import { onMounted } from "vue";
+import data from "./changelog.json";
+
+type ChangeType =
+  | "Added"
+  | "Changed"
+  | "Fixed"
+  | "Removed"
+  | "Security"
+  | "Docs"
+  | "Breaking";
+type Item = { type: ChangeType; text: string; href?: string };
+type Asset = { name: string; href: string };
+type Release = {
+  version: string;
+  date: string;
+  label?: string;
+  items: Item[];
+  assets?: Asset[];
+};
+
+const releases = (data as Release[]).sort((a, b) =>
+  b.version.localeCompare(a.version, "en", { numeric: true })
+);
+
+const typeColor: Record<ChangeType, string> = {
+  Breaking: "bg-rose-100 text-rose-700 dark:bg-rose-500/15 dark:text-rose-300",
+  Added:
+    "bg-emerald-100 text-emerald-700 dark:bg-emerald-500/15 dark:text-emerald-300",
+  Changed:
+    "bg-amber-100 text-amber-800 dark:bg-amber-500/15 dark:text-amber-300",
+  Fixed: "bg-sky-100 text-sky-800 dark:bg-sky-500/15 dark:text-sky-300",
+  Removed: "bg-zinc-200 text-zinc-800 dark:bg-zinc-500/15 dark:text-zinc-300",
+  Security:
+    "bg-fuchsia-100 text-fuchsia-800 dark:bg-fuchsia-500/15 dark:text-fuchsia-300",
+  Docs: "bg-teal-100 text-teal-800 dark:bg-teal-500/15 dark:text-teal-300",
+};
+
+onMounted(() => {
+  // buka rilis dari hash (mis. #v-1-1-0)
+  const hash = location.hash.replace("#", "");
+  if (hash.startsWith("v-")) {
+    const el = document.getElementById(hash);
+    el?.setAttribute("open", "");
+    el?.scrollIntoView({ behavior: "smooth", block: "start" });
+  }
+});
+
+const withBase = (p: string) =>
+  `${import.meta.env.BASE_URL.replace(/\/$/, "")}/${p.replace(/^\//, "")}`;
 </script>
 
 <template>
-  <div class="card p-4 md:p-6 space-y-5">
-    <!-- Header -->
-    <header
-      class="sticky top-0 z-10 backdrop-blur bg-base-100/80 border-b border-base-300 rounded-md"
-    >
-      <div
-        class="mx-auto max-w-5xl px-4 py-4 flex items-center justify-between gap-3"
-      >
-        <h1 class="text-xl font-semibold tracking-tight">Changelog</h1>
-      </div>
+  <div class="space-y-6">
+    <header>
+      <h1 class="text-xl font-semibold">Changelog</h1>
+      <p class="text-sm opacity-70">Riwayat perubahan + file CSS per versi</p>
     </header>
 
-    <!-- ====== Dev Guide Collapsible (style seperti contoh kamu) ====== -->
-    <details class="rounded-box border border-base-300 p-3">
-      <summary class="cursor-pointer text-sm font-medium">
-        Changelog
-        <span
-          class="inline-flex items-center justify-center rounded-selector border border-base-300 px-2 py-1 text-xs"
-        >
-          v1.0
-        </span>
-        - <time class="text-xs opacity-70"> 03 Nov 2025 </time>
-      </summary>
+    <section class="space-y-3">
+      <details
+        v-for="r in releases"
+        :key="r.version"
+        :id="`v-${r.version.replaceAll('.', '-')}`"
+        class="rounded-xl border border-base-300 bg-base-100"
+      >
+        <summary class="cursor-pointer px-4 py-3 flex items-center gap-2">
+          <span class="font-semibold">v{{ r.version }}</span>
+          <span
+            class="text-xs px-1.5 py-0.5 rounded border border-base-300 text-base-content/70"
+          >
+            {{ r.label || "Stable" }}
+          </span>
+          <time class="text-xs opacity-70"
+            >· {{ new Date(r.date).toLocaleDateString() }}</time
+          >
+          <span class="ms-auto text-xs opacity-70"
+            >{{ r.items.length }} changes</span
+          >
+        </summary>
 
-      <div class="mt-3 rounded-xl border border-base-300 p-4 bg-base-200">
-        <h3 class="text-lg font-semibold mb-2">
-          Changelog – Dev Guide (Standard)
-        </h3>
-
-        <!-- Downloads box -->
-        <div class="mb-4 p-3 bg-base-300 rounded-lg">
-          <p class="text-sm font-medium mb-2">Downloads</p>
-          <ul class="text-sm list-disc ml-5 space-y-1">
-            <li>
-              <a
-                class="btn btn-accent btn-xs"
-                :href="tailwindCssUrl"
-                rel="noopener"
-                download="tailwind.css"
-                >tailwind.css</a
+        <div class="px-5 pb-4">
+          <!-- daftar perubahan -->
+          <ul class="space-y-2">
+            <li
+              v-for="(it, i) in r.items"
+              :key="i"
+              class="flex items-start gap-3"
+            >
+              <span
+                :class="[
+                  'shrink-0 rounded px-1.5 py-0.5 text-[11px] font-medium',
+                  typeColor[it.type],
+                ]"
               >
-              → simpan ke <code>src/assets/tailwind.css</code>
+                {{ it.type }}
+              </span>
+              <p class="text-sm leading-6">
+                <template v-if="it.href">
+                  <RouterLink :to="it.href" class="underline decoration-dotted">
+                    {{ it.text }}
+                  </RouterLink>
+                </template>
+                <template v-else>
+                  {{ it.text }}
+                </template>
+              </p>
             </li>
           </ul>
-          <p class="text-xs opacity-70 mt-2">
-            Catatan: di produk, tautkan ke file di repositori project kalian.
-          </p>
+
+          <!-- file unduhan per versi -->
+          <div
+            v-if="r.assets?.length"
+            class="mt-3 flex flex-wrap gap-2 text-sm"
+          >
+            <a
+              v-for="a in r.assets"
+              :key="a.href"
+              :href="withBase(a.href)"
+              download
+              class="btn btn-xs btn-accent"
+            >
+              Download {{ a.name }}
+            </a>
+          </div>
         </div>
-
-        <ol class="space-y-6 list-decimal ml-5">
-          <li>
-            <h4 class="font-semibold">Struktur Halaman</h4>
-            <pre v-pre class="code"><code>src/
-pages/
-Changelog.vue   ← halaman ini
-assets/
-tailwind.css    ← file yang bisa diunduh</code></pre>
-          </li>
-
-          <li>
-            <h4 class="font-semibold">Tailwind Config (tailwind.config.js)</h4>
-            <pre
-              v-pre
-              class="code"
-            ><code>/** @type {import('tailwindcss').Config} */
-export default {
-darkMode: ["class", '[data-theme="mitrekadark"]'],
-content: ["./index.html", "./src/**/*.{vue,js,ts}"],
-theme: {
-extend: {
-    colors: {
-    base: {
-        100: "var(--color-base-100)",
-        200: "var(--color-base-200)",
-        300: "var(--color-base-300)",
-        content: "var(--color-base-content)",
-    },
-    primary: "var(--color-primary)",
-    "primary-content": "var(--color-primary-content)",
-    secondary: "var(--color-secondary)",
-    "secondary-content": "var(--color-secondary-content)",
-    accent: "var(--color-accent)",
-    "accent-content": "var(--color-accent-content)",
-    neutral: "var(--color-neutral)",
-    "neutral-content": "var(--color-neutral-content)",
-    info: "var(--color-info)",
-    "info-content": "var(--color-info-content)",
-    success: "var(--color-success)",
-    "success-content": "var(--color-success-content)",
-    warning: "var(--color-warning)",
-    "warning-content": "var(--color-warning-content)",
-    error: "var(--color-error)",
-    "error-content": "var(--color-error-content)",
-    },
-    borderRadius: {
-    selector: "var(--radius-selector)",
-    field: "var(--radius-field)",
-    box: "var(--radius-box)",
-    },
-    spacing: {
-    selector: "var(--size-selector)",
-    field: "var(--size-field)",
-    },
-    borderWidth: {
-    DEFAULT: "var(--border)",
-    },
-    fontFamily: {
-    sans: ["var(--font-sans)", "sans-serif"],
-    },
-},
-},
-plugins: [],
-};</code></pre>
-          </li>
-        </ol>
-      </div>
-    </details>
+      </details>
+    </section>
   </div>
 </template>
 
 <style scoped>
-/* styling kecil biar block code rapi; sesuaikan kalau kamu punya util .code sendiri */
-.code {
-  display: block;
-  padding: 0.75rem 1rem;
-  border-radius: var(--radius-box);
-  background: var(--color-base-200);
-  border: 1px solid var(--color-base-300);
-  overflow-x: auto;
-  font-size: 12.5px;
-  line-height: 1.5;
-}
+/* opsional kecil */
 </style>

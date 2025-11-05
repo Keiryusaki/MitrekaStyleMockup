@@ -21,11 +21,13 @@ export type NavItem = {
 export const NAV: NavItem[] = [
   { id: "dash", label: "Dashboard", icon: "dashboard", to: "/", exact: true },
   {
-    id: "ChangeLog",
-    label: "Change Log",
-    icon: "dashboard",
-    to: "/ChangeLog",
-    exact: true,
+    id: "DevGuide",
+    label: "Developer Guide",
+    icon: "clipboardClock",
+    children: [
+      { id: "guide", label: "Guide", to: "/guide" },
+      { id: "ChangeLog", label: "Change Log", to: "/ChangeLog" },
+    ],
   },
   {
     id: "mockup",
@@ -42,6 +44,11 @@ export const NAV: NavItem[] = [
       { id: "badge", label: "Badge", to: "/badge" },
       { id: "input", label: "Input", to: "/input" },
       {
+        id: "SelectOption",
+        label: "Select Option",
+        to: "/SelectOption",
+      },
+      {
         id: "SelectionControls",
         label: "Selection Controls",
         to: "/SelectionControls",
@@ -54,7 +61,7 @@ export const NAV: NavItem[] = [
     label: "Management",
     icon: "users",
     children: [
-      { id: "users-all", label: "User", to: "/users", exact: true },
+      { id: "users-all", label: "User", to: "/users" },
       { id: "users-new", label: "Add User", to: "/users/new" },
     ],
   },
