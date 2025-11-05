@@ -6,7 +6,7 @@ import "./assets/tailwind.css";
 import { useUi } from "./stores/ui";
 import { AgGridVue } from "ag-grid-vue3";
 import IconPlugin from "@/plugins/icon";
-import faviconUrl from "@/assets/favicon.png";
+import faviconUrl from "@/assets/favicon.png?url";
 
 const app = createApp(App);
 app.use(createPinia());
@@ -27,7 +27,7 @@ function setFavicon(href: string, type = "image/png") {
     document.head.appendChild(link);
   }
   link.type = type;
-  link.href = href + `?v=${Date.now()}`; // bust cache
+  link.href = href; // jangan append ?v=...
 }
 
 setFavicon(faviconUrl);
