@@ -2,7 +2,6 @@
 const downloadFile = async (filename: string) => {
   try {
     let fileUrl = "";
-
     // Cek file mana yang mau di-download
     if (filename === "OKRInitiatives.vue") {
       fileUrl = (await import("@/pages/OKRInitiatives/OKRInitiatives.vue?raw"))
@@ -113,97 +112,99 @@ const downloadFile = async (filename: string) => {
             </button>
           </div>
           <div class="mt-4 pl-5 border-l border-gray-200">
-            <table class="min-w-full text-sm">
-              <thead class="bg-slate-100 text-left">
-                <tr class="text-slate-600">
-                  <th class="px-4 py-3 w-12">No.</th>
-                  <th class="px-4 py-3">Initiatives / Activities</th>
-                  <th class="px-4 py-3">Target</th>
-                  <th class="px-4 py-3">Status</th>
-                  <th class="px-4 py-3">Priority</th>
-                  <th class="px-4 py-3">Dependencies</th>
-                  <th class="px-4 py-3 text-right">Action</th>
-                </tr>
-              </thead>
+            <div class="overflow-x-auto rounded-lg border border-gray-300">
+              <table class="min-w-full text-sm">
+                <thead class="bg-slate-100 text-left">
+                  <tr class="text-slate-600">
+                    <th class="px-4 py-3 w-12">No.</th>
+                    <th class="px-4 py-3">Initiatives / Activities</th>
+                    <th class="px-4 py-3">Target</th>
+                    <th class="px-4 py-3">Status</th>
+                    <th class="px-4 py-3">Priority</th>
+                    <th class="px-4 py-3">Dependencies</th>
+                    <th class="px-4 py-3 text-right">Action</th>
+                  </tr>
+                </thead>
 
-              <tbody class="divide-y divide-slate-200/10">
-                <!-- Row 1 -->
-                <tr class="even:bg-blue-50/40">
-                  <td class="px-4 py-4 align-top">1</td>
-                  <td class="px-4 py-4 align-top">Contoh program 1</td>
-                  <td class="px-4 py-4 align-top">Besok</td>
-                  <td class="px-4 py-4 align-top">
-                    <span
-                      class="inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium bg-green-100 text-green-800"
-                    >
-                      Running
-                    </span>
-                  </td>
-                  <td class="px-4 py-4 align-top">Normal</td>
-                  <td class="px-4 py-4 align-top">
-                    <div class="w-full">We depend on:</div>
-                    <div class="font-bold">Product</div>
-                    <div class="w-full">What we need:</div>
-                    <div class="font-bold">Program</div>
-                  </td>
-                  <td class="px-4 py-4 align-top">
-                    <div class="flex justify-end gap-2">
-                      <button
-                        type="button"
-                        class="btn btn-warning btn-xs inline-flex items-center justify-center p-1"
-                        title="Edit"
+                <tbody class="divide-y divide-slate-200/10">
+                  <!-- Row 1 -->
+                  <tr class="even:bg-blue-50/40">
+                    <td class="px-4 py-4 align-top">1</td>
+                    <td class="px-4 py-4 align-top">Contoh program 1</td>
+                    <td class="px-4 py-4 align-top">Besok</td>
+                    <td class="px-4 py-4 align-top">
+                      <span
+                        class="inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium bg-green-100 text-green-800"
                       >
-                        <Icon name="edit" /></button
-                      ><button
-                        type="button"
-                        class="btn btn-error btn-xs inline-flex items-center justify-center p-1"
-                        title="Hapus"
+                        Running
+                      </span>
+                    </td>
+                    <td class="px-4 py-4 align-top">Normal</td>
+                    <td class="px-4 py-4 align-top">
+                      <div class="w-full">We depend on:</div>
+                      <div class="font-bold">Product</div>
+                      <div class="w-full">What we need:</div>
+                      <div class="font-bold">Program</div>
+                    </td>
+                    <td class="px-4 py-4 align-top">
+                      <div class="flex justify-end gap-2">
+                        <button
+                          type="button"
+                          class="btn btn-warning btn-xs inline-flex items-center justify-center p-1"
+                          title="Edit"
+                        >
+                          <Icon name="edit" /></button
+                        ><button
+                          type="button"
+                          class="btn btn-error btn-xs inline-flex items-center justify-center p-1"
+                          title="Hapus"
+                        >
+                          <Icon name="delete" />
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr class="even:bg-blue-50/40">
+                    <td class="px-4 py-4 align-top">2</td>
+                    <td class="px-4 py-4 align-top">
+                      Lorem ipsum dolor sit amet consectetur adipisicing elit.
+                    </td>
+                    <td class="px-4 py-4 align-top">Besok</td>
+                    <td class="px-4 py-4 align-top">
+                      <span
+                        class="inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium bg-green-100 text-green-800"
                       >
-                        <Icon name="delete" />
-                      </button>
-                    </div>
-                  </td>
-                </tr>
-                <tr class="even:bg-blue-50/40">
-                  <td class="px-4 py-4 align-top">2</td>
-                  <td class="px-4 py-4 align-top">
-                    Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                  </td>
-                  <td class="px-4 py-4 align-top">Besok</td>
-                  <td class="px-4 py-4 align-top">
-                    <span
-                      class="inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium bg-green-100 text-green-800"
-                    >
-                      Running
-                    </span>
-                  </td>
-                  <td class="px-4 py-4 align-top">Normal</td>
-                  <td class="px-4 py-4 align-top">
-                    <div class="w-full">We depend on:</div>
-                    <div class="font-bold">Product</div>
-                    <div class="w-full">What we need:</div>
-                    <div class="font-bold">Program</div>
-                  </td>
-                  <td class="px-4 py-4 align-top">
-                    <div class="flex justify-end gap-2">
-                      <button
-                        type="button"
-                        class="btn btn-warning btn-xs inline-flex items-center justify-center p-1"
-                        title="Edit"
-                      >
-                        <Icon name="edit" /></button
-                      ><button
-                        type="button"
-                        class="btn btn-error btn-xs inline-flex items-center justify-center p-1"
-                        title="Hapus"
-                      >
-                        <Icon name="delete" />
-                      </button>
-                    </div>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
+                        Running
+                      </span>
+                    </td>
+                    <td class="px-4 py-4 align-top">Normal</td>
+                    <td class="px-4 py-4 align-top">
+                      <div class="w-full">We depend on:</div>
+                      <div class="font-bold">Product</div>
+                      <div class="w-full">What we need:</div>
+                      <div class="font-bold">Program</div>
+                    </td>
+                    <td class="px-4 py-4 align-top">
+                      <div class="flex justify-end gap-2">
+                        <button
+                          type="button"
+                          class="btn btn-warning btn-xs inline-flex items-center justify-center p-1"
+                          title="Edit"
+                        >
+                          <Icon name="edit" /></button
+                        ><button
+                          type="button"
+                          class="btn btn-error btn-xs inline-flex items-center justify-center p-1"
+                          title="Hapus"
+                        >
+                          <Icon name="delete" />
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
           </div>
         </div>
         <div class="p-4 odd:bg-gray-200/30">
@@ -227,30 +228,32 @@ const downloadFile = async (filename: string) => {
             </button>
           </div>
           <div class="mt-4 pl-5 border-l border-gray-200">
-            <table class="min-w-full text-sm">
-              <thead class="bg-slate-100 text-left">
-                <tr class="text-slate-600">
-                  <th class="px-4 py-3 w-12">No.</th>
-                  <th class="px-4 py-3">Initiatives / Activities</th>
-                  <th class="px-4 py-3">Target</th>
-                  <th class="px-4 py-3">Status</th>
-                  <th class="px-4 py-3">Priority</th>
-                  <th class="px-4 py-3">Dependencies</th>
-                  <th class="px-4 py-3 text-right">Action</th>
-                </tr>
-              </thead>
+            <div class="overflow-x-auto rounded-lg border border-gray-300">
+              <table class="min-w-full text-sm">
+                <thead class="bg-slate-100 text-left">
+                  <tr class="text-slate-600">
+                    <th class="px-4 py-3 w-12">No.</th>
+                    <th class="px-4 py-3">Initiatives / Activities</th>
+                    <th class="px-4 py-3">Target</th>
+                    <th class="px-4 py-3">Status</th>
+                    <th class="px-4 py-3">Priority</th>
+                    <th class="px-4 py-3">Dependencies</th>
+                    <th class="px-4 py-3 text-right">Action</th>
+                  </tr>
+                </thead>
 
-              <tbody class="divide-y divide-slate-200/10">
-                <!-- Row 1 -->
-                <tr class="even:bg-blue-50/40">
-                  <td colspan="7" class="px-4 py-4 align-top">
-                    <button class="btn btn-success btn-xs">
-                      <Icon name="plus" /> Initiatives
-                    </button>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
+                <tbody class="divide-y divide-slate-200/10">
+                  <!-- Row 1 -->
+                  <tr class="even:bg-blue-50/40">
+                    <td colspan="7" class="px-4 py-4 align-top">
+                      <button class="btn btn-success btn-xs">
+                        <Icon name="plus" /> Initiatives
+                      </button>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
           </div>
         </div>
         <div class="p-4 odd:bg-gray-200/30">
@@ -276,97 +279,99 @@ const downloadFile = async (filename: string) => {
             </button>
           </div>
           <div class="mt-4 pl-5 border-l border-gray-200">
-            <table class="min-w-full text-sm">
-              <thead class="bg-slate-100 text-left">
-                <tr class="text-slate-600">
-                  <th class="px-4 py-3 w-12">No.</th>
-                  <th class="px-4 py-3">Initiatives / Activities</th>
-                  <th class="px-4 py-3">Target</th>
-                  <th class="px-4 py-3">Status</th>
-                  <th class="px-4 py-3">Priority</th>
-                  <th class="px-4 py-3">Dependencies</th>
-                  <th class="px-4 py-3 text-right">Action</th>
-                </tr>
-              </thead>
+            <div class="overflow-x-auto rounded-lg border border-gray-300">
+              <table class="min-w-full text-sm">
+                <thead class="bg-slate-100 text-left">
+                  <tr class="text-slate-600">
+                    <th class="px-4 py-3 w-12">No.</th>
+                    <th class="px-4 py-3">Initiatives / Activities</th>
+                    <th class="px-4 py-3">Target</th>
+                    <th class="px-4 py-3">Status</th>
+                    <th class="px-4 py-3">Priority</th>
+                    <th class="px-4 py-3">Dependencies</th>
+                    <th class="px-4 py-3 text-right">Action</th>
+                  </tr>
+                </thead>
 
-              <tbody class="divide-y divide-slate-200/10">
-                <!-- Row 1 -->
-                <tr class="even:bg-blue-50/40">
-                  <td class="px-4 py-4 align-top">1</td>
-                  <td class="px-4 py-4 align-top">Contoh program 1</td>
-                  <td class="px-4 py-4 align-top">Besok</td>
-                  <td class="px-4 py-4 align-top">
-                    <span
-                      class="inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium bg-green-100 text-green-800"
-                    >
-                      Running
-                    </span>
-                  </td>
-                  <td class="px-4 py-4 align-top">Normal</td>
-                  <td class="px-4 py-4 align-top">
-                    <div class="w-full">We depend on:</div>
-                    <div class="font-bold">Product</div>
-                    <div class="w-full">What we need:</div>
-                    <div class="font-bold">Program</div>
-                  </td>
-                  <td class="px-4 py-4 align-top">
-                    <div class="flex justify-end gap-2">
-                      <button
-                        type="button"
-                        class="btn btn-warning btn-xs inline-flex items-center justify-center p-1"
-                        title="Edit"
+                <tbody class="divide-y divide-slate-200/10">
+                  <!-- Row 1 -->
+                  <tr class="even:bg-blue-50/40">
+                    <td class="px-4 py-4 align-top">1</td>
+                    <td class="px-4 py-4 align-top">Contoh program 1</td>
+                    <td class="px-4 py-4 align-top">Besok</td>
+                    <td class="px-4 py-4 align-top">
+                      <span
+                        class="inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium bg-green-100 text-green-800"
                       >
-                        <Icon name="edit" /></button
-                      ><button
-                        type="button"
-                        class="btn btn-error btn-xs inline-flex items-center justify-center p-1"
-                        title="Hapus"
+                        Running
+                      </span>
+                    </td>
+                    <td class="px-4 py-4 align-top">Normal</td>
+                    <td class="px-4 py-4 align-top">
+                      <div class="w-full">We depend on:</div>
+                      <div class="font-bold">Product</div>
+                      <div class="w-full">What we need:</div>
+                      <div class="font-bold">Program</div>
+                    </td>
+                    <td class="px-4 py-4 align-top">
+                      <div class="flex justify-end gap-2">
+                        <button
+                          type="button"
+                          class="btn btn-warning btn-xs inline-flex items-center justify-center p-1"
+                          title="Edit"
+                        >
+                          <Icon name="edit" /></button
+                        ><button
+                          type="button"
+                          class="btn btn-error btn-xs inline-flex items-center justify-center p-1"
+                          title="Hapus"
+                        >
+                          <Icon name="delete" />
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr class="even:bg-blue-50/40">
+                    <td class="px-4 py-4 align-top">2</td>
+                    <td class="px-4 py-4 align-top">
+                      Lorem ipsum dolor sit amet consectetur adipisicing elit.
+                    </td>
+                    <td class="px-4 py-4 align-top">Besok</td>
+                    <td class="px-4 py-4 align-top">
+                      <span
+                        class="inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium bg-green-100 text-green-800"
                       >
-                        <Icon name="delete" />
-                      </button>
-                    </div>
-                  </td>
-                </tr>
-                <tr class="even:bg-blue-50/40">
-                  <td class="px-4 py-4 align-top">2</td>
-                  <td class="px-4 py-4 align-top">
-                    Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                  </td>
-                  <td class="px-4 py-4 align-top">Besok</td>
-                  <td class="px-4 py-4 align-top">
-                    <span
-                      class="inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium bg-green-100 text-green-800"
-                    >
-                      Running
-                    </span>
-                  </td>
-                  <td class="px-4 py-4 align-top">Normal</td>
-                  <td class="px-4 py-4 align-top">
-                    <div class="w-full">We depend on:</div>
-                    <div class="font-bold">Product</div>
-                    <div class="w-full">What we need:</div>
-                    <div class="font-bold">Program</div>
-                  </td>
-                  <td class="px-4 py-4 align-top">
-                    <div class="flex justify-end gap-2">
-                      <button
-                        type="button"
-                        class="btn btn-warning btn-xs inline-flex items-center justify-center p-1"
-                        title="Edit"
-                      >
-                        <Icon name="edit" /></button
-                      ><button
-                        type="button"
-                        class="btn btn-error btn-xs inline-flex items-center justify-center p-1"
-                        title="Hapus"
-                      >
-                        <Icon name="delete" />
-                      </button>
-                    </div>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
+                        Running
+                      </span>
+                    </td>
+                    <td class="px-4 py-4 align-top">Normal</td>
+                    <td class="px-4 py-4 align-top">
+                      <div class="w-full">We depend on:</div>
+                      <div class="font-bold">Product</div>
+                      <div class="w-full">What we need:</div>
+                      <div class="font-bold">Program</div>
+                    </td>
+                    <td class="px-4 py-4 align-top">
+                      <div class="flex justify-end gap-2">
+                        <button
+                          type="button"
+                          class="btn btn-warning btn-xs inline-flex items-center justify-center p-1"
+                          title="Edit"
+                        >
+                          <Icon name="edit" /></button
+                        ><button
+                          type="button"
+                          class="btn btn-error btn-xs inline-flex items-center justify-center p-1"
+                          title="Hapus"
+                        >
+                          <Icon name="delete" />
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
           </div>
         </div>
         <div class="p-4 odd:bg-gray-200/30">
@@ -392,97 +397,99 @@ const downloadFile = async (filename: string) => {
             </button>
           </div>
           <div class="mt-4 pl-5 border-l border-gray-200">
-            <table class="min-w-full text-sm">
-              <thead class="bg-slate-100 text-left">
-                <tr class="text-slate-600">
-                  <th class="px-4 py-3 w-12">No.</th>
-                  <th class="px-4 py-3">Initiatives / Activities</th>
-                  <th class="px-4 py-3">Target</th>
-                  <th class="px-4 py-3">Status</th>
-                  <th class="px-4 py-3">Priority</th>
-                  <th class="px-4 py-3">Dependencies</th>
-                  <th class="px-4 py-3 text-right">Action</th>
-                </tr>
-              </thead>
+            <div class="overflow-x-auto rounded-lg border border-gray-300">
+              <table class="min-w-full text-sm">
+                <thead class="bg-slate-100 text-left">
+                  <tr class="text-slate-600">
+                    <th class="px-4 py-3 w-12">No.</th>
+                    <th class="px-4 py-3">Initiatives / Activities</th>
+                    <th class="px-4 py-3">Target</th>
+                    <th class="px-4 py-3">Status</th>
+                    <th class="px-4 py-3">Priority</th>
+                    <th class="px-4 py-3">Dependencies</th>
+                    <th class="px-4 py-3 text-right">Action</th>
+                  </tr>
+                </thead>
 
-              <tbody class="divide-y divide-slate-200/10">
-                <!-- Row 1 -->
-                <tr class="even:bg-blue-50/40">
-                  <td class="px-4 py-4 align-top">1</td>
-                  <td class="px-4 py-4 align-top">Contoh program 1</td>
-                  <td class="px-4 py-4 align-top">Besok</td>
-                  <td class="px-4 py-4 align-top">
-                    <span
-                      class="inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium bg-green-100 text-green-800"
-                    >
-                      Running
-                    </span>
-                  </td>
-                  <td class="px-4 py-4 align-top">Normal</td>
-                  <td class="px-4 py-4 align-top">
-                    <div class="w-full">We depend on:</div>
-                    <div class="font-bold">Product</div>
-                    <div class="w-full">What we need:</div>
-                    <div class="font-bold">Program</div>
-                  </td>
-                  <td class="px-4 py-4 align-top">
-                    <div class="flex justify-end gap-2">
-                      <button
-                        type="button"
-                        class="btn btn-warning btn-xs inline-flex items-center justify-center p-1"
-                        title="Edit"
+                <tbody class="divide-y divide-slate-200/10">
+                  <!-- Row 1 -->
+                  <tr class="even:bg-blue-50/40">
+                    <td class="px-4 py-4 align-top">1</td>
+                    <td class="px-4 py-4 align-top">Contoh program 1</td>
+                    <td class="px-4 py-4 align-top">Besok</td>
+                    <td class="px-4 py-4 align-top">
+                      <span
+                        class="inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium bg-green-100 text-green-800"
                       >
-                        <Icon name="edit" /></button
-                      ><button
-                        type="button"
-                        class="btn btn-error btn-xs inline-flex items-center justify-center p-1"
-                        title="Hapus"
+                        Running
+                      </span>
+                    </td>
+                    <td class="px-4 py-4 align-top">Normal</td>
+                    <td class="px-4 py-4 align-top">
+                      <div class="w-full">We depend on:</div>
+                      <div class="font-bold">Product</div>
+                      <div class="w-full">What we need:</div>
+                      <div class="font-bold">Program</div>
+                    </td>
+                    <td class="px-4 py-4 align-top">
+                      <div class="flex justify-end gap-2">
+                        <button
+                          type="button"
+                          class="btn btn-warning btn-xs inline-flex items-center justify-center p-1"
+                          title="Edit"
+                        >
+                          <Icon name="edit" /></button
+                        ><button
+                          type="button"
+                          class="btn btn-error btn-xs inline-flex items-center justify-center p-1"
+                          title="Hapus"
+                        >
+                          <Icon name="delete" />
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr class="even:bg-blue-50/40">
+                    <td class="px-4 py-4 align-top">2</td>
+                    <td class="px-4 py-4 align-top">
+                      Lorem ipsum dolor sit amet consectetur adipisicing elit.
+                    </td>
+                    <td class="px-4 py-4 align-top">Besok</td>
+                    <td class="px-4 py-4 align-top">
+                      <span
+                        class="inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium bg-green-100 text-green-800"
                       >
-                        <Icon name="delete" />
-                      </button>
-                    </div>
-                  </td>
-                </tr>
-                <tr class="even:bg-blue-50/40">
-                  <td class="px-4 py-4 align-top">2</td>
-                  <td class="px-4 py-4 align-top">
-                    Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                  </td>
-                  <td class="px-4 py-4 align-top">Besok</td>
-                  <td class="px-4 py-4 align-top">
-                    <span
-                      class="inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium bg-green-100 text-green-800"
-                    >
-                      Running
-                    </span>
-                  </td>
-                  <td class="px-4 py-4 align-top">Normal</td>
-                  <td class="px-4 py-4 align-top">
-                    <div class="w-full">We depend on:</div>
-                    <div class="font-bold">Product</div>
-                    <div class="w-full">What we need:</div>
-                    <div class="font-bold">Program</div>
-                  </td>
-                  <td class="px-4 py-4 align-top">
-                    <div class="flex justify-end gap-2">
-                      <button
-                        type="button"
-                        class="btn btn-warning btn-xs inline-flex items-center justify-center p-1"
-                        title="Edit"
-                      >
-                        <Icon name="edit" /></button
-                      ><button
-                        type="button"
-                        class="btn btn-error btn-xs inline-flex items-center justify-center p-1"
-                        title="Hapus"
-                      >
-                        <Icon name="delete" />
-                      </button>
-                    </div>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
+                        Running
+                      </span>
+                    </td>
+                    <td class="px-4 py-4 align-top">Normal</td>
+                    <td class="px-4 py-4 align-top">
+                      <div class="w-full">We depend on:</div>
+                      <div class="font-bold">Product</div>
+                      <div class="w-full">What we need:</div>
+                      <div class="font-bold">Program</div>
+                    </td>
+                    <td class="px-4 py-4 align-top">
+                      <div class="flex justify-end gap-2">
+                        <button
+                          type="button"
+                          class="btn btn-warning btn-xs inline-flex items-center justify-center p-1"
+                          title="Edit"
+                        >
+                          <Icon name="edit" /></button
+                        ><button
+                          type="button"
+                          class="btn btn-error btn-xs inline-flex items-center justify-center p-1"
+                          title="Hapus"
+                        >
+                          <Icon name="delete" />
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
           </div>
         </div>
       </div>
