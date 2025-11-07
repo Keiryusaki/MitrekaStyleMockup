@@ -1,0 +1,506 @@
+<script setup lang="ts">
+const downloadFile = async (filename: string) => {
+  try {
+    let fileUrl = "";
+
+    // Cek file mana yang mau di-download
+    if (filename === "OKRInitiatives.vue") {
+      fileUrl = (await import("@/pages/OKRInitiatives/OKRInitiatives.vue?raw"))
+        .default;
+    } else {
+      console.error("File not found");
+      return;
+    }
+
+    // Buat blob lalu trigger download
+    const blob = new Blob([fileUrl], { type: "text/plain" });
+    const link = document.createElement("a");
+    link.href = URL.createObjectURL(blob);
+    link.download = filename;
+    link.click();
+    URL.revokeObjectURL(link.href);
+  } catch (e) {
+    console.error("Gagal download file:", e);
+  }
+};
+</script>
+
+<template>
+  <div class="space-y-8">
+    <!-- Header -->
+    <header>
+      <h1 class="text-xl font-semibold">OKR · Objectives & Initiatives</h1>
+      <p class="text-sm opacity-80">
+        Lorem ipsum dolor sit amet, consectetur adipisicing elit.
+      </p>
+    </header>
+
+    <div class="card p-4 md:p-6 space-y-5">
+      <div class="rounded-xl border p-4 bg-amber-50/70 border-amber-200">
+        <div class="space-y-2 text-sm">
+          <div class="flex gap-6">
+            <div class="w-40 shrink-0 text-gray-600">Big Goals</div>
+            <div class="font-medium break-words font-semibold">
+              Mitreka Big Goals 2025-2028
+            </div>
+          </div>
+          <div class="flex gap-6">
+            <div class="w-40 shrink-0 text-gray-600">Program Kerja</div>
+            <div class="font-medium break-words font-semibold">
+              OKR-2025-2ND
+              <span class="text-gray-500 font-normal">
+                (Juni 2025 – Desember 2025)
+              </span>
+            </div>
+          </div>
+          <div class="flex gap-6">
+            <div class="w-40 shrink-0 text-gray-600">Strategi Goals</div>
+            <div class="font-medium break-words font-semibold">
+              <div class="font-semibold">Healthy and Strong Finance</div>
+              <div class="mt-1 text-gray-700 font-normal">
+                Keuangan Perusahaan yang sehat dan kuat dalam mendukung
+                operational Perusahaan dan benefit jangka panjang.
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- Filter & Search Block -->
+      <div class="flex flex-col md:flex-row md:items-center gap-4 mb-6">
+        <!-- Search -->
+        <div class="relative flex-1 min-w-0">
+          <svg
+            class="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 opacity-70"
+            width="16"
+            height="16"
+            viewBox="0 0 24 24"
+            fill="currentColor"
+          >
+            <path
+              d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5Zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14Z"
+            />
+          </svg>
+          <input class="input input-md pl-9 w-full" placeholder="Search…" />
+        </div>
+
+        <!-- Filter -->
+        <div class="shrink-0 md:w-48">
+          <select class="w-full p-2 border border-gray-300 rounded-md">
+            <option>All</option>
+            <option>Objective</option>
+            <option>Initiatives</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="relative rounded-xl">
+        <div class="p-4 odd:bg-gray-200/30">
+          <div class="flex justify-between items-start space-x-3">
+            <div class="flex items-start space-x-3">
+              <span class="w-4 font-bold">1</span>
+              <span class="font-bold">Peningkatan Laba yang Konsisten</span>
+              <div class="flex items-center space-x-2">
+                <span
+                  class="px-2 py-1 text-xs font-semibold rounded-xl bg-red-100 text-red-800"
+                  >SLS - Sales (Penjualan dan Digital Marketing)</span
+                >
+              </div>
+            </div>
+            <button
+              class="inline-flex items-center justify-center min-w-[150px] px-2 py-1 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors duration-150"
+            >
+              <span class="text-gray-600">0 Sub Objek</span>
+            </button>
+          </div>
+          <div class="mt-4 pl-5 border-l border-gray-200">
+            <table class="min-w-full text-sm">
+              <thead class="bg-slate-100 text-left">
+                <tr class="text-slate-600">
+                  <th class="px-4 py-3 w-12">No.</th>
+                  <th class="px-4 py-3">Initiatives / Activities</th>
+                  <th class="px-4 py-3">Target</th>
+                  <th class="px-4 py-3">Status</th>
+                  <th class="px-4 py-3">Priority</th>
+                  <th class="px-4 py-3">Dependencies</th>
+                  <th class="px-4 py-3 text-right">Action</th>
+                </tr>
+              </thead>
+
+              <tbody class="divide-y divide-slate-200/10">
+                <!-- Row 1 -->
+                <tr class="even:bg-blue-50/40">
+                  <td class="px-4 py-4 align-top">1</td>
+                  <td class="px-4 py-4 align-top">Contoh program 1</td>
+                  <td class="px-4 py-4 align-top">Besok</td>
+                  <td class="px-4 py-4 align-top">
+                    <span
+                      class="inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium bg-green-100 text-green-800"
+                    >
+                      Running
+                    </span>
+                  </td>
+                  <td class="px-4 py-4 align-top">Normal</td>
+                  <td class="px-4 py-4 align-top">
+                    <div class="w-full">We depend on:</div>
+                    <div class="font-bold">Product</div>
+                    <div class="w-full">What we need:</div>
+                    <div class="font-bold">Program</div>
+                  </td>
+                  <td class="px-4 py-4 align-top">
+                    <div class="flex justify-end gap-2">
+                      <button
+                        type="button"
+                        class="btn btn-warning btn-xs inline-flex items-center justify-center p-1"
+                        title="Edit"
+                      >
+                        <Icon name="edit" /></button
+                      ><button
+                        type="button"
+                        class="btn btn-error btn-xs inline-flex items-center justify-center p-1"
+                        title="Hapus"
+                      >
+                        <Icon name="delete" />
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+                <tr class="even:bg-blue-50/40">
+                  <td class="px-4 py-4 align-top">2</td>
+                  <td class="px-4 py-4 align-top">
+                    Lorem ipsum dolor sit amet consectetur adipisicing elit.
+                  </td>
+                  <td class="px-4 py-4 align-top">Besok</td>
+                  <td class="px-4 py-4 align-top">
+                    <span
+                      class="inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium bg-green-100 text-green-800"
+                    >
+                      Running
+                    </span>
+                  </td>
+                  <td class="px-4 py-4 align-top">Normal</td>
+                  <td class="px-4 py-4 align-top">
+                    <div class="w-full">We depend on:</div>
+                    <div class="font-bold">Product</div>
+                    <div class="w-full">What we need:</div>
+                    <div class="font-bold">Program</div>
+                  </td>
+                  <td class="px-4 py-4 align-top">
+                    <div class="flex justify-end gap-2">
+                      <button
+                        type="button"
+                        class="btn btn-warning btn-xs inline-flex items-center justify-center p-1"
+                        title="Edit"
+                      >
+                        <Icon name="edit" /></button
+                      ><button
+                        type="button"
+                        class="btn btn-error btn-xs inline-flex items-center justify-center p-1"
+                        title="Hapus"
+                      >
+                        <Icon name="delete" />
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div class="p-4 odd:bg-gray-200/30">
+          <div class="flex justify-between items-start space-x-3">
+            <div class="flex items-start space-x-3">
+              <span class="w-4 font-bold">2</span>
+              <span class="font-bold"
+                >Lorem ipsum dolor sit amet consectetur adipisicing elit.</span
+              >
+              <div class="flex items-center space-x-2">
+                <span
+                  class="px-2 py-1 text-xs font-semibold rounded-xl bg-orange-100 text-orange-800"
+                  >Finance</span
+                >
+              </div>
+            </div>
+            <button
+              class="inline-flex items-center justify-center min-w-[150px] px-2 py-1 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors duration-150"
+            >
+              <span class="text-gray-600">0 Sub Objek</span>
+            </button>
+          </div>
+          <div class="mt-4 pl-5 border-l border-gray-200">
+            <table class="min-w-full text-sm">
+              <thead class="bg-slate-100 text-left">
+                <tr class="text-slate-600">
+                  <th class="px-4 py-3 w-12">No.</th>
+                  <th class="px-4 py-3">Initiatives / Activities</th>
+                  <th class="px-4 py-3">Target</th>
+                  <th class="px-4 py-3">Status</th>
+                  <th class="px-4 py-3">Priority</th>
+                  <th class="px-4 py-3">Dependencies</th>
+                  <th class="px-4 py-3 text-right">Action</th>
+                </tr>
+              </thead>
+
+              <tbody class="divide-y divide-slate-200/10">
+                <!-- Row 1 -->
+                <tr class="even:bg-blue-50/40">
+                  <td colspan="7" class="px-4 py-4 align-top">
+                    <button class="btn btn-success btn-xs">
+                      <Icon name="plus" /> Initiatives
+                    </button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div class="p-4 odd:bg-gray-200/30">
+          <div class="flex justify-between items-start space-x-3">
+            <div class="flex items-start space-x-3">
+              <span class="w-4 font-bold">3</span>
+              <span class="font-bold"
+                >SDM berketuhanan, berdedikasi ke perusahaan, berkemampuan,
+                kreatif, inovatif, jujur, komunikatif, berkepribadian
+                mulia</span
+              >
+              <div class="flex items-center space-x-2">
+                <span
+                  class="px-2 py-1 text-xs font-semibold rounded-xl bg-green-100 text-green-800"
+                  >Humas</span
+                >
+              </div>
+            </div>
+            <button
+              class="inline-flex items-center justify-center min-w-[150px] px-2 py-1 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors duration-150"
+            >
+              <span class="text-gray-600">0 Sub Objek</span>
+            </button>
+          </div>
+          <div class="mt-4 pl-5 border-l border-gray-200">
+            <table class="min-w-full text-sm">
+              <thead class="bg-slate-100 text-left">
+                <tr class="text-slate-600">
+                  <th class="px-4 py-3 w-12">No.</th>
+                  <th class="px-4 py-3">Initiatives / Activities</th>
+                  <th class="px-4 py-3">Target</th>
+                  <th class="px-4 py-3">Status</th>
+                  <th class="px-4 py-3">Priority</th>
+                  <th class="px-4 py-3">Dependencies</th>
+                  <th class="px-4 py-3 text-right">Action</th>
+                </tr>
+              </thead>
+
+              <tbody class="divide-y divide-slate-200/10">
+                <!-- Row 1 -->
+                <tr class="even:bg-blue-50/40">
+                  <td class="px-4 py-4 align-top">1</td>
+                  <td class="px-4 py-4 align-top">Contoh program 1</td>
+                  <td class="px-4 py-4 align-top">Besok</td>
+                  <td class="px-4 py-4 align-top">
+                    <span
+                      class="inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium bg-green-100 text-green-800"
+                    >
+                      Running
+                    </span>
+                  </td>
+                  <td class="px-4 py-4 align-top">Normal</td>
+                  <td class="px-4 py-4 align-top">
+                    <div class="w-full">We depend on:</div>
+                    <div class="font-bold">Product</div>
+                    <div class="w-full">What we need:</div>
+                    <div class="font-bold">Program</div>
+                  </td>
+                  <td class="px-4 py-4 align-top">
+                    <div class="flex justify-end gap-2">
+                      <button
+                        type="button"
+                        class="btn btn-warning btn-xs inline-flex items-center justify-center p-1"
+                        title="Edit"
+                      >
+                        <Icon name="edit" /></button
+                      ><button
+                        type="button"
+                        class="btn btn-error btn-xs inline-flex items-center justify-center p-1"
+                        title="Hapus"
+                      >
+                        <Icon name="delete" />
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+                <tr class="even:bg-blue-50/40">
+                  <td class="px-4 py-4 align-top">2</td>
+                  <td class="px-4 py-4 align-top">
+                    Lorem ipsum dolor sit amet consectetur adipisicing elit.
+                  </td>
+                  <td class="px-4 py-4 align-top">Besok</td>
+                  <td class="px-4 py-4 align-top">
+                    <span
+                      class="inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium bg-green-100 text-green-800"
+                    >
+                      Running
+                    </span>
+                  </td>
+                  <td class="px-4 py-4 align-top">Normal</td>
+                  <td class="px-4 py-4 align-top">
+                    <div class="w-full">We depend on:</div>
+                    <div class="font-bold">Product</div>
+                    <div class="w-full">What we need:</div>
+                    <div class="font-bold">Program</div>
+                  </td>
+                  <td class="px-4 py-4 align-top">
+                    <div class="flex justify-end gap-2">
+                      <button
+                        type="button"
+                        class="btn btn-warning btn-xs inline-flex items-center justify-center p-1"
+                        title="Edit"
+                      >
+                        <Icon name="edit" /></button
+                      ><button
+                        type="button"
+                        class="btn btn-error btn-xs inline-flex items-center justify-center p-1"
+                        title="Hapus"
+                      >
+                        <Icon name="delete" />
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div class="p-4 odd:bg-gray-200/30">
+          <div class="flex justify-between items-start space-x-3">
+            <div class="flex items-start space-x-3">
+              <span class="w-4 font-bold">4</span>
+              <span class="font-bold"
+                >High performance dan effective dalam tim, Dinamis dan terus
+                tumbuh lebih baik, Memahami dan dapat bekerja dalam system
+                otomasi perkantoran</span
+              >
+              <div class="flex items-center space-x-2">
+                <span
+                  class="px-2 py-1 text-xs font-semibold rounded-xl bg-yellow-100 text-yellow-800"
+                  >Product</span
+                >
+              </div>
+            </div>
+            <button
+              class="inline-flex items-center justify-center min-w-[150px] px-2 py-1 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors duration-150"
+            >
+              <span class="text-gray-600">0 Sub Objek</span>
+            </button>
+          </div>
+          <div class="mt-4 pl-5 border-l border-gray-200">
+            <table class="min-w-full text-sm">
+              <thead class="bg-slate-100 text-left">
+                <tr class="text-slate-600">
+                  <th class="px-4 py-3 w-12">No.</th>
+                  <th class="px-4 py-3">Initiatives / Activities</th>
+                  <th class="px-4 py-3">Target</th>
+                  <th class="px-4 py-3">Status</th>
+                  <th class="px-4 py-3">Priority</th>
+                  <th class="px-4 py-3">Dependencies</th>
+                  <th class="px-4 py-3 text-right">Action</th>
+                </tr>
+              </thead>
+
+              <tbody class="divide-y divide-slate-200/10">
+                <!-- Row 1 -->
+                <tr class="even:bg-blue-50/40">
+                  <td class="px-4 py-4 align-top">1</td>
+                  <td class="px-4 py-4 align-top">Contoh program 1</td>
+                  <td class="px-4 py-4 align-top">Besok</td>
+                  <td class="px-4 py-4 align-top">
+                    <span
+                      class="inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium bg-green-100 text-green-800"
+                    >
+                      Running
+                    </span>
+                  </td>
+                  <td class="px-4 py-4 align-top">Normal</td>
+                  <td class="px-4 py-4 align-top">
+                    <div class="w-full">We depend on:</div>
+                    <div class="font-bold">Product</div>
+                    <div class="w-full">What we need:</div>
+                    <div class="font-bold">Program</div>
+                  </td>
+                  <td class="px-4 py-4 align-top">
+                    <div class="flex justify-end gap-2">
+                      <button
+                        type="button"
+                        class="btn btn-warning btn-xs inline-flex items-center justify-center p-1"
+                        title="Edit"
+                      >
+                        <Icon name="edit" /></button
+                      ><button
+                        type="button"
+                        class="btn btn-error btn-xs inline-flex items-center justify-center p-1"
+                        title="Hapus"
+                      >
+                        <Icon name="delete" />
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+                <tr class="even:bg-blue-50/40">
+                  <td class="px-4 py-4 align-top">2</td>
+                  <td class="px-4 py-4 align-top">
+                    Lorem ipsum dolor sit amet consectetur adipisicing elit.
+                  </td>
+                  <td class="px-4 py-4 align-top">Besok</td>
+                  <td class="px-4 py-4 align-top">
+                    <span
+                      class="inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium bg-green-100 text-green-800"
+                    >
+                      Running
+                    </span>
+                  </td>
+                  <td class="px-4 py-4 align-top">Normal</td>
+                  <td class="px-4 py-4 align-top">
+                    <div class="w-full">We depend on:</div>
+                    <div class="font-bold">Product</div>
+                    <div class="w-full">What we need:</div>
+                    <div class="font-bold">Program</div>
+                  </td>
+                  <td class="px-4 py-4 align-top">
+                    <div class="flex justify-end gap-2">
+                      <button
+                        type="button"
+                        class="btn btn-warning btn-xs inline-flex items-center justify-center p-1"
+                        title="Edit"
+                      >
+                        <Icon name="edit" /></button
+                      ><button
+                        type="button"
+                        class="btn btn-error btn-xs inline-flex items-center justify-center p-1"
+                        title="Hapus"
+                      >
+                        <Icon name="delete" />
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <details class="card p-6 mt-10">
+      <summary class="cursor-pointer text-sm font-medium">
+        HTML nya disini
+      </summary>
+      <div class="mt-3 rounded-xl border border-base-300 p-4">
+        <a
+          class="btn btn-accent btn-xs"
+          href="javascript:;"
+          rel="noopener"
+          @click="downloadFile('OKRInitiatives.vue')"
+          >OKRInitiatives.vue</a
+        >
+      </div>
+    </details>
+  </div>
+</template>

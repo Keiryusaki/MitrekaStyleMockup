@@ -33,7 +33,10 @@ export const NAV: NavItem[] = [
     id: "mockup",
     label: "Mockup",
     icon: "layout",
-    children: [{ id: "aggrid", label: "AG Grid", to: "/aggrid" }],
+    children: [
+      { id: "aggrid", label: "AG Grid", to: "/aggrid" },
+      { id: "OKRInitiatives", label: "OKR Initiatives", to: "/OKRInitiatives" },
+    ],
   },
   {
     id: "componen",
@@ -61,7 +64,7 @@ export const NAV: NavItem[] = [
     label: "Management",
     icon: "users",
     children: [
-      { id: "users-all", label: "User", to: "/users" },
+      { id: "users-all", label: "User", to: "/users", exact: true },
       { id: "users-new", label: "Add User", to: "/users/new" },
     ],
   },
