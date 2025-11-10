@@ -56,6 +56,7 @@ export const NAV: NavItem[] = [
         label: "Selection Controls",
         to: "/SelectionControls",
       },
+      { id: "table", label: "Table", to: "/table" },
       { id: "icon", label: "Icons", to: "/icon" },
     ],
   },

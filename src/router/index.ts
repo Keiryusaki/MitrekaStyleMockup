@@ -67,6 +67,10 @@ const routes: RouteRecordRaw[] = [
     path: "/OKRInitiatives",
     component: () => import("@/pages/OKRInitiatives/OKRInitiatives.vue"),
   },
+  {
+    path: "/table",
+    component: () => import("@/pages/Table/Table.vue"),
+  },
 ];
 
 const router = createRouter({
