@@ -151,6 +151,291 @@
         >
       </div>
     </details>
+    <!-- Developer Guide: ALS Table -->
+    <section class="card p-6 mt-10">
+      <h3 class="font-semibold">Developer Guide</h3>
+
+      <!-- Download -->
+      <details open>
+        <summary class="font-medium">
+          Install · ALS Table (HTML templates)
+        </summary>
+        <div
+          class="mt-3 p-4 rounded bg-base-200 border border-base-300 space-y-2"
+        >
+          <div class="text-sm font-medium">Download</div>
+          <ul class="list-disc ml-5 space-y-2">
+            <li>
+              <a
+                class="btn btn-accent btn-xs"
+                href="javascript:;"
+                rel="noopener"
+                @click="downloadFile('ag-like-skin.css')"
+                >ag-like-skin.css</a
+              >
+            </li>
+          </ul>
+        </div>
+      </details>
+
+      <!-- Langkah-langkah -->
+      <ol
+        class="list-decimal ml-6 space-y-6 marker:font-medium marker:opacity-70"
+      >
+        <li>
+          <h4 class="font-semibold mb-2">Struktur folder</h4>
+          <pre v-pre class="code"><code>src/
+├─ components/
+│  └─ tables/
+│     └─ AlsTable.vue        // opsional: wrapper komponen
+└─ styles/
+└─ als-table.css          // style untuk .als-viewport, .is-selected, dll
+</code></pre>
+        </li>
+
+        <li>
+          <h4 class="font-semibold mb-2">Struktur HTML dasar</h4>
+          <pre
+            v-pre
+            class="code"
+          ><code>&lt;!-- wrapper wajib untuk scroll/responsive --&gt;
+&lt;div class="als-viewport"&gt;
+&lt;table class="als-table"&gt;
+&lt;thead&gt;
+  &lt;tr&gt;
+    &lt;th data-col="index"&gt;No&lt;/th&gt;
+    &lt;th&gt;Code&lt;/th&gt;
+    &lt;th&gt;Name&lt;/th&gt;
+    &lt;th&gt;Description&lt;/th&gt;
+  &lt;/tr&gt;
+&lt;/thead&gt;
+
+&lt;tbody&gt;
+  &lt;tr&gt;
+    &lt;td data-col="index"&gt;1&lt;/td&gt;
+    &lt;td&gt;PRD-001&lt;/td&gt;
+    &lt;td&gt;Product A&lt;/td&gt;
+    &lt;td&gt;Short description…&lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;/div&gt;</code></pre>
+          <p class="text-xs opacity-70 mt-2">
+            Gunakan atribut <code>data-col</code> untuk kolom spesial:
+            <code>checkbox</code>, <code>index</code>, <code>actions</code>.
+          </p>
+        </li>
+
+        <li>
+          <h4 class="font-semibold mb-2">Template: Selection + Actions</h4>
+          <pre v-pre class="code"><code>&lt;div class="als-viewport"&gt;
+&lt;table class="als-table"&gt;
+&lt;thead&gt;
+  &lt;tr&gt;
+    &lt;th data-col="checkbox"&gt;
+      &lt;!-- checkbox select-all halaman --&gt;
+      &lt;input type="checkbox" aria-label="Select all on this page" /&gt;
+    &lt;/th&gt;
+    &lt;th data-col="index"&gt;No&lt;/th&gt;
+    &lt;th&gt;Code&lt;/th&gt;
+    &lt;th&gt;Name&lt;/th&gt;
+    &lt;th&gt;Description&lt;/th&gt;
+    &lt;th data-col="actions"&gt;Actions&lt;/th&gt;
+  &lt;/tr&gt;
+&lt;/thead&gt;
+
+&lt;tbody&gt;
+  &lt;tr class="is-selected"&gt;
+    &lt;td data-col="checkbox"&gt;
+      &lt;input type="checkbox" aria-label="Select row" checked /&gt;
+    &lt;/td&gt;
+    &lt;td data-col="index"&gt;1&lt;/td&gt;
+    &lt;td&gt;PRD-001&lt;/td&gt;
+    &lt;td&gt;Product A&lt;/td&gt;
+    &lt;td&gt;Short description…&lt;/td&gt;
+    &lt;td data-col="actions" class="flex items-center justify-end gap-2"&gt;
+      &lt;button type="button" class="btn btn-warning h-[28px] w-[28px] btn-sm" title="Edit"&gt;
+        &lt;i class="icon icon-edit" aria-hidden="true"&gt;&lt;/i&gt;
+        &lt;span class="sr-only"&gt;Edit&lt;/span&gt;
+      &lt;/button&gt;
+      &lt;button type="button" class="btn btn-error h-[28px] w-[28px] btn-sm" title="Hapus"&gt;
+        &lt;i class="icon icon-delete" aria-hidden="true"&gt;&lt;/i&gt;
+        &lt;span class="sr-only"&gt;Hapus&lt;/span&gt;
+      &lt;/button&gt;
+    &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;/div&gt;</code></pre>
+        </li>
+
+        <li>
+          <h4 class="font-semibold mb-2">Template: Empty & Loading state</h4>
+          <pre v-pre class="code"><code>&lt;!-- Empty --&gt;
+&lt;div class="als-viewport"&gt;
+&lt;table class="als-table"&gt;
+&lt;thead&gt;…&lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr class="is-empty"&gt;
+    &lt;td colspan="5" class="text-center py-6"&gt;Tidak ada data&lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;/div&gt;
+
+&lt;!-- Loading (gunakan skeleton/placeholder) --&gt;
+&lt;div class="als-viewport"&gt;
+&lt;table class="als-table is-loading"&gt;
+&lt;thead&gt;…&lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+    &lt;td data-col="index"&gt;—&lt;/td&gt;
+    &lt;td&gt;&lt;div class="skeleton h-4 w-24"&gt;&lt;/div&gt;&lt;/td&gt;
+    &lt;td&gt;&lt;div class="skeleton h-4 w-32"&gt;&lt;/div&gt;&lt;/td&gt;
+    &lt;td&gt;&lt;div class="skeleton h-4 w-64"&gt;&lt;/div&gt;&lt;/td&gt;
+    &lt;td data-col="actions"&gt;&nbsp;&lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;/div&gt;</code></pre>
+        </li>
+
+        <li>
+          <h4 class="font-semibold mb-2">Vue binding (contoh minimal)</h4>
+          <pre v-pre class="code"><code>&lt;script setup lang="ts"&gt;
+const pagedRows = ref([
+{ id: 1, no: 1, code: 'PRD-001', name: 'Product A', description: '...' },
+// ...
+])
+const selectedIds = ref(new Set&lt;number&gt;())
+
+const isAllPageSelected = computed(() =&gt;
+pagedRows.value.length &gt; 0 &amp;&amp; pagedRows.value.every(r =&gt; selectedIds.value.has(r.id))
+)
+const isSomePageSelected = computed(() =&gt;
+pagedRows.value.some(r =&gt; selectedIds.value.has(r.id)) &amp;&amp; !isAllPageSelected.value
+)
+
+function toggleSelectAllPage(e: Event) {
+const checked = (e.target as HTMLInputElement).checked
+pagedRows.value.forEach(r =&gt; checked ? selectedIds.value.add(r.id) : selectedIds.value.delete(r.id))
+}
+function toggleRow(id: number, e?: Event) {
+const checked = e ? (e.target as HTMLInputElement).checked : !selectedIds.value.has(id)
+checked ? selectedIds.value.add(id) : selectedIds.value.delete(id)
+}
+function onEdit(row: any) { /* open modal */ }
+function onDelete(row: any) { /* confirm + call API */ }
+&lt;/script&gt;
+
+&lt;template&gt;
+&lt;div class="als-viewport"&gt;
+&lt;table&gt;
+  &lt;thead&gt;
+    &lt;tr&gt;
+      &lt;th data-col="checkbox"&gt;
+        &lt;input
+          type="checkbox"
+          :checked="isAllPageSelected"
+          :indeterminate.prop="isSomePageSelected &amp;&amp; !isAllPageSelected"
+          @change="toggleSelectAllPage"
+          aria-label="Select all on this page"
+        /&gt;
+      &lt;/th&gt;
+      &lt;th data-col="index"&gt;No&lt;/th&gt;
+      &lt;th&gt;Code&lt;/th&gt;
+      &lt;th&gt;Name&lt;/th&gt;
+      &lt;th&gt;Description&lt;/th&gt;
+      &lt;th data-col="actions"&gt;Actions&lt;/th&gt;
+    &lt;/tr&gt;
+  &lt;/thead&gt;
+
+  &lt;tbody&gt;
+    &lt;tr
+      v-for="row in pagedRows"
+      :key="row.id"
+      :class="{ 'is-selected': selectedIds.has(row.id) }"
+    &gt;
+      &lt;td data-col="checkbox"&gt;
+        &lt;input
+          type="checkbox"
+          :checked="selectedIds.has(row.id)"
+          @change="(e) =&gt; toggleRow(row.id, e)"
+          aria-label="Select row"
+        /&gt;
+      &lt;/td&gt;
+      &lt;td data-col="index"&gt;{{ row.no }}&lt;/td&gt;
+      &lt;td&gt;{{ row.code }}&lt;/td&gt;
+      &lt;td&gt;{{ row.name }}&lt;/td&gt;
+      &lt;td&gt;{{ row.description }}&lt;/td&gt;
+      &lt;td data-col="actions" class="flex items-center justify-end gap-2"&gt;
+        &lt;button type="button" class="btn btn-warning h-[28px] w-[28px] btn-sm" title="Edit" @click="onEdit(row)"&gt;
+          &lt;Icon name="edit" /&gt;
+        &lt;/button&gt;
+        &lt;button type="button" class="btn btn-error h-[28px] w-[28px] btn-sm" title="Hapus" @click="onDelete(row)"&gt;
+          &lt;Icon name="delete" /&gt;
+        &lt;/button&gt;
+      &lt;/td&gt;
+    &lt;/tr&gt;
+  &lt;/tbody&gt;
+&lt;/table&gt;
+&lt;/div&gt;
+&lt;/template&gt;</code></pre>
+        </li>
+
+        <li>
+          <h4 class="font-semibold mb-2">Props/Events ringkas (cheatsheet)</h4>
+          <ul class="list-disc ml-5 text-sm space-y-1">
+            <li>
+              <b>Input (data)</b>:
+              <code
+                >pagedRows: Array&lt;{ id, no, code, name, description
+                }&gt;</code
+              >, <code>selectedIds: Set&lt;ID&gt;</code>
+            </li>
+            <li>
+              <b>State</b>: <code>isAllPageSelected</code>,
+              <code>isSomePageSelected</code>
+            </li>
+            <li>
+              <b>Events</b>: <code>@change</code> di header-checkbox → toggle
+              semua di halaman; <code>@change</code> di row-checkbox → toggle
+              per id; tombol <code>Edit</code>/<code>Hapus</code>
+              memanggil handler parent
+            </li>
+            <li>
+              <b>CSS hooks</b>: <code>.als-viewport</code>,
+              <code>[data-col="checkbox|index|actions"]</code>,
+              <code>.is-selected</code>, <code>.is-empty</code>,
+              <code>.is-loading</code>
+            </li>
+          </ul>
+        </li>
+
+        <li>
+          <h4 class="font-semibold mb-2">Do &amp; Don’t singkat</h4>
+          <ul class="list-disc ml-5 text-sm space-y-1">
+            <li>
+              ✅ Selalu bungkus tabel dengan
+              <code>.als-viewport</code> untuk scroll.
+            </li>
+            <li>
+              ✅ Pakai <code>data-col</code> untuk kolom spesial
+              (checkbox/index/actions).
+            </li>
+            <li>
+              ✅ Gunakan <code>:indeterminate.prop</code> untuk state “sebagian
+              terpilih”.
+            </li>
+            <li>
+              ❌ Jangan pakai <code>colspan</code> yang salah saat empty
+              (samakan dengan jumlah kolom).
+            </li>
+            <li>❌ Jangan ubah nama kelas hook tanpa update CSS bersama.</li>
+          </ul>
+        </li>
+      </ol>
+    </section>
   </div>
 </template>
 
@@ -276,3 +561,15 @@ const downloadFile = async (filename: string) => {
   }
 };
 </script>
+<style scoped>
+.code {
+  display: block;
+  padding: 0.75rem 1rem;
+  border-radius: var(--radius-box);
+  background: var(--color-base-200);
+  border: 1px solid var(--color-base-300);
+  overflow-x: auto;
+  font-size: 12.5px;
+  line-height: 1.5;
+}
+</style>

@@ -93,7 +93,7 @@ const downloadFile = async (filename: string) => {
       </div>
 
       <div class="relative rounded-xl">
-        <div class="p-4 odd:bg-gray-200/30">
+        <div class="p-4">
           <div class="flex justify-between items-start space-x-3">
             <div class="flex items-start space-x-3">
               <span class="w-4 font-bold">1</span>
@@ -105,13 +105,28 @@ const downloadFile = async (filename: string) => {
                 >
               </div>
             </div>
-            <button
-              class="inline-flex items-center justify-center min-w-[150px] px-2 py-1 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors duration-150"
-            >
-              <span class="text-gray-600">0 Sub Objek</span>
-            </button>
+            <div class="flex gap-2">
+              <button
+                class="inline-flex items-center justify-center min-w-[150px] px-2 py-1 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors duration-150"
+              >
+                <span class="text-gray-600">0 Sub Objek</span>
+              </button>
+              <button
+                class="relative group btn btn-success btn-xs"
+                aria-label="Tambah Initiatives/ Activities"
+              >
+                <Icon name="plus" />
+                <!-- tooltip -->
+                <span
+                  class="pointer-events-none absolute left-1/2 top-full mt-1 -translate-x-1/2 whitespace-nowrap rounded bg-gray-800 px-2 py-1 text-xs text-white opacity-0 transition-opacity group-hover:opacity-100"
+                  role="tooltip"
+                >
+                  Tambah Initiatives/ Activities
+                </span>
+              </button>
+            </div>
           </div>
-          <div class="mt-4 pl-5 border-l border-gray-200">
+          <div class="mt-4 pl-5">
             <div class="overflow-x-auto rounded-lg border border-gray-300">
               <table class="min-w-full text-sm">
                 <thead class="bg-slate-100 text-left">
@@ -207,7 +222,7 @@ const downloadFile = async (filename: string) => {
             </div>
           </div>
         </div>
-        <div class="p-4 odd:bg-gray-200/30">
+        <div class="p-4">
           <div class="flex justify-between items-start space-x-3">
             <div class="flex items-start space-x-3">
               <span class="w-4 font-bold">2</span>
@@ -221,13 +236,28 @@ const downloadFile = async (filename: string) => {
                 >
               </div>
             </div>
-            <button
-              class="inline-flex items-center justify-center min-w-[150px] px-2 py-1 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors duration-150"
-            >
-              <span class="text-gray-600">0 Sub Objek</span>
-            </button>
+            <div class="flex gap-2">
+              <button
+                class="inline-flex items-center justify-center min-w-[150px] px-2 py-1 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors duration-150"
+              >
+                <span class="text-gray-600">0 Sub Objek</span>
+              </button>
+              <button
+                class="relative group btn btn-success btn-xs"
+                aria-label="Tambah Initiatives/ Activities"
+              >
+                <Icon name="plus" />
+                <!-- tooltip -->
+                <span
+                  class="pointer-events-none absolute left-1/2 top-full mt-1 -translate-x-1/2 whitespace-nowrap rounded bg-gray-800 px-2 py-1 text-xs text-white opacity-0 transition-opacity group-hover:opacity-100"
+                  role="tooltip"
+                >
+                  Tambah Initiatives/ Activities
+                </span>
+              </button>
+            </div>
           </div>
-          <div class="mt-4 pl-5 border-l border-gray-200">
+          <div class="mt-4 pl-5">
             <div class="overflow-x-auto rounded-lg border border-gray-300">
               <table class="min-w-full text-sm">
                 <thead class="bg-slate-100 text-left">
@@ -256,7 +286,7 @@ const downloadFile = async (filename: string) => {
             </div>
           </div>
         </div>
-        <div class="p-4 odd:bg-gray-200/30">
+        <div class="p-4">
           <div class="flex justify-between items-start space-x-3">
             <div class="flex items-start space-x-3">
               <span class="w-4 font-bold">3</span>
@@ -272,13 +302,28 @@ const downloadFile = async (filename: string) => {
                 >
               </div>
             </div>
-            <button
-              class="inline-flex items-center justify-center min-w-[150px] px-2 py-1 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors duration-150"
-            >
-              <span class="text-gray-600">0 Sub Objek</span>
-            </button>
+            <div class="flex gap-2">
+              <button
+                class="inline-flex items-center justify-center min-w-[150px] px-2 py-1 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors duration-150"
+              >
+                <span class="text-gray-600">0 Sub Objek</span>
+              </button>
+              <button
+                class="relative group btn btn-success btn-xs"
+                aria-label="Tambah Initiatives/ Activities"
+              >
+                <Icon name="plus" />
+                <!-- tooltip -->
+                <span
+                  class="pointer-events-none absolute left-1/2 top-full mt-1 -translate-x-1/2 whitespace-nowrap rounded bg-gray-800 px-2 py-1 text-xs text-white opacity-0 transition-opacity group-hover:opacity-100"
+                  role="tooltip"
+                >
+                  Tambah Initiatives/ Activities
+                </span>
+              </button>
+            </div>
           </div>
-          <div class="mt-4 pl-5 border-l border-gray-200">
+          <div class="mt-4 pl-5">
             <div class="overflow-x-auto rounded-lg border border-gray-300">
               <table class="min-w-full text-sm">
                 <thead class="bg-slate-100 text-left">
@@ -374,7 +419,7 @@ const downloadFile = async (filename: string) => {
             </div>
           </div>
         </div>
-        <div class="p-4 odd:bg-gray-200/30">
+        <div class="p-4">
           <div class="flex justify-between items-start space-x-3">
             <div class="flex items-start space-x-3">
               <span class="w-4 font-bold">4</span>
@@ -390,13 +435,28 @@ const downloadFile = async (filename: string) => {
                 >
               </div>
             </div>
-            <button
-              class="inline-flex items-center justify-center min-w-[150px] px-2 py-1 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors duration-150"
-            >
-              <span class="text-gray-600">0 Sub Objek</span>
-            </button>
+            <div class="flex gap-2">
+              <button
+                class="inline-flex items-center justify-center min-w-[150px] px-2 py-1 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors duration-150"
+              >
+                <span class="text-gray-600">0 Sub Objek</span>
+              </button>
+              <button
+                class="relative group btn btn-success btn-xs"
+                aria-label="Tambah Initiatives/ Activities"
+              >
+                <Icon name="plus" />
+                <!-- tooltip -->
+                <span
+                  class="pointer-events-none absolute left-1/2 top-full mt-1 -translate-x-1/2 whitespace-nowrap rounded bg-gray-800 px-2 py-1 text-xs text-white opacity-0 transition-opacity group-hover:opacity-100"
+                  role="tooltip"
+                >
+                  Tambah Initiatives/ Activities
+                </span>
+              </button>
+            </div>
           </div>
-          <div class="mt-4 pl-5 border-l border-gray-200">
+          <div class="mt-4 pl-5">
             <div class="overflow-x-auto rounded-lg border border-gray-300">
               <table class="min-w-full text-sm">
                 <thead class="bg-slate-100 text-left">
