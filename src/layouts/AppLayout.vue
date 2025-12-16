@@ -5,19 +5,12 @@
   >
     <Topbar class="sticky top-0 z-30 bg-base-100/90 glass" />
 
-    <!-- Columns follow sidebar state -->
-    <div
-      class="grid overflow-hidden min-h-0"
-      :style="{
-        'grid-template-columns': ui.sidebarCollapsed ? '80px 1fr' : '260px 1fr',
-      }"
-    >
-      <aside
-        class="hidden md:block border-r border-base-300 overflow-y-auto min-h-0"
-      >
-        <Sidebar class="h-full p-3" />
-      </aside>
+    <!-- Grid: Sidebar + Main -->
+    <div class="grid overflow-hidden min-h-0 grid-cols-1 md:grid-cols-[auto_1fr]">
+      <!-- Sidebar (handles mobile drawer + desktop sidebar internally) -->
+      <Sidebar />
 
+      <!-- Main Content -->
       <main class="overflow-y-auto min-h-0 p-4 md:p-6 bg-base-200">
         <Breadcrumbs class="mb-4" />
         <router-view />

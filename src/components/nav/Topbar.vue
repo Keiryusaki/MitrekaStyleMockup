@@ -1,43 +1,42 @@
 <template>
   <header
-    class="bg-primary text-white px-4 md:px-6 h-15 flex items-center justify-between bg-transparent glass glass-border sticky top-0 z-30 isolate"
+    class="bg-primary text-white px-3 sm:px-4 md:px-6 h-14 sm:h-15 flex items-center justify-between bg-transparent glass glass-border sticky top-0 z-30 isolate"
   >
-    <div class="flex items-center gap-3 z-10">
+    <div class="flex items-center gap-2 sm:gap-3 z-10">
       <button
-        class="md:hidden btn btn-ghost"
+        class="md:hidden! btn btn-ghost btn-sm p-2"
         @click="ui.sidebarOpen = !ui.sidebarOpen"
+        aria-label="Toggle menu"
       >
-        ☰
+        <Icon name="menu" class="w-5 h-5 text-white" />
       </button>
       <RouterLink to="/" class="flex items-center gap-2">
         <img
           :src="logoUrl"
           alt="Admin Starter"
-          class="h-7 w-auto select-none"
+          class="h-6 sm:h-7 w-auto select-none"
           draggable="false"
         />
-        <!-- kalau mau teks kecil di layar besar, hapus kalau nggak perlu -->
-        <!-- <span class="hidden md:inline font-semibold">Admin Starter</span> -->
         <span class="sr-only">Admin Starter</span>
       </RouterLink>
     </div>
-    <div class="flex items-center gap-2 z-10">
-      <input class="input w-64 hidden md:block" placeholder="Search…" />
+    <div class="flex items-center gap-1 sm:gap-2 z-10">
+      <input class="input input-sm w-48 lg:w-64 hidden md:block" placeholder="Search…" />
       <!-- Toggle theme: icon only -->
       <button
-        class="btn btn-ghost text-white"
+        class="btn btn-ghost btn-sm text-white!"
         :title="`Switch to ${
           ui.theme === 'mitrekalight' ? 'dark' : 'light'
         } mode`"
         @click="ui.toggleTheme()"
       >
-        <Icon v-if="ui.theme === 'mitrekalight'" name="sun" />
-        <Icon v-else name="moon" />
+        <Icon v-if="ui.theme === 'mitrekalight'" name="sun" class="w-5 h-5" />
+        <Icon v-else name="moon" class="w-5 h-5" />
       </button>
       <!-- Logout button -->
-      <button class="btn btn-ghost text-white" @click="logout">
-        <Icon name="logout" class="w-6 h-6 text-white" />
-        <span class="hidden sm:inline">Logout</span>
+      <button class="btn btn-ghost btn-sm text-white" @click="logout">
+        <Icon name="logout" class="w-5 h-5 text-white!" />
+        <span class="hidden sm:inline text-white!">Logout</span>
       </button>
     </div>
     <div

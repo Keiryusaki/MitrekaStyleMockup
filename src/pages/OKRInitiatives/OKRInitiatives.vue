@@ -35,16 +35,16 @@ const downloadFile = async (filename: string) => {
     </header>
 
     <div class="card p-4 md:p-6 space-y-5">
-      <div class="rounded-xl border p-4 bg-amber-50/70 border-amber-200">
-        <div class="space-y-2 text-sm">
-          <div class="flex gap-6">
-            <div class="w-40 shrink-0 text-gray-600">Big Goals</div>
+      <div class="rounded-xl border p-3 sm:p-4 bg-amber-50/70 border-amber-200">
+        <div class="space-y-3 sm:space-y-2 text-sm">
+          <div class="flex flex-col sm:flex-row sm:gap-6">
+            <div class="text-xs sm:text-sm sm:w-40 shrink-0 text-gray-600 font-medium sm:font-normal">Big Goals</div>
             <div class="font-medium break-words font-semibold">
               Mitreka Big Goals 2025-2028
             </div>
           </div>
-          <div class="flex gap-6">
-            <div class="w-40 shrink-0 text-gray-600">Program Kerja</div>
+          <div class="flex flex-col sm:flex-row sm:gap-6">
+            <div class="text-xs sm:text-sm sm:w-40 shrink-0 text-gray-600 font-medium sm:font-normal">Program Kerja</div>
             <div class="font-medium break-words font-semibold">
               OKR-2025-2ND
               <span class="text-gray-500 font-normal">
@@ -52,8 +52,8 @@ const downloadFile = async (filename: string) => {
               </span>
             </div>
           </div>
-          <div class="flex gap-6">
-            <div class="w-40 shrink-0 text-gray-600">Strategi Goals</div>
+          <div class="flex flex-col sm:flex-row sm:gap-6">
+            <div class="text-xs sm:text-sm sm:w-40 shrink-0 text-gray-600 font-medium sm:font-normal">Strategi Goals</div>
             <div class="font-medium break-words font-semibold">
               <div class="font-semibold">Healthy and Strong Finance</div>
               <div class="mt-1 text-gray-700 font-normal">
@@ -93,21 +93,19 @@ const downloadFile = async (filename: string) => {
       </div>
 
       <div class="relative rounded-xl">
-        <div class="p-4">
-          <div class="flex justify-between items-start space-x-3">
-            <div class="flex items-start space-x-3">
-              <span class="w-4 font-bold">1</span>
+        <div class="p-3 sm:p-4">
+          <div class="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-3 sm:gap-4">
+            <div class="flex flex-wrap items-start gap-2 sm:gap-3">
+              <span class="w-4 font-bold shrink-0">1</span>
               <span class="font-bold">Peningkatan Laba yang Konsisten</span>
-              <div class="flex items-center space-x-2">
-                <span
-                  class="px-2 py-1 text-xs font-semibold rounded-xl bg-red-100 text-red-800"
-                  >SLS - Sales (Penjualan dan Digital Marketing)</span
-                >
-              </div>
+              <span
+                class="px-2 py-1 text-xs font-semibold rounded-xl bg-red-100 text-red-800"
+                >SLS - Sales (Penjualan dan Digital Marketing)</span
+              >
             </div>
-            <div class="flex gap-2">
+            <div class="flex gap-2 shrink-0">
               <button
-                class="inline-flex items-center justify-center min-w-[150px] px-2 py-1 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors duration-150"
+                class="inline-flex items-center justify-center px-2 py-1 text-xs sm:text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors duration-150"
               >
                 <span class="text-gray-600">0 Sub Objek</span>
               </button>
@@ -116,9 +114,8 @@ const downloadFile = async (filename: string) => {
                 aria-label="Tambah Initiatives/ Activities"
               >
                 <Icon name="plus" />
-                <!-- tooltip -->
                 <span
-                  class="pointer-events-none absolute left-1/2 top-full mt-1 -translate-x-1/2 whitespace-nowrap rounded bg-gray-800 px-2 py-1 text-xs text-white opacity-0 transition-opacity group-hover:opacity-100"
+                  class="hidden sm:block pointer-events-none absolute left-1/2 top-full mt-1 -translate-x-1/2 whitespace-nowrap rounded bg-gray-800 px-2 py-1 text-xs text-white opacity-0 transition-opacity group-hover:opacity-100"
                   role="tooltip"
                 >
                   Tambah Initiatives/ Activities
@@ -222,23 +219,21 @@ const downloadFile = async (filename: string) => {
             </div>
           </div>
         </div>
-        <div class="p-4">
-          <div class="flex justify-between items-start space-x-3">
-            <div class="flex items-start space-x-3">
-              <span class="w-4 font-bold">2</span>
+        <div class="p-3 sm:p-4">
+          <div class="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-3 sm:gap-4">
+            <div class="flex flex-wrap items-start gap-2 sm:gap-3">
+              <span class="w-4 font-bold shrink-0">2</span>
               <span class="font-bold"
                 >Lorem ipsum dolor sit amet consectetur adipisicing elit.</span
               >
-              <div class="flex items-center space-x-2">
-                <span
-                  class="px-2 py-1 text-xs font-semibold rounded-xl bg-orange-100 text-orange-800"
-                  >Finance</span
-                >
-              </div>
+              <span
+                class="px-2 py-1 text-xs font-semibold rounded-xl bg-orange-100 text-orange-800"
+                >Finance</span
+              >
             </div>
-            <div class="flex gap-2">
+            <div class="flex gap-2 shrink-0">
               <button
-                class="inline-flex items-center justify-center min-w-[150px] px-2 py-1 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors duration-150"
+                class="inline-flex items-center justify-center px-2 py-1 text-xs sm:text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors duration-150"
               >
                 <span class="text-gray-600">0 Sub Objek</span>
               </button>
@@ -247,9 +242,8 @@ const downloadFile = async (filename: string) => {
                 aria-label="Tambah Initiatives/ Activities"
               >
                 <Icon name="plus" />
-                <!-- tooltip -->
                 <span
-                  class="pointer-events-none absolute left-1/2 top-full mt-1 -translate-x-1/2 whitespace-nowrap rounded bg-gray-800 px-2 py-1 text-xs text-white opacity-0 transition-opacity group-hover:opacity-100"
+                  class="hidden sm:block pointer-events-none absolute left-1/2 top-full mt-1 -translate-x-1/2 whitespace-nowrap rounded bg-gray-800 px-2 py-1 text-xs text-white opacity-0 transition-opacity group-hover:opacity-100"
                   role="tooltip"
                 >
                   Tambah Initiatives/ Activities
@@ -286,25 +280,23 @@ const downloadFile = async (filename: string) => {
             </div>
           </div>
         </div>
-        <div class="p-4">
-          <div class="flex justify-between items-start space-x-3">
-            <div class="flex items-start space-x-3">
-              <span class="w-4 font-bold">3</span>
+        <div class="p-3 sm:p-4">
+          <div class="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-3 sm:gap-4">
+            <div class="flex flex-wrap items-start gap-2 sm:gap-3">
+              <span class="w-4 font-bold shrink-0">3</span>
               <span class="font-bold"
                 >SDM berketuhanan, berdedikasi ke perusahaan, berkemampuan,
                 kreatif, inovatif, jujur, komunikatif, berkepribadian
                 mulia</span
               >
-              <div class="flex items-center space-x-2">
-                <span
-                  class="px-2 py-1 text-xs font-semibold rounded-xl bg-green-100 text-green-800"
-                  >Humas</span
-                >
-              </div>
+              <span
+                class="px-2 py-1 text-xs font-semibold rounded-xl bg-green-100 text-green-800"
+                >Humas</span
+              >
             </div>
-            <div class="flex gap-2">
+            <div class="flex gap-2 shrink-0">
               <button
-                class="inline-flex items-center justify-center min-w-[150px] px-2 py-1 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors duration-150"
+                class="inline-flex items-center justify-center px-2 py-1 text-xs sm:text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors duration-150"
               >
                 <span class="text-gray-600">0 Sub Objek</span>
               </button>
@@ -313,9 +305,8 @@ const downloadFile = async (filename: string) => {
                 aria-label="Tambah Initiatives/ Activities"
               >
                 <Icon name="plus" />
-                <!-- tooltip -->
                 <span
-                  class="pointer-events-none absolute left-1/2 top-full mt-1 -translate-x-1/2 whitespace-nowrap rounded bg-gray-800 px-2 py-1 text-xs text-white opacity-0 transition-opacity group-hover:opacity-100"
+                  class="hidden sm:block pointer-events-none absolute left-1/2 top-full mt-1 -translate-x-1/2 whitespace-nowrap rounded bg-gray-800 px-2 py-1 text-xs text-white opacity-0 transition-opacity group-hover:opacity-100"
                   role="tooltip"
                 >
                   Tambah Initiatives/ Activities
@@ -419,25 +410,23 @@ const downloadFile = async (filename: string) => {
             </div>
           </div>
         </div>
-        <div class="p-4">
-          <div class="flex justify-between items-start space-x-3">
-            <div class="flex items-start space-x-3">
-              <span class="w-4 font-bold">4</span>
+        <div class="p-3 sm:p-4">
+          <div class="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-3 sm:gap-4">
+            <div class="flex flex-wrap items-start gap-2 sm:gap-3">
+              <span class="w-4 font-bold shrink-0">4</span>
               <span class="font-bold"
                 >High performance dan effective dalam tim, Dinamis dan terus
                 tumbuh lebih baik, Memahami dan dapat bekerja dalam system
                 otomasi perkantoran</span
               >
-              <div class="flex items-center space-x-2">
-                <span
-                  class="px-2 py-1 text-xs font-semibold rounded-xl bg-yellow-100 text-yellow-800"
-                  >Product</span
-                >
-              </div>
+              <span
+                class="px-2 py-1 text-xs font-semibold rounded-xl bg-yellow-100 text-yellow-800"
+                >Product</span
+              >
             </div>
-            <div class="flex gap-2">
+            <div class="flex gap-2 shrink-0">
               <button
-                class="inline-flex items-center justify-center min-w-[150px] px-2 py-1 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors duration-150"
+                class="inline-flex items-center justify-center px-2 py-1 text-xs sm:text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors duration-150"
               >
                 <span class="text-gray-600">0 Sub Objek</span>
               </button>
@@ -446,9 +435,8 @@ const downloadFile = async (filename: string) => {
                 aria-label="Tambah Initiatives/ Activities"
               >
                 <Icon name="plus" />
-                <!-- tooltip -->
                 <span
-                  class="pointer-events-none absolute left-1/2 top-full mt-1 -translate-x-1/2 whitespace-nowrap rounded bg-gray-800 px-2 py-1 text-xs text-white opacity-0 transition-opacity group-hover:opacity-100"
+                  class="hidden sm:block pointer-events-none absolute left-1/2 top-full mt-1 -translate-x-1/2 whitespace-nowrap rounded bg-gray-800 px-2 py-1 text-xs text-white opacity-0 transition-opacity group-hover:opacity-100"
                   role="tooltip"
                 >
                   Tambah Initiatives/ Activities

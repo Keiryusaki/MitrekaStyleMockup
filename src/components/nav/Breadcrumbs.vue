@@ -1,8 +1,8 @@
 <template>
-  <nav class="text-sm mb-2">
-    <ol class="flex items-center gap-2">
+  <nav class="text-xs sm:text-sm mb-2 overflow-x-auto">
+    <ol class="flex items-center gap-1 sm:gap-2 whitespace-nowrap">
       <li><router-link to="/" class="text-primary">Home</router-link></li>
-      <li v-for="(m, i) in tail" :key="i" class="flex items-center gap-2">
+      <li v-for="(m, i) in tail" :key="i" class="flex items-center gap-1 sm:gap-2">
         <span>/</span>
         <span v-if="i < tail.length - 1">
           <router-link :to="m.path" class="text-primary">{{

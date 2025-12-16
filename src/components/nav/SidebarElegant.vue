@@ -16,9 +16,9 @@ export default defineComponent({
 
     // Ini adalah 'return' dari setup() lo yang lama
     return () =>
-      h("div", { class: "pb-3" }, [
-        // Header user / brand area
-        h("div", { class: "px-3 pt-4 pb-3 border-b border-base-300" }, [
+      h("div", { class: "flex flex-col h-full min-h-0" }, [
+        // Header user / brand area (sticky)
+        h("div", { class: "px-3 pt-4 pb-3 border-b border-base-300 flex-shrink-0 bg-base-100" }, [
           h(
             "div",
             {
@@ -29,14 +29,14 @@ export default defineComponent({
             [
               h("img", {
                 class:
-                  "w-10 h-10 rounded-full ring-2 ring-base-300 object-cover",
+                  "w-10 h-10 rounded-full ring-2 ring-base-300 object-cover flex-shrink-0",
                 src: "https://avatars.githubusercontent.com/u/9919?s=80&v=4",
                 alt: "avatar",
               }),
               !props.collapsed &&
-                h("div", [
+                h("div", { class: "flex-1 min-w-0" }, [
                   h("div", { class: "text-xs opacity-70" }, "Welcome,"),
-                  h("div", { class: "font-semibold" }, "John Doe"),
+                  h("div", { class: "font-semibold truncate" }, "John Doe"),
                 ]),
             ]
           ),
@@ -48,10 +48,10 @@ export default defineComponent({
             ),
         ]),
 
-        // NAV
+        // NAV (scrollable)
         h(
           "nav",
-          { class: "flex flex-col gap-1 p-3" },
+          { class: "flex flex-col gap-1 p-3 pb-6 flex-1 overflow-y-auto min-h-0" },
           // Gunakan NAV yg udah di-import
           NAV.map((item) => {
             // Item biasa (bukan group)
@@ -62,7 +62,7 @@ export default defineComponent({
                 {
                   key: item.id,
                   class: [
-                    "relative flex items-center gap-3 h-field rounded-field cursor-pointer",
+                    "relative flex items-center gap-3 h-field rounded-field cursor-pointer flex-shrink-0",
                     "px-3 border border-transparent",
                     active
                       ? "bg-primary/10 text-primary dark:text-accent border-l-[5px] border-primary dark:border-accent pl-[10px]"
@@ -86,12 +86,12 @@ export default defineComponent({
 
             // group
             const open = isGroupOpen(item);
-            return h("div", { key: item.id }, [
+            return h("div", { key: item.id, class: "flex-shrink-0" }, [
               h(
                 "button",
                 {
                   class: [
-                    "relative w-full flex items-center gap-3 h-field rounded-field px-3",
+                    "relative w-full flex items-center gap-3 h-field rounded-field px-3 flex-shrink-0",
                     "border border-transparent",
                     open
                       ? "bg-base-200" // Style Grup Open
@@ -147,7 +147,7 @@ export default defineComponent({
                           {
                             key: child.id,
                             class: [
-                              "relative flex items-center gap-3 h-field rounded-field cursor-pointer",
+                              "relative flex items-center gap-3 h-field rounded-field cursor-pointer flex-shrink-0",
                               "border border-transparent",
                               "pl-3 pr-[.75rem]",
                               active

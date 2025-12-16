@@ -116,12 +116,11 @@ defineProps({
     animation: none;
   }
 }
-.force-motion .shimmer,
-.force-motion .wobble90 {
+.force-motion .shimmer {
   animation: shimmer 1.6s linear infinite !important;
 }
 .force-motion .wobble90 {
-  animation: shimmer 1.6s linear infinite !important,
+  animation: shimmer 1.6s linear infinite,
     spin90 1.2s ease-in-out infinite alternate !important;
 }
 </style>

@@ -20,6 +20,7 @@ export type NavItem = {
 // Data Navigasi
 export const NAV: NavItem[] = [
   { id: "dash", label: "Dashboard", icon: "dashboard", to: "/", exact: true },
+  { id: "ticket", label: "Ticketing", icon: "ticket", to: "/ticketing" },
   {
     id: "DevGuide",
     label: "Developer Guide",

@@ -12,6 +12,14 @@ const routes: RouteRecordRaw[] = [
     component: Dashboard,
   },
   {
+    path: "/ticketing",
+    component: () => import("@/pages/Ticketing/Ticketing.vue"),
+    meta: {
+      name: "public-ticketing",
+      publicTicket: true,
+    },
+  },
+  {
     path: "/users",
     component: () => import("@/pages/Users/List.vue"),
   },

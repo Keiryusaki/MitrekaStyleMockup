@@ -1,10 +1,10 @@
 <template>
   <div class="grid gap-4">
-    <div class="flex items-center justify-between">
-      <h1 class="text-xl font-semibold">Users</h1>
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+      <h1 class="text-lg sm:text-xl font-semibold">Users</h1>
       <div class="flex gap-2">
-        <button class="btn btn-outline">Export</button>
-        <router-link to="/users/new" class="btn btn-primary"
+        <button class="btn btn-outline btn-sm sm:btn-md">Export</button>
+        <router-link to="/users/new" class="btn btn-primary btn-sm sm:btn-md"
           >Add user</router-link
         >
       </div>
