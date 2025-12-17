@@ -1,4 +1,9 @@
 <script setup lang="ts">
+import { ref } from "vue";
+import Modal from "@/components/feedback/Modal.vue";
+
+const showModal = ref(false);
+
 const downloadFile = async (filename: string) => {
   try {
     let fileUrl = "";
@@ -112,6 +117,7 @@ const downloadFile = async (filename: string) => {
               <button
                 class="relative group btn btn-success btn-xs"
                 aria-label="Tambah Initiatives/ Activities"
+                @click="showModal = true"
               >
                 <Icon name="plus" />
                 <span
@@ -240,6 +246,7 @@ const downloadFile = async (filename: string) => {
               <button
                 class="relative group btn btn-success btn-xs"
                 aria-label="Tambah Initiatives/ Activities"
+                @click="showModal = true"
               >
                 <Icon name="plus" />
                 <span
@@ -303,6 +310,7 @@ const downloadFile = async (filename: string) => {
               <button
                 class="relative group btn btn-success btn-xs"
                 aria-label="Tambah Initiatives/ Activities"
+                @click="showModal = true"
               >
                 <Icon name="plus" />
                 <span
@@ -433,6 +441,7 @@ const downloadFile = async (filename: string) => {
               <button
                 class="relative group btn btn-success btn-xs"
                 aria-label="Tambah Initiatives/ Activities"
+                @click="showModal = true"
               >
                 <Icon name="plus" />
                 <span
@@ -557,5 +566,65 @@ const downloadFile = async (filename: string) => {
         >
       </div>
     </details>
+
+    <!-- Modal Tambah Initiatives/ Activities -->
+    <Modal
+      :open="showModal"
+      title="Tambah Initiatives/ Activities"
+      size="lg"
+      @close="showModal = false"
+      @confirm="showModal = false"
+    >
+      <div class="space-y-5">
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-2">
+            Nama Initiatives/ Activities
+          </label>
+          <input
+            type="text"
+            class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200"
+            placeholder="Masukkan nama..."
+          />
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-2">
+            Target
+          </label>
+          <input
+            type="text"
+            class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200"
+            placeholder="Masukkan target..."
+          />
+        </div>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-2">
+              Status
+            </label>
+            <select
+              class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200"
+            >
+              <option value="">Pilih Status</option>
+              <option value="running">Running</option>
+              <option value="pending">Pending</option>
+              <option value="completed">Completed</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-2">
+              Priority
+            </label>
+            <select
+              class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200"
+            >
+              <option value="">Pilih Priority</option>
+              <option value="high">High</option>
+              <option value="normal">Normal</option>
+              <option value="low">Low</option>
+            </select>
+          </div>
+        </div>
+      </div>
+    </Modal>
   </div>
 </template>
