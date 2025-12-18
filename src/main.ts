@@ -5,7 +5,7 @@ import router from "./router";
 import "./assets/tailwind.css";
 
 // Mitreka UI Library
-import "@mitreka/ui/css";
+import "@keiryusaki/mitreka-ui/css";
 import { useUi } from "./stores/ui";
 import { AgGridVue } from "ag-grid-vue3";
 import IconPlugin from "@/plugins/icon";
