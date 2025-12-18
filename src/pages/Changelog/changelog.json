@@ -1,17 +1,54 @@
 [
   {
-    "version": "1.1",
+    "version": "2.0.0",
+    "date": "2025-12-18",
+    "label": "Major",
+    "items": [
+      {
+        "type": "Breaking",
+        "text": "Migrasi ke @keiryusaki/mitreka-ui package (GitHub Packages)"
+      },
+      {
+        "type": "Added",
+        "text": "DevGuide lengkap dengan code snippets dan copy button",
+        "href": "/dev-guide"
+      },
+      {
+        "type": "Added",
+        "text": "Vue Components: Button, Badge, Card, Modal"
+      },
+      {
+        "type": "Added",
+        "text": "Composables: useTheme, useSelectSingle"
+      },
+      {
+        "type": "Added",
+        "text": "AG Grid theme integration"
+      },
+      {
+        "type": "Changed",
+        "text": "CSS sekarang diimport via npm package, bukan download manual"
+      },
+      {
+        "type": "Docs",
+        "text": "Update README dengan installation guide GitHub Packages"
+      }
+    ],
+    "assets": []
+  },
+  {
+    "version": "1.1.0",
     "date": "2025-11-05",
     "label": "Stable",
     "items": [
       {
         "type": "Changed",
-        "text": "Update tailwind.css ke v1.1 (token + tweaks warna)."
+        "text": "Update tailwind.css ke v1.1 (token + tweaks warna)"
       },
-      { "type": "Added", "text": "Komponen Icon.", "href": "/icon" },
+      { "type": "Added", "text": "Komponen Icon", "href": "/icon" },
       {
         "type": "Added",
-        "text": "Komponen Select Option.",
+        "text": "Komponen Select Option",
         "href": "/SelectOption"
       }
     ],
@@ -20,11 +57,13 @@
     ]
   },
   {
-    "version": "1.0",
+    "version": "1.0.0",
     "date": "2025-11-03",
     "label": "Stable",
     "items": [
-      { "type": "Docs", "text": "Rilis awal style base + tailwind.css v1.0." }
+      { "type": "Docs", "text": "Rilis awal style base + tailwind.css v1.0" },
+      { "type": "Added", "text": "CSS Components: Button, Input, Badge, Card, Alert, Select, Switch, Table" },
+      { "type": "Added", "text": "Theme support: mitrekalight, mitrekadark" }
     ],
     "assets": [
       {
