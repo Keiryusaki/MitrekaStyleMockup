@@ -12,7 +12,7 @@ Install deps:
 npm i -D @tailwindcss/postcss
 ```
 
-PostCSS config (already set):
+PostCSS config (already set) :
 
 ```js
 export default {
