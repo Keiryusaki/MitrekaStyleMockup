@@ -11,6 +11,7 @@
     "release:css": "powershell -ExecutionPolicy Bypass -File ./scripts/release-css.ps1"
   },
   "dependencies": {
+    "@keiryusaki/mitreka-ui": "^1.0.0",
     "ag-grid-community": "^34.2.0",
     "ag-grid-vue3": "^34.2.0",
     "axios": "^1.13.2",

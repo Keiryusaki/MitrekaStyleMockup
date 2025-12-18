@@ -7,6 +7,7 @@ permissions:
   contents: read
   pages: write
   id-token: write
+  packages: read
 
 jobs:
   build:
@@ -14,7 +15,13 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
-        with: { node-version: 20, cache: 'npm' }
+        with:
+          node-version: 20
+          registry-url: https://npm.pkg.github.com
+          cache: 'npm'
+      - run: |
+          echo "@keiryusaki:registry=https://npm.pkg.github.com" >> .npmrc
+          echo "//npm.pkg.github.com/:_authToken=${{ secrets.GITHUB_TOKEN }}" >> .npmrc
       - run: npm ci || npm install
       - run: npm run build
       # kalau pakai Vue Router history mode:
