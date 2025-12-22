@@ -28,11 +28,11 @@ const emit = defineEmits<{
 }>();
 
 const sizeClasses: Record<string, string> = {
-  sm: "max-w-sm",
-  md: "max-w-lg",
-  lg: "max-w-2xl",
-  xl: "max-w-4xl",
-  full: "max-w-[calc(100vw-2rem)] max-h-[calc(100vh-2rem)]",
+  sm: "max-w-md",          // 448px
+  md: "max-w-3xl",         // 768px
+  lg: "max-w-[70rem]",     // 1120px
+  xl: "max-w-[calc(100vw-2rem)] max-h-[calc(100vh-2rem)]", // almost full
+  full: "w-screen h-screen max-w-none rounded-none", // true fullscreen
 };
 
 const handleBackdropClick = () => {
@@ -68,21 +68,28 @@ watch(
     <Transition name="zoom">
       <div
         v-if="open"
-        class="fixed inset-0 z-50 flex items-center justify-center p-4 pointer-events-none"
+        :class="[
+          'fixed inset-0 z-50 flex items-center justify-center pointer-events-none',
+          size === 'full' ? 'p-0' : 'p-4'
+        ]"
       >
         <div
-          :class="['relative w-full bg-white rounded-2xl shadow-2xl pointer-events-auto', sizeClasses[size]]"
+          :class="[
+            'relative w-full bg-base-100 shadow-2xl pointer-events-auto flex flex-col',
+            size === 'full' ? '' : 'rounded-2xl',
+            sizeClasses[size]
+          ]"
         >
             <!-- Header -->
-            <div v-if="!hideHeader" class="flex items-center justify-between p-5 border-b border-gray-100">
+            <div v-if="!hideHeader" class="flex items-center justify-between p-5 border-b border-base-300">
               <slot name="header">
-                <h3 class="text-xl font-semibold text-gray-900">
+                <h3 class="text-xl font-semibold">
                   {{ title }}
                 </h3>
               </slot>
               <button
                 type="button"
-                class="p-2 text-gray-400 hover:text-gray-600 rounded-lg hover:bg-gray-100 transition-all duration-200"
+                class="p-2 opacity-60 hover:opacity-100 rounded-lg hover:bg-base-200 transition-all duration-200"
                 @click="emit('close')"
               >
                 <svg
@@ -102,23 +109,29 @@ watch(
             </div>
 
             <!-- Body -->
-            <div class="p-5 max-h-[60vh] overflow-y-auto">
+            <div :class="[
+              'p-5 overflow-y-auto',
+              size === 'full' ? 'flex-1' : 'max-h-[60vh]'
+            ]">
               <slot />
             </div>
 
             <!-- Footer -->
-            <div v-if="!hideFooter" class="flex justify-end gap-3 p-5 border-t border-gray-100 bg-gray-50/50 rounded-b-2xl">
+            <div v-if="!hideFooter" :class="[
+              'flex justify-end gap-3 p-5 border-t border-base-300 bg-base-200/50',
+              size === 'full' ? '' : 'rounded-b-2xl'
+            ]">
               <slot name="footer">
                 <button
                   type="button"
-                  class="px-5 py-2.5 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-300 transition-all duration-200"
+                  class="btn btn-ghost"
                   @click="emit('close')"
                 >
                   {{ cancelText }}
                 </button>
                 <button
                   type="button"
-                  class="px-5 py-2.5 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all duration-200"
+                  class="btn btn-primary"
                   @click="emit('confirm')"
                 >
                   {{ confirmText }}

@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref } from "vue";
 import SelectDropdown from "@/components/controls/SelectDropdown.vue";
+import Modal from "@/components/feedback/Modal.vue";
 
 const copiedId = ref<string | null>(null);
 
@@ -141,7 +142,7 @@ import "@keiryusaki/mitreka-ui/css/components/badge.css";`,
 </div>`,
   modalVue: `<script setup>
 import { ref } from "vue";
-import { Modal } from "@keiryusaki/mitreka-ui/vue";
+import Modal from "@/components/feedback/Modal.vue";
 
 const showModal = ref(false);
 <\/script>
@@ -154,12 +155,16 @@ const showModal = ref(false);
   <Modal 
     :open="showModal" 
     title="Confirm Action"
+    size="md"
     @close="showModal = false"
     @confirm="handleConfirm"
   >
     <p>Are you sure you want to proceed?</p>
   </Modal>
-</template>`,
+</template>
+
+<!-- Available sizes: sm (448px), md (768px), lg (1120px), xl (almost full), full (fullscreen) -->
+<!-- Props: open, title, size, hideHeader, hideFooter, confirmText, cancelText, persistent -->`,
   vueComponents: `<script setup>
 import { Button, Badge, Card, Modal } from "@keiryusaki/mitreka-ui/vue";
 <\/script>
@@ -653,6 +658,11 @@ const showModal = ref(false);
         11. Modal (Vue Component)
       </h2>
 
+      <p class="text-sm opacity-80">
+        Lihat dokumentasi lengkap di halaman 
+        <router-link to="/modal" class="text-primary underline hover:no-underline">Modal Component</router-link>.
+      </p>
+
       <div class="space-y-3">
         <button class="btn btn-primary" @click="showModal = true">
           Open Modal Demo
@@ -666,21 +676,15 @@ const showModal = ref(false);
       </div>
 
       <!-- Modal Demo -->
-      <Teleport to="body">
-        <div v-if="showModal" class="fixed inset-0 z-50 grid place-items-center p-4">
-          <div class="absolute inset-0 bg-black/40" @click="showModal = false"></div>
-          <div class="relative card p-6 w-full max-w-md">
-            <header class="text-lg font-semibold mb-2">Confirm Action</header>
-            <div class="mb-4">
-              <p>Are you sure you want to proceed with this action?</p>
-            </div>
-            <footer class="flex justify-end gap-2">
-              <button class="btn btn-ghost" @click="showModal = false">Cancel</button>
-              <button class="btn btn-primary" @click="showModal = false">Confirm</button>
-            </footer>
-          </div>
-        </div>
-      </Teleport>
+      <Modal
+        :open="showModal"
+        title="Confirm Action"
+        size="sm"
+        @close="showModal = false"
+        @confirm="showModal = false"
+      >
+        <p>Are you sure you want to proceed with this action?</p>
+      </Modal>
     </section>
 
     <!-- 12. Vue Components -->

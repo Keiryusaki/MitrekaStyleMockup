@@ -79,6 +79,10 @@ const routes: RouteRecordRaw[] = [
     path: "/table",
     component: () => import("@/pages/Table/Table.vue"),
   },
+  {
+    path: "/modal",
+    component: () => import("@/pages/Modal/Modal.vue"),
+  },
 ];
 
 const router = createRouter({
