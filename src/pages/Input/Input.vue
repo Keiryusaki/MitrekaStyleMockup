@@ -158,10 +158,11 @@ const tones: { label: string; tone: Tone }[] = [
                 />
               </svg>
               <input
-                :class="['input pl-9', sizeClass, toneClass]"
+                :class="['input', sizeClass, toneClass]"
                 :disabled="disabled"
                 :readonly="readonly"
                 placeholder="Search…"
+                style="padding-left: 2rem;"
               />
             </div>
           </label>
@@ -181,9 +182,14 @@ const tones: { label: string; tone: Tone }[] = [
                 width="16"
                 height="16"
                 viewBox="0 0 24 24"
-                fill="currentColor"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
               >
-                <path d="M12 13.065 0 6V4l12 7 12-7v2z" />
+                <rect x="2" y="4" width="20" height="16" rx="2" />
+                <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7" />
               </svg>
             </div>
           </label>

@@ -9,11 +9,16 @@
         </label>
 
         <span>Density</span>
-        <select v-model="density" class="als-select">
-          <option value="compact">Compact</option>
-          <option value="cozy">Cozy</option>
-          <option value="comfortable">Comfortable</option>
-        </select>
+        <SelectDropdown
+          v-model="density"
+          :options="[
+            { value: 'compact', label: 'Compact' },
+            { value: 'cozy', label: 'Cozy' },
+            { value: 'comfortable', label: 'Comfortable' },
+          ]"
+          size="sm"
+          variant="outline"
+        />
 
         <div class="als-toolbar__spacer"></div>
 
@@ -97,11 +102,17 @@
         <div class="als-footer">
           <div class="als-footer__left">
             <span>Page Size:</span>
-            <select v-model.number="pageSize" class="als-select">
-              <option v-for="n in [10, 25, 50, 100]" :key="n" :value="n">
-                {{ n }}
-              </option>
-            </select>
+            <SelectDropdown
+              v-model="pageSize"
+              :options="[
+                { value: 10, label: '10' },
+                { value: 25, label: '25' },
+                { value: 50, label: '50' },
+                { value: 100, label: '100' },
+              ]"
+              size="sm"
+              variant="outline"
+            />
           </div>
 
           <div class="als-footer__center">
@@ -442,6 +453,7 @@ function onDelete(row: any) { /* confirm + call API */ }
 <script setup lang="ts">
 import { computed, reactive, ref, watchEffect } from "vue";
 import "@/pages/Table/ag-like-skin.css"; // isinya sudah versi 'als' yang tadi kita kirim
+import SelectDropdown from "@/components/controls/SelectDropdown.vue";
 
 type Row = {
   id: number;

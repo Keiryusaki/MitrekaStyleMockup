@@ -1,6 +1,28 @@
 <script setup lang="ts">
 import { ref } from "vue";
 import Modal from "@/components/feedback/Modal.vue";
+import SelectDropdown from "@/components/controls/SelectDropdown.vue";
+
+const filterValue = ref<string | number | null>("all");
+const filterOptions = [
+  { value: "all", label: "All" },
+  { value: "objective", label: "Objective" },
+  { value: "initiatives", label: "Initiatives" },
+];
+
+const statusValue = ref<string | number | null>(null);
+const statusOptions = [
+  { value: "running", label: "Running" },
+  { value: "pending", label: "Pending" },
+  { value: "completed", label: "Completed" },
+];
+
+const priorityValue = ref<string | number | null>(null);
+const priorityOptions = [
+  { value: "high", label: "High" },
+  { value: "normal", label: "Normal" },
+  { value: "low", label: "Low" },
+];
 
 const showModal = ref(false);
 
@@ -89,11 +111,12 @@ const downloadFile = async (filename: string) => {
 
         <!-- Filter -->
         <div class="shrink-0 md:w-48">
-          <select class="w-full p-2 border border-gray-300 rounded-md">
-            <option>All</option>
-            <option>Objective</option>
-            <option>Initiatives</option>
-          </select>
+          <SelectDropdown
+            v-model="filterValue"
+            :options="filterOptions"
+            size="sm"
+            variant="outline"
+          />
         </div>
       </div>
 
@@ -601,27 +624,23 @@ const downloadFile = async (filename: string) => {
             <label class="block text-sm font-medium text-gray-700 mb-2">
               Status
             </label>
-            <select
-              class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200"
-            >
-              <option value="">Pilih Status</option>
-              <option value="running">Running</option>
-              <option value="pending">Pending</option>
-              <option value="completed">Completed</option>
-            </select>
+            <SelectDropdown
+              v-model="statusValue"
+              :options="statusOptions"
+              placeholder="Pilih Status"
+              variant="outline"
+            />
           </div>
           <div>
             <label class="block text-sm font-medium text-gray-700 mb-2">
               Priority
             </label>
-            <select
-              class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200"
-            >
-              <option value="">Pilih Priority</option>
-              <option value="high">High</option>
-              <option value="normal">Normal</option>
-              <option value="low">Low</option>
-            </select>
+            <SelectDropdown
+              v-model="priorityValue"
+              :options="priorityOptions"
+              placeholder="Pilih Priority"
+              variant="outline"
+            />
           </div>
         </div>
       </div>

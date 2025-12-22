@@ -2,6 +2,7 @@
 <script setup lang="ts">
 import { ref, computed, watch, onMounted, onBeforeUnmount } from "vue";
 import { AgGridVue } from "ag-grid-vue3";
+import SelectDropdown from "@/components/controls/SelectDropdown.vue";
 import {
   ModuleRegistry,
   AllCommunityModule,
@@ -271,11 +272,16 @@ watch(density, applyDensityToApi);
       <input type="text" placeholder="Search…" class="input w-64 max-w-full" />
       <div class="flex items-center gap-2">
         <span class="text-sm opacity-70">Density</span>
-        <select v-model="density" class="select h-9">
-          <option value="compact">Compact</option>
-          <option value="cozy">Cozy</option>
-          <option value="spacious">Spacious</option>
-        </select>
+        <SelectDropdown
+          v-model="density"
+          :options="[
+            { value: 'compact', label: 'Compact' },
+            { value: 'cozy', label: 'Cozy' },
+            { value: 'spacious', label: 'Spacious' },
+          ]"
+          size="sm"
+          variant="outline"
+        />
       </div>
       <label class="flex items-center gap-2 text-sm cursor-pointer">
         <input type="checkbox" v-model="striped" />

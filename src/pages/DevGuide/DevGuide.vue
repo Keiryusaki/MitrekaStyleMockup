@@ -1,7 +1,20 @@
 <script setup lang="ts">
 import { ref } from "vue";
+import SelectDropdown from "@/components/controls/SelectDropdown.vue";
 
 const copiedId = ref<string | null>(null);
+
+// Demo select values
+const selectDemo = ref<string | number | null>("opt1");
+const selectDemoOptions = [
+  { value: "opt1", label: "Option 1" },
+  { value: "opt2", label: "Option 2" },
+  { value: "opt3", label: "Option 3" },
+];
+const selectPrimaryDemo = ref<string | number | null>("primary");
+const selectPrimaryOptions = [
+  { value: "primary", label: "Primary select" },
+];
 
 const copyCode = async (code: string, id: string) => {
   await navigator.clipboard.writeText(code);
@@ -12,8 +25,7 @@ const copyCode = async (code: string, id: string) => {
 // Code snippets
 const codes = {
   install: `npm install @keiryusaki/mitreka-ui`,
-  npmrc: `@keiryusaki:registry=https://npm.pkg.github.com
-//npm.pkg.github.com/:_authToken=YOUR_GITHUB_TOKEN`,
+  npmrc: `@keiryusaki:registry=https://npm.pkg.github.com`,
   importAll: `// main.ts atau main.js
 import "@keiryusaki/mitreka-ui/css";`,
   importIndividual: `// Import individual components
@@ -76,24 +88,28 @@ import "@keiryusaki/mitreka-ui/css/components/badge.css";`,
   <p class="text-sm opacity-80">Card content goes here.</p>
 </div>`,
   switchBasic: `<!-- Switch -->
-<label class="switch">
-  <input type="checkbox" />
-  <span class="slider"></span>
+<label class="flex items-center gap-2 cursor-pointer">
+  <input type="checkbox" class="switch" />
+  <span>Switch label</span>
 </label>
 
 <!-- Checkbox -->
-<label class="checkbox">
-  <input type="checkbox" />
-  <span class="checkmark"></span>
+<label class="flex items-center gap-2 cursor-pointer">
+  <input type="checkbox" class="checkbox" />
   <span>Checkbox label</span>
 </label>
 
-<!-- Radio -->
-<label class="radio">
-  <input type="radio" name="group" />
-  <span class="radiomark"></span>
-  <span>Radio option</span>
-</label>`,
+<!-- Radio Group -->
+<div class="flex items-center gap-4">
+  <label class="flex items-center gap-2 cursor-pointer">
+    <input type="radio" name="group" class="radio" checked />
+    <span>Option A</span>
+  </label>
+  <label class="flex items-center gap-2 cursor-pointer">
+    <input type="radio" name="group" class="radio" />
+    <span>Option B</span>
+  </label>
+</div>`,
   selectBasic: `<select class="select">
   <option>Option 1</option>
   <option>Option 2</option>
@@ -235,14 +251,7 @@ const showModal = ref(false);
           <pre><code>{{ codes.npmrc }}</code></pre>
         </div>
         <p class="text-xs opacity-70">
-          💡 Buat token di
-          <a
-            href="https://github.com/settings/tokens"
-            target="_blank"
-            class="text-primary underline"
-            >github.com/settings/tokens</a
-          >
-          dengan scope <code class="code-inline">read:packages</code>
+          💡 Package sudah public, tidak perlu token untuk install.
         </p>
       </div>
 
@@ -534,23 +543,30 @@ const showModal = ref(false);
       </h2>
 
       <div class="space-y-3">
-        <div class="flex flex-wrap items-center gap-6">
-          <label class="switch">
-            <input type="checkbox" checked />
-            <span class="slider"></span>
+        <div class="flex flex-wrap items-center gap-8">
+          <!-- Switch -->
+          <label class="flex items-center gap-2 cursor-pointer">
+            <input type="checkbox" class="switch" checked />
+            <span class="text-sm">Switch</span>
           </label>
 
-          <label class="checkbox">
-            <input type="checkbox" checked />
-            <span class="checkmark"></span>
-            <span>Checkbox</span>
+          <!-- Checkbox -->
+          <label class="flex items-center gap-2 cursor-pointer">
+            <input type="checkbox" class="checkbox" checked />
+            <span class="text-sm">Checkbox</span>
           </label>
 
-          <label class="radio">
-            <input type="radio" name="demo" checked />
-            <span class="radiomark"></span>
-            <span>Radio</span>
-          </label>
+          <!-- Radio group -->
+          <div class="flex items-center gap-4">
+            <label class="flex items-center gap-2 cursor-pointer">
+              <input type="radio" name="demoRadio" class="radio" checked />
+              <span class="text-sm">Option A</span>
+            </label>
+            <label class="flex items-center gap-2 cursor-pointer">
+              <input type="radio" name="demoRadio" class="radio" />
+              <span class="text-sm">Option B</span>
+            </label>
+          </div>
         </div>
         <div class="code-block">
           <button class="copy-btn" @click="copyCode(codes.switchBasic, 'switchBasic')">
@@ -568,15 +584,18 @@ const showModal = ref(false);
       </h2>
 
       <div class="space-y-3">
-        <div class="flex flex-wrap gap-2 max-w-md">
-          <select class="select">
-            <option>Option 1</option>
-            <option>Option 2</option>
-            <option>Option 3</option>
-          </select>
-          <select class="select select-primary">
-            <option>Primary select</option>
-          </select>
+        <div class="flex flex-wrap gap-4 max-w-md">
+          <SelectDropdown
+            v-model="selectDemo"
+            :options="selectDemoOptions"
+            variant="outline"
+          />
+          <SelectDropdown
+            v-model="selectPrimaryDemo"
+            :options="selectPrimaryOptions"
+            color="primary"
+            variant="outline"
+          />
         </div>
         <div class="code-block">
           <button class="copy-btn" @click="copyCode(codes.selectBasic, 'selectBasic')">

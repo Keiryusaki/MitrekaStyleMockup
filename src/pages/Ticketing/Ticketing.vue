@@ -169,39 +169,25 @@
                     <label class="text-xs font-medium">
                       Aplikasi / Produk <span class="text-error">*</span>
                     </label>
-                    <select
+                    <SelectDropdown
                       v-model="form.application"
-                      class="select select-sm w-full"
-                      required
-                    >
-                      <option value="" disabled>Pilih aplikasi</option>
-                      <option
-                        v-for="app in applicationOptions"
-                        :key="app.value"
-                        :value="app.value"
-                      >
-                        {{ app.label }}
-                      </option>
-                    </select>
+                      :options="applicationOptions"
+                      placeholder="Pilih aplikasi"
+                      size="sm"
+                      variant="outline"
+                    />
                   </div>
                   <div class="space-y-1">
                     <label class="text-xs font-medium">
                       Jenis Pengaduan <span class="text-error">*</span>
                     </label>
-                    <select
+                    <SelectDropdown
                       v-model="form.category"
-                      class="select select-sm w-full"
-                      required
-                    >
-                      <option value="" disabled>Pilih jenis pengaduan</option>
-                      <option
-                        v-for="cat in categoryOptions"
-                        :key="cat.value"
-                        :value="cat.value"
-                      >
-                        {{ cat.label }}
-                      </option>
-                    </select>
+                      :options="categoryOptions"
+                      placeholder="Pilih jenis pengaduan"
+                      size="sm"
+                      variant="outline"
+                    />
                   </div>
                 </div>
 
@@ -210,20 +196,13 @@
                   <label class="text-xs font-medium">
                     Dampak ke Layanan <span class="text-error">*</span>
                   </label>
-                  <select
+                  <SelectDropdown
                     v-model="form.impact"
-                    class="select select-sm w-full"
-                    required
-                  >
-                    <option value="" disabled>Pilih tingkat dampak</option>
-                    <option
-                      v-for="impact in impactOptions"
-                      :key="impact.value"
-                      :value="impact.value"
-                    >
-                      {{ impact.label }}
-                    </option>
-                  </select>
+                    :options="impactOptions"
+                    placeholder="Pilih tingkat dampak"
+                    size="sm"
+                    variant="outline"
+                  />
                 </div>
 
                 <!-- Pesan -->
@@ -325,33 +304,34 @@
 
 <script setup lang="ts">
 import { reactive, ref } from "vue";
+import SelectDropdown from "@/components/controls/SelectDropdown.vue";
 
 const form = reactive({
   name: "",
   contact: "",
-  application: "",
-  category: "",
-  impact: "",
+  application: null as string | number | null,
+  category: null as string | number | null,
+  impact: null as string | number | null,
   description: "",
   attachment: null as File | null,
 });
 
-const applicationOptions = ref([
+const applicationOptions = [
   { value: "portal-layanan", label: "Portal Layanan" },
   { value: "dashboard-monitoring", label: "Dashboard Monitoring" },
   { value: "modul-ticketing", label: "Modul Ticketing" },
   { value: "lainnya", label: "Lainnya / Custom" },
-]);
+];
 
-const categoryOptions = ref([
+const categoryOptions = [
   { value: "bug", label: "Bug / Error Sistem" },
   { value: "gangguan", label: "Gangguan Layanan" },
   { value: "akses", label: "Permasalahan Akses / Login" },
   { value: "perubahan", label: "Permintaan Perubahan (Change Request)" },
   { value: "lainnya", label: "Lainnya" },
-]);
+];
 
-const impactOptions = ref([
+const impactOptions = [
   {
     value: "kritikal",
     label: "Kritikal – layanan tidak bisa digunakan sama sekali",
@@ -368,7 +348,7 @@ const impactOptions = ref([
     value: "rendah",
     label: "Rendah – tidak menghambat operasional utama",
   },
-]);
+];
 
 const submitting = ref(false);
 const lastTicketId = ref<string | null>(null);
@@ -389,9 +369,9 @@ function handleSubmit() {
     lastTicketId.value = ticketCode;
 
     // reset ringan, nama & email dipertahankan biar user ga capek isi lagi
-    form.application = "";
-    form.category = "";
-    form.impact = "";
+    form.application = null;
+    form.category = null;
+    form.impact = null;
     form.description = "";
     form.attachment = null;
 

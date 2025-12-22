@@ -89,10 +89,11 @@ const displayValue = computed(() =>
         :class="[
           sizeClass[size || 'md'],
           colorClass(color),
-          'w-full pl-7 pr-16',
+          'w-full',
           'input',
           disabled ? 'opacity-60 cursor-not-allowed' : 'cursor-pointer',
         ]"
+        style="padding-left: 2rem; padding-right: 4rem;"
         @input="
           open ? (query = ($event.target as HTMLInputElement).value) : null
         "

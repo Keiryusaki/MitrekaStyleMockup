@@ -109,13 +109,18 @@ const svg = iconRegistry['home']?.replace('&lt;svg', "&lt;svg class='w-6 h-6 tex
 
         <label class="flex items-center gap-2 text-sm">
           Size
-          <select v-model="sizeKey" class="select h-9">
-            <option value="xs">XS (16)</option>
-            <option value="sm">SM (20)</option>
-            <option value="md">MD (24)</option>
-            <option value="lg">LG (28)</option>
-            <option value="xl">XL (32)</option>
-          </select>
+          <SelectDropdown
+            v-model="sizeKey"
+            :options="[
+              { value: 'xs', label: 'XS (16)' },
+              { value: 'sm', label: 'SM (20)' },
+              { value: 'md', label: 'MD (24)' },
+              { value: 'lg', label: 'LG (28)' },
+              { value: 'xl', label: 'XL (32)' },
+            ]"
+            size="sm"
+            variant="outline"
+          />
         </label>
 
         <label class="flex items-center gap-2 text-sm">
@@ -267,6 +272,7 @@ const svg = iconRegistry['home']?.replace('&lt;svg', "&lt;svg class='w-6 h-6 tex
 import { computed, ref } from "vue";
 import { iconRegistry } from "@/composables/Icon";
 import iconTsUrl from "@/composables/Icon.ts?url";
+import SelectDropdown from "@/components/controls/SelectDropdown.vue";
 
 const q = ref("");
 const sizeKey = ref<"xs" | "sm" | "md" | "lg" | "xl">("md");
