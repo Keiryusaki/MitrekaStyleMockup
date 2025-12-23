@@ -17,36 +17,21 @@ defineProps({
       :style="{ width: size + 'px', height: 'auto' }"
       aria-hidden="true"
     >
-      <defs>
-        <style>
-          .cls-1 {
-            fill: #010101;
-          }
-          .cls-1,
-          .cls-2,
-          .cls-3 {
-            stroke-width: 0px;
-          }
-          .cls-2 {
-            fill: #ee3032;
-          }
-          .cls-3 {
-            fill: #025097;
-          }
-        </style>
-      </defs>
       <g id="Layer_1-2" data-name="Layer 1">
         <g>
           <polygon
             class="cls-3"
+            fill="#025097"
             points="46.55 58.99 72.93 85.37 52.75 105.5 0 105.5 0 0 52.75 0 72.93 20.18 46.55 46.55 40.31 52.75 46.55 58.99"
           />
           <polygon
             class="cls-2"
+            fill="#ee3032"
             points="158.25 0 158.25 105.5 105.5 105.5 85.37 85.37 111.7 58.99 117.94 52.75 111.7 46.55 85.32 20.18 105.5 0 158.25 0"
           />
           <rect
             class="cls-1"
+            fill="#010101"
             x="60.47"
             y="34.1"
             width="37.3"

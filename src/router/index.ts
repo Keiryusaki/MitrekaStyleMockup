@@ -83,6 +83,50 @@ const routes: RouteRecordRaw[] = [
     path: "/modal",
     component: () => import("@/pages/Modal/Modal.vue"),
   },
+  {
+    path: "/toasts",
+    component: () => import("@/pages/Toasts/Toasts.vue"),
+  },
+  {
+    path: "/breadcrumbs",
+    component: () => import("@/pages/Breadcrumbs/Breadcrumbs.vue"),
+  },
+  {
+    path: "/loading",
+    component: () => import("@/pages/Loading/Loading.vue"),
+  },
+  {
+    path: "/statcard",
+    component: () => import("@/pages/StatCard/StatCard.vue"),
+  },
+  {
+    path: "/card",
+    component: () => import("@/pages/Card/Card.vue"),
+  },
+  {
+    path: "/pagination",
+    component: () => import("@/pages/Pagination/Pagination.vue"),
+  },
+  {
+    path: "/datatable",
+    component: () => import("@/pages/DataTable/DataTable.vue"),
+  },
+  {
+    path: "/themeswitcher",
+    component: () => import("@/pages/ThemeSwitcher/ThemeSwitcher.vue"),
+  },
+  {
+    path: "/sidebar",
+    component: () => import("@/pages/Sidebar/Sidebar.vue"),
+  },
+  {
+    path: "/colors",
+    component: () => import("@/pages/Colors/Colors.vue"),
+  },
+  {
+    path: "/typography",
+    component: () => import("@/pages/Typography/Typography.vue"),
+  },
 ];
 
 const router = createRouter({

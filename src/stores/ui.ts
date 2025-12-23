@@ -2,9 +2,19 @@
 import { defineStore } from "pinia";
 
 export type ToastType = "info" | "success" | "warning" | "error" | "primary";
+export type ToastVariant = "soft" | "solid" | "outline";
+export type ToastPosition = 
+  | "top-left" 
+  | "top-center" 
+  | "top-right" 
+  | "bottom-left" 
+  | "bottom-center" 
+  | "bottom-right";
+
 export type ToastItem = {
   id: number;
   type: ToastType;
+  variant?: ToastVariant;
   title?: string;
   message: string;
   timeout?: number;
@@ -33,6 +43,7 @@ export const useUi = defineStore("ui", {
     openGroups: loadPref({ openGroups: {} as Record<string, boolean> })
       .openGroups as Record<string, boolean>,
     toasts: [] as ToastItem[],
+    toastPosition: "bottom-right" as ToastPosition,
     lastId: 0,
   }),
   actions: {
@@ -73,7 +84,7 @@ export const useUi = defineStore("ui", {
 
     notify(partial: Omit<ToastItem, "id">) {
       const id = ++this.lastId;
-      const item: ToastItem = { id, timeout: 3000, type: "info", ...partial };
+      const item: ToastItem = { id, timeout: 3000, type: "info", variant: "soft", ...partial };
       this.toasts.push(item);
       if (item.timeout && item.timeout > 0)
         setTimeout(() => this.dismiss(id), item.timeout);
@@ -84,6 +95,9 @@ export const useUi = defineStore("ui", {
     },
     clearToasts() {
       this.toasts = [];
+    },
+    setToastPosition(position: ToastPosition) {
+      this.toastPosition = position;
     },
   },
 });
