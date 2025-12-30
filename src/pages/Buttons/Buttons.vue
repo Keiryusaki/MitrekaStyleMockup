@@ -1,5 +1,22 @@
 <script setup lang="ts">
 import { ref, computed } from "vue";
+import FloatingTOC, { type TOCItem } from "@/components/FloatingTOC.vue";
+import { Icon } from "@/composables/Icon";
+
+const tocItems: TOCItem[] = [
+  { id: 'controls', label: 'Controls' },
+  { id: 'playground', label: 'Playground' },
+  { id: 'solid', label: 'Solid' },
+  { id: 'outline', label: 'Outline' },
+  { id: 'sizes', label: 'Sizes' },
+  { id: 'notes', label: 'Notes' },
+  { id: 'icon-buttons', label: 'Icon Buttons' },
+  { id: 'icon-btn-sizes', label: 'Icon Btn Sizes' },
+  { id: 'icon-btn-outline', label: 'Icon Btn Outline' },
+  { id: 'icon-btn-solid', label: 'Icon Btn Solid' },
+  { id: 'icon-btn-soft', label: 'Icon Btn Soft' },
+  { id: 'icon-btn-ghost', label: 'Icon Btn Ghost' },
+];
 
 type Size = "xs" | "sm" | "md" | "lg" | "xl";
 type Kind =
@@ -52,7 +69,7 @@ const outlineClass = (k: Kind) => {
 
     <div class="card p-4 md:p-6 space-y-5">
       <!-- Controls -->
-      <section class="rounded-box border border-base-300 p-4">
+      <section id="controls" class="rounded-box border border-base-300 p-4 scroll-mt-20">
         <div class="flex flex-wrap items-center gap-4">
           <div class="flex items-center gap-2">
             <span class="text-sm opacity-80">Size</span>
@@ -103,7 +120,7 @@ const outlineClass = (k: Kind) => {
       </section>
 
       <!-- Playground grid -->
-      <section class="space-y-3 rounded-box border border-base-300 p-4">
+      <section id="playground" class="space-y-3 rounded-box border border-base-300 p-4 scroll-mt-20">
         <h2 class="text-base font-semibold">Playground</h2>
         <div
           class="grid grid-cols-1 gap-3 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4"
@@ -119,7 +136,7 @@ const outlineClass = (k: Kind) => {
       </section>
 
       <!-- Solid reference -->
-      <section class="space-y-3 rounded-box border border-base-300 p-4">
+      <section id="solid" class="space-y-3 rounded-box border border-base-300 p-4 scroll-mt-20">
         <h3 class="text-sm font-semibold uppercase tracking-wide opacity-70">
           Solid
         </h3>
@@ -155,7 +172,7 @@ const outlineClass = (k: Kind) => {
       </section>
 
       <!-- Outline reference -->
-      <section class="space-y-3 rounded-box border border-base-300 p-4">
+      <section id="outline" class="space-y-3 rounded-box border border-base-300 p-4 scroll-mt-20">
         <h3 class="text-sm font-semibold uppercase tracking-wide opacity-70">
           Outline
         </h3>
@@ -213,7 +230,7 @@ const outlineClass = (k: Kind) => {
       </section>
 
       <!-- Size reference -->
-      <section class="space-y-3 rounded-box border border-base-300 p-4">
+      <section id="sizes" class="space-y-3 rounded-box border border-base-300 p-4 scroll-mt-20">
         <h3 class="text-sm font-semibold uppercase tracking-wide opacity-70">
           Sizes
         </h3>
@@ -232,31 +249,29 @@ const outlineClass = (k: Kind) => {
       </section>
 
       <!-- Notes -->
-      <section class="rounded-box border border-base-300 p-4 text-sm">
+      <section id="notes" class="rounded-box border border-base-300 p-4 text-sm scroll-mt-20">
         <ul class="list-disc space-y-1 pl-5">
           <li>
             <strong>Base class:</strong> <code>btn</code> (sudah handle padding,
-            radius, focus-ring, disabled). :contentReference[oaicite:4]{index=4}
+            radius, focus-ring, disabled).
           </li>
           <li>
             <strong>Solid:</strong>
             <code
               >btn-{primary|secondary|accent|info|success|warning|error}</code
-            >. :contentReference[oaicite:5]{index=5}
+            >.
           </li>
           <li>
             <strong>Outline:</strong> <code>btn btn-outline</code> +
             <code>btn-outline-{color}</code> untuk warna border/teks.
-            :contentReference[oaicite:6]{index=6}
           </li>
           <li>
             <strong>Ghost:</strong> <code>btn btn-ghost</code> (transparan,
-            hover subtle). :contentReference[oaicite:7]{index=7}
+            hover subtle).
           </li>
           <li>
             <strong>Size:</strong> <code>btn-xs</code> …
             <code>btn-xl</code> (default <code>btn-md</code>).
-            :contentReference[oaicite:8]{index=8}
           </li>
           <li>
             <strong>A11y:</strong> gunakan <code>aria-busy="true"</code> untuk
@@ -264,7 +279,246 @@ const outlineClass = (k: Kind) => {
           </li>
         </ul>
       </section>
+
+      <!-- ==================== ICON BUTTONS ==================== -->
+      <section id="icon-buttons" class="space-y-3 rounded-box border border-base-300 p-4 scroll-mt-20">
+        <h2 class="text-lg font-semibold">Icon Buttons</h2>
+        <p class="text-sm opacity-80">
+          Tombol icon untuk aksi compact, cocok untuk tabel, toolbar, dan action buttons.
+          Base class: <code>icon-btn</code>
+        </p>
+      </section>
+
+      <!-- Icon Button Sizes -->
+      <section id="icon-btn-sizes" class="space-y-3 rounded-box border border-base-300 p-4 scroll-mt-20">
+        <h3 class="text-sm font-semibold uppercase tracking-wide opacity-70">
+          Sizes
+        </h3>
+        <div class="flex flex-wrap items-end gap-3">
+          <button class="icon-btn icon-btn-xs" title="xs">
+            <Icon name="pencil" class="w-3 h-3" />
+          </button>
+          <button class="icon-btn icon-btn-sm" title="sm">
+            <Icon name="pencil" class="w-3.5 h-3.5" />
+          </button>
+          <button class="icon-btn" title="md (default)">
+            <Icon name="pencil" class="w-4 h-4" />
+          </button>
+          <button class="icon-btn icon-btn-lg" title="lg">
+            <Icon name="pencil" class="w-5 h-5" />
+          </button>
+          <button class="icon-btn icon-btn-xl" title="xl">
+            <Icon name="pencil" class="w-6 h-6" />
+          </button>
+        </div>
+        <div class="flex flex-wrap items-end gap-3 mt-3">
+          <button class="icon-btn icon-btn-xs icon-btn-round" title="xs round">
+            <Icon name="pencil" class="w-3 h-3" />
+          </button>
+          <button class="icon-btn icon-btn-sm icon-btn-round" title="sm round">
+            <Icon name="pencil" class="w-3.5 h-3.5" />
+          </button>
+          <button class="icon-btn icon-btn-round" title="md round">
+            <Icon name="pencil" class="w-4 h-4" />
+          </button>
+          <button class="icon-btn icon-btn-lg icon-btn-round" title="lg round">
+            <Icon name="pencil" class="w-5 h-5" />
+          </button>
+          <button class="icon-btn icon-btn-xl icon-btn-round" title="xl round">
+            <Icon name="pencil" class="w-6 h-6" />
+          </button>
+        </div>
+        <details class="rounded-box border border-base-300 p-3">
+          <summary class="cursor-pointer text-sm font-medium">Markup contoh</summary>
+          <pre class="mt-2 overflow-x-auto rounded-box bg-base-200 p-3 text-xs"><code>&lt;button class="icon-btn icon-btn-xs"&gt;...&lt;/button&gt;
+&lt;button class="icon-btn icon-btn-sm"&gt;...&lt;/button&gt;
+&lt;button class="icon-btn"&gt;...&lt;/button&gt;
+&lt;button class="icon-btn icon-btn-lg"&gt;...&lt;/button&gt;
+&lt;button class="icon-btn icon-btn-xl"&gt;...&lt;/button&gt;
+
+&lt;!-- Round shape --&gt;
+&lt;button class="icon-btn icon-btn-round"&gt;...&lt;/button&gt;</code></pre>
+        </details>
+      </section>
+
+      <!-- Icon Button Outline -->
+      <section id="icon-btn-outline" class="space-y-3 rounded-box border border-base-300 p-4 scroll-mt-20">
+        <h3 class="text-sm font-semibold uppercase tracking-wide opacity-70">
+          Outline
+        </h3>
+        <div class="flex flex-wrap gap-3">
+          <button class="icon-btn icon-btn-outline" title="default">
+            <Icon name="pencil" class="w-4 h-4" />
+          </button>
+          <button class="icon-btn icon-btn-outline-primary" title="primary">
+            <Icon name="pencil" class="w-4 h-4" />
+          </button>
+          <button class="icon-btn icon-btn-outline-secondary" title="secondary">
+            <Icon name="pencil" class="w-4 h-4" />
+          </button>
+          <button class="icon-btn icon-btn-outline-accent" title="accent">
+            <Icon name="pencil" class="w-4 h-4" />
+          </button>
+          <button class="icon-btn icon-btn-outline-info" title="info">
+            <Icon name="info" class="w-4 h-4" />
+          </button>
+          <button class="icon-btn icon-btn-outline-success" title="success">
+            <Icon name="check" class="w-4 h-4" />
+          </button>
+          <button class="icon-btn icon-btn-outline-warning" title="warning">
+            <Icon name="alert-triangle" class="w-4 h-4" />
+          </button>
+          <button class="icon-btn icon-btn-outline-error" title="error">
+            <Icon name="trash" class="w-4 h-4" />
+          </button>
+        </div>
+        <details class="rounded-box border border-base-300 p-3">
+          <summary class="cursor-pointer text-sm font-medium">Markup contoh</summary>
+          <pre class="mt-2 overflow-x-auto rounded-box bg-base-200 p-3 text-xs"><code>&lt;button class="icon-btn icon-btn-outline"&gt;...&lt;/button&gt;
+&lt;button class="icon-btn icon-btn-outline-primary"&gt;...&lt;/button&gt;
+&lt;button class="icon-btn icon-btn-outline-secondary"&gt;...&lt;/button&gt;
+&lt;button class="icon-btn icon-btn-outline-accent"&gt;...&lt;/button&gt;
+&lt;button class="icon-btn icon-btn-outline-info"&gt;...&lt;/button&gt;
+&lt;button class="icon-btn icon-btn-outline-success"&gt;...&lt;/button&gt;
+&lt;button class="icon-btn icon-btn-outline-warning"&gt;...&lt;/button&gt;
+&lt;button class="icon-btn icon-btn-outline-error"&gt;...&lt;/button&gt;</code></pre>
+        </details>
+      </section>
+
+      <!-- Icon Button Solid -->
+      <section id="icon-btn-solid" class="space-y-3 rounded-box border border-base-300 p-4 scroll-mt-20">
+        <h3 class="text-sm font-semibold uppercase tracking-wide opacity-70">
+          Solid
+        </h3>
+        <div class="flex flex-wrap gap-3">
+          <button class="icon-btn icon-btn-solid" title="default">
+            <Icon name="pencil" class="w-4 h-4" />
+          </button>
+          <button class="icon-btn icon-btn-solid-primary" title="primary">
+            <Icon name="pencil" class="w-4 h-4" />
+          </button>
+          <button class="icon-btn icon-btn-solid-secondary" title="secondary">
+            <Icon name="pencil" class="w-4 h-4" />
+          </button>
+          <button class="icon-btn icon-btn-solid-accent" title="accent">
+            <Icon name="pencil" class="w-4 h-4" />
+          </button>
+          <button class="icon-btn icon-btn-solid-info" title="info">
+            <Icon name="info" class="w-4 h-4" />
+          </button>
+          <button class="icon-btn icon-btn-solid-success" title="success">
+            <Icon name="check" class="w-4 h-4" />
+          </button>
+          <button class="icon-btn icon-btn-solid-warning" title="warning">
+            <Icon name="alert-triangle" class="w-4 h-4" />
+          </button>
+          <button class="icon-btn icon-btn-solid-error" title="error">
+            <Icon name="trash" class="w-4 h-4" />
+          </button>
+        </div>
+        <details class="rounded-box border border-base-300 p-3">
+          <summary class="cursor-pointer text-sm font-medium">Markup contoh</summary>
+          <pre class="mt-2 overflow-x-auto rounded-box bg-base-200 p-3 text-xs"><code>&lt;button class="icon-btn icon-btn-solid"&gt;...&lt;/button&gt;
+&lt;button class="icon-btn icon-btn-solid-primary"&gt;...&lt;/button&gt;
+&lt;button class="icon-btn icon-btn-solid-secondary"&gt;...&lt;/button&gt;
+&lt;button class="icon-btn icon-btn-solid-accent"&gt;...&lt;/button&gt;
+&lt;button class="icon-btn icon-btn-solid-info"&gt;...&lt;/button&gt;
+&lt;button class="icon-btn icon-btn-solid-success"&gt;...&lt;/button&gt;
+&lt;button class="icon-btn icon-btn-solid-warning"&gt;...&lt;/button&gt;
+&lt;button class="icon-btn icon-btn-solid-error"&gt;...&lt;/button&gt;</code></pre>
+        </details>
+      </section>
+
+      <!-- Icon Button Soft -->
+      <section id="icon-btn-soft" class="space-y-3 rounded-box border border-base-300 p-4 scroll-mt-20">
+        <h3 class="text-sm font-semibold uppercase tracking-wide opacity-70">
+          Soft
+        </h3>
+        <div class="flex flex-wrap gap-3">
+          <button class="icon-btn icon-btn-soft" title="default">
+            <Icon name="pencil" class="w-4 h-4" />
+          </button>
+          <button class="icon-btn icon-btn-soft-primary" title="primary">
+            <Icon name="pencil" class="w-4 h-4" />
+          </button>
+          <button class="icon-btn icon-btn-soft-secondary" title="secondary">
+            <Icon name="pencil" class="w-4 h-4" />
+          </button>
+          <button class="icon-btn icon-btn-soft-accent" title="accent">
+            <Icon name="pencil" class="w-4 h-4" />
+          </button>
+          <button class="icon-btn icon-btn-soft-info" title="info">
+            <Icon name="info" class="w-4 h-4" />
+          </button>
+          <button class="icon-btn icon-btn-soft-success" title="success">
+            <Icon name="check" class="w-4 h-4" />
+          </button>
+          <button class="icon-btn icon-btn-soft-warning" title="warning">
+            <Icon name="alert-triangle" class="w-4 h-4" />
+          </button>
+          <button class="icon-btn icon-btn-soft-error" title="error">
+            <Icon name="trash" class="w-4 h-4" />
+          </button>
+        </div>
+        <details class="rounded-box border border-base-300 p-3">
+          <summary class="cursor-pointer text-sm font-medium">Markup contoh</summary>
+          <pre class="mt-2 overflow-x-auto rounded-box bg-base-200 p-3 text-xs"><code>&lt;button class="icon-btn icon-btn-soft"&gt;...&lt;/button&gt;
+&lt;button class="icon-btn icon-btn-soft-primary"&gt;...&lt;/button&gt;
+&lt;button class="icon-btn icon-btn-soft-secondary"&gt;...&lt;/button&gt;
+&lt;button class="icon-btn icon-btn-soft-accent"&gt;...&lt;/button&gt;
+&lt;button class="icon-btn icon-btn-soft-info"&gt;...&lt;/button&gt;
+&lt;button class="icon-btn icon-btn-soft-success"&gt;...&lt;/button&gt;
+&lt;button class="icon-btn icon-btn-soft-warning"&gt;...&lt;/button&gt;
+&lt;button class="icon-btn icon-btn-soft-error"&gt;...&lt;/button&gt;</code></pre>
+        </details>
+      </section>
+
+      <!-- Icon Button Ghost -->
+      <section id="icon-btn-ghost" class="space-y-3 rounded-box border border-base-300 p-4 scroll-mt-20">
+        <h3 class="text-sm font-semibold uppercase tracking-wide opacity-70">
+          Ghost
+        </h3>
+        <div class="flex flex-wrap gap-3">
+          <button class="icon-btn icon-btn-ghost" title="default">
+            <Icon name="pencil" class="w-4 h-4" />
+          </button>
+          <button class="icon-btn icon-btn-ghost-primary" title="primary">
+            <Icon name="pencil" class="w-4 h-4" />
+          </button>
+          <button class="icon-btn icon-btn-ghost-secondary" title="secondary">
+            <Icon name="pencil" class="w-4 h-4" />
+          </button>
+          <button class="icon-btn icon-btn-ghost-accent" title="accent">
+            <Icon name="pencil" class="w-4 h-4" />
+          </button>
+          <button class="icon-btn icon-btn-ghost-info" title="info">
+            <Icon name="info" class="w-4 h-4" />
+          </button>
+          <button class="icon-btn icon-btn-ghost-success" title="success">
+            <Icon name="check" class="w-4 h-4" />
+          </button>
+          <button class="icon-btn icon-btn-ghost-warning" title="warning">
+            <Icon name="alert-triangle" class="w-4 h-4" />
+          </button>
+          <button class="icon-btn icon-btn-ghost-error" title="error">
+            <Icon name="trash" class="w-4 h-4" />
+          </button>
+        </div>
+        <details class="rounded-box border border-base-300 p-3">
+          <summary class="cursor-pointer text-sm font-medium">Markup contoh</summary>
+          <pre class="mt-2 overflow-x-auto rounded-box bg-base-200 p-3 text-xs"><code>&lt;button class="icon-btn icon-btn-ghost"&gt;...&lt;/button&gt;
+&lt;button class="icon-btn icon-btn-ghost-primary"&gt;...&lt;/button&gt;
+&lt;button class="icon-btn icon-btn-ghost-secondary"&gt;...&lt;/button&gt;
+&lt;button class="icon-btn icon-btn-ghost-accent"&gt;...&lt;/button&gt;
+&lt;button class="icon-btn icon-btn-ghost-info"&gt;...&lt;/button&gt;
+&lt;button class="icon-btn icon-btn-ghost-success"&gt;...&lt;/button&gt;
+&lt;button class="icon-btn icon-btn-ghost-warning"&gt;...&lt;/button&gt;
+&lt;button class="icon-btn icon-btn-ghost-error"&gt;...&lt;/button&gt;</code></pre>
+        </details>
+      </section>
     </div>
+
+    <FloatingTOC :items="tocItems" />
   </div>
 </template>
 

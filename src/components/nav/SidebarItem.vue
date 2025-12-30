@@ -3,7 +3,7 @@
     <button
       class="relative w-full flex items-center gap-3 h-field rounded-field px-3 border border-transparent"
       :class="
-        open ? 'bg-base-200' : 'hover:bg-gray-200/50 dark:hover:bg-gray-200/20'
+        open ? 'bg-primary/10 text-primary' : 'hover:bg-gray-300/50 dark:hover:bg-gray-200/20'
       "
       :aria-expanded="open"
       @click="toggleGroup(item)"
@@ -47,7 +47,7 @@
     :class="
       active
         ? 'bg-primary/10 text-primary border-l-[5px] border-primary pl-[10px]'
-        : 'hover:bg-gray-200/30'
+        : 'hover:bg-gray-300/50 dark:hover:bg-gray-200/20'
     "
     :aria-current="active ? 'page' : undefined"
     @mouseenter="(e) => showTip(e, item.label)"

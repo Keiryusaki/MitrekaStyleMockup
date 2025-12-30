@@ -21,10 +21,10 @@
       <SidebarElegant :collapsed="ui.sidebarCollapsed" />
     </aside>
 
-    <!-- Floating collapse toggle button -->
+    <!-- Floating collapse toggle button - elegant pill style -->
     <button
-      class="hidden md:flex fixed z-20 w-6 h-6 items-center justify-center rounded-full bg-base-100 border border-base-300 shadow-md hover:bg-base-200 transition-colors"
-      :class="ui.sidebarCollapsed ? 'left-[68px]' : 'left-[252px]'"
+      class="hidden md:flex fixed z-20 w-5 h-10 items-center justify-center rounded-r-full bg-base-100 border border-l-0 border-base-300 shadow-md sidebar-collapse-btn transition-all duration-200"
+      :class="ui.sidebarCollapsed ? 'left-[80px]' : 'left-[264px]'"
       style="top: 80px;"
       @click="ui.toggleSidebarCollapse()"
       @mouseenter="(e: MouseEvent) => showTip(e, ui.sidebarCollapsed ? 'Expand' : 'Collapse')"
@@ -32,7 +32,7 @@
     >
       <Icon
         :name="ui.sidebarCollapsed ? 'chevron-right' : 'chevron-left'"
-        class="w-4 h-4"
+        class="w-3.5 h-3.5 transition-transform duration-200"
       />
     </button>
 

@@ -1,5 +1,45 @@
 [
   {
+    "version": "2.1.0",
+    "date": "2025-12-30",
+    "label": "Feature",
+    "items": [
+      {
+        "type": "Added",
+        "text": "LoadingLogo Component - animasi dots morph ke logo dengan text support",
+        "href": "/loading"
+      },
+      {
+        "type": "Added",
+        "text": "Icon Button System - variants: solid, soft, ghost dengan sizes xs/sm/md/lg",
+        "href": "/buttons"
+      },
+      {
+        "type": "Added",
+        "text": "Icons baru: info, alert-triangle"
+      },
+      {
+        "type": "Changed",
+        "text": "Sidebar Navigation - hover states, Discord-style active indicator, custom scrollbar"
+      },
+      {
+        "type": "Changed",
+        "text": "LoadingOverlay - glass effect dengan backdrop blur, hold 1.5 detik"
+      },
+      {
+        "type": "Changed",
+        "text": "Icon rename: edit → pencil, delete → trash"
+      },
+      {
+        "type": "Fixed",
+        "text": "CSS specificity issues pada button variants di dark mode"
+      }
+    ],
+    "assets": [
+      { "name": "tailwind.css (2.1)", "href": "/releases/tailwind/tailwind.v2.1.css" }
+    ]
+  },
+  {
     "version": "2.0.0",
     "date": "2025-12-18",
     "label": "Major",

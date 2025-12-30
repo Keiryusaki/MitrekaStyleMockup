@@ -11,7 +11,7 @@
       <Sidebar />
 
       <!-- Main Content -->
-      <main class="overflow-y-auto min-h-0 p-4 md:p-6 bg-base-200">
+      <main ref="mainContent" class="overflow-y-auto min-h-0 p-4 md:p-6 bg-base-200">
         <Breadcrumbs class="mb-4" />
         <router-view />
       </main>
@@ -22,10 +22,22 @@
 </template>
 
 <script setup lang="ts">
+import { ref, watch } from "vue";
+import { useRoute } from "vue-router";
 import Sidebar from "@/components/nav/Sidebar.vue";
 import Topbar from "@/components/nav/Topbar.vue";
 import Breadcrumbs from "@/components/nav/Breadcrumbs.vue";
 import Toasts from "@/components/feedback/Toasts.vue";
 import { useUi } from "@/stores/ui";
+
 const ui = useUi();
+const route = useRoute();
+const mainContent = ref<HTMLElement | null>(null);
+
+// Scroll ke atas tiap pindah halaman
+watch(() => route.path, () => {
+  if (mainContent.value) {
+    mainContent.value.scrollTo({ top: 0 });
+  }
+});
 </script>

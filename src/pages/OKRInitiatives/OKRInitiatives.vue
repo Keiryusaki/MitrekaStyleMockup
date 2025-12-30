@@ -189,18 +189,11 @@ const downloadFile = async (filename: string) => {
                     </td>
                     <td class="px-4 py-4 align-top">
                       <div class="flex justify-end gap-2">
-                        <button
-                          type="button"
-                          class="btn btn-warning btn-xs inline-flex items-center justify-center p-1"
-                          title="Edit"
-                        >
-                          <Icon name="edit" /></button
-                        ><button
-                          type="button"
-                          class="btn btn-error btn-xs inline-flex items-center justify-center p-1"
-                          title="Hapus"
-                        >
-                          <Icon name="delete" />
+                        <button type="button" class="icon-btn icon-btn-solid-warning icon-btn-xs" title="Edit">
+                          <Icon name="pencil" class="w-4 h-4" />
+                        </button>
+                        <button type="button" class="icon-btn icon-btn-solid-error icon-btn-xs" title="Hapus">
+                          <Icon name="trash" class="w-4 h-4" />
                         </button>
                       </div>
                     </td>
@@ -227,18 +220,11 @@ const downloadFile = async (filename: string) => {
                     </td>
                     <td class="px-4 py-4 align-top">
                       <div class="flex justify-end gap-2">
-                        <button
-                          type="button"
-                          class="btn btn-warning btn-xs inline-flex items-center justify-center p-1"
-                          title="Edit"
-                        >
-                          <Icon name="edit" /></button
-                        ><button
-                          type="button"
-                          class="btn btn-error btn-xs inline-flex items-center justify-center p-1"
-                          title="Hapus"
-                        >
-                          <Icon name="delete" />
+                        <button type="button" class="icon-btn icon-btn-solid-warning icon-btn-xs" title="Edit">
+                          <Icon name="pencil" class="w-4 h-4" />
+                        </button>
+                        <button type="button" class="icon-btn icon-btn-solid-error icon-btn-xs" title="Hapus">
+                          <Icon name="trash" class="w-4 h-4" />
                         </button>
                       </div>
                     </td>
@@ -382,18 +368,11 @@ const downloadFile = async (filename: string) => {
                     </td>
                     <td class="px-4 py-4 align-top">
                       <div class="flex justify-end gap-2">
-                        <button
-                          type="button"
-                          class="btn btn-warning btn-xs inline-flex items-center justify-center p-1"
-                          title="Edit"
-                        >
-                          <Icon name="edit" /></button
-                        ><button
-                          type="button"
-                          class="btn btn-error btn-xs inline-flex items-center justify-center p-1"
-                          title="Hapus"
-                        >
-                          <Icon name="delete" />
+                        <button type="button" class="icon-btn icon-btn-solid-warning icon-btn-xs" title="Edit">
+                          <Icon name="pencil" class="w-4 h-4" />
+                        </button>
+                        <button type="button" class="icon-btn icon-btn-solid-error icon-btn-xs" title="Hapus">
+                          <Icon name="trash" class="w-4 h-4" />
                         </button>
                       </div>
                     </td>
@@ -420,18 +399,11 @@ const downloadFile = async (filename: string) => {
                     </td>
                     <td class="px-4 py-4 align-top">
                       <div class="flex justify-end gap-2">
-                        <button
-                          type="button"
-                          class="btn btn-warning btn-xs inline-flex items-center justify-center p-1"
-                          title="Edit"
-                        >
-                          <Icon name="edit" /></button
-                        ><button
-                          type="button"
-                          class="btn btn-error btn-xs inline-flex items-center justify-center p-1"
-                          title="Hapus"
-                        >
-                          <Icon name="delete" />
+                        <button type="button" class="icon-btn icon-btn-solid-warning icon-btn-xs" title="Edit">
+                          <Icon name="pencil" class="w-4 h-4" />
+                        </button>
+                        <button type="button" class="icon-btn icon-btn-solid-error icon-btn-xs" title="Hapus">
+                          <Icon name="trash" class="w-4 h-4" />
                         </button>
                       </div>
                     </td>
@@ -513,18 +485,11 @@ const downloadFile = async (filename: string) => {
                     </td>
                     <td class="px-4 py-4 align-top">
                       <div class="flex justify-end gap-2">
-                        <button
-                          type="button"
-                          class="btn btn-warning btn-xs inline-flex items-center justify-center p-1"
-                          title="Edit"
-                        >
-                          <Icon name="edit" /></button
-                        ><button
-                          type="button"
-                          class="btn btn-error btn-xs inline-flex items-center justify-center p-1"
-                          title="Hapus"
-                        >
-                          <Icon name="delete" />
+                        <button type="button" class="icon-btn icon-btn-solid-warning icon-btn-xs" title="Edit">
+                          <Icon name="pencil" class="w-4 h-4" />
+                        </button>
+                        <button type="button" class="icon-btn icon-btn-solid-error icon-btn-xs" title="Hapus">
+                          <Icon name="trash" class="w-4 h-4" />
                         </button>
                       </div>
                     </td>
@@ -551,18 +516,11 @@ const downloadFile = async (filename: string) => {
                     </td>
                     <td class="px-4 py-4 align-top">
                       <div class="flex justify-end gap-2">
-                        <button
-                          type="button"
-                          class="btn btn-warning btn-xs inline-flex items-center justify-center p-1"
-                          title="Edit"
-                        >
-                          <Icon name="edit" /></button
-                        ><button
-                          type="button"
-                          class="btn btn-error btn-xs inline-flex items-center justify-center p-1"
-                          title="Hapus"
-                        >
-                          <Icon name="delete" />
+                        <button type="button" class="icon-btn icon-btn-solid-warning icon-btn-xs" title="Edit">
+                          <Icon name="pencil" class="w-4 h-4" />
+                        </button>
+                        <button type="button" class="icon-btn icon-btn-solid-error icon-btn-xs" title="Hapus">
+                          <Icon name="trash" class="w-4 h-4" />
                         </button>
                       </div>
                     </td>

@@ -51,7 +51,7 @@ export const useLoadingStore = defineStore("loading", {
     },
 
     /** loading saat navigasi router */
-    startNav(msg = "Memuat halaman…") {
+    startNav(msg = "Memuat halaman") {
       this.cancelHide();
       this.navPending = true;
       this.message = msg;

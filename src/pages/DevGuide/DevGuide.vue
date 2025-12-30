@@ -2,8 +2,30 @@
 import { ref } from "vue";
 import SelectDropdown from "@/components/controls/SelectDropdown.vue";
 import Modal from "@/components/feedback/Modal.vue";
+import FloatingTOC, { type TOCItem } from "@/components/FloatingTOC.vue";
 
 const copiedId = ref<string | null>(null);
+
+const tocItems: TOCItem[] = [
+  { id: 'installation', label: '1. Installation' },
+  { id: 'import', label: '2. Import CSS' },
+  { id: 'buttons', label: '3. Buttons' },
+  { id: 'icon-buttons', label: '4. Icon Buttons' },
+  { id: 'inputs', label: '5. Inputs' },
+  { id: 'badges', label: '6. Badges' },
+  { id: 'alerts', label: '7. Alerts' },
+  { id: 'cards', label: '8. Cards' },
+  { id: 'collapse', label: '9. Collapse' },
+  { id: 'accordion', label: '10. Accordion' },
+  { id: 'switches', label: '11. Switch/Checkbox/Radio' },
+  { id: 'selects', label: '12. Select' },
+  { id: 'tables', label: '13. Tables' },
+  { id: 'modal', label: '14. Modal' },
+  { id: 'loading', label: '15. Loading' },
+  { id: 'vue', label: '16. Vue Components' },
+  { id: 'composables', label: '17. Composables' },
+  { id: 'theming', label: '18. Theming' },
+];
 
 // Demo select values
 const selectDemo = ref<string | number | null>("opt1");
@@ -16,6 +38,10 @@ const selectPrimaryDemo = ref<string | number | null>("primary");
 const selectPrimaryOptions = [
   { value: "primary", label: "Primary select" },
 ];
+
+// Demo collapse/accordion
+const collapseOpen = ref(true);
+const accordionOpen = ref(0); // 0 = first item open
 
 const copyCode = async (code: string, id: string) => {
   await navigator.clipboard.writeText(code);
@@ -88,6 +114,42 @@ import "@keiryusaki/mitreka-ui/css/components/badge.css";`,
   <h3 class="font-semibold mb-2">Card Title</h3>
   <p class="text-sm opacity-80">Card content goes here.</p>
 </div>`,
+  collapseBasic: `<div class="collapse is-open">
+  <div class="collapse-header" onclick="this.parentElement.classList.toggle('is-open')">
+    <span class="collapse-title font-medium">Click to toggle</span>
+    <svg class="collapse-icon" viewBox="0 0 20 20" fill="currentColor">
+      <path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z"/>
+    </svg>
+  </div>
+  <div class="collapse-content">
+    <div class="collapse-content-inner">
+      <div class="collapse-body">
+        Collapsible content here.
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Variants: collapse-borderless, collapse-ghost -->`,
+  accordionBasic: `<div class="accordion">
+  <div class="accordion-item is-open">
+    <div class="accordion-header" onclick="...">
+      <span>Item 1</span>
+      <svg class="accordion-icon">...</svg>
+    </div>
+    <div class="accordion-content">
+      <div class="accordion-content-inner">
+        <div class="accordion-body">Content 1</div>
+      </div>
+    </div>
+  </div>
+  <div class="accordion-item">
+    <div class="accordion-header">...</div>
+    <div class="accordion-content">...</div>
+  </div>
+</div>
+
+<!-- Variants: accordion-bordered, accordion-ghost -->`,
   switchBasic: `<!-- Switch -->
 <label class="flex items-center gap-2 cursor-pointer">
   <input type="checkbox" class="switch" />
@@ -198,6 +260,41 @@ import { useTheme } from "@keiryusaki/mitreka-ui/composables";
 
 const { setTheme } = useTheme();
 setTheme("dark");  // "light" | "dark" | "system"`,
+  iconButtonBasic: `<!-- Solid variants -->
+<button class="icon-btn icon-btn-solid-primary icon-btn-sm">
+  <Icon name="pencil" class="w-4 h-4" />
+</button>
+<button class="icon-btn icon-btn-solid-error icon-btn-sm">
+  <Icon name="trash" class="w-4 h-4" />
+</button>
+
+<!-- Soft variants -->
+<button class="icon-btn icon-btn-soft-primary icon-btn-sm">
+  <Icon name="pencil" class="w-4 h-4" />
+</button>
+
+<!-- Ghost variants -->
+<button class="icon-btn icon-btn-ghost-primary icon-btn-sm">
+  <Icon name="pencil" class="w-4 h-4" />
+</button>
+
+<!-- Sizes: icon-btn-xs, icon-btn-sm, icon-btn-md, icon-btn-lg -->`,
+  loadingBasic: `<script setup>
+import LoadingLogo from '@/components/feedback/LoadingLogo.vue';
+<\/script>
+
+<template>
+  <!-- Basic -->
+  <LoadingLogo />
+
+  <!-- Custom size -->
+  <LoadingLogo :size="120" />
+
+  <!-- With text (animated dots) -->
+  <LoadingLogo :size="80" text="Memuat" />
+</template>
+
+<!-- Props: size (number, default: 80), text (string, default: '') -->`,
 };
 
 // Modal demo
@@ -221,17 +318,19 @@ const showModal = ref(false);
         <li><a href="#installation" class="hover:text-primary">1. Installation</a></li>
         <li><a href="#import" class="hover:text-primary">2. Import CSS</a></li>
         <li><a href="#buttons" class="hover:text-primary">3. Buttons</a></li>
-        <li><a href="#inputs" class="hover:text-primary">4. Inputs</a></li>
-        <li><a href="#badges" class="hover:text-primary">5. Badges</a></li>
-        <li><a href="#alerts" class="hover:text-primary">6. Alerts</a></li>
-        <li><a href="#cards" class="hover:text-primary">7. Cards</a></li>
-        <li><a href="#switches" class="hover:text-primary">8. Switch/Checkbox</a></li>
-        <li><a href="#selects" class="hover:text-primary">9. Select</a></li>
-        <li><a href="#tables" class="hover:text-primary">10. Tables</a></li>
-        <li><a href="#modal" class="hover:text-primary">11. Modal</a></li>
-        <li><a href="#vue" class="hover:text-primary">12. Vue Components</a></li>
-        <li><a href="#composables" class="hover:text-primary">13. Composables</a></li>
-        <li><a href="#theming" class="hover:text-primary">14. Theming</a></li>
+        <li><a href="#icon-buttons" class="hover:text-primary">4. Icon Buttons</a></li>
+        <li><a href="#inputs" class="hover:text-primary">5. Inputs</a></li>
+        <li><a href="#badges" class="hover:text-primary">6. Badges</a></li>
+        <li><a href="#alerts" class="hover:text-primary">7. Alerts</a></li>
+        <li><a href="#cards" class="hover:text-primary">8. Cards</a></li>
+        <li><a href="#switches" class="hover:text-primary">9. Switch/Checkbox</a></li>
+        <li><a href="#selects" class="hover:text-primary">10. Select</a></li>
+        <li><a href="#tables" class="hover:text-primary">11. Tables</a></li>
+        <li><a href="#modal" class="hover:text-primary">12. Modal</a></li>
+        <li><a href="#loading" class="hover:text-primary">13. Loading</a></li>
+        <li><a href="#vue" class="hover:text-primary">14. Vue Components</a></li>
+        <li><a href="#composables" class="hover:text-primary">15. Composables</a></li>
+        <li><a href="#theming" class="hover:text-primary">16. Theming</a></li>
       </ul>
     </nav>
 
@@ -401,10 +500,45 @@ const showModal = ref(false);
       </div>
     </section>
 
-    <!-- 4. Inputs -->
+    <!-- 4. Icon Buttons -->
+    <section id="icon-buttons" class="card p-6 space-y-4">
+      <h2 class="text-lg font-semibold border-b border-base-300 pb-2">
+        4. Icon Buttons
+      </h2>
+      <p class="text-sm opacity-80">
+        Button khusus untuk icon dengan variants dan sizes. 
+        Lihat dokumentasi lengkap di <router-link to="/buttons" class="text-primary underline">Buttons</router-link>.
+      </p>
+
+      <div class="space-y-3">
+        <h3 class="font-medium">Variants</h3>
+        <div class="flex flex-wrap items-center gap-2">
+          <button class="icon-btn icon-btn-solid-primary icon-btn-sm"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/></svg></button>
+          <button class="icon-btn icon-btn-soft-success icon-btn-sm"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg></button>
+          <button class="icon-btn icon-btn-ghost-error icon-btn-sm"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg></button>
+        </div>
+        <div class="code-block">
+          <button class="copy-btn" @click="copyCode(codes.iconButtonBasic, 'iconButtonBasic')">
+            {{ copiedId === 'iconButtonBasic' ? '✓ Copied!' : 'Copy' }}
+          </button>
+          <pre><code>{{ codes.iconButtonBasic }}</code></pre>
+        </div>
+      </div>
+
+      <div class="text-sm">
+        <p class="font-medium mb-2">Available Classes:</p>
+        <ul class="list-disc ml-5 space-y-1 opacity-80">
+          <li><strong>Variants:</strong> <code class="code-inline">icon-btn-solid-{color}</code>, <code class="code-inline">icon-btn-soft-{color}</code>, <code class="code-inline">icon-btn-ghost-{color}</code></li>
+          <li><strong>Colors:</strong> primary, secondary, accent, info, success, warning, error</li>
+          <li><strong>Sizes:</strong> <code class="code-inline">icon-btn-xs</code>, <code class="code-inline">icon-btn-sm</code>, <code class="code-inline">icon-btn-md</code>, <code class="code-inline">icon-btn-lg</code></li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- 5. Inputs -->
     <section id="inputs" class="card p-6 space-y-4">
       <h2 class="text-lg font-semibold border-b border-base-300 pb-2">
-        4. Inputs
+        5. Inputs
       </h2>
 
       <div class="space-y-3">
@@ -541,10 +675,138 @@ const showModal = ref(false);
       </div>
     </section>
 
-    <!-- 8. Switch/Checkbox/Radio -->
+    <!-- 8. Collapse -->
+    <section id="collapse" class="card p-6 space-y-4">
+      <h2 class="text-lg font-semibold border-b border-base-300 pb-2">
+        8. Collapse
+      </h2>
+
+      <div class="space-y-3">
+        <div class="max-w-md">
+          <div 
+            class="collapse" 
+            :class="{ 'is-open': collapseOpen }"
+            style="visibility: visible !important;"
+          >
+            <div 
+              class="collapse-header" 
+              @click="collapseOpen = !collapseOpen"
+              style="display: flex; align-items: center; justify-content: space-between; padding: 0.75rem 1rem; background: var(--color-base-100); border: 1px solid var(--color-base-300); border-radius: 0.5rem; cursor: pointer;"
+              :style="collapseOpen ? 'border-radius: 0.5rem 0.5rem 0 0;' : ''"
+            >
+              <span class="font-medium">Click to toggle</span>
+              <svg 
+                class="w-5 h-5 transition-transform duration-200" 
+                :style="{ transform: collapseOpen ? 'rotate(180deg)' : 'rotate(0deg)' }" 
+                viewBox="0 0 20 20" 
+                fill="currentColor"
+              >
+                <path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z"/>
+              </svg>
+            </div>
+            <div 
+              style="display: grid; transition: grid-template-rows 0.2s ease-out;"
+              :style="{ gridTemplateRows: collapseOpen ? '1fr' : '0fr' }"
+            >
+              <div style="overflow: hidden;">
+                <div style="padding: 1rem; border: 1px solid var(--color-base-300); border-top: none; border-radius: 0 0 0.5rem 0.5rem;">
+                  <p class="text-sm opacity-80">Collapsible content goes here.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="code-block">
+          <button class="copy-btn" @click="copyCode(codes.collapseBasic, 'collapseBasic')">
+            {{ copiedId === 'collapseBasic' ? '✓ Copied!' : 'Copy' }}
+          </button>
+          <pre><code>{{ codes.collapseBasic }}</code></pre>
+        </div>
+        <p class="text-sm opacity-70">
+          <strong>Tip:</strong> Lihat dokumentasi lengkap di halaman 
+          <a href="/collapse" class="text-primary hover:underline">Collapse</a>.
+        </p>
+      </div>
+    </section>
+
+    <!-- 9. Accordion -->
+    <section id="accordion" class="card p-6 space-y-4">
+      <h2 class="text-lg font-semibold border-b border-base-300 pb-2">
+        9. Accordion
+      </h2>
+
+      <div class="space-y-3">
+        <div class="max-w-md space-y-1">
+          <!-- Item 1 -->
+          <div class="card p-0 overflow-hidden">
+            <div 
+              class="px-4 py-3 font-medium cursor-pointer flex items-center"
+              :class="accordionOpen === 0 ? 'bg-primary text-primary-content' : 'hover:bg-base-200'"
+              @click="accordionOpen = accordionOpen === 0 ? -1 : 0"
+            >
+              <span class="flex-1">Accordion Item 1</span>
+              <svg 
+                class="w-4 h-4 transition-transform duration-200" 
+                :style="{ transform: accordionOpen === 0 ? 'rotate(180deg)' : 'rotate(0deg)' }"
+                viewBox="0 0 20 20" 
+                fill="currentColor"
+              >
+                <path d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z"/>
+              </svg>
+            </div>
+            <div 
+              style="display: grid; transition: grid-template-rows 0.2s ease-out;"
+              :style="{ gridTemplateRows: accordionOpen === 0 ? '1fr' : '0fr' }"
+            >
+              <div style="overflow: hidden;">
+                <div class="px-4 py-3 text-sm border-t border-base-200">Content for item 1</div>
+              </div>
+            </div>
+          </div>
+          <!-- Item 2 -->
+          <div class="card p-0 overflow-hidden">
+            <div 
+              class="px-4 py-3 font-medium cursor-pointer flex items-center"
+              :class="accordionOpen === 1 ? 'bg-primary text-primary-content' : 'hover:bg-base-200'"
+              @click="accordionOpen = accordionOpen === 1 ? -1 : 1"
+            >
+              <span class="flex-1">Accordion Item 2</span>
+              <svg 
+                class="w-4 h-4 transition-transform duration-200" 
+                :style="{ transform: accordionOpen === 1 ? 'rotate(180deg)' : 'rotate(0deg)' }"
+                viewBox="0 0 20 20" 
+                fill="currentColor"
+              >
+                <path d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z"/>
+              </svg>
+            </div>
+            <div 
+              style="display: grid; transition: grid-template-rows 0.2s ease-out;"
+              :style="{ gridTemplateRows: accordionOpen === 1 ? '1fr' : '0fr' }"
+            >
+              <div style="overflow: hidden;">
+                <div class="px-4 py-3 text-sm border-t border-base-200">Content for item 2</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="code-block">
+          <button class="copy-btn" @click="copyCode(codes.accordionBasic, 'accordionBasic')">
+            {{ copiedId === 'accordionBasic' ? '✓ Copied!' : 'Copy' }}
+          </button>
+          <pre><code>{{ codes.accordionBasic }}</code></pre>
+        </div>
+        <p class="text-sm opacity-70">
+          <strong>Tip:</strong> Lihat dokumentasi lengkap di halaman 
+          <a href="/accordion" class="text-primary hover:underline">Accordion</a>.
+        </p>
+      </div>
+    </section>
+
+    <!-- 10. Switch/Checkbox/Radio -->
     <section id="switches" class="card p-6 space-y-4">
       <h2 class="text-lg font-semibold border-b border-base-300 pb-2">
-        8. Switch / Checkbox / Radio
+        10. Switch / Checkbox / Radio
       </h2>
 
       <div class="space-y-3">
@@ -585,7 +847,7 @@ const showModal = ref(false);
     <!-- 9. Select -->
     <section id="selects" class="card p-6 space-y-4">
       <h2 class="text-lg font-semibold border-b border-base-300 pb-2">
-        9. Select
+        11. Select
       </h2>
 
       <div class="space-y-3">
@@ -614,7 +876,7 @@ const showModal = ref(false);
     <!-- 10. Tables -->
     <section id="tables" class="card p-6 space-y-4">
       <h2 class="text-lg font-semibold border-b border-base-300 pb-2">
-        10. Tables (ALS Table)
+        12. Tables (ALS Table)
       </h2>
 
       <div class="space-y-3">
@@ -655,7 +917,7 @@ const showModal = ref(false);
     <!-- 11. Modal -->
     <section id="modal" class="card p-6 space-y-4">
       <h2 class="text-lg font-semibold border-b border-base-300 pb-2">
-        11. Modal (Vue Component)
+        13. Modal (Vue Component)
       </h2>
 
       <p class="text-sm opacity-80">
@@ -687,10 +949,48 @@ const showModal = ref(false);
       </Modal>
     </section>
 
-    <!-- 12. Vue Components -->
+    <!-- 15. Loading -->
+    <section id="loading" class="card p-6 space-y-4">
+      <h2 class="text-lg font-semibold border-b border-base-300 pb-2">
+        15. Loading
+      </h2>
+      <p class="text-sm opacity-80">
+        Loading animation dengan dots yang morph ke logo Mitreka. 
+        Lihat dokumentasi lengkap di <router-link to="/loading" class="text-primary underline">Loading</router-link>.
+      </p>
+
+      <div class="space-y-3">
+        <div class="code-block">
+          <button class="copy-btn" @click="copyCode(codes.loadingBasic, 'loadingBasic')">
+            {{ copiedId === 'loadingBasic' ? '✓ Copied!' : 'Copy' }}
+          </button>
+          <pre><code>{{ codes.loadingBasic }}</code></pre>
+        </div>
+      </div>
+
+      <div class="text-sm">
+        <p class="font-medium mb-2">Props:</p>
+        <ul class="list-disc ml-5 space-y-1 opacity-80">
+          <li><code class="code-inline">size</code> - Width logo dalam px (default: 80, base reference: 60px)</li>
+          <li><code class="code-inline">text</code> - Text dengan animated dots di ujung</li>
+        </ul>
+      </div>
+
+      <div class="text-sm">
+        <p class="font-medium mb-2">LoadingOverlay (Global):</p>
+        <p class="opacity-80">Sudah terintegrasi di App.vue. Gunakan store untuk trigger:</p>
+        <div class="code-block mt-2">
+          <pre><code>const loading = useLoadingStore();
+loading.start('Menyimpan data');  // show dengan custom message
+loading.stop();                   // hide</code></pre>
+        </div>
+      </div>
+    </section>
+
+    <!-- 16. Vue Components -->
     <section id="vue" class="card p-6 space-y-4">
       <h2 class="text-lg font-semibold border-b border-base-300 pb-2">
-        12. Vue Components (Optional)
+        16. Vue Components (Optional)
       </h2>
 
       <p class="text-sm opacity-80">
@@ -718,7 +1018,7 @@ const showModal = ref(false);
     <!-- 13. Composables -->
     <section id="composables" class="card p-6 space-y-4">
       <h2 class="text-lg font-semibold border-b border-base-300 pb-2">
-        13. Composables
+        17. Composables
       </h2>
 
       <div class="space-y-3">
@@ -736,7 +1036,7 @@ const showModal = ref(false);
     <!-- 14. Theming -->
     <section id="theming" class="card p-6 space-y-4">
       <h2 class="text-lg font-semibold border-b border-base-300 pb-2">
-        14. Theming
+        18. Theming
       </h2>
 
       <div class="space-y-3">
@@ -780,6 +1080,9 @@ const showModal = ref(false);
         >
       </p>
     </footer>
+
+    <!-- Floating TOC -->
+    <FloatingTOC :items="tocItems" title="Dev Guide" />
   </div>
 </template>
 
@@ -825,5 +1128,10 @@ const showModal = ref(false);
   border-radius: 4px;
   font-size: 0.875em;
   font-family: ui-monospace, monospace;
+}
+
+/* Scroll margin for TOC navigation */
+section[id] {
+  scroll-margin-top: 5rem;
 }
 </style>

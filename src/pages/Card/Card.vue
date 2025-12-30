@@ -1,8 +1,29 @@
 <script setup lang="ts">
 import { ref } from "vue";
 import Card from "@/components/data/Card.vue";
+import FloatingTOC, { type TOCItem } from "@/components/FloatingTOC.vue";
 
 const copiedId = ref<string | null>(null);
+
+const tocItems: TOCItem[] = [
+  { id: 'basic-card', label: 'Basic Card (CSS Class)' },
+  { id: 'card-header', label: 'Card with Header' },
+  { id: 'card-footer', label: 'Card with Footer' },
+  { id: 'full-card', label: 'Full Card' },
+  { id: 'vue-component', label: 'Vue Component' },
+  { id: 'padding-options', label: 'Padding Options' },
+  { id: 'interactive-cards', label: 'Interactive Cards' },
+  { id: 'card-grid', label: 'Card Grid Layout' },
+  { id: 'cover-image', label: 'Card with Cover Image' },
+  { id: 'horizontal-card', label: 'Horizontal Card' },
+  { id: 'featured-card', label: 'Featured Article Card' },
+  { id: 'compact-news', label: 'Compact News Card' },
+  { id: 'avatar-variants', label: 'Avatar Variants' },
+  { id: 'card-use-cases', label: 'Card Use Cases' },
+  { id: 'styling-reference', label: 'Styling Reference' },
+  { id: 'collapsible-card', label: 'Collapsible Card' },
+  { id: 'vue-slots', label: 'Vue Component Slots' },
+];
 
 const copyCode = async (code: string, id: string) => {
   await navigator.clipboard.writeText(code);
@@ -15,6 +36,103 @@ const codes = {
 <div class="card p-4">
   <h3 class="font-semibold mb-2">Card Title</h3>
   <p class="text-sm opacity-80">Card content goes here.</p>
+</div>`,
+  cardCoverImage: `<!-- Card dengan cover image -->
+<div class="card overflow-hidden">
+  <img 
+    src="/images/sample.jpg" 
+    alt="Cover" 
+    class="w-full h-48 object-cover"
+  />
+  <div class="p-4">
+    <span class="badge badge-primary badge-sm mb-2">Technology</span>
+    <h3 class="font-semibold mb-2">Article Title Goes Here</h3>
+    <p class="text-sm opacity-70 line-clamp-2">
+      Lorem ipsum dolor sit amet consectetur adipisicing elit.
+    </p>
+    <div class="flex items-center gap-2 mt-3 pt-3 border-t border-base-300">
+      <!-- Avatar dengan foto -->
+      <img src="/avatar.jpg" alt="Author" class="w-8 h-8 rounded-full object-cover" />
+      
+      <!-- Atau avatar dengan initials -->
+      <!-- <div class="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center text-primary text-xs font-bold">JD</div> -->
+      
+      <div class="text-xs">
+        <p class="font-medium">John Doe</p>
+        <p class="opacity-60">Dec 24, 2024</p>
+      </div>
+    </div>
+  </div>
+</div>`,
+  avatarVariants: `<!-- Avatar dengan foto -->
+<img 
+  src="https://i.pravatar.cc/32?img=12" 
+  alt="User" 
+  class="w-8 h-8 rounded-full object-cover"
+/>
+
+<!-- Avatar dengan initials (fallback) -->
+<div class="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center text-primary text-xs font-bold">
+  JD
+</div>
+
+<!-- Avatar dengan warna berbeda -->
+<div class="w-8 h-8 rounded-full bg-success/20 flex items-center justify-center text-success text-xs font-bold">AS</div>
+<div class="w-8 h-8 rounded-full bg-warning/20 flex items-center justify-center text-warning text-xs font-bold">BW</div>
+<div class="w-8 h-8 rounded-full bg-error/20 flex items-center justify-center text-error text-xs font-bold">MK</div>
+
+<!-- Avatar sizes -->
+<img src="..." class="w-6 h-6 rounded-full" />   <!-- Small -->
+<img src="..." class="w-8 h-8 rounded-full" />   <!-- Default -->
+<img src="..." class="w-10 h-10 rounded-full" /> <!-- Medium -->
+<img src="..." class="w-12 h-12 rounded-full" /> <!-- Large -->`,
+  cardHorizontal: `<!-- Card horizontal dengan image di kiri -->
+<div class="card flex flex-col sm:flex-row overflow-hidden">
+  <img 
+    src="/images/sample.jpg" 
+    alt="Thumbnail" 
+    class="w-full sm:w-40 h-32 sm:h-auto object-cover"
+  />
+  <div class="p-4 flex-1">
+    <span class="badge badge-soft-info badge-sm mb-2">News</span>
+    <h4 class="font-semibold mb-1">Horizontal Card Title</h4>
+    <p class="text-sm opacity-70 line-clamp-2">
+      Short description for the horizontal card layout.
+    </p>
+    <p class="text-xs opacity-50 mt-2">2 hours ago</p>
+  </div>
+</div>`,
+  cardFeatured: `<!-- Featured article card (large) -->
+<div class="card overflow-hidden">
+  <div class="relative">
+    <img 
+      src="/images/featured.jpg" 
+      alt="Featured" 
+      class="w-full h-64 object-cover"
+    />
+    <div class="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent"></div>
+    <div class="absolute bottom-0 left-0 right-0 p-6 text-white">
+      <span class="badge badge-primary badge-sm mb-2">Featured</span>
+      <h2 class="text-xl font-bold mb-2">Featured Article Title</h2>
+      <p class="text-sm opacity-90 line-clamp-2">
+        Featured article description goes here with more details.
+      </p>
+    </div>
+  </div>
+</div>`,
+  cardCompact: `<!-- Compact news card -->
+<div class="card p-3 flex gap-3">
+  <img 
+    src="/images/thumb.jpg" 
+    alt="Thumbnail" 
+    class="w-20 h-20 rounded-lg object-cover shrink-0"
+  />
+  <div class="flex-1 min-w-0">
+    <h4 class="font-medium text-sm line-clamp-2 mb-1">
+      Compact Card Title Here
+    </h4>
+    <p class="text-xs opacity-60">3 min read</p>
+  </div>
 </div>`,
   cssWithHeader: `<div class="card">
   <div class="p-4 border-b border-base-300">
@@ -110,6 +228,39 @@ const codes = {
   <div class="card p-4">Card 2</div>
   <div class="card p-4">Card 3</div>
 </div>`,
+  collapsibleCss: `<!-- Collapsible Card dengan CSS -->
+<div class="card card-collapsible p-4">
+  <div class="card-header card-header-collapsible" onclick="this.nextElementSibling.classList.toggle('is-open'); this.querySelector('.card-collapse-icon').classList.toggle('is-open')">
+    <div class="card-title">
+      <h3 class="font-semibold">Collapsible Card</h3>
+    </div>
+    <svg class="card-collapse-icon is-open" viewBox="0 0 20 20" fill="currentColor" style="width:1.25rem;height:1.25rem">
+      <path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z" clip-rule="evenodd"/>
+    </svg>
+  </div>
+  <div class="card-body-wrapper is-open">
+    <div class="card-body-inner">
+      <p class="text-sm opacity-80">
+        Content yang bisa di-collapse. Klik header untuk toggle.
+      </p>
+    </div>
+  </div>
+</div>`,
+  collapsibleVue: `<!-- Vue Component -->
+import { Card } from "@keiryusaki/mitreka-ui/vue";
+
+<Card collapsible :default-open="true">
+  <template #title>
+    <h3 class="font-semibold">Collapsible Card</h3>
+  </template>
+  <p>Content yang bisa di-collapse...</p>
+</Card>
+
+<!-- With v-model -->
+<Card collapsible v-model="isOpen">
+  <template #title>Card Title</template>
+  Content...
+</Card>`,
 };
 
 const downloadFile = async () => {
@@ -151,7 +302,7 @@ const downloadFile = async () => {
     </section>
 
     <!-- CSS Class Basic -->
-    <section class="card p-6 space-y-4">
+    <section id="basic-card" class="card p-6 space-y-4">
       <h2 class="text-lg font-semibold border-b border-base-300 pb-2">
         Basic Card (CSS Class)
       </h2>
@@ -175,7 +326,7 @@ const downloadFile = async () => {
     </section>
 
     <!-- Card with Header -->
-    <section class="card p-6 space-y-4">
+    <section id="card-header" class="card p-6 space-y-4">
       <h2 class="text-lg font-semibold border-b border-base-300 pb-2">
         Card with Header
       </h2>
@@ -200,7 +351,7 @@ const downloadFile = async () => {
     </section>
 
     <!-- Card with Footer -->
-    <section class="card p-6 space-y-4">
+    <section id="card-footer" class="card p-6 space-y-4">
       <h2 class="text-lg font-semibold border-b border-base-300 pb-2">
         Card with Footer
       </h2>
@@ -227,7 +378,7 @@ const downloadFile = async () => {
     </section>
 
     <!-- Full Card -->
-    <section class="card p-6 space-y-4">
+    <section id="full-card" class="card p-6 space-y-4">
       <h2 class="text-lg font-semibold border-b border-base-300 pb-2">
         Full Card (Header + Body + Footer)
       </h2>
@@ -257,7 +408,7 @@ const downloadFile = async () => {
     </section>
 
     <!-- Vue Component -->
-    <section class="card p-6 space-y-4">
+    <section id="vue-component" class="card p-6 space-y-4">
       <h2 class="text-lg font-semibold border-b border-base-300 pb-2">
         Vue Component
       </h2>
@@ -290,7 +441,7 @@ const downloadFile = async () => {
     </section>
 
     <!-- Padding Options -->
-    <section class="card p-6 space-y-4">
+    <section id="padding-options" class="card p-6 space-y-4">
       <h2 class="text-lg font-semibold border-b border-base-300 pb-2">
         Padding Options
       </h2>
@@ -316,7 +467,7 @@ const downloadFile = async () => {
     </section>
 
     <!-- Interactive Cards -->
-    <section class="card p-6 space-y-4">
+    <section id="interactive-cards" class="card p-6 space-y-4">
       <h2 class="text-lg font-semibold border-b border-base-300 pb-2">
         Interactive Cards
       </h2>
@@ -376,7 +527,7 @@ const downloadFile = async () => {
     </section>
 
     <!-- Card Grid -->
-    <section class="card p-6 space-y-4">
+    <section id="card-grid" class="card p-6 space-y-4">
       <h2 class="text-lg font-semibold border-b border-base-300 pb-2">
         Card Grid Layout
       </h2>
@@ -404,8 +555,347 @@ const downloadFile = async () => {
       </div>
     </section>
 
+    <!-- Card with Cover Image -->
+    <section id="cover-image" class="card p-6 space-y-4">
+      <h2 class="text-lg font-semibold border-b border-base-300 pb-2">
+        Card with Cover Image (Article/News)
+      </h2>
+      <p class="text-sm opacity-80">
+        Card dengan gambar cover di bagian atas - cocok untuk artikel, berita, atau blog post.
+      </p>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <!-- Article Card 1 -->
+        <div class="card overflow-hidden">
+          <img 
+            src="https://picsum.photos/seed/article1/400/300" 
+            alt="Cover" 
+            class="w-full h-48 object-cover"
+          />
+          <div class="p-4">
+            <span class="badge badge-primary badge-sm mb-2">Technology</span>
+            <h3 class="font-semibold mb-2">Getting Started with Vue 3 Composition API</h3>
+            <p class="text-sm opacity-70 line-clamp-2">
+              Learn how to build modern web applications using Vue 3 and the Composition API.
+            </p>
+            <div class="flex items-center gap-2 mt-3 pt-3 border-t border-base-300">
+              <img
+                src="https://i.pravatar.cc/32?img=12"
+                alt="John Doe"
+                class="w-8 h-8 rounded-full object-cover"
+              />
+              <div class="text-xs">
+                <p class="font-medium">John Doe</p>
+                <p class="opacity-60">Dec 24, 2024</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Article Card 2 -->
+        <div class="card overflow-hidden">
+          <img 
+            src="https://picsum.photos/seed/article2/400/300" 
+            alt="Cover" 
+            class="w-full h-48 object-cover"
+          />
+          <div class="p-4">
+            <span class="badge badge-soft-success badge-sm mb-2">Design</span>
+            <h3 class="font-semibold mb-2">UI Design Principles for Modern Apps</h3>
+            <p class="text-sm opacity-70 line-clamp-2">
+              Essential design principles every developer should know when building user interfaces.
+            </p>
+            <div class="flex items-center gap-2 mt-3 pt-3 border-t border-base-300">
+              <img
+                src="https://i.pravatar.cc/32?img=5"
+                alt="Alice Smith"
+                class="w-8 h-8 rounded-full object-cover"
+              />
+              <div class="text-xs">
+                <p class="font-medium">Alice Smith</p>
+                <p class="opacity-60">Dec 22, 2024</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Article Card 3 -->
+        <div class="card overflow-hidden">
+          <img 
+            src="https://picsum.photos/seed/article3/400/300" 
+            alt="Cover" 
+            class="w-full h-48 object-cover"
+          />
+          <div class="p-4">
+            <span class="badge badge-soft-warning badge-sm mb-2">Tutorial</span>
+            <h3 class="font-semibold mb-2">Building Responsive Layouts with Tailwind</h3>
+            <p class="text-sm opacity-70 line-clamp-2">
+              Step-by-step guide to create beautiful responsive layouts using Tailwind CSS.
+            </p>
+            <div class="flex items-center gap-2 mt-3 pt-3 border-t border-base-300">
+              <div class="w-8 h-8 rounded-full bg-warning/20 flex items-center justify-center text-warning text-xs font-bold">BW</div>
+              <div class="text-xs">
+                <p class="font-medium">Bob Wilson</p>
+                <p class="opacity-60">Dec 20, 2024</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="code-block">
+        <button class="copy-btn" @click="copyCode(codes.cardCoverImage, 'cardCoverImage')">
+          {{ copiedId === 'cardCoverImage' ? '✓ Copied!' : 'Copy' }}
+        </button>
+        <pre><code>{{ codes.cardCoverImage }}</code></pre>
+      </div>
+    </section>
+
+    <!-- Card Horizontal -->
+    <section id="horizontal-card" class="card p-6 space-y-4">
+      <h2 class="text-lg font-semibold border-b border-base-300 pb-2">
+        Horizontal Card (Side Image)
+      </h2>
+      <p class="text-sm opacity-80">
+        Card dengan gambar di samping - cocok untuk list berita atau artikel terkait.
+      </p>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <!-- Horizontal Card 1 -->
+        <div class="card flex flex-col sm:flex-row overflow-hidden">
+          <img 
+            src="https://picsum.photos/seed/horiz1/300/200" 
+            alt="Thumbnail" 
+            class="w-full sm:w-40 h-32 sm:h-auto object-cover"
+          />
+          <div class="p-4 flex-1">
+            <span class="badge badge-soft-info badge-sm mb-2">News</span>
+            <h4 class="font-semibold mb-1">Breaking: New Framework Released</h4>
+            <p class="text-sm opacity-70 line-clamp-2">
+              The latest JavaScript framework promises faster performance.
+            </p>
+            <p class="text-xs opacity-50 mt-2">2 hours ago</p>
+          </div>
+        </div>
+
+        <!-- Horizontal Card 2 -->
+        <div class="card flex flex-col sm:flex-row overflow-hidden">
+          <img 
+            src="https://picsum.photos/seed/horiz2/300/200" 
+            alt="Thumbnail" 
+            class="w-full sm:w-40 h-32 sm:h-auto object-cover"
+          />
+          <div class="p-4 flex-1">
+            <span class="badge badge-soft-error badge-sm mb-2">Update</span>
+            <h4 class="font-semibold mb-1">Security Patch Available Now</h4>
+            <p class="text-sm opacity-70 line-clamp-2">
+              Critical security update for all users. Update immediately.
+            </p>
+            <p class="text-xs opacity-50 mt-2">5 hours ago</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="code-block">
+        <button class="copy-btn" @click="copyCode(codes.cardHorizontal, 'cardHorizontal')">
+          {{ copiedId === 'cardHorizontal' ? '✓ Copied!' : 'Copy' }}
+        </button>
+        <pre><code>{{ codes.cardHorizontal }}</code></pre>
+      </div>
+    </section>
+
+    <!-- Featured Card -->
+    <section id="featured-card" class="card p-6 space-y-4">
+      <h2 class="text-lg font-semibold border-b border-base-300 pb-2">
+        Featured Article Card
+      </h2>
+      <p class="text-sm opacity-80">
+        Card besar dengan overlay gradient - cocok untuk featured/highlight article.
+      </p>
+
+      <div class="max-w-2xl">
+        <div class="card overflow-hidden">
+          <div class="relative">
+            <img 
+              src="https://picsum.photos/seed/featured/800/400" 
+              alt="Featured" 
+              class="w-full h-64 object-cover"
+            />
+            <div class="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent"></div>
+            <div class="absolute bottom-0 left-0 right-0 p-6 text-white">
+              <span class="badge badge-primary badge-sm mb-2">Featured</span>
+              <h2 class="text-xl font-bold mb-2">The Future of Web Development in 2025</h2>
+              <p class="text-sm opacity-90 line-clamp-2">
+                Explore the upcoming trends and technologies that will shape the web development landscape in the coming year.
+              </p>
+              <div class="flex items-center gap-2 mt-3">
+                <div class="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center text-white text-xs font-bold">ED</div>
+                <div class="text-xs">
+                  <p class="font-medium">Editorial Team</p>
+                  <p class="opacity-70">Dec 24, 2024 · 8 min read</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="code-block">
+        <button class="copy-btn" @click="copyCode(codes.cardFeatured, 'cardFeatured')">
+          {{ copiedId === 'cardFeatured' ? '✓ Copied!' : 'Copy' }}
+        </button>
+        <pre><code>{{ codes.cardFeatured }}</code></pre>
+      </div>
+    </section>
+
+    <!-- Compact News Card -->
+    <section id="compact-news" class="card p-6 space-y-4">
+      <h2 class="text-lg font-semibold border-b border-base-300 pb-2">
+        Compact News Card
+      </h2>
+      <p class="text-sm opacity-80">
+        Card compact dengan thumbnail kecil - cocok untuk sidebar atau list berita singkat.
+      </p>
+
+      <div class="max-w-md space-y-3">
+        <div class="card p-3 flex gap-3">
+          <img 
+            src="https://picsum.photos/seed/compact1/100/100" 
+            alt="Thumbnail" 
+            class="w-20 h-20 rounded-lg object-cover shrink-0"
+          />
+          <div class="flex-1 min-w-0">
+            <h4 class="font-medium text-sm line-clamp-2 mb-1">
+              New Update: Performance Improvements Across the Platform
+            </h4>
+            <p class="text-xs opacity-60">3 min read · Today</p>
+          </div>
+        </div>
+        <div class="card p-3 flex gap-3">
+          <img 
+            src="https://picsum.photos/seed/compact2/100/100" 
+            alt="Thumbnail" 
+            class="w-20 h-20 rounded-lg object-cover shrink-0"
+          />
+          <div class="flex-1 min-w-0">
+            <h4 class="font-medium text-sm line-clamp-2 mb-1">
+              Tips for Better Code Organization in Large Projects
+            </h4>
+            <p class="text-xs opacity-60">5 min read · Yesterday</p>
+          </div>
+        </div>
+        <div class="card p-3 flex gap-3">
+          <img 
+            src="https://picsum.photos/seed/compact3/100/100" 
+            alt="Thumbnail" 
+            class="w-20 h-20 rounded-lg object-cover shrink-0"
+          />
+          <div class="flex-1 min-w-0">
+            <h4 class="font-medium text-sm line-clamp-2 mb-1">
+              Understanding Modern CSS Layout Techniques
+            </h4>
+            <p class="text-xs opacity-60">4 min read · 2 days ago</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="code-block">
+        <button class="copy-btn" @click="copyCode(codes.cardCompact, 'cardCompact')">
+          {{ copiedId === 'cardCompact' ? '✓ Copied!' : 'Copy' }}
+        </button>
+        <pre><code>{{ codes.cardCompact }}</code></pre>
+      </div>
+    </section>
+
+    <!-- Avatar Variants -->
+    <section id="avatar-variants" class="card p-6 space-y-4">
+      <h2 class="text-lg font-semibold border-b border-base-300 pb-2">
+        Avatar Variants
+      </h2>
+      <p class="text-sm opacity-80">
+        Dua tipe avatar untuk card: foto dan initials (fallback jika tidak ada foto).
+      </p>
+
+      <div class="space-y-4">
+        <!-- Photo Avatars -->
+        <div>
+          <h3 class="font-medium text-sm mb-3">Photo Avatars</h3>
+          <div class="flex items-end gap-4">
+            <div class="text-center">
+              <img src="https://i.pravatar.cc/24?img=1" alt="User" class="w-6 h-6 rounded-full object-cover mx-auto" />
+              <span class="text-xs opacity-60 mt-1 block">w-6</span>
+            </div>
+            <div class="text-center">
+              <img src="https://i.pravatar.cc/32?img=5" alt="User" class="w-8 h-8 rounded-full object-cover mx-auto" />
+              <span class="text-xs opacity-60 mt-1 block">w-8</span>
+            </div>
+            <div class="text-center">
+              <img src="https://i.pravatar.cc/40?img=12" alt="User" class="w-10 h-10 rounded-full object-cover mx-auto" />
+              <span class="text-xs opacity-60 mt-1 block">w-10</span>
+            </div>
+            <div class="text-center">
+              <img src="https://i.pravatar.cc/48?img=15" alt="User" class="w-12 h-12 rounded-full object-cover mx-auto" />
+              <span class="text-xs opacity-60 mt-1 block">w-12</span>
+            </div>
+            <div class="text-center">
+              <img src="https://i.pravatar.cc/64?img=20" alt="User" class="w-16 h-16 rounded-full object-cover mx-auto" />
+              <span class="text-xs opacity-60 mt-1 block">w-16</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Initials Avatars -->
+        <div>
+          <h3 class="font-medium text-sm mb-3">Initials Avatars (Fallback)</h3>
+          <div class="flex items-end gap-4">
+            <div class="text-center">
+              <div class="w-6 h-6 rounded-full bg-primary/20 flex items-center justify-center text-primary text-[10px] font-bold mx-auto">JD</div>
+              <span class="text-xs opacity-60 mt-1 block">w-6</span>
+            </div>
+            <div class="text-center">
+              <div class="w-8 h-8 rounded-full bg-success/20 flex items-center justify-center text-success text-xs font-bold mx-auto">AS</div>
+              <span class="text-xs opacity-60 mt-1 block">w-8</span>
+            </div>
+            <div class="text-center">
+              <div class="w-10 h-10 rounded-full bg-warning/20 flex items-center justify-center text-warning text-sm font-bold mx-auto">BW</div>
+              <span class="text-xs opacity-60 mt-1 block">w-10</span>
+            </div>
+            <div class="text-center">
+              <div class="w-12 h-12 rounded-full bg-error/20 flex items-center justify-center text-error text-sm font-bold mx-auto">MK</div>
+              <span class="text-xs opacity-60 mt-1 block">w-12</span>
+            </div>
+            <div class="text-center">
+              <div class="w-16 h-16 rounded-full bg-info/20 flex items-center justify-center text-info text-base font-bold mx-auto">ED</div>
+              <span class="text-xs opacity-60 mt-1 block">w-16</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Avatar Colors -->
+        <div>
+          <h3 class="font-medium text-sm mb-3">Avatar Color Variants</h3>
+          <div class="flex flex-wrap gap-3">
+            <div class="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center text-primary text-sm font-bold">PR</div>
+            <div class="w-10 h-10 rounded-full bg-secondary/20 flex items-center justify-center text-secondary text-sm font-bold">SC</div>
+            <div class="w-10 h-10 rounded-full bg-accent/20 flex items-center justify-center text-accent text-sm font-bold">AC</div>
+            <div class="w-10 h-10 rounded-full bg-success/20 flex items-center justify-center text-success text-sm font-bold">SU</div>
+            <div class="w-10 h-10 rounded-full bg-warning/20 flex items-center justify-center text-warning text-sm font-bold">WA</div>
+            <div class="w-10 h-10 rounded-full bg-error/20 flex items-center justify-center text-error text-sm font-bold">ER</div>
+            <div class="w-10 h-10 rounded-full bg-info/20 flex items-center justify-center text-info text-sm font-bold">IN</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="code-block">
+        <button class="copy-btn" @click="copyCode(codes.avatarVariants, 'avatarVariants')">
+          {{ copiedId === 'avatarVariants' ? '✓ Copied!' : 'Copy' }}
+        </button>
+        <pre><code>{{ codes.avatarVariants }}</code></pre>
+      </div>
+    </section>
+
     <!-- Card Variants Preview -->
-    <section class="card p-6 space-y-4">
+    <section id="card-use-cases" class="card p-6 space-y-4">
       <h2 class="text-lg font-semibold border-b border-base-300 pb-2">
         Card Use Cases
       </h2>
@@ -414,9 +904,11 @@ const downloadFile = async () => {
         <!-- Profile Card -->
         <div class="card p-4">
           <div class="flex items-center gap-3 mb-3">
-            <div class="w-12 h-12 rounded-full bg-primary/20 flex items-center justify-center text-primary font-bold">
-              JD
-            </div>
+            <img
+              src="https://i.pravatar.cc/48?img=12"
+              alt="John Doe"
+              class="w-12 h-12 rounded-full object-cover"
+            />
             <div>
               <h4 class="font-semibold">John Doe</h4>
               <p class="text-sm opacity-60">Software Engineer</p>
@@ -454,7 +946,7 @@ const downloadFile = async () => {
     </section>
 
     <!-- Styling Reference -->
-    <section class="card p-6 space-y-4">
+    <section id="styling-reference" class="card p-6 space-y-4">
       <h2 class="text-lg font-semibold border-b border-base-300 pb-2">
         Styling Reference
       </h2>
@@ -497,8 +989,88 @@ const downloadFile = async () => {
       </div>
     </section>
 
+    <!-- Collapsible Card -->
+    <section id="collapsible-card" class="card p-6 space-y-4">
+      <h2 class="text-lg font-semibold border-b border-base-300 pb-2">
+        Collapsible Card
+      </h2>
+      <p class="text-sm opacity-80">
+        Card dengan konten yang bisa di-expand/collapse. Cocok untuk informasi panjang yang tidak perlu ditampilkan sekaligus.
+      </p>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <!-- Open by default -->
+        <div class="card card-collapsible p-4">
+          <div class="card-header card-header-collapsible mb-3" onclick="const wrapper = this.nextElementSibling; const icon = this.querySelector('.card-collapse-icon'); wrapper.classList.toggle('is-open'); icon.classList.toggle('is-open');">
+            <div class="card-title">
+              <h3 class="font-semibold">Open by Default</h3>
+            </div>
+            <svg class="card-collapse-icon is-open" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+              <path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z" clip-rule="evenodd"/>
+            </svg>
+          </div>
+          <div class="card-body-wrapper is-open">
+            <div class="card-body-inner">
+              <p class="text-sm opacity-80">
+                Ini adalah konten yang bisa di-collapse. Klik header untuk menutup.
+              </p>
+              <p class="text-sm opacity-80 mt-2">
+                Konten tambahan yang panjang bisa disembunyikan untuk menghemat ruang.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Closed by default -->
+        <div class="card card-collapsible p-4">
+          <div class="card-header card-header-collapsible mb-3" onclick="const wrapper = this.nextElementSibling; const icon = this.querySelector('.card-collapse-icon'); wrapper.classList.toggle('is-open'); icon.classList.toggle('is-open');">
+            <div class="card-title">
+              <h3 class="font-semibold">Closed by Default</h3>
+            </div>
+            <svg class="card-collapse-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+              <path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z" clip-rule="evenodd"/>
+            </svg>
+          </div>
+          <div class="card-body-wrapper">
+            <div class="card-body-inner">
+              <p class="text-sm opacity-80">
+                Konten ini awalnya tersembunyi. Klik header untuk membukanya.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="code-block">
+        <button class="copy-btn" @click="copyCode(codes.collapsibleCss, 'collapsibleCss')">
+          {{ copiedId === 'collapsibleCss' ? '✓ Copied!' : 'Copy' }}
+        </button>
+        <pre><code>{{ codes.collapsibleCss }}</code></pre>
+      </div>
+
+      <h3 class="font-medium mt-6">Vue Component</h3>
+      <p class="text-sm opacity-80">
+        Gunakan prop <code class="code-inline">collapsible</code> dan <code class="code-inline">default-open</code> pada Card component.
+      </p>
+
+      <div class="code-block">
+        <button class="copy-btn" @click="copyCode(codes.collapsibleVue, 'collapsibleVue')">
+          {{ copiedId === 'collapsibleVue' ? '✓ Copied!' : 'Copy' }}
+        </button>
+        <pre><code>{{ codes.collapsibleVue }}</code></pre>
+      </div>
+
+      <div class="mt-4 p-3 bg-info/10 border border-info/30 rounded-lg">
+        <p class="text-sm">
+          <strong>Tip:</strong> Untuk fitur Collapse yang lebih lengkap atau Accordion (multiple collapse dengan auto-close), 
+          lihat halaman <a href="/collapse" class="text-primary underline">Collapse</a> dan 
+          <a href="/accordion" class="text-primary underline">Accordion</a>.
+        </p>
+      </div>
+    </section>
+
     <!-- Component Props -->
-    <section class="card p-6 space-y-4">
+    <section id="vue-slots" class="card p-6 space-y-4">
       <h2 class="text-lg font-semibold border-b border-base-300 pb-2">
         Vue Component Slots
       </h2>
@@ -524,6 +1096,9 @@ const downloadFile = async () => {
         </table>
       </div>
     </section>
+
+    <!-- Floating TOC -->
+    <FloatingTOC :items="tocItems" title="Card Sections" />
   </div>
 </template>
 
@@ -569,6 +1144,11 @@ const downloadFile = async () => {
   border-radius: 4px;
   font-size: 0.875em;
   font-family: ui-monospace, monospace;
+}
+
+/* Scroll margin for TOC navigation */
+section[id] {
+  scroll-margin-top: 5rem;
 }
 
 /* Interactive card variants */
@@ -629,5 +1209,50 @@ const downloadFile = async () => {
 .card-interactive-soft-info:hover {
   background-color: color-mix(in srgb, var(--color-info) 12%, var(--color-base-100));
   border-color: var(--color-info);
+}
+
+/* Collapsible Card */
+.card-collapsible .card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.card-header-collapsible {
+  cursor: pointer;
+  user-select: none;
+  margin: -1rem -1rem 0 -1rem;
+  padding: 1rem;
+  border-radius: var(--radius-box) var(--radius-box) 0 0;
+  transition: background-color 0.15s ease;
+}
+
+.card-header-collapsible:hover {
+  background-color: var(--color-base-200);
+}
+
+.card-collapse-icon {
+  width: 1.25rem;
+  height: 1.25rem;
+  transition: transform 0.2s ease;
+  flex-shrink: 0;
+}
+
+.card-collapse-icon.is-open {
+  transform: rotate(180deg);
+}
+
+.card-body-wrapper {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 0.2s ease;
+}
+
+.card-body-wrapper.is-open {
+  grid-template-rows: 1fr;
+}
+
+.card-body-inner {
+  overflow: hidden;
 }
 </style>

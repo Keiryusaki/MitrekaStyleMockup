@@ -1,5 +1,15 @@
 <script setup lang="ts">
 import { ref, computed } from "vue";
+import FloatingTOC, { type TOCItem } from "@/components/FloatingTOC.vue";
+
+const tocItems: TOCItem[] = [
+  { id: 'controls', label: 'Controls' },
+  { id: 'playground', label: 'Playground' },
+  { id: 'solid', label: 'Solid' },
+  { id: 'outline', label: 'Outline' },
+  { id: 'soft', label: 'Soft' },
+  { id: 'notes', label: 'Notes' },
+];
 
 type Size = "xs" | "sm" | "md" | "lg" | "xl";
 type Tone =
@@ -60,7 +70,7 @@ const classes = (t: Tone) =>
 
     <div class="card p-4 md:p-6 space-y-5">
       <!-- Controls -->
-      <section class="rounded-box border border-base-300 p-4">
+      <section id="controls" class="rounded-box border border-base-300 p-4 scroll-mt-20">
         <div class="flex flex-wrap items-center gap-4">
           <div class="flex items-center gap-2">
             <span class="text-sm opacity-80">Style</span>
@@ -133,7 +143,7 @@ const classes = (t: Tone) =>
       </section>
 
       <!-- Playground -->
-      <section class="space-y-3 rounded-box border border-base-300 p-4">
+      <section id="playground" class="space-y-3 rounded-box border border-base-300 p-4 scroll-mt-20">
         <h2 class="text-base font-semibold">Playground</h2>
         <div
           class="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5"
@@ -150,7 +160,7 @@ const classes = (t: Tone) =>
       </section>
 
       <!-- Reference: Solid -->
-      <section class="space-y-3 rounded-box border border-base-300 p-4">
+      <section id="solid" class="space-y-3 rounded-box border border-base-300 p-4 scroll-mt-20">
         <h3 class="text-sm font-semibold uppercase tracking-wide opacity-70">
           Solid
         </h3>
@@ -169,7 +179,7 @@ const classes = (t: Tone) =>
       </section>
 
       <!-- Reference: Outline -->
-      <section class="space-y-3 rounded-box border border-base-300 p-4">
+      <section id="outline" class="space-y-3 rounded-box border border-base-300 p-4 scroll-mt-20">
         <h3 class="text-sm font-semibold uppercase tracking-wide opacity-70">
           Outline
         </h3>
@@ -214,7 +224,7 @@ const classes = (t: Tone) =>
       </section>
 
       <!-- Reference: Soft -->
-      <section class="space-y-3 rounded-box border border-base-300 p-4">
+      <section id="soft" class="space-y-3 rounded-box border border-base-300 p-4 scroll-mt-20">
         <h3 class="text-sm font-semibold uppercase tracking-wide opacity-70">
           Soft
         </h3>
@@ -238,7 +248,7 @@ const classes = (t: Tone) =>
       </section>
 
       <!-- Notes -->
-      <section class="rounded-box border border-base-300 p-4 text-sm">
+      <section id="notes" class="rounded-box border border-base-300 p-4 text-sm scroll-mt-20">
         <ul class="list-disc space-y-1 pl-5">
           <li>
             <code>.badge</code> adalah base; default warna pakai
@@ -268,6 +278,8 @@ const classes = (t: Tone) =>
         </ul>
       </section>
     </div>
+
+    <FloatingTOC :items="tocItems" />
   </div>
 </template>
 

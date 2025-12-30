@@ -171,23 +171,24 @@ const columnDefs = ref([
     filter: false,
     cellRenderer: (params: any) => {
       const root = document.createElement("div");
-      root.className =
-        "flex items-center justify-end gap-2 h-full items-center";
+      root.className = "flex items-center justify-end gap-2 h-full";
 
-      const toSvg = (name: keyof typeof iconRegistry, cls = "w-6 h-6") =>
-        iconRegistry[name]?.replace("<svg", `<svg class="${cls}"`) ?? "";
+      const toSvg = (name: keyof typeof iconRegistry) =>
+        (iconRegistry[name] ?? "").replace("<svg", '<svg class="w-4 h-4"');
 
-      const mkBtn = (cls: string, title: string, action: "edit" | "delete") => {
+      const sizeClass =
+        density.value === "compact"
+          ? "icon-btn-xs"
+          : density.value === "spacious"
+          ? "icon-btn-md"
+          : "icon-btn-sm";
+
+      const mkBtn = (variant: string, title: string, iconName: keyof typeof iconRegistry) => {
         const b = document.createElement("button");
         b.type = "button";
-        b.className = `btn ${cls} btn-sm inline-flex items-center justify-center p-[3%]`;
+        b.className = `icon-btn icon-btn-solid-${variant} ${sizeClass}`;
         b.title = title;
-        // tambahkan text-white di SVG agar pasti terlihat
-        const svg =
-          action === "edit"
-            ? toSvg("edit", "w-6 h-6")
-            : toSvg("delete", "w-6 h-6");
-        b.innerHTML = svg;
+        b.innerHTML = toSvg(iconName);
         b.addEventListener("click", (e) => e.stopPropagation());
         return b;
       };
@@ -196,16 +197,9 @@ const columnDefs = ref([
         api.value?.refreshCells({ columns: ["actions"], force: true })
       );
 
-      const sizeClass =
-        density.value === "compact"
-          ? "h-[20px] w-[20px]"
-          : density.value === "spacious"
-          ? "h-[32px] w-[32px]"
-          : "h-[28px] w-[28px]";
-
       root.append(
-        mkBtn(`btn-warning ${sizeClass}`, "Edit", "edit"),
-        mkBtn(`btn-error ${sizeClass}`, "Hapus", "delete")
+        mkBtn("warning", "Edit", "pencil"),
+        mkBtn("error", "Hapus", "trash")
       );
       return root;
     },

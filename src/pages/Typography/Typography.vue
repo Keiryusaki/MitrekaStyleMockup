@@ -1,5 +1,16 @@
 <script setup lang="ts">
 import { ref } from "vue";
+import FloatingTOC, { type TOCItem } from "@/components/FloatingTOC.vue";
+
+const tocItems: TOCItem[] = [
+  { id: 'font-family', label: 'Font Family' },
+  { id: 'font-sizes', label: 'Font Sizes' },
+  { id: 'headings', label: 'Headings' },
+  { id: 'body-text', label: 'Body Text' },
+  { id: 'font-weight', label: 'Font Weight' },
+  { id: 'text-colors', label: 'Text Colors' },
+  { id: 'utilities', label: 'Utilities' },
+];
 
 const copiedId = ref<string | null>(null);
 
@@ -94,7 +105,7 @@ body {
     </header>
 
     <!-- Font Family -->
-    <section class="card p-6 space-y-4">
+    <section id="font-family" class="card p-6 space-y-4 scroll-mt-20">
       <h2 class="text-lg font-semibold border-b border-base-300 pb-2">Font Family</h2>
       <p class="text-sm opacity-80">
         Default font adalah <strong>Inter</strong> dengan fallback ke system fonts.
@@ -114,7 +125,7 @@ body {
     </section>
 
     <!-- Font Sizes -->
-    <section class="card p-6 space-y-4">
+    <section id="font-sizes" class="card p-6 space-y-4 scroll-mt-20">
       <h2 class="text-lg font-semibold border-b border-base-300 pb-2">Font Sizes</h2>
       <p class="text-sm opacity-80">
         Scale font size yang digunakan dalam design system.
@@ -130,7 +141,7 @@ body {
     </section>
 
     <!-- Headings -->
-    <section class="card p-6 space-y-4">
+    <section id="headings" class="card p-6 space-y-4 scroll-mt-20">
       <h2 class="text-lg font-semibold border-b border-base-300 pb-2">Headings</h2>
       <p class="text-sm opacity-80">
         Heading styles dengan kombinasi size dan font-weight.
@@ -154,7 +165,7 @@ body {
     </section>
 
     <!-- Font Weights -->
-    <section class="card p-6 space-y-4">
+    <section id="font-weight" class="card p-6 space-y-4 scroll-mt-20">
       <h2 class="text-lg font-semibold border-b border-base-300 pb-2">Font Weights</h2>
 
       <div class="grid grid-cols-2 md:grid-cols-5 gap-4">
@@ -194,7 +205,7 @@ body {
     </section>
 
     <!-- Body Text -->
-    <section class="card p-6 space-y-4">
+    <section id="body-text" class="card p-6 space-y-4 scroll-mt-20">
       <h2 class="text-lg font-semibold border-b border-base-300 pb-2">Body Text</h2>
 
       <div class="space-y-3 p-4 bg-base-200 rounded-box">
@@ -213,7 +224,7 @@ body {
     </section>
 
     <!-- Text Colors -->
-    <section class="card p-6 space-y-4">
+    <section id="text-colors" class="card p-6 space-y-4 scroll-mt-20">
       <h2 class="text-lg font-semibold border-b border-base-300 pb-2">Text Colors</h2>
 
       <div class="space-y-2 p-4 bg-base-200 rounded-box">
@@ -238,7 +249,7 @@ body {
     </section>
 
     <!-- Text Utilities -->
-    <section class="card p-6 space-y-4">
+    <section id="utilities" class="card p-6 space-y-4 scroll-mt-20">
       <h2 class="text-lg font-semibold border-b border-base-300 pb-2">Text Utilities</h2>
 
       <div class="grid md:grid-cols-2 gap-4">
@@ -270,7 +281,7 @@ body {
     </section>
 
     <!-- Quick Reference -->
-    <section class="card p-6 space-y-4">
+    <section class="card p-6 space-y-4 scroll-mt-20">
       <h2 class="text-lg font-semibold border-b border-base-300 pb-2">Quick Reference</h2>
 
       <div class="overflow-x-auto">
@@ -310,6 +321,8 @@ body {
         </table>
       </div>
     </section>
+
+    <FloatingTOC :items="tocItems" />
   </div>
 </template>
 

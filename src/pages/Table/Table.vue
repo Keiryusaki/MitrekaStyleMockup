@@ -75,22 +75,11 @@
                   data-col="actions"
                   class="flex items-center justify-end gap-2"
                 >
-                  <!-- pakai button bawaan projectmu, tetap jalan -->
-                  <button
-                    type="button"
-                    class="btn btn-warning h-[28px] w-[28px] btn-sm inline-flex items-center justify-center"
-                    title="Edit"
-                    @click="onEdit(row)"
-                  >
-                    <Icon name="edit" />
+                  <button type="button" class="icon-btn icon-btn-solid-warning icon-btn-sm" title="Edit" @click="onEdit(row)">
+                    <Icon name="pencil" />
                   </button>
-                  <button
-                    type="button"
-                    class="btn btn-error h-[28px] w-[28px] btn-sm inline-flex items-center justify-center"
-                    title="Hapus"
-                    @click="onDelete(row)"
-                  >
-                    <Icon name="delete" />
+                  <button type="button" class="icon-btn icon-btn-solid-error icon-btn-sm" title="Hapus" @click="onDelete(row)">
+                    <Icon name="trash" />
                   </button>
                 </td>
               </tr>
@@ -265,13 +254,11 @@
     &lt;td&gt;Product A&lt;/td&gt;
     &lt;td&gt;Short description…&lt;/td&gt;
     &lt;td data-col="actions" class="flex items-center justify-end gap-2"&gt;
-      &lt;button type="button" class="btn btn-warning h-[28px] w-[28px] btn-sm" title="Edit"&gt;
-        &lt;i class="icon icon-edit" aria-hidden="true"&gt;&lt;/i&gt;
-        &lt;span class="sr-only"&gt;Edit&lt;/span&gt;
+      &lt;button type="button" class="icon-btn icon-btn-solid-warning icon-btn-sm" title="Edit"&gt;
+        &lt;Icon name="pencil" /&gt;
       &lt;/button&gt;
-      &lt;button type="button" class="btn btn-error h-[28px] w-[28px] btn-sm" title="Hapus"&gt;
-        &lt;i class="icon icon-delete" aria-hidden="true"&gt;&lt;/i&gt;
-        &lt;span class="sr-only"&gt;Hapus&lt;/span&gt;
+      &lt;button type="button" class="icon-btn icon-btn-solid-error icon-btn-sm" title="Hapus"&gt;
+        &lt;Icon name="trash" /&gt;
       &lt;/button&gt;
     &lt;/td&gt;
   &lt;/tr&gt;
@@ -380,11 +367,11 @@ function onDelete(row: any) { /* confirm + call API */ }
       &lt;td&gt;{{ row.name }}&lt;/td&gt;
       &lt;td&gt;{{ row.description }}&lt;/td&gt;
       &lt;td data-col="actions" class="flex items-center justify-end gap-2"&gt;
-        &lt;button type="button" class="btn btn-warning h-[28px] w-[28px] btn-sm" title="Edit" @click="onEdit(row)"&gt;
-          &lt;Icon name="edit" /&gt;
+        &lt;button type="button" class="icon-btn icon-btn-solid-warning icon-btn-sm" title="Edit" @click="onEdit(row)"&gt;
+          &lt;Icon name="pencil" /&gt;
         &lt;/button&gt;
-        &lt;button type="button" class="btn btn-error h-[28px] w-[28px] btn-sm" title="Hapus" @click="onDelete(row)"&gt;
-          &lt;Icon name="delete" /&gt;
+        &lt;button type="button" class="icon-btn icon-btn-solid-error icon-btn-sm" title="Hapus" @click="onDelete(row)"&gt;
+          &lt;Icon name="trash" /&gt;
         &lt;/button&gt;
       &lt;/td&gt;
     &lt;/tr&gt;

@@ -1,6 +1,22 @@
 <script setup lang="ts">
 import { ref } from "vue";
 import { useUi } from "@/stores/ui";
+import FloatingTOC, { type TOCItem } from "@/components/FloatingTOC.vue";
+
+const tocItems: TOCItem[] = [
+  { id: 'download', label: 'Download Component' },
+  { id: 'setup', label: 'Setup' },
+  { id: 'import', label: 'Import & Usage' },
+  { id: 'types', label: 'Toast Types' },
+  { id: 'variants', label: 'Variants' },
+  { id: 'with-title', label: 'With Title' },
+  { id: 'timeout', label: 'Custom Timeout' },
+  { id: 'dismiss', label: 'Manual Dismiss' },
+  { id: 'position', label: 'Position' },
+  { id: 'ts-types', label: 'TypeScript Types' },
+  { id: 'api-ref', label: 'API Reference' },
+  { id: 'options', label: 'Toast Options' },
+];
 
 const ui = useUi();
 const copiedId = ref<string | null>(null);
@@ -122,7 +138,7 @@ const downloadFile = async () => {
     </header>
 
     <!-- Download Component -->
-    <section class="card p-4">
+    <section id="download" class="card p-4 scroll-mt-20">
       <div class="flex items-center justify-between">
         <div>
           <h2 class="font-semibold">Download Component</h2>
@@ -135,7 +151,7 @@ const downloadFile = async () => {
     </section>
 
     <!-- Setup -->
-    <section class="card p-6 space-y-4">
+    <section id="setup" class="card p-6 space-y-4 scroll-mt-20">
       <h2 class="text-lg font-semibold border-b border-base-300 pb-2">Setup</h2>
       <p class="text-sm opacity-80">
         Toasts menggunakan Pinia store untuk state management. Pastikan komponen 
@@ -150,7 +166,7 @@ const downloadFile = async () => {
     </section>
 
     <!-- Import -->
-    <section class="card p-6 space-y-4">
+    <section id="import" class="card p-6 space-y-4 scroll-mt-20">
       <h2 class="text-lg font-semibold border-b border-base-300 pb-2">Import & Usage</h2>
       <div class="code-block">
         <button class="copy-btn" @click="copyCode(codes.import, 'import')">
@@ -161,7 +177,7 @@ const downloadFile = async () => {
     </section>
 
     <!-- Basic Types -->
-    <section class="card p-6 space-y-4">
+    <section id="types" class="card p-6 space-y-4 scroll-mt-20">
       <h2 class="text-lg font-semibold border-b border-base-300 pb-2">Toast Types</h2>
       
       <div class="flex flex-wrap gap-2">
@@ -206,7 +222,7 @@ const downloadFile = async () => {
     </section>
 
     <!-- Variants -->
-    <section class="card p-6 space-y-4">
+    <section id="variants" class="card p-6 space-y-4 scroll-mt-20">
       <h2 class="text-lg font-semibold border-b border-base-300 pb-2">Variants</h2>
       <p class="text-sm opacity-80">Toast mendukung 3 variant: soft (default), solid, dan outline.</p>
       
@@ -266,7 +282,7 @@ const downloadFile = async () => {
     </section>
 
     <!-- With Title -->
-    <section class="card p-6 space-y-4">
+    <section id="with-title" class="card p-6 space-y-4 scroll-mt-20">
       <h2 class="text-lg font-semibold border-b border-base-300 pb-2">With Title</h2>
       
       <div class="flex flex-wrap gap-2">
@@ -293,7 +309,7 @@ const downloadFile = async () => {
     </section>
 
     <!-- Custom Timeout -->
-    <section class="card p-6 space-y-4">
+    <section id="timeout" class="card p-6 space-y-4 scroll-mt-20">
       <h2 class="text-lg font-semibold border-b border-base-300 pb-2">Custom Timeout</h2>
       <p class="text-sm opacity-80">Default timeout adalah 3000ms (3 detik). Set ke 0 untuk persistent toast.</p>
       
@@ -321,7 +337,7 @@ const downloadFile = async () => {
     </section>
 
     <!-- Dismiss -->
-    <section class="card p-6 space-y-4">
+    <section id="dismiss" class="card p-6 space-y-4 scroll-mt-20">
       <h2 class="text-lg font-semibold border-b border-base-300 pb-2">Manual Dismiss</h2>
       
       <div class="flex flex-wrap gap-2">
@@ -342,7 +358,7 @@ const downloadFile = async () => {
     </section>
 
     <!-- Position -->
-    <section class="card p-6 space-y-4">
+    <section id="position" class="card p-6 space-y-4 scroll-mt-20">
       <h2 class="text-lg font-semibold border-b border-base-300 pb-2">Position</h2>
       <p class="text-sm opacity-80">Ubah posisi toast container. Default: bottom-right</p>
       
@@ -366,7 +382,7 @@ const downloadFile = async () => {
     </section>
 
     <!-- Types Reference -->
-    <section class="card p-6 space-y-4">
+    <section id="ts-types" class="card p-6 space-y-4 scroll-mt-20">
       <h2 class="text-lg font-semibold border-b border-base-300 pb-2">TypeScript Types</h2>
       
       <div class="code-block">
@@ -378,7 +394,7 @@ const downloadFile = async () => {
     </section>
 
     <!-- API Reference -->
-    <section class="card p-6 space-y-4">
+    <section id="api-ref" class="card p-6 space-y-4 scroll-mt-20">
       <h2 class="text-lg font-semibold border-b border-base-300 pb-2">API Reference</h2>
       
       <div class="overflow-x-auto">
@@ -416,7 +432,7 @@ const downloadFile = async () => {
     </section>
 
     <!-- Toast Options -->
-    <section class="card p-6 space-y-4">
+    <section id="options" class="card p-6 space-y-4 scroll-mt-20">
       <h2 class="text-lg font-semibold border-b border-base-300 pb-2">Toast Options</h2>
       
       <div class="overflow-x-auto">
@@ -464,6 +480,8 @@ const downloadFile = async () => {
         </table>
       </div>
     </section>
+
+    <FloatingTOC :items="tocItems" />
   </div>
 </template>
 

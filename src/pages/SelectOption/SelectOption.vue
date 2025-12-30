@@ -2,6 +2,17 @@
 <script setup lang="ts">
 import { ref, computed, onBeforeUnmount } from "vue";
 import { Icon } from "@/composables/Icon";
+import FloatingTOC, { type TOCItem } from "@/components/FloatingTOC.vue";
+
+const tocItems: TOCItem[] = [
+  { id: 'controls', label: 'Controls' },
+  { id: 'playground', label: 'Playground' },
+  { id: 'solid', label: 'SOLID' },
+  { id: 'outline', label: 'OUTLINE' },
+  { id: 'select-search', label: 'Select dengan Search' },
+  { id: 'multi-select', label: 'Multi Select' },
+  { id: 'dev-guide', label: 'Developer Guide' },
+];
 import useSelectRaw from "@/composables/useSelect.ts?raw";
 import selectInputRaw from "@/components/controls/SelectInput.vue?raw";
 import multiSelectRaw from "@/components/controls/MultiSelect.vue?raw";
@@ -104,7 +115,7 @@ const exampleOutline = `<SelectDropdown
 
     <div class="card p-4 md:p-6 space-y-5">
       <!-- Controls -->
-      <section class="space-y-3 rounded-box border border-base-300 p-4">
+      <section id="controls" class="space-y-3 rounded-box border border-base-300 p-4 scroll-mt-20">
         <div class="flex flex-wrap items-center gap-4">
           <div class="flex items-center gap-2">
             <span class="text-sm opacity-80">Variant</span>
@@ -147,7 +158,7 @@ const exampleOutline = `<SelectDropdown
       </section>
 
       <!-- Playground -->
-      <section class="space-y-3 rounded-box border border-base-300 p-4">
+      <section id="playground" class="space-y-3 rounded-box border border-base-300 p-4 scroll-mt-20">
         <h3 class="font-semibold opacity-90">Playground</h3>
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div>
@@ -178,7 +189,7 @@ const exampleOutline = `<SelectDropdown
       </section>
 
       <!-- SOLID list -->
-      <section class="space-y-3 rounded-box border border-base-300 p-4">
+      <section id="solid" class="space-y-3 rounded-box border border-base-300 p-4 scroll-mt-20">
         <h3 class="font-semibold opacity-90">SOLID</h3>
         <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-4">
           <div v-for="c in colors" :key="'solid-' + c" class="space-y-1">
@@ -202,7 +213,7 @@ const exampleOutline = `<SelectDropdown
       </section>
 
       <!-- OUTLINE list -->
-      <section class="space-y-3 rounded-box border border-base-300 p-4">
+      <section id="outline" class="space-y-3 rounded-box border border-base-300 p-4 scroll-mt-20">
         <h3 class="font-semibold opacity-90">OUTLINE</h3>
         <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-4">
           <div v-for="c in colors" :key="'outline-' + c" class="space-y-1">
@@ -226,7 +237,7 @@ const exampleOutline = `<SelectDropdown
       </section>
 
       <!-- Select dengan Search (SelectInput) -->
-      <section class="space-y-3 rounded-box border border-base-300 p-4">
+      <section id="select-search" class="space-y-3 rounded-box border border-base-300 p-4 scroll-mt-20">
         <h3 class="font-semibold opacity-90">Select dengan Search (SelectInput)</h3>
         <div class="grid md:grid-cols-2 gap-6 items-start">
           <div>
@@ -283,7 +294,7 @@ const exampleOutline = `<SelectDropdown
       </section>
 
       <!-- Multi Select -->
-      <section class="space-y-3 rounded-box border border-base-300 p-4">
+      <section id="multi-select" class="space-y-3 rounded-box border border-base-300 p-4 scroll-mt-20">
         <h3 class="font-semibold opacity-90">Multi Select (chips + search)</h3>
         <MultiSelect
           v-model="roles"
@@ -314,7 +325,7 @@ const roleOptions = [
       </section>
 
       <!-- Developer Guide -->
-      <section class="space-y-3 rounded-box border border-base-300 p-4">
+      <section id="dev-guide" class="space-y-3 rounded-box border border-base-300 p-4 scroll-mt-20">
         <h3 class="font-semibold">Developer Guide</h3>
 
         <!-- Download -->
@@ -407,6 +418,8 @@ const roleOptions = [
         </details>
       </section>
     </div>
+
+    <FloatingTOC :items="tocItems" />
   </div>
 </template>
 

@@ -1,6 +1,5 @@
 <script lang="ts">
 import { defineComponent, h } from "vue";
-import { NAV } from "@/components/nav/data/navigation"; // Import data
 import { Icon } from "@/composables/Icon"; // Import icon
 import { useSidebar } from "@/composables/useSidebar"; // Import logic
 
@@ -11,8 +10,10 @@ export default defineComponent({
   },
   setup(props) {
     // Ambil semua logic & state dari composable
-    const { isActive, isGroupOpen, toggleGroup, go, showTip, hideTip } =
-      useSidebar();
+    const { 
+      isActive, isGroupOpen, toggleGroup, go, showTip, hideTip,
+      searchQuery, filteredNav, setSearchQuery, clearSearch
+    } = useSidebar();
 
     // Ini adalah 'return' dari setup() lo yang lama
     return () =>
@@ -48,44 +49,85 @@ export default defineComponent({
             ),
         ]),
 
+        // Search Input
+        !props.collapsed &&
+          h("div", { class: "px-3 py-2 border-b border-base-300 flex-shrink-0" }, [
+            h("div", { class: "relative" }, [
+              h("input", {
+                type: "text",
+                placeholder: "Search menu...",
+                value: searchQuery.value,
+                class: "w-full h-9 pl-9 pr-8 text-sm rounded-lg border border-base-300 bg-base-100 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary",
+                onInput: (e: Event) => setSearchQuery((e.target as HTMLInputElement).value),
+                onKeydown: (e: KeyboardEvent) => {
+                  if (e.key === "Escape") clearSearch();
+                },
+              }),
+              h(Icon, {
+                name: "search",
+                class: "absolute left-2 top-1/2 -translate-y-1/2 w-4 h-4 opacity-50",
+              }),
+              searchQuery.value &&
+                h(
+                  "button",
+                  {
+                    class: "absolute right-2 top-1/2 -translate-y-1/2 w-5 h-5 flex items-center justify-center rounded-full hover:bg-base-200",
+                    onClick: clearSearch,
+                  },
+                  [h(Icon, { name: "x", class: "w-3 h-3" })]
+                ),
+            ]),
+          ]),
+
         // NAV (scrollable)
         h(
           "nav",
           { class: "flex flex-col gap-1 p-3 pb-6 flex-1 overflow-y-auto min-h-0" },
-          // Gunakan NAV yg udah di-import
-          NAV.map((item) => {
+          // Gunakan filteredNav dari composable
+          filteredNav.value.map((item) => {
             // Item biasa (bukan group)
             if (!item.children) {
               const active = isActive(item);
               return h(
-                "a",
-                {
-                  key: item.id,
-                  class: [
-                    "relative flex items-center gap-3 h-field rounded-field cursor-pointer flex-shrink-0",
-                    "px-3 border border-transparent",
-                    active
-                      ? "bg-primary/10 text-primary dark:text-accent border-l-[5px] border-primary dark:border-accent pl-[10px]"
-                      : "hover:bg-gray-200/30",
-                  ],
-                  "aria-current": active ? "page" : undefined,
-                  onClick: () => go(item),
-                  onMouseenter: (e: MouseEvent) => showTip(e, item.label),
-                  onMouseleave: hideTip,
-                },
+                "div",
+                { key: item.id, class: "relative flex-shrink-0" },
                 [
-                  h(Icon, {
-                    name: item.icon || "dot",
-                    class: "w-5 h-5",
-                  }),
-                  !props.collapsed &&
-                    h("span", { class: "font-medium" }, item.label),
+                  // Active indicator mark for items without children
+                  active &&
+                    h("div", {
+                      class: "absolute -left-[13px] top-1/2 -translate-y-1/2 w-[4px] h-field rounded-r-full sidebar-active-mark",
+                    }),
+                  h(
+                    "a",
+                    {
+                      class: [
+                        "relative flex items-center gap-3 h-field rounded-field cursor-pointer",
+                        "px-3 border border-transparent",
+                        active
+                          ? "bg-primary/10 text-primary dark:text-accent border-l-[5px] border-primary dark:border-accent pl-[10px]"
+                          : "sidebar-hover",
+                      ],
+                      "aria-current": active ? "page" : undefined,
+                      onClick: () => go(item),
+                      onMouseenter: (e: MouseEvent) => showTip(e, item.label),
+                      onMouseleave: hideTip,
+                    },
+                    [
+                      h(Icon, {
+                        name: item.icon || "dot",
+                        class: "w-5 h-5",
+                      }),
+                      !props.collapsed &&
+                        h("span", { class: "font-medium" }, item.label),
+                    ]
+                  ),
                 ]
               );
             }
 
             // group
             const open = isGroupOpen(item);
+            const hasActiveChild = item.children?.some((child) => isActive(child)) ?? false;
             return h("div", { key: item.id, class: "flex-shrink-0" }, [
               h(
                 "button",
@@ -94,8 +136,8 @@ export default defineComponent({
                     "relative w-full flex items-center gap-3 h-field rounded-field px-3 flex-shrink-0",
                     "border border-transparent",
                     open
-                      ? "bg-base-200" // Style Grup Open
-                      : "hover:bg-gray-200/50 dark:hover:bg-gray-200/20", // Style Grup Closed (hover)
+                      ? "sidebar-parent-open" // Style Grup Open (soft primary light, soft accent dark)
+                      : "sidebar-hover", // Style Grup Closed (hover)
                   ],
                   "aria-expanded": open,
                   onClick: () => toggleGroup(item),
@@ -103,6 +145,11 @@ export default defineComponent({
                   onMouseleave: hideTip,
                 },
                 [
+                  // Active child indicator mark (Discord-style pill) - inside button for correct positioning
+                  hasActiveChild &&
+                    h("div", {
+                      class: "absolute -left-[13px] top-1/2 -translate-y-1/2 w-[4px] h-field rounded-r-full sidebar-active-mark",
+                    }),
                   h(Icon, {
                     name: item.icon || "dot",
                     class: "w-5 h-5",
@@ -151,8 +198,8 @@ export default defineComponent({
                               "border border-transparent",
                               "pl-3 pr-[.75rem]",
                               active
-                                ? "bg-primary/10 text-primary dark:text-accent border-l-[5px] border-primary" // Style Child Active
-                                : "hover:bg-gray-200/50 dark:hover:bg-gray-200/20", // Style Child Inactive (hover)
+                                ? "bg-primary/10 text-primary dark:text-accent border-l-[5px] border-primary dark:border-accent pl-[10px]" // Style Child Active
+                                : "sidebar-hover", // Style Child Inactive (hover)
                             ],
                             "aria-current": active ? "page" : undefined,
                             onClick: () => go(child),

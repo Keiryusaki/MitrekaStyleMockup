@@ -1,5 +1,15 @@
 <script setup lang="ts">
 import { ref } from "vue";
+import FloatingTOC, { type TOCItem } from "@/components/FloatingTOC.vue";
+
+const tocItems: TOCItem[] = [
+  { id: 'state-colors', label: 'State Colors' },
+  { id: 'base-colors', label: 'Base Colors' },
+  { id: 'usage-css', label: 'CSS Variables' },
+  { id: 'usage-tailwind', label: 'Tailwind Classes' },
+  { id: 'soft-variants', label: 'Soft Variants' },
+  { id: 'theme-definition', label: 'Theme Definition' },
+];
 
 const copiedId = ref<string | null>(null);
 
@@ -103,7 +113,7 @@ const codes = {
     </header>
 
     <!-- State Colors Preview -->
-    <section class="card p-6 space-y-4">
+    <section id="state-colors" class="card p-6 space-y-4 scroll-mt-20">
       <h2 class="text-lg font-semibold border-b border-base-300 pb-2">State Colors</h2>
       <p class="text-sm opacity-80">
         Warna semantik untuk feedback dan status. Setiap warna punya <code class="code-inline">-content</code> untuk text kontras.
@@ -128,7 +138,7 @@ const codes = {
     </section>
 
     <!-- Base Colors Preview -->
-    <section class="card p-6 space-y-4">
+    <section id="base-colors" class="card p-6 space-y-4 scroll-mt-20">
       <h2 class="text-lg font-semibold border-b border-base-300 pb-2">Base Colors</h2>
       <p class="text-sm opacity-80">
         Warna dasar untuk background, border, dan text. Otomatis berubah sesuai theme.
@@ -153,7 +163,7 @@ const codes = {
     </section>
 
     <!-- Light vs Dark Theme -->
-    <section class="card p-6 space-y-4">
+    <section id="usage-css" class="card p-6 space-y-4 scroll-mt-20">
       <h2 class="text-lg font-semibold border-b border-base-300 pb-2">Base Colors: Light vs Dark</h2>
       <p class="text-sm opacity-80">
         Perbandingan base colors antara light dan dark theme.
@@ -229,7 +239,7 @@ const codes = {
     </section>
 
     <!-- Soft Variants -->
-    <section class="card p-6 space-y-4">
+    <section id="soft-variants" class="card p-6 space-y-4 scroll-mt-20">
       <h2 class="text-lg font-semibold border-b border-base-300 pb-2">Soft Variants</h2>
       <p class="text-sm opacity-80">
         Versi "soft" dengan background transparan - cocok untuk badge dan button subtle.
@@ -262,7 +272,7 @@ const codes = {
     </section>
 
     <!-- Usage with CSS Variables -->
-    <section class="card p-6 space-y-4">
+    <section id="usage-tailwind" class="card p-6 space-y-4 scroll-mt-20">
       <h2 class="text-lg font-semibold border-b border-base-300 pb-2">Usage: CSS Variables</h2>
       <p class="text-sm opacity-80">
         Akses warna via CSS variables untuk custom styling.
@@ -277,7 +287,7 @@ const codes = {
     </section>
 
     <!-- Usage with Tailwind -->
-    <section class="card p-6 space-y-4">
+    <section class="card p-6 space-y-4 scroll-mt-20">
       <h2 class="text-lg font-semibold border-b border-base-300 pb-2">Usage: Tailwind Classes</h2>
       <p class="text-sm opacity-80">
         Gunakan utility classes Tailwind untuk apply warna.
@@ -292,7 +302,7 @@ const codes = {
     </section>
 
     <!-- Color Mix -->
-    <section class="card p-6 space-y-4">
+    <section class="card p-6 space-y-4 scroll-mt-20">
       <h2 class="text-lg font-semibold border-b border-base-300 pb-2">Custom Opacity dengan color-mix</h2>
       <p class="text-sm opacity-80">
         Gunakan <code class="code-inline">color-mix()</code> untuk custom opacity tanpa class baru.
@@ -307,7 +317,7 @@ const codes = {
     </section>
 
     <!-- Theme Definition -->
-    <section class="card p-6 space-y-4">
+    <section id="theme-definition" class="card p-6 space-y-4 scroll-mt-20">
       <h2 class="text-lg font-semibold border-b border-base-300 pb-2">Theme Definition</h2>
       <p class="text-sm opacity-80">
         Definisi warna di <code class="code-inline">tailwind.css</code> menggunakan CSS variables.
@@ -322,7 +332,7 @@ const codes = {
     </section>
 
     <!-- Color Reference Table -->
-    <section class="card p-6 space-y-4">
+    <section class="card p-6 space-y-4 scroll-mt-20">
       <h2 class="text-lg font-semibold border-b border-base-300 pb-2">Quick Reference</h2>
 
       <div class="overflow-x-auto">
@@ -348,6 +358,8 @@ const codes = {
         </table>
       </div>
     </section>
+
+    <FloatingTOC :items="tocItems" />
   </div>
 </template>
 

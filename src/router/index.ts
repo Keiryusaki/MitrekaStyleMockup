@@ -104,6 +104,18 @@ const routes: RouteRecordRaw[] = [
     component: () => import("@/pages/Card/Card.vue"),
   },
   {
+    path: "/collapse",
+    component: () => import("@/pages/Collapse/Collapse.vue"),
+  },
+  {
+    path: "/accordion",
+    component: () => import("@/pages/Accordion/Accordion.vue"),
+  },
+  {
+    path: "/avatar",
+    component: () => import("@/pages/Avatar/Avatar.vue"),
+  },
+  {
     path: "/pagination",
     component: () => import("@/pages/Pagination/Pagination.vue"),
   },
@@ -133,6 +145,18 @@ const router = createRouter({
   // penting: pakai base dari Vite, supaya path jadi /MitrekaStyleMockup/ di GH Pages
   history: createWebHistory(import.meta.env.BASE_URL),
   routes,
+  scrollBehavior(to, from, savedPosition) {
+    // Kalo ada saved position (misal back button), pake itu
+    if (savedPosition) {
+      return savedPosition;
+    }
+    // Kalo ada hash (anchor link), scroll ke element tersebut
+    if (to.hash) {
+      return { el: to.hash, behavior: "smooth" };
+    }
+    // Default: scroll ke atas
+    return { top: 0 };
+  },
 });
 
 router.afterEach((to) => {

@@ -1,5 +1,14 @@
 <script setup lang="ts">
 import { ref, computed } from "vue";
+import FloatingTOC, { type TOCItem } from "@/components/FloatingTOC.vue";
+
+const tocItems: TOCItem[] = [
+  { id: 'controls', label: 'Controls' },
+  { id: 'playground', label: 'Playground' },
+  { id: 'sizes', label: 'Sizes' },
+  { id: 'states', label: 'States' },
+  { id: 'notes', label: 'Notes' },
+];
 
 type Size = "xs" | "sm" | "md" | "lg" | "xl";
 type Tone =
@@ -49,7 +58,7 @@ const tones: { label: string; tone: Tone }[] = [
 
     <div class="card p-4 md:p-6 space-y-5">
       <!-- Controls -->
-      <section class="rounded-box border border-base-300 p-4">
+      <section id="controls" class="rounded-box border border-base-300 p-4 scroll-mt-20">
         <div class="flex flex-wrap items-center gap-4">
           <!-- Tone -->
           <div class="flex items-center gap-2">
@@ -122,7 +131,7 @@ const tones: { label: string; tone: Tone }[] = [
       </section>
 
       <!-- Playground -->
-      <section class="space-y-3 rounded-box border border-base-300 p-4">
+      <section id="playground" class="space-y-3 rounded-box border border-base-300 p-4 scroll-mt-20">
         <h2 class="text-base font-semibold">Playground</h2>
         <div class="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
           <!-- base -->
@@ -197,7 +206,7 @@ const tones: { label: string; tone: Tone }[] = [
       </section>
 
       <!-- Reference: Sizes -->
-      <section class="space-y-3 rounded-box border border-base-300 p-4">
+      <section id="sizes" class="space-y-3 rounded-box border border-base-300 p-4 scroll-mt-20">
         <h3 class="text-sm font-semibold uppercase tracking-wide opacity-70">
           Sizes
         </h3>
@@ -215,7 +224,7 @@ const tones: { label: string; tone: Tone }[] = [
       </section>
 
       <!-- Reference: States -->
-      <section class="space-y-3 rounded-box border border-base-300 p-4">
+      <section id="states" class="space-y-3 rounded-box border border-base-300 p-4 scroll-mt-20">
         <h3 class="text-sm font-semibold uppercase tracking-wide opacity-70">
           States
         </h3>
@@ -238,7 +247,7 @@ const tones: { label: string; tone: Tone }[] = [
       </section>
 
       <!-- Notes -->
-      <section class="rounded-box border border-base-300 p-4 text-sm">
+      <section id="notes" class="rounded-box border border-base-300 p-4 text-sm scroll-mt-20">
         <ul class="list-disc space-y-1 pl-5">
           <li>
             <strong>Base:</strong> <code>.input</code> mengatur tinggi, radius,
@@ -270,5 +279,7 @@ const tones: { label: string; tone: Tone }[] = [
         </ul>
       </section>
     </div>
+
+    <FloatingTOC :items="tocItems" />
   </div>
 </template>

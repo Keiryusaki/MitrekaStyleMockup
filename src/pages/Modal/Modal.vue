@@ -1,8 +1,22 @@
 <script setup lang="ts">
 import { ref } from "vue";
 import Modal from "@/components/feedback/Modal.vue";
+import FloatingTOC, { type TOCItem } from "@/components/FloatingTOC.vue";
 
 const copiedId = ref<string | null>(null);
+
+const tocItems: TOCItem[] = [
+  { id: 'import', label: 'Import' },
+  { id: 'basic-usage', label: 'Basic Usage' },
+  { id: 'sizes', label: 'Sizes' },
+  { id: 'hide-header-footer', label: 'Hide Header/Footer' },
+  { id: 'custom-footer', label: 'Custom Footer Slot' },
+  { id: 'persistent', label: 'Persistent Mode' },
+  { id: 'modal-form', label: 'Modal with Form' },
+  { id: 'props', label: 'Props Reference' },
+  { id: 'events', label: 'Events' },
+  { id: 'slots', label: 'Slots' },
+];
 
 const copyCode = async (code: string, id: string) => {
   await navigator.clipboard.writeText(code);
@@ -177,7 +191,7 @@ const downloadFile = async () => {
     </section>
 
     <!-- Import -->
-    <section class="card p-6 space-y-4">
+    <section id="import" class="card p-6 space-y-4">
       <h2 class="text-lg font-semibold border-b border-base-300 pb-2">Import</h2>
       <div class="code-block">
         <button class="copy-btn" @click="copyCode(codes.import, 'import')">
@@ -188,7 +202,7 @@ const downloadFile = async () => {
     </section>
 
     <!-- Basic Usage -->
-    <section class="card p-6 space-y-4">
+    <section id="basic-usage" class="card p-6 space-y-4">
       <h2 class="text-lg font-semibold border-b border-base-300 pb-2">Basic Usage</h2>
       
       <div class="space-y-3">
@@ -215,7 +229,7 @@ const downloadFile = async () => {
     </section>
 
     <!-- Sizes -->
-    <section class="card p-6 space-y-4">
+    <section id="sizes" class="card p-6 space-y-4">
       <h2 class="text-lg font-semibold border-b border-base-300 pb-2">Sizes</h2>
       
       <div class="flex flex-wrap gap-2">
@@ -252,7 +266,7 @@ const downloadFile = async () => {
     </section>
 
     <!-- Hide Header/Footer -->
-    <section class="card p-6 space-y-4">
+    <section id="hide-header-footer" class="card p-6 space-y-4">
       <h2 class="text-lg font-semibold border-b border-base-300 pb-2">Hide Header / Footer</h2>
       
       <div class="flex flex-wrap gap-2">
@@ -286,7 +300,7 @@ const downloadFile = async () => {
     </section>
 
     <!-- Custom Footer -->
-    <section class="card p-6 space-y-4">
+    <section id="custom-footer" class="card p-6 space-y-4">
       <h2 class="text-lg font-semibold border-b border-base-300 pb-2">Custom Footer Slot</h2>
       
       <button class="btn btn-outline btn-sm" @click="showCustomFooter = true">
@@ -312,7 +326,7 @@ const downloadFile = async () => {
     </section>
 
     <!-- Persistent -->
-    <section class="card p-6 space-y-4">
+    <section id="persistent" class="card p-6 space-y-4">
       <h2 class="text-lg font-semibold border-b border-base-300 pb-2">Persistent Mode</h2>
       <p class="text-sm opacity-80">Modal tidak akan tertutup saat klik backdrop.</p>
       
@@ -340,7 +354,7 @@ const downloadFile = async () => {
     </section>
 
     <!-- With Form -->
-    <section class="card p-6 space-y-4">
+    <section id="modal-form" class="card p-6 space-y-4">
       <h2 class="text-lg font-semibold border-b border-base-300 pb-2">Modal with Form</h2>
       
       <button class="btn btn-primary" @click="showForm = true">
@@ -376,7 +390,7 @@ const downloadFile = async () => {
     </section>
 
     <!-- Props Reference -->
-    <section class="card p-6 space-y-4">
+    <section id="props" class="card p-6 space-y-4">
       <h2 class="text-lg font-semibold border-b border-base-300 pb-2">Props Reference</h2>
       
       <div class="overflow-x-auto">
@@ -444,7 +458,7 @@ const downloadFile = async () => {
     </section>
 
     <!-- Events Reference -->
-    <section class="card p-6 space-y-4">
+    <section id="events" class="card p-6 space-y-4">
       <h2 class="text-lg font-semibold border-b border-base-300 pb-2">Events</h2>
       
       <div class="overflow-x-auto">
@@ -470,7 +484,7 @@ const downloadFile = async () => {
     </section>
 
     <!-- Slots Reference -->
-    <section class="card p-6 space-y-4">
+    <section id="slots" class="card p-6 space-y-4">
       <h2 class="text-lg font-semibold border-b border-base-300 pb-2">Slots</h2>
       
       <div class="overflow-x-auto">
@@ -498,10 +512,17 @@ const downloadFile = async () => {
         </table>
       </div>
     </section>
+
+    <!-- Floating TOC -->
+    <FloatingTOC :items="tocItems" title="Modal" />
   </div>
 </template>
 
 <style scoped>
+/* Scroll margin for TOC navigation */
+section[id] {
+  scroll-margin-top: 5rem;
+}
 .code-block {
   position: relative;
   background: var(--color-base-200);

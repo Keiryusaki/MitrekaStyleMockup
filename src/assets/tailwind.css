@@ -10,6 +10,44 @@
   body {
     font-size: var(--font-size-xs);
   }
+
+  /* Custom scrollbar - elegant mobile-like style */
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: var(--scrollbar-thumb) transparent;
+  }
+
+  *::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+
+  *::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  *::-webkit-scrollbar-thumb {
+    background-color: var(--scrollbar-thumb);
+    border-radius: 9999px;
+  }
+
+  *::-webkit-scrollbar-thumb:hover {
+    background-color: var(--scrollbar-thumb-hover);
+  }
+
+  /* Hide scrollbar by default, show on hover */
+  *::-webkit-scrollbar-thumb {
+    background-color: transparent;
+  }
+
+  *:hover::-webkit-scrollbar-thumb {
+    background-color: var(--scrollbar-thumb);
+  }
+
+  *:hover::-webkit-scrollbar-thumb:hover {
+    background-color: var(--scrollbar-thumb-hover);
+  }
+
 }
 
 /* =========================================
@@ -62,6 +100,10 @@
   --color-base-100: oklch(100% 0 0);
   --color-base-200: #f3f4f6;
   --color-base-300: oklch(95% 0 0);
+
+  /* Scrollbar colors */
+  --scrollbar-thumb: rgb(156 163 175 / 0.5);
+  --scrollbar-thumb-hover: rgb(107 114 128 / 0.7);
   --color-base-content: oklch(21% 0.006 285.885);
 
   --color-primary: #025097;
@@ -100,6 +142,10 @@
   --color-base-100: oklch(0.2 0.037 266.1);
   --color-base-200: oklch(0.26 0.068 264.7);
   --color-base-300: oklch(0.345 0.063 256.8);
+
+  /* Scrollbar colors */
+  --scrollbar-thumb: rgb(148 163 184 / 0.3);
+  --scrollbar-thumb-hover: rgb(148 163 184 / 0.5);
   --color-base-content: oklch(96% 0.003 264.542);
 
   --color-primary: #025097;
@@ -501,16 +547,8 @@
     border-color: var(--color-primary);
   }
   .btn-outline-secondary {
-    color: color-mix(
-      in oklch,
-      var(--color-secondary-content),
-      var(--color-base-content) 55%
-    );
-    border-color: color-mix(
-      in oklch,
-      var(--color-secondary),
-      var(--color-base-content) 60%
-    );
+    color: var(--color-secondary-content);
+    border-color: color-mix(in oklch, var(--color-secondary), black 10%);
   }
   .btn-outline-accent {
     color: var(--color-accent);
@@ -1139,6 +1177,67 @@
       transparent 90%
     ) !important;
   }
+
+  /* Sidebar hover utilities - works with both light and dark themes */
+  .sidebar-hover:hover {
+    background-color: rgb(209 213 219 / 0.5); /* gray-300/50 for light */
+  }
+  [data-theme="mitrekadark"] .sidebar-hover:hover {
+    background-color: rgb(229 231 235 / 0.2); /* gray-200/20 for dark */
+  }
+
+  /* Sidebar active mark (Discord-style pill indicator) */
+  .sidebar-active-mark {
+    background-color: var(--color-primary); /* primary for light */
+  }
+  [data-theme="mitrekadark"] .sidebar-active-mark {
+    background-color: var(--color-accent); /* accent for dark */
+  }
+
+  /* Sidebar parent open state */
+  .sidebar-parent-open {
+    background-color: color-mix(in oklch, var(--color-primary), transparent 90%); /* soft primary for light */
+    color: var(--color-primary);
+  }
+  [data-theme="mitrekadark"] .sidebar-parent-open {
+    background-color: color-mix(in oklch, var(--color-accent), transparent 90%); /* soft accent for dark */
+    color: var(--color-accent);
+  }
+
+  /* Sidebar active item border - dark mode uses accent */
+  [data-theme="mitrekadark"] .dark\:border-accent {
+    border-color: var(--color-accent);
+  }
+
+  /* Sidebar collapse toggle button */
+  .sidebar-collapse-btn {
+    background-color: color-mix(in oklch, var(--color-primary), transparent 90%);
+    color: var(--color-primary);
+    border-color: color-mix(in oklch, var(--color-primary), transparent 70%);
+  }
+
+  .sidebar-collapse-btn:hover {
+    background-color: var(--color-primary);
+    color: var(--color-primary-content);
+    border-color: var(--color-primary);
+  }
+
+  [data-theme="mitrekadark"] .sidebar-collapse-btn {
+    background-color: color-mix(in oklch, var(--color-accent), transparent 90%);
+    color: var(--color-accent);
+    border-color: color-mix(in oklch, var(--color-accent), transparent 70%);
+  }
+
+  [data-theme="mitrekadark"] .sidebar-collapse-btn:hover {
+    background-color: var(--color-accent);
+    color: var(--color-accent-content);
+    border-color: var(--color-accent);
+  }
+
+  /* Link/text-primary dark mode override */
+  [data-theme="mitrekadark"] .text-primary {
+    color: var(--color-accent);
+  }
 }
 
 /* === Custom token utilities patch ====================================== */
@@ -1270,17 +1369,19 @@
    ICON BUTTONS (outline, compact, table-friendly)
    ========================================= */
 @layer components {
-  /* Base square icon button (outline) */
-  .icon-btn {
+  /* Base square icon button (outline) - using :where() for low specificity */
+  :where(.icon-btn) {
     display: inline-flex;
     align-items: center;
     justify-content: center;
     gap: 0;
     width: calc(var(--size-field-md) - 0.5rem);
     height: calc(var(--size-field-md) - 0.5rem);
-    border: var(--border) solid var(--color-base-300);
+    border-width: var(--border);
+    border-style: solid;
+    border-color: var(--color-base-300);
     border-radius: var(--radius-field-md);
-    background: transparent;
+    background-color: transparent;
     color: var(--color-base-content);
     line-height: 1;
     user-select: none;
@@ -1351,11 +1452,12 @@
   }
 
   .icon-btn-outline-secondary {
-    border-color: var(--color-secondary);
-    color: var(--color-secondary);
+    border-color: color-mix(in oklch, var(--color-secondary), var(--color-base-content) 50%);
+    color: color-mix(in oklch, var(--color-secondary-content), var(--color-base-content) 55%);
   }
   .icon-btn-outline-secondary:hover {
-    background: color-mix(in oklch, var(--color-secondary), white 88%);
+    background: color-mix(in oklch, var(--color-secondary), white 10%);
+    border-color: color-mix(in oklch, var(--color-secondary), var(--color-base-content) 68%);
   }
 
   .icon-btn-outline-accent {
@@ -1396,6 +1498,229 @@
   }
   .icon-btn-outline-error:hover {
     background: color-mix(in oklch, var(--color-error), white 88%);
+  }
+
+}
+
+/* Icon Button Variants - in utilities layer for higher priority */
+@layer utilities {
+  /* ===== SOLID VARIANTS ===== */
+  .icon-btn-solid {
+    background-color: var(--color-base-200) !important;
+    border-color: transparent !important;
+    color: var(--color-base-content) !important;
+  }
+  .icon-btn-solid:hover {
+    background-color: var(--color-base-300) !important;
+  }
+
+  .icon-btn-solid-primary {
+    background-color: var(--color-primary) !important;
+    border-color: transparent !important;
+    color: var(--color-primary-content) !important;
+  }
+  .icon-btn-solid-primary:hover {
+    background-color: color-mix(in oklch, var(--color-primary), black 15%) !important;
+  }
+
+  .icon-btn-solid-secondary {
+    background-color: var(--color-secondary) !important;
+    border-color: transparent !important;
+    color: var(--color-secondary-content) !important;
+  }
+  .icon-btn-solid-secondary:hover {
+    background-color: color-mix(in oklch, var(--color-secondary), black 15%) !important;
+  }
+
+  .icon-btn-solid-accent {
+    background-color: var(--color-accent) !important;
+    border-color: transparent !important;
+    color: var(--color-accent-content) !important;
+  }
+  .icon-btn-solid-accent:hover {
+    background-color: color-mix(in oklch, var(--color-accent), black 15%) !important;
+  }
+
+  .icon-btn-solid-info {
+    background-color: var(--color-info) !important;
+    border-color: transparent !important;
+    color: var(--color-info-content) !important;
+  }
+  .icon-btn-solid-info:hover {
+    background-color: color-mix(in oklch, var(--color-info), black 15%) !important;
+  }
+
+  .icon-btn-solid-success {
+    background-color: var(--color-success) !important;
+    border-color: transparent !important;
+    color: var(--color-success-content) !important;
+  }
+  .icon-btn-solid-success:hover {
+    background-color: color-mix(in oklch, var(--color-success), black 15%) !important;
+  }
+
+  .icon-btn-solid-warning {
+    background-color: var(--color-warning) !important;
+    border-color: transparent !important;
+    color: var(--color-warning-content) !important;
+  }
+  .icon-btn-solid-warning:hover {
+    background-color: color-mix(in oklch, var(--color-warning), black 15%) !important;
+  }
+
+  .icon-btn-solid-error {
+    background-color: var(--color-error) !important;
+    border-color: transparent !important;
+    color: var(--color-error-content) !important;
+  }
+  .icon-btn-solid-error:hover {
+    background-color: color-mix(in oklch, var(--color-error), black 15%) !important;
+  }
+
+  /* ===== SOFT VARIANTS ===== */
+  .icon-btn-soft {
+    background-color: color-mix(in oklch, var(--color-base-300), transparent 50%) !important;
+    border-color: transparent !important;
+    color: var(--color-base-content) !important;
+  }
+  .icon-btn-soft:hover {
+    background-color: var(--color-base-300) !important;
+  }
+
+  .icon-btn-soft-primary {
+    background-color: color-mix(in oklch, var(--color-primary), transparent 85%) !important;
+    border-color: transparent !important;
+    color: var(--color-primary) !important;
+  }
+  .icon-btn-soft-primary:hover {
+    background-color: color-mix(in oklch, var(--color-primary), transparent 75%) !important;
+  }
+
+  .icon-btn-soft-secondary {
+    background-color: color-mix(in oklch, var(--color-secondary), transparent 25%) !important;
+    border-color: transparent !important;
+    color: color-mix(in oklch, var(--color-secondary), black 35%) !important;
+  }
+  .icon-btn-soft-secondary:hover {
+    background-color: color-mix(in oklch, var(--color-secondary), transparent 10%) !important;
+  }
+
+  .icon-btn-soft-accent {
+    background-color: color-mix(in oklch, var(--color-accent), transparent 85%) !important;
+    border-color: transparent !important;
+    color: color-mix(in oklch, var(--color-accent), black 20%) !important;
+  }
+  .icon-btn-soft-accent:hover {
+    background-color: color-mix(in oklch, var(--color-accent), transparent 75%) !important;
+  }
+
+  .icon-btn-soft-info {
+    background-color: color-mix(in oklch, var(--color-info), transparent 85%) !important;
+    border-color: transparent !important;
+    color: var(--color-info) !important;
+  }
+  .icon-btn-soft-info:hover {
+    background-color: color-mix(in oklch, var(--color-info), transparent 75%) !important;
+  }
+
+  .icon-btn-soft-success {
+    background-color: color-mix(in oklch, var(--color-success), transparent 85%) !important;
+    border-color: transparent !important;
+    color: var(--color-success) !important;
+  }
+  .icon-btn-soft-success:hover {
+    background-color: color-mix(in oklch, var(--color-success), transparent 75%) !important;
+  }
+
+  .icon-btn-soft-warning {
+    background-color: color-mix(in oklch, var(--color-warning), transparent 85%) !important;
+    border-color: transparent !important;
+    color: var(--color-warning) !important;
+  }
+  .icon-btn-soft-warning:hover {
+    background-color: color-mix(in oklch, var(--color-warning), transparent 75%) !important;
+  }
+
+  .icon-btn-soft-error {
+    background-color: color-mix(in oklch, var(--color-error), transparent 85%) !important;
+    border-color: transparent !important;
+    color: var(--color-error) !important;
+  }
+  .icon-btn-soft-error:hover {
+    background-color: color-mix(in oklch, var(--color-error), transparent 75%) !important;
+  }
+
+  /* ===== GHOST VARIANTS ===== */
+  .icon-btn-ghost {
+    background-color: transparent !important;
+    border-color: transparent !important;
+    color: var(--color-base-content) !important;
+  }
+  .icon-btn-ghost:hover {
+    background-color: color-mix(in oklch, var(--color-base-200), transparent 40%) !important;
+  }
+
+  .icon-btn-ghost-primary {
+    background-color: transparent !important;
+    border-color: transparent !important;
+    color: var(--color-primary) !important;
+  }
+  .icon-btn-ghost-primary:hover {
+    background-color: color-mix(in oklch, var(--color-primary), transparent 85%) !important;
+  }
+
+  .icon-btn-ghost-secondary {
+    background-color: transparent !important;
+    border-color: transparent !important;
+    color: color-mix(in oklch, var(--color-secondary), black 35%) !important;
+  }
+  .icon-btn-ghost-secondary:hover {
+    background-color: color-mix(in oklch, var(--color-secondary), transparent 25%) !important;
+  }
+
+  .icon-btn-ghost-accent {
+    background-color: transparent !important;
+    border-color: transparent !important;
+    color: color-mix(in oklch, var(--color-accent), black 20%) !important;
+  }
+  .icon-btn-ghost-accent:hover {
+    background-color: color-mix(in oklch, var(--color-accent), transparent 85%) !important;
+  }
+
+  .icon-btn-ghost-info {
+    background-color: transparent !important;
+    border-color: transparent !important;
+    color: var(--color-info) !important;
+  }
+  .icon-btn-ghost-info:hover {
+    background-color: color-mix(in oklch, var(--color-info), transparent 85%) !important;
+  }
+
+  .icon-btn-ghost-success {
+    background-color: transparent !important;
+    border-color: transparent !important;
+    color: var(--color-success) !important;
+  }
+  .icon-btn-ghost-success:hover {
+    background-color: color-mix(in oklch, var(--color-success), transparent 85%) !important;
+  }
+
+  .icon-btn-ghost-warning {
+    background-color: transparent !important;
+    border-color: transparent !important;
+    color: var(--color-warning) !important;
+  }
+  .icon-btn-ghost-warning:hover {
+    background-color: color-mix(in oklch, var(--color-warning), transparent 85%) !important;
+  }
+
+  .icon-btn-ghost-error {
+    background-color: transparent !important;
+    border-color: transparent !important;
+    color: var(--color-error) !important;
+  }
+  .icon-btn-ghost-error:hover {
+    background-color: color-mix(in oklch, var(--color-error), transparent 85%) !important;
   }
 }
 

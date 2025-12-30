@@ -2,7 +2,22 @@
 import { ref, computed } from "vue";
 import DataTable from "@/components/data/DataTable.vue";
 import { Icon } from "@/components/icons";
+import FloatingTOC, { type TOCItem } from "@/components/FloatingTOC.vue";
 import "@/pages/Table/ag-like-skin.css";
+
+const tocItems: TOCItem[] = [
+  { id: 'download', label: 'Download Component' },
+  { id: 'features', label: 'Features' },
+  { id: 'basic', label: 'Basic Usage' },
+  { id: 'full', label: 'Full Example' },
+  { id: 'custom-cell', label: 'Custom Cell' },
+  { id: 'toolbar', label: 'With Toolbar' },
+  { id: 'actions', label: 'With Actions Column' },
+  { id: 'als-style', label: 'ALS Table Style' },
+  { id: 'props', label: 'Props Reference' },
+  { id: 'slots', label: 'Available Slots' },
+  { id: 'styling', label: 'Styling Reference' },
+];
 
 const copiedId = ref<string | null>(null);
 
@@ -202,9 +217,9 @@ import "@/pages/Table/ag-like-skin.css";
           <td><span class="badge badge-sm" :class="statusClass">{{ row.status }}</span></td>
           <td data-col="actions">
             <div class="flex items-center justify-end gap-1">
-              <button class="btn btn-soft-info btn-xs h-7 w-7 p-0"><Icon name="eye" /></button>
-              <button class="btn btn-soft-warning btn-xs h-7 w-7 p-0"><Icon name="edit" /></button>
-              <button class="btn btn-soft-error btn-xs h-7 w-7 p-0"><Icon name="trash" /></button>
+              <button class="icon-btn icon-btn-soft-info icon-btn-sm"><Icon name="eye" class="w-4 h-4" /></button>
+              <button class="icon-btn icon-btn-soft-warning icon-btn-sm"><Icon name="pencil" class="w-4 h-4" /></button>
+              <button class="icon-btn icon-btn-soft-error icon-btn-sm"><Icon name="trash" class="w-4 h-4" /></button>
             </div>
           </td>
         </tr>
@@ -252,7 +267,7 @@ const downloadFile = async () => {
     </header>
 
     <!-- Download Component -->
-    <section class="card p-4">
+    <section id="download" class="card p-4 scroll-mt-20">
       <div class="flex items-center justify-between">
         <div>
           <h2 class="font-semibold">Download Component</h2>
@@ -265,7 +280,7 @@ const downloadFile = async () => {
     </section>
 
     <!-- Features -->
-    <section class="card p-6">
+    <section id="features" class="card p-6 scroll-mt-20">
       <h2 class="text-lg font-semibold border-b border-base-300 pb-2 mb-4">Features</h2>
       <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
         <div class="text-center p-3 bg-base-200 rounded-box">
@@ -292,7 +307,7 @@ const downloadFile = async () => {
     </section>
 
     <!-- Basic Usage -->
-    <section class="card p-6 space-y-4">
+    <section id="basic" class="card p-6 space-y-4 scroll-mt-20">
       <h2 class="text-lg font-semibold border-b border-base-300 pb-2">Basic Usage</h2>
       <p class="text-sm opacity-80">
         Cukup pass <code class="code-inline">headers</code> dan <code class="code-inline">rows</code>.
@@ -310,7 +325,7 @@ const downloadFile = async () => {
     </section>
 
     <!-- Full Example -->
-    <section class="card p-6 space-y-4">
+    <section id="full" class="card p-6 space-y-4 scroll-mt-20">
       <h2 class="text-lg font-semibold border-b border-base-300 pb-2">Full Example</h2>
       <p class="text-sm opacity-80">
         Dengan 12 rows, page size 5, dan custom cell rendering untuk status.
@@ -343,7 +358,7 @@ const downloadFile = async () => {
     </section>
 
     <!-- Custom Cell -->
-    <section class="card p-6 space-y-4">
+    <section id="custom-cell" class="card p-6 space-y-4 scroll-mt-20">
       <h2 class="text-lg font-semibold border-b border-base-300 pb-2">Custom Cell Rendering</h2>
       <p class="text-sm opacity-80">
         Gunakan slot <code class="code-inline">#cell:columnKey</code> untuk custom render.
@@ -359,7 +374,7 @@ const downloadFile = async () => {
     </section>
 
     <!-- With Toolbar -->
-    <section class="card p-6 space-y-4">
+    <section id="toolbar" class="card p-6 space-y-4 scroll-mt-20">
       <h2 class="text-lg font-semibold border-b border-base-300 pb-2">With Toolbar</h2>
       <p class="text-sm opacity-80">
         Tambahkan action buttons di toolbar menggunakan slot <code class="code-inline">#toolbar</code>.
@@ -386,7 +401,7 @@ const downloadFile = async () => {
     </section>
 
     <!-- With Actions Column -->
-    <section class="card p-6 space-y-4">
+    <section id="actions" class="card p-6 space-y-4 scroll-mt-20">
       <h2 class="text-lg font-semibold border-b border-base-300 pb-2">With Actions Column</h2>
       <p class="text-sm opacity-80">
         Tambahkan kolom actions untuk edit/delete buttons.
@@ -406,11 +421,11 @@ const downloadFile = async () => {
         </template>
         <template #cell:actions>
           <div class="flex items-center justify-end gap-1">
-            <button class="btn btn-soft-warning btn-xs h-7 w-7 p-0" title="Edit">
-              <Icon name="edit" :size="14" />
+            <button class="icon-btn icon-btn-soft-warning icon-btn-sm" title="Edit">
+              <Icon name="pencil" class="w-4 h-4" />
             </button>
-            <button class="btn btn-soft-error btn-xs h-7 w-7 p-0" title="Delete">
-              <Icon name="delete" :size="14" />
+            <button class="icon-btn icon-btn-soft-error icon-btn-sm" title="Delete">
+              <Icon name="trash" class="w-4 h-4" />
             </button>
           </div>
         </template>
@@ -418,7 +433,7 @@ const downloadFile = async () => {
     </section>
 
     <!-- ALS Table Style -->
-    <section class="card p-6 space-y-4">
+    <section id="als-style" class="card p-6 space-y-4 scroll-mt-20">
       <h2 class="text-lg font-semibold border-b border-base-300 pb-2">ALS Table Style (Recommended)</h2>
       <p class="text-sm opacity-80">
         Standard table styling yang konsisten dengan AG-Grid. Gunakan skin ALS untuk tampilan yang sama.
@@ -463,14 +478,14 @@ const downloadFile = async () => {
                   <td><span class="badge badge-sm" :class="getStatusClass(row.status)">{{ row.status }}</span></td>
                   <td data-col="actions">
                     <div class="flex items-center justify-end gap-1">
-                      <button class="btn btn-soft-info btn-xs h-7 w-7 p-0" title="View">
-                        <Icon name="eye" :size="14" />
+                      <button class="icon-btn icon-btn-soft-info icon-btn-sm" title="View">
+                        <Icon name="eye" class="w-4 h-4" />
                       </button>
-                      <button class="btn btn-soft-warning btn-xs h-7 w-7 p-0" title="Edit">
-                        <Icon name="edit" :size="14" />
+                      <button class="icon-btn icon-btn-soft-warning icon-btn-sm" title="Edit">
+                        <Icon name="pencil" class="w-4 h-4" />
                       </button>
-                      <button class="btn btn-soft-error btn-xs h-7 w-7 p-0" title="Delete">
-                        <Icon name="trash" :size="14" />
+                      <button class="icon-btn icon-btn-soft-error icon-btn-sm" title="Delete">
+                        <Icon name="trash" class="w-4 h-4" />
                       </button>
                     </div>
                   </td>
@@ -514,7 +529,7 @@ const downloadFile = async () => {
     </section>
 
     <!-- Props Reference -->
-    <section class="card p-6 space-y-4">
+    <section id="props" class="card p-6 space-y-4 scroll-mt-20">
       <h2 class="text-lg font-semibold border-b border-base-300 pb-2">Props</h2>
 
       <div class="overflow-x-auto">
@@ -559,7 +574,7 @@ const downloadFile = async () => {
     </section>
 
     <!-- Slots Reference -->
-    <section class="card p-6 space-y-4">
+    <section id="slots" class="card p-6 space-y-4 scroll-mt-20">
       <h2 class="text-lg font-semibold border-b border-base-300 pb-2">Slots</h2>
 
       <div class="overflow-x-auto">
@@ -595,7 +610,7 @@ const downloadFile = async () => {
     </section>
 
     <!-- Comparison -->
-    <section class="card p-6 space-y-4">
+    <section id="styling" class="card p-6 space-y-4 scroll-mt-20">
       <h2 class="text-lg font-semibold border-b border-base-300 pb-2">DataTable vs Table vs AG-Grid</h2>
       
       <div class="overflow-x-auto">
@@ -655,6 +670,8 @@ const downloadFile = async () => {
         </table>
       </div>
     </section>
+
+    <FloatingTOC :items="tocItems" />
   </div>
 </template>
 

@@ -45,7 +45,7 @@ export function createLoadingPlugin(
           next();
         });
         opts.router.afterEach(() => {
-          setTimeout(() => store.stopNav(), 120);
+          setTimeout(() => store.stopNav(), 1500);
         });
       }
 

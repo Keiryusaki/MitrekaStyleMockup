@@ -1,9 +1,9 @@
 // @/composables/useSidebar.ts
 
-import { ref } from "vue";
+import { ref, computed } from "vue";
 import { useRouter, useRoute } from "vue-router";
 import { useUi } from "@/stores/ui";
-import type { NavItem } from "@/components/nav/data/navigation";
+import { NAV, type NavItem } from "@/components/nav/data/navigation";
 
 // Bikin 'tip' jadi singleton state biar bisa di-share
 const tip = ref<{ show: boolean; text: string; x: number; y: number }>({
@@ -12,6 +12,9 @@ const tip = ref<{ show: boolean; text: string; x: number; y: number }>({
   x: 0,
   y: 0,
 });
+
+// Search query singleton
+const searchQuery = ref("");
 
 export function useSidebar() {
   const ui = useUi();
@@ -23,6 +26,9 @@ export function useSidebar() {
     item.exact ? route.path === path : route.path.startsWith(path);
   const isActive = (item: NavItem) => (item.to ? match(item.to, item) : false);
   const isGroupOpen = (item: NavItem) => {
+    // Auto-expand all groups when searching
+    if (searchQuery.value.trim()) return true;
+    
     const current = ui.openGroups[item.id];
     const auto = item.children?.some(isActive) ?? false;
     if (current === undefined && auto) ui.setGroupOpen(item.id, true);
@@ -31,6 +37,44 @@ export function useSidebar() {
   const toggleGroup = (item: NavItem) => ui.toggleGroup(item.id);
   const go = (item: NavItem) => {
     if (item.to) router.push(item.to);
+    // Clear search when navigating
+    searchQuery.value = "";
+  };
+
+  /* ====== LOGIC SEARCH ====== */
+  const filteredNav = computed(() => {
+    const query = searchQuery.value.toLowerCase().trim();
+    if (!query) return NAV;
+
+    return NAV.map((item) => {
+      // If item has children, filter children
+      if (item.children) {
+        const matchingChildren = item.children.filter((child) =>
+          child.label.toLowerCase().includes(query)
+        );
+        // If parent matches or has matching children, include it
+        if (item.label.toLowerCase().includes(query)) {
+          return item; // Return with all children
+        }
+        if (matchingChildren.length > 0) {
+          return { ...item, children: matchingChildren };
+        }
+        return null;
+      }
+      // Regular item - check if label matches
+      if (item.label.toLowerCase().includes(query)) {
+        return item;
+      }
+      return null;
+    }).filter(Boolean) as NavItem[];
+  });
+
+  const setSearchQuery = (query: string) => {
+    searchQuery.value = query;
+  };
+
+  const clearSearch = () => {
+    searchQuery.value = "";
   };
 
   /* ====== LOGIC TOOLTIP ====== */
@@ -60,8 +104,13 @@ export function useSidebar() {
     isGroupOpen,
     toggleGroup,
     go,
+    // Search
+    searchQuery,
+    filteredNav,
+    setSearchQuery,
+    clearSearch,
     // Tooltip
-    tip, // <-- state 'tip' di-export
+    tip,
     showTip,
     hideTip,
   };

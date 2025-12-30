@@ -8,15 +8,7 @@
     <template v-else>
       <AppLayout />
       <ChatSuggest />
-      <LoadingOverlay
-        :show="loading.isLoading"
-        :message="loading.message"
-      />
-      <BrandedLoading
-        :show="loading.visible"
-        :message="loading.message"
-        :size="240"
-      />
+      <LoadingOverlay />
     </template>
   </div>
 </template>
@@ -28,11 +20,7 @@ import { useRoute } from "vue-router";
 import AppLayout from "./layouts/AppLayout.vue";
 import ChatSuggest from "@/components/ChatSuggest.vue";
 import LoadingOverlay from "@/components/LoadingOverlay.vue";
-import BrandedLoading from "@/components/BrandedLoading.vue";
 import Ticketing from "@/pages/Ticketing/Ticketing.vue";
-
-import { useLoadingStore } from "@/stores/loading";
-const loading = useLoadingStore();
 
 // --- detect route ---
 const route = useRoute();
