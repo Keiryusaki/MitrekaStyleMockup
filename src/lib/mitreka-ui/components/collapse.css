@@ -1,0 +1,79 @@
+/* =========================================
+   @mitreka/ui - Collapse Component
+   ========================================= */
+
+.collapse {
+  border-radius: var(--radius-box);
+  overflow: hidden;
+}
+
+.collapse-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
+  user-select: none;
+  padding: 0.75rem 1rem;
+  background-color: var(--color-base-100);
+  border: var(--border) solid var(--color-base-300);
+  border-radius: var(--radius-box);
+  transition: background-color 0.15s ease;
+}
+
+.collapse-header:hover {
+  background-color: var(--color-base-200);
+}
+
+.collapse-icon {
+  width: 1.25rem;
+  height: 1.25rem;
+  transition: transform 0.2s ease;
+  flex-shrink: 0;
+}
+
+.collapse.is-open .collapse-icon {
+  transform: rotate(180deg);
+}
+
+.collapse-content {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 0.2s ease;
+}
+
+.collapse.is-open .collapse-content {
+  grid-template-rows: 1fr;
+}
+
+.collapse-content-inner {
+  overflow: hidden;
+}
+
+.collapse-body {
+  padding: 1rem;
+  border: var(--border) solid var(--color-base-300);
+  border-top: none;
+  border-radius: 0 0 var(--radius-box) var(--radius-box);
+  background-color: var(--color-base-100);
+}
+
+/* Borderless variant */
+.collapse.collapse-borderless .collapse-header,
+.collapse.collapse-borderless .collapse-body {
+  border: none;
+}
+
+/* Ghost variant - no background */
+.collapse.collapse-ghost .collapse-header {
+  background-color: transparent;
+  border: none;
+}
+
+.collapse.collapse-ghost .collapse-header:hover {
+  background-color: var(--color-base-200);
+}
+
+.collapse.collapse-ghost .collapse-body {
+  border: none;
+  background-color: transparent;
+}

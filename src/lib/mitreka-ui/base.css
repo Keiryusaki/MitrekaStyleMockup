@@ -1,0 +1,128 @@
+/* =========================================
+   @mitreka/ui - Base Styles & Design Tokens
+   ========================================= */
+
+@layer base {
+  html,
+  body,
+  #app {
+    height: 100%;
+  }
+
+  body {
+    font-size: var(--font-size-xs);
+  }
+}
+
+/* =========================================
+   THEME TOKENS (CSS Variables)
+   ========================================= */
+
+:root {
+  --font-sans: Inter, ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto,
+    Noto Sans, Ubuntu, Cantarell, Helvetica Neue, Arial, "Apple Color Emoji",
+    "Segoe UI Emoji", "Segoe UI Symbol";
+
+  /* Scale - height */
+  --size-field-xs: 2rem;
+  --size-field-sm: 2.25rem;
+  --size-field-md: 2.5rem;
+  --size-field-lg: 2.75rem;
+  --size-field-xl: 3rem;
+
+  /* Scale - selector */
+  --size-selector-xs: 2rem;
+  --size-selector-sm: 2.25rem;
+  --size-selector-md: 2.5rem;
+  --size-selector-lg: 2.75rem;
+  --size-selector-xl: 3rem;
+
+  /* Scale - radius */
+  --radius-field-xs: 0.375rem;
+  --radius-field-sm: 0.5rem;
+  --radius-field-md: 0.5rem;
+  --radius-field-lg: 0.625rem;
+  --radius-field-xl: 0.75rem;
+  --radius-box: 0.5rem;
+
+  /* Scale - font-size */
+  --font-size-xs: 0.8125rem;
+  --font-size-sm: 0.875rem;
+  --font-size-md: 0.9375rem;
+  --font-size-lg: 1rem;
+  --font-size-xl: 1.0625rem;
+
+  /* Border + elevation */
+  --border: 1px;
+  --depth: 1;
+  --noise: 0;
+}
+
+/* ---------- LIGHT THEME (Mitreka) ---------- */
+:root,
+:root[data-theme="mitrekalight"] {
+  --color-base-100: oklch(100% 0 0);
+  --color-base-200: #f3f4f6;
+  --color-base-300: oklch(95% 0 0);
+  --color-base-content: oklch(21% 0.006 285.885);
+
+  --color-primary: #025097;
+  --color-primary-content: oklch(93% 0.034 272.788);
+
+  --color-secondary: oklch(96% 0.001 286.375);
+  --color-secondary-content: oklch(44% 0.017 285.786);
+
+  --color-accent: oklch(86% 0.127 207.078);
+  --color-accent-content: oklch(38% 0.063 188.416);
+
+  --color-neutral: oklch(14% 0.005 285.823);
+  --color-neutral-content: oklch(100% 0 0);
+
+  --color-info: oklch(68% 0.169 237.323);
+  --color-info-content: oklch(100% 0 0);
+
+  --color-success: oklch(69% 0.17 162.48);
+  --color-success-content: oklch(100% 0 0);
+
+  --color-warning: oklch(70% 0.213 47.604);
+  --color-warning-content: oklch(100% 0 0);
+
+  --color-error: #ee3032;
+  --color-error-content: oklch(100% 0 0);
+
+  --depth: 1;
+}
+
+/* ---------- DARK THEME (Mitreka) ---------- */
+:root[data-theme="mitrekadark"] {
+  --color-base-100: oklch(0.2 0.037 266.1);
+  --color-base-200: oklch(0.26 0.068 264.7);
+  --color-base-300: oklch(0.345 0.063 256.8);
+  --color-base-content: oklch(96% 0.003 264.542);
+
+  --color-primary: #025097;
+  --color-primary-content: oklch(93% 0.034 272.788);
+
+  --color-secondary: oklch(96% 0.001 286.375);
+  --color-secondary-content: oklch(44% 0.017 285.786);
+
+  --color-accent: oklch(86% 0.127 207.078);
+  --color-accent-content: oklch(38% 0.063 188.416);
+
+  --color-neutral: oklch(0.335 0.008 275);
+  --color-neutral-content: oklch(100% 0 0);
+
+  --color-info: oklch(68% 0.169 237.323);
+  --color-info-content: oklch(100% 0 0);
+
+  --color-success: oklch(69% 0.17 162.48);
+  --color-success-content: oklch(100% 0 0);
+
+  --color-warning: oklch(70% 0.213 47.604);
+  --color-warning-content: oklch(100% 0 0);
+
+  --color-error: #ee3032;
+  --color-error-content: oklch(100% 0 0);
+
+  --depth: 0;
+}

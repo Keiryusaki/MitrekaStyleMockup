@@ -1,0 +1,84 @@
+/* =========================================
+   @mitreka/ui - Input Component
+   ========================================= */
+
+.input {
+  width: 100%;
+  height: var(--size-field-md);
+  border: var(--border) solid var(--color-base-300);
+  border-radius: var(--radius-field-md);
+  background: var(--color-base-100);
+  color: var(--color-base-content);
+  padding-inline: 0.75rem;
+  font-size: var(--font-size-md);
+  line-height: 1;
+  transition: border-color 0.15s, box-shadow 0.15s, background-color 0.15s;
+}
+.input::placeholder {
+  color: color-mix(in oklch, var(--color-base-content), transparent 55%);
+}
+.input:hover {
+  border-color: color-mix(in oklch, var(--color-base-300), var(--color-primary) 18%);
+}
+.input:focus {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px color-mix(in oklch, var(--color-primary), white 78%);
+  outline: none;
+}
+.input:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Input size */
+.input-xs {
+  height: var(--size-field-xs);
+  border-radius: var(--radius-field-xs);
+  font-size: var(--font-size-xs);
+  padding-inline: 0.625rem;
+}
+.input-sm {
+  height: var(--size-field-sm);
+  border-radius: var(--radius-field-sm);
+  font-size: var(--font-size-sm);
+  padding-inline: 0.675rem;
+}
+.input-lg {
+  height: var(--size-field-lg);
+  border-radius: var(--radius-field-lg);
+  font-size: var(--font-size-lg);
+  padding-inline: 0.875rem;
+}
+.input-xl {
+  height: var(--size-field-xl);
+  border-radius: var(--radius-field-xl);
+  font-size: var(--font-size-xl);
+  padding-inline: 1rem;
+}
+
+/* Input state variants */
+.input-primary { border-color: var(--color-primary); }
+.input-secondary { border-color: var(--color-secondary); }
+.input-accent { border-color: var(--color-accent); }
+.input-info { border-color: var(--color-info); }
+.input-success { border-color: var(--color-success); }
+.input-warning { border-color: var(--color-warning); }
+.input-error { border-color: var(--color-error); }
+
+.input-primary:focus { box-shadow: 0 0 0 3px color-mix(in oklch, var(--color-primary), white 78%); }
+.input-secondary:focus { box-shadow: 0 0 0 3px color-mix(in oklch, var(--color-secondary), white 78%); }
+.input-accent:focus { box-shadow: 0 0 0 3px color-mix(in oklch, var(--color-accent), white 78%); }
+.input-info:focus { box-shadow: 0 0 0 3px color-mix(in oklch, var(--color-info), white 78%); }
+.input-success:focus { box-shadow: 0 0 0 3px color-mix(in oklch, var(--color-success), white 78%); }
+.input-warning:focus { box-shadow: 0 0 0 3px color-mix(in oklch, var(--color-warning), white 78%); }
+.input-error:focus { box-shadow: 0 0 0 3px color-mix(in oklch, var(--color-error), white 78%); }
+
+/* Form hint / Helper text */
+.form-hint { font-size: 0.8125rem; }
+.form-hint-primary { color: var(--color-primary); }
+.form-hint-secondary { color: var(--color-secondary); }
+.form-hint-accent { color: var(--color-accent); }
+.form-hint-info { color: var(--color-info); }
+.form-hint-success { color: var(--color-success); }
+.form-hint-warning { color: var(--color-warning); }
+.form-hint-error { color: var(--color-error); }
