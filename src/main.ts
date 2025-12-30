@@ -3,7 +3,8 @@ import { createPinia } from "pinia";
 import App from "./App.vue";
 import router from "./router";
 // Mitreka UI Library (load first so tailwind.css can override)
-import "@keiryusaki/mitreka-ui/css";
+// import "@keiryusaki/mitreka-ui/css"; // uncomment jika pakai npm package
+import "./lib/mitreka-ui/index.css";
 import "./assets/tailwind.css";
 import { useUi } from "./stores/ui";
 import { AgGridVue } from "ag-grid-vue3";
