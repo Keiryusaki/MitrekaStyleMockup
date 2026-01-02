@@ -1,4 +1,22 @@
 [
+   {
+     "version": "2.2.0",
+     "date": "2026-01-02",
+     "label": "Feature",
+     "items": [
+       { "type": "Added", "text": "Tabs Component - variants: basic, pills, bordered, vertical", "href": "/tabs" },
+       { "type": "Added", "text": "Progress & Steps Component - vertical/horizontal steps, progress bars", "href": "/progress" },
+       { "type": "Added", "text": "Timeline Component - activity feed, compact timeline", "href": "/timeline" },
+       { "type": "Added", "text": "FileUpload Component - dropzone, image preview, multiple selection", "href": "/file-upload" },
+       { "type": "Added", "text": "Skeleton Component - loading placeholders", "href": "/skeleton" },
+       { "type": "Added", "text": "Alert & Banner Component - update styles, color variables integration", "href": "/alert" },
+       { "type": "Fixed", "text": "Vertical Steps styling issue (connecting line)" },
+       { "type": "Changed", "text": "Alert colors updated to use global theme variables (color-mix)" },
+       { "type": "Changed", "text": "File Input styling improvement (vertical align, consistent button)" },
+       { "type": "Added", "text": "New Icons: truck, upload, file, image, x-circle, megaphone, chat" }
+     ],
+     "assets": []
+   },
   {
     "version": "2.1.0",
     "date": "2025-12-30",
