@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref, computed } from "vue";
 import Pagination from "@/components/misc/Pagination.vue";
+import PageHeader from "@/components/PageHeader.vue";
 
 const copiedId = ref<string | null>(null);
 
@@ -164,14 +165,12 @@ const visiblePages = computed(() => {
 </script>
 
 <template>
-  <div class="space-y-8 pb-12">
-    <!-- Header -->
-    <header>
-      <h1 class="text-2xl font-bold">Pagination</h1>
-      <p class="text-sm opacity-80">
-        Komponen navigasi halaman untuk data yang dipaginasi.
-      </p>
-    </header>
+  <div class="space-y-8">
+    <PageHeader 
+      category="Components"
+      title="Pagination" 
+      description="Komponen navigasi halaman untuk data yang dipaginasi."
+    />
 
     <!-- Download Component -->
     <section class="card p-4">

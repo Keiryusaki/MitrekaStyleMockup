@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref, computed } from "vue";
 import FloatingTOC, { type TOCItem } from "@/components/FloatingTOC.vue";
+import PageHeader from "@/components/PageHeader.vue";
 
 const tocItems: TOCItem[] = [
   { id: 'controls', label: 'Controls' },
@@ -47,14 +48,11 @@ const tones: { label: string; tone: Tone }[] = [
 
 <template>
   <div class="space-y-8">
-    <!-- Header -->
-    <header>
-      <h1 class="text-xl font-semibold">Component Variants · Input</h1>
-      <p class="text-sm opacity-80">
-        Base, 7 state warna, 5 ukuran. Border & focus ring mengikuti token
-        warna.
-      </p>
-    </header>
+    <PageHeader 
+      category="Components"
+      title="Input" 
+      description="Base, 7 state warna, 5 ukuran. Border & focus ring mengikuti token warna."
+    />
 
     <div class="card p-4 md:p-6 space-y-5">
       <!-- Controls -->

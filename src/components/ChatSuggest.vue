@@ -1,7 +1,7 @@
 <template>
   <button
     @click="togglePanel"
-    class="fixed bottom-5 right-5 z-40 w-16 h-16 md:w-[72px] md:h-[72px] rounded-full backdrop-blur-xs bg-white/20 dark:bg-slate-900/20 border border-white/40 dark:border-white/10 shadow-xl shadow-black/20 hover:bg-white/25 dark:hover:bg-slate-900/25 hover:backdrop-blur-lg focus:outline-none focus-visible:ring-2 focus-visible:ring-primary/60 transition flex items-center justify-center"
+    class="fixed bottom-5 md:bottom-[70px] right-5 z-40 w-16 h-16 md:w-[72px] md:h-[72px] rounded-full backdrop-blur-xs bg-white/20 dark:bg-slate-900/20 border border-white/40 dark:border-white/10 shadow-xl shadow-black/20 hover:bg-white/25 dark:hover:bg-slate-900/25 hover:backdrop-blur-lg focus:outline-none focus-visible:ring-2 focus-visible:ring-primary/60 transition flex items-center justify-center"
     aria-label="Bantuan"
   >
     <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="currentColor" class="text-primary dark:text-accent">
@@ -15,7 +15,7 @@
   <transition name="slide-up">
     <div
       v-if="open"
-      class="fixed bottom-16 right-5 z-40 w-[min(92vw,380px)] h-[550px] flex flex-col rounded-2xl border border-base-300 bg-base-100 text-base shadow-xl overflow-hidden"
+      class="fixed bottom-24 md:bottom-[150px] right-5 z-40 w-[min(92vw,380px)] h-[550px] flex flex-col rounded-2xl border border-base-300 bg-base-100 text-base shadow-xl overflow-hidden"
     >
       <div class="flex-none px-4 py-3 glass-border border-b border-base-200">
         <div class="flex items-center justify-between">

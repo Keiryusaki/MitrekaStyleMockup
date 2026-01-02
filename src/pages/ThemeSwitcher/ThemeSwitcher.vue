@@ -3,6 +3,7 @@ import { ref, computed } from "vue";
 import { useTheme } from "@/composables/useTheme";
 import SelectDropdown from "@/components/controls/SelectDropdown.vue";
 import { Icon } from "@/components/icons";
+import PageHeader from "@/components/PageHeader.vue";
 
 const { currentTheme, toggleTheme, setTheme } = useTheme();
 
@@ -146,14 +147,12 @@ const downloadComponent = async () => {
 </script>
 
 <template>
-  <div class="space-y-8 pb-12">
-    <!-- Header -->
-    <header>
-      <h1 class="text-2xl font-bold">Theme Switcher</h1>
-      <p class="text-sm opacity-80">
-        Komponen dan composable untuk toggle dark/light mode.
-      </p>
-    </header>
+  <div class="space-y-8">
+    <PageHeader 
+      category="Components"
+      title="Theme Switcher" 
+      description="Komponen dan composable untuk toggle dark/light mode."
+    />
 
     <!-- Download -->
     <section class="card p-4">

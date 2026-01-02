@@ -2,6 +2,7 @@
 import { ref } from 'vue';
 import LoadingLogo from '@/components/feedback/LoadingLogo.vue';
 import FloatingTOC, { type TOCItem } from '@/components/FloatingTOC.vue';
+import PageHeader from "@/components/PageHeader.vue";
 
 const tocItems: TOCItem[] = [
   { id: 'demo', label: 'Demo' },
@@ -22,13 +23,12 @@ const triggerOverlay = () => {
 </script>
 
 <template>
-  <div class="space-y-8 pb-12">
-    <header>
-      <h1 class="text-2xl font-bold">Loading Animation</h1>
-      <p class="text-sm opacity-80">
-        Animasi loading dengan 6 dots yang morph menjadi logo Mitreka.
-      </p>
-    </header>
+  <div class="space-y-8">
+    <PageHeader 
+      category="Components"
+      title="Loading Animation" 
+      description="Animasi loading dengan 6 dots yang morph menjadi logo Mitreka."
+    />
 
     <!-- Demo -->
     <section id="demo" class="card p-6 scroll-mt-20">

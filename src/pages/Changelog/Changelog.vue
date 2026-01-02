@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { onMounted } from "vue";
 import data from "./changelog.json";
+import PageHeader from "@/components/PageHeader.vue";
 
 type ChangeType =
   | "Added"
@@ -52,11 +53,12 @@ const withBase = (p: string) =>
 </script>
 
 <template>
-  <div class="space-y-6">
-    <header>
-      <h1 class="text-xl font-semibold">Changelog</h1>
-      <p class="text-sm opacity-70">Riwayat perubahan + file CSS per versi</p>
-    </header>
+  <div class="space-y-8">
+    <PageHeader 
+      category="Guides"
+      title="Changelog" 
+      description="Riwayat perubahan + file CSS per versi."
+    />
 
     <section class="space-y-3">
       <details

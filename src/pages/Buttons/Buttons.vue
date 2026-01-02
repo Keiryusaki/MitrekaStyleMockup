@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref, computed } from "vue";
 import FloatingTOC, { type TOCItem } from "@/components/FloatingTOC.vue";
+import PageHeader from "@/components/PageHeader.vue";
 import { Icon } from "@/composables/Icon";
 
 const tocItems: TOCItem[] = [
@@ -57,15 +58,11 @@ const outlineClass = (k: Kind) => {
 
 <template>
   <div class="space-y-8">
-    <!-- Header -->
-    <header class="flex items-center justify-between">
-      <div>
-        <h1 class="text-xl font-semibold">Component Variants · Button</h1>
-        <p class="text-sm opacity-80">
-          Solid & Outline, 9 warna, 5 ukuran. Class disediakan via theme css.
-        </p>
-      </div>
-    </header>
+    <PageHeader 
+      category="Components"
+      title="Button" 
+      description="Solid & Outline, 9 warna, 5 ukuran. Class disediakan via theme CSS."
+    />
 
     <div class="card p-4 md:p-6 space-y-5">
       <!-- Controls -->

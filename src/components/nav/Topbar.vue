@@ -22,6 +22,8 @@
     </div>
     <div class="flex items-center gap-1 sm:gap-2 z-10">
       <input class="input input-sm w-48 lg:w-64 hidden md:block" placeholder="Search…" />
+      <!-- Notification Dropdown -->
+      <NotificationDropdown />
       <!-- Toggle theme: icon only -->
       <button
         class="btn btn-ghost btn-sm text-white!"
@@ -47,6 +49,7 @@
 <script setup lang="ts">
 import { useUi } from "@/stores/ui";
 import logoUrl from "@/assets/logo.png";
+import NotificationDropdown from "@/components/nav/NotificationDropdown.vue";
 const ui = useUi();
 
 function logout() {

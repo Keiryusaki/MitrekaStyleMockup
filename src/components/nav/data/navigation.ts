@@ -20,21 +20,22 @@ export type NavItem = {
 // Data Navigasi
 export const NAV: NavItem[] = [
   { id: "dash", label: "Dashboard", icon: "dashboard", to: "/", exact: true },
-  { id: "ticket", label: "Ticketing", icon: "ticket", to: "/ticketing" },
   {
     id: "DevGuide",
     label: "Developer Guide",
     icon: "clipboardClock",
     children: [
       { id: "guide", label: "Guide", to: "/guide" },
+      { id: "button-usage", label: "Button Usage", to: "/button-usage" },
       { id: "ChangeLog", label: "Change Log", to: "/ChangeLog" },
     ],
   },
   {
     id: "mockup",
-    label: "Mockup",
+    label: "Mockup Pages",
     icon: "layout",
     children: [
+      { id: "ticket", label: "Ticketing", to: "/ticketing" },
       { id: "aggrid", label: "AG Grid", to: "/aggrid" },
       { id: "OKRInitiatives", label: "OKR Initiatives", to: "/OKRInitiatives" },
     ],
@@ -74,17 +75,52 @@ export const NAV: NavItem[] = [
       { id: "themeswitcher", label: "ThemeSwitcher", to: "/themeswitcher" },
       { id: "sidebar", label: "Sidebar & Nav", to: "/sidebar" },
       { id: "icon", label: "Icons", to: "/icon" },
+      { id: "pageheader", label: "PageHeader", to: "/pageheader" },
+      { id: "tooltip", label: "Tooltip", to: "/tooltip" },
+       { id: "tabs", label: "Tabs", to: "/tabs" },
+       { id: "progress", label: "Progress & Steps", to: "/progress" },
+       { id: "timeline", label: "Timeline", to: "/timeline" },
+       { id: "file-upload", label: "File Upload", to: "/file-upload" },
+       { id: "skeleton", label: "Skeleton", to: "/skeleton" },
+       { id: "alert", label: "Alert & Banner", to: "/alert" },
     ],
   },
   {
-    id: "users",
-    label: "Management",
-    icon: "users",
+    id: "forms",
+    label: "Form Layouts",
+    icon: "formInput",
     children: [
-      { id: "users-all", label: "User", to: "/users", exact: true },
-      { id: "users-new", label: "Add User", to: "/users/new" },
+      { id: "form-basic", label: "Basic Form", to: "/forms/basic" },
+      { id: "form-multi-step", label: "Multi-Step", to: "/forms/multi-step" },
     ],
   },
-  { id: "companies", label: "Companies", icon: "clipboard", to: "/audit/logs" },
-  { id: "settings", label: "Settings", icon: "settings", to: "/settings" },
+  {
+    id: "auth",
+    label: "Auth Pages",
+    icon: "lock",
+    children: [
+      { id: "auth-signin", label: "Sign In", to: "/auth/signin" },
+      { id: "auth-register", label: "Register", to: "/auth/register" },
+      { id: "auth-forgot", label: "Forgot Password", to: "/auth/forgot" },
+      { id: "auth-reset", label: "Reset Password", to: "/auth/reset" },
+    ],
+  },
+  {
+    id: "patterns",
+    label: "UI Patterns",
+    icon: "puzzle",
+    children: [
+      { id: "pattern-empty", label: "Empty States", to: "/patterns/empty" },
+      { id: "pattern-error", label: "Error Pages", to: "/patterns/error" },
+    ],
+  },
+  {
+    id: "settings",
+    label: "Settings",
+    icon: "settings",
+    children: [
+      { id: "settings-profile", label: "Profile Settings", to: "/settings/profile" },
+      { id: "notifications", label: "Notifications", to: "/notifications" },
+    ],
+  },
 ];

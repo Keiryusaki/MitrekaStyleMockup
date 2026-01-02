@@ -3,6 +3,7 @@ import { ref, computed } from "vue";
 import DataTable from "@/components/data/DataTable.vue";
 import { Icon } from "@/components/icons";
 import FloatingTOC, { type TOCItem } from "@/components/FloatingTOC.vue";
+import PageHeader from "@/components/PageHeader.vue";
 import "@/pages/Table/ag-like-skin.css";
 
 const tocItems: TOCItem[] = [
@@ -153,15 +154,15 @@ const rows = [
   <!-- Custom cell untuk kolom 'actions' -->
   <template #cell:actions="{ row }">
     <div class="flex gap-1">
-      <button class="btn btn-ghost btn-xs">Edit</button>
-      <button class="btn btn-ghost btn-xs text-error">Delete</button>
+      <button class="btn btn-warning btn-xs">Edit</button>
+      <button class="btn btn-error btn-xs">Delete</button>
     </div>
   </template>
 </DataTable>`,
   toolbar: `<DataTable :headers="headers" :rows="rows">
   <!-- Toolbar slot (di samping search) -->
   <template #toolbar>
-    <button class="btn btn-primary btn-sm">
+    <button class="btn btn-success btn-sm">
       + Add New
     </button>
     <button class="btn btn-outline btn-sm">
@@ -193,7 +194,7 @@ import "@/pages/Table/ag-like-skin.css";
 <div class="als-toolbar">
   <input v-model="search" type="search" placeholder="Search..." class="input input-sm w-64" />
   <div class="als-toolbar__spacer"></div>
-  <button class="btn btn-primary btn-sm">+ Add</button>
+  <button class="btn btn-success btn-sm">+ Add</button>
 </div>
 
 <!-- ALS Table Card -->
@@ -257,14 +258,12 @@ const downloadFile = async () => {
 </script>
 
 <template>
-  <div class="space-y-8 pb-12">
-    <!-- Header -->
-    <header>
-      <h1 class="text-2xl font-bold">DataTable</h1>
-      <p class="text-sm opacity-80">
-        Komponen tabel lengkap dengan search, pagination, dan custom cell rendering.
-      </p>
-    </header>
+  <div class="space-y-8">
+    <PageHeader 
+      category="Components"
+      title="DataTable" 
+      description="Komponen tabel lengkap dengan search, pagination, dan custom cell rendering."
+    />
 
     <!-- Download Component -->
     <section id="download" class="card p-4 scroll-mt-20">
@@ -382,7 +381,7 @@ const downloadFile = async () => {
 
       <DataTable :headers="minimalHeaders" :rows="minimalRows">
         <template #toolbar>
-          <button class="btn btn-primary btn-sm">+ Add New</button>
+          <button class="btn btn-success btn-sm">+ Add New</button>
           <button class="btn btn-outline btn-sm">Export</button>
         </template>
         <template #cell:status="{ row }">
@@ -451,7 +450,7 @@ const downloadFile = async () => {
             @input="alsPage = 1"
           />
           <div class="als-toolbar__spacer"></div>
-          <button class="btn btn-primary btn-sm">+ Add Product</button>
+          <button class="btn btn-success btn-sm">+ Add Product</button>
           <button class="btn btn-outline btn-sm">Export</button>
         </div>
 

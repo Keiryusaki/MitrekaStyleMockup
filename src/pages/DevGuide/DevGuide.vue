@@ -3,6 +3,7 @@ import { ref } from "vue";
 import SelectDropdown from "@/components/controls/SelectDropdown.vue";
 import Modal from "@/components/feedback/Modal.vue";
 import FloatingTOC, { type TOCItem } from "@/components/FloatingTOC.vue";
+import PageHeader from "@/components/PageHeader.vue";
 
 const copiedId = ref<string | null>(null);
 
@@ -302,14 +303,12 @@ const showModal = ref(false);
 </script>
 
 <template>
-  <div class="space-y-8 pb-12">
-    <!-- Header -->
-    <header>
-      <h1 class="text-2xl font-bold">Developer Guide</h1>
-      <p class="text-sm opacity-80">
-        Panduan lengkap penggunaan @keiryusaki/mitreka-ui
-      </p>
-    </header>
+  <div class="space-y-8">
+    <PageHeader 
+      category="Guides"
+      title="Developer Guide" 
+      description="Panduan lengkap penggunaan @keiryusaki/mitreka-ui."
+    />
 
     <!-- Table of Contents -->
     <nav class="card p-4">

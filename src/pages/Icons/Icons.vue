@@ -1,10 +1,10 @@
 <template>
   <div class="space-y-8">
-    <!-- Header -->
-    <header class="space-y-1">
-      <h1 class="text-xl font-semibold">Component Variants · Icons</h1>
-      <p class="text-sm opacity-80">Copy icon as Html tag or SVG</p>
-    </header>
+    <PageHeader 
+      category="Components"
+      title="Icons" 
+      description="Copy icon as HTML tag or SVG."
+    />
 
     <section class="card flex-row space-y-4 p-6">
       <details class="rounded-box border border-base-300 p-3">
@@ -272,6 +272,7 @@ const svg = iconRegistry['home']?.replace('&lt;svg', "&lt;svg class='w-6 h-6 tex
 import { computed, ref } from "vue";
 import { iconRegistry } from "@/composables/Icon";
 import iconTsUrl from "@/composables/Icon.ts?url";
+import PageHeader from "@/components/PageHeader.vue";
 import SelectDropdown from "@/components/controls/SelectDropdown.vue";
 
 const q = ref("");

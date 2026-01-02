@@ -4,7 +4,7 @@
       <h1 class="text-lg sm:text-xl font-semibold">Users</h1>
       <div class="flex gap-2">
         <button class="btn btn-outline btn-sm sm:btn-md">Export</button>
-        <router-link to="/users/new" class="btn btn-primary btn-sm sm:btn-md"
+        <router-link to="/users/new" class="btn btn-success btn-sm sm:btn-md"
           >Add user</router-link
         >
       </div>
@@ -27,7 +27,7 @@
         ><span class="badge badge-soft-primary">{{ row.role }}</span></template
       >
       <template #cell:actions="{ row }">
-        <router-link :to="`/users/${row.id}`" class="btn btn-ghost btn-sm"
+        <router-link :to="`/users/${row.id}`" class="btn btn-warning btn-sm"
           >Edit</router-link
         >
       </template>

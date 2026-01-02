@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref } from "vue";
 import Breadcrumbs from "@/components/nav/Breadcrumbs.vue";
+import PageHeader from "@/components/PageHeader.vue";
 
 const copiedId = ref<string | null>(null);
 
@@ -109,14 +110,12 @@ const downloadFile = async () => {
 </script>
 
 <template>
-  <div class="space-y-8 pb-12">
-    <!-- Header -->
-    <header>
-      <h1 class="text-2xl font-bold">Breadcrumbs</h1>
-      <p class="text-sm opacity-80">
-        Komponen navigasi untuk menunjukkan lokasi halaman dalam hierarki situs.
-      </p>
-    </header>
+  <div class="space-y-8">
+    <PageHeader 
+      category="Components"
+      title="Breadcrumbs" 
+      description="Komponen navigasi untuk menunjukkan lokasi halaman dalam hierarki situs."
+    />
 
     <!-- Download Component -->
     <section class="card p-4">

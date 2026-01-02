@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref } from "vue";
 import FloatingTOC, { type TOCItem } from "@/components/FloatingTOC.vue";
+import PageHeader from "@/components/PageHeader.vue";
 
 const tocItems: TOCItem[] = [
   { id: 'basic-css', label: 'Basic Collapse (CSS)' },
@@ -83,14 +84,12 @@ collapse.classList.toggle('is-open');`,
 </script>
 
 <template>
-  <div class="space-y-8 pb-12">
-    <!-- Header -->
-    <header>
-      <h1 class="text-2xl font-bold">Collapse</h1>
-      <p class="text-sm opacity-80">
-        Komponen untuk menyembunyikan/menampilkan konten dengan animasi expand/collapse.
-      </p>
-    </header>
+  <div class="space-y-8">
+    <PageHeader 
+      category="Components"
+      title="Collapse" 
+      description="Komponen untuk menyembunyikan/menampilkan konten dengan animasi expand/collapse."
+    />
 
     <!-- Basic CSS Collapse -->
     <section id="basic-css" class="card p-6 space-y-4 scroll-mt-20">
@@ -547,14 +546,14 @@ collapse.classList.toggle('is-open');`,
   cursor: pointer;
   user-select: none;
   padding: 0.75rem 1rem;
-  background-color: #fff;
-  border: 1px solid #e5e7eb;
+   background-color: var(--color-base-100);
+   border: 1px solid var(--color-base-300);
   border-radius: 0.5rem;
   transition: background-color 0.15s ease;
 }
 
 .collapse-header:hover {
-  background-color: #f3f4f6;
+   background-color: var(--color-base-200);
 }
 
 .collapse-icon {
@@ -584,10 +583,10 @@ collapse.classList.toggle('is-open');`,
 
 .collapse-body {
   padding: 1rem;
-  border: 1px solid #e5e7eb;
+   border: 1px solid var(--color-base-300);
   border-top: none;
   border-radius: 0 0 0.5rem 0.5rem;
-  background-color: #fff;
+   background-color: var(--color-base-100);
 }
 
 /* Borderless variant */
@@ -603,7 +602,7 @@ collapse.classList.toggle('is-open');`,
 }
 
 .collapse.collapse-ghost .collapse-header:hover {
-  background-color: #f3f4f6;
+   background-color: var(--color-base-200);
 }
 
 .collapse.collapse-ghost .collapse-body {

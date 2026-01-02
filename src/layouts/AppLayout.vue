@@ -11,9 +11,12 @@
       <Sidebar />
 
       <!-- Main Content -->
-      <main ref="mainContent" class="overflow-y-auto min-h-0 p-4 md:p-6 bg-base-200">
-        <Breadcrumbs class="mb-4" />
-        <router-view />
+      <main ref="mainContent" class="overflow-y-auto min-h-0 bg-base-200 flex flex-col">
+        <div class="flex-1 p-4 md:p-6">
+          <Breadcrumbs class="mb-4" />
+          <router-view />
+        </div>
+        <Footer />
       </main>
     </div>
 
@@ -28,6 +31,7 @@ import Sidebar from "@/components/nav/Sidebar.vue";
 import Topbar from "@/components/nav/Topbar.vue";
 import Breadcrumbs from "@/components/nav/Breadcrumbs.vue";
 import Toasts from "@/components/feedback/Toasts.vue";
+import Footer from "@/components/nav/Footer.vue";
 import { useUi } from "@/stores/ui";
 
 const ui = useUi();

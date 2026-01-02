@@ -2,6 +2,7 @@
 import { ref } from "vue";
 import Modal from "@/components/feedback/Modal.vue";
 import SelectDropdown from "@/components/controls/SelectDropdown.vue";
+import PageHeader from "@/components/PageHeader.vue";
 
 const filterValue = ref<string | number | null>("all");
 const filterOptions = [
@@ -53,13 +54,11 @@ const downloadFile = async (filename: string) => {
 
 <template>
   <div class="space-y-8">
-    <!-- Header -->
-    <header>
-      <h1 class="text-xl font-semibold">OKR · Objectives & Initiatives</h1>
-      <p class="text-sm opacity-80">
-        Lorem ipsum dolor sit amet, consectetur adipisicing elit.
-      </p>
-    </header>
+    <PageHeader 
+      category="Mockup"
+      title="OKR Initiatives" 
+      description="Contoh mockup halaman OKR dengan objectives dan initiatives."
+    />
 
     <div class="card p-4 md:p-6 space-y-5">
       <div class="rounded-xl border p-3 sm:p-4 bg-amber-50/70 border-amber-200">

@@ -5,6 +5,7 @@ import {
   type RouteRecordRaw,
 } from "vue-router";
 import Dashboard from "@/pages/Dashboard.vue";
+import { useLoadingStore } from "@/stores/loading";
 
 const routes: RouteRecordRaw[] = [
   {
@@ -19,22 +20,7 @@ const routes: RouteRecordRaw[] = [
       publicTicket: true,
     },
   },
-  {
-    path: "/users",
-    component: () => import("@/pages/Users/List.vue"),
-  },
-  {
-    path: "/users/:id",
-    component: () => import("@/pages/Users/Edit.vue"),
-  },
-  {
-    path: "/settings",
-    component: () => import("@/pages/Settings/Index.vue"),
-  },
-  {
-    path: "/audit/logs",
-    component: () => import("@/pages/Audit/Logs.vue"),
-  },
+
   {
     path: "/aggrid",
     component: () => import("@/pages/Aggrid/AGGridDemo.vue"),
@@ -139,6 +125,86 @@ const routes: RouteRecordRaw[] = [
     path: "/typography",
     component: () => import("@/pages/Typography/Typography.vue"),
   },
+  {
+    path: "/pageheader",
+    component: () => import("@/pages/PageHeader/PageHeader.vue"),
+  },
+  {
+    path: "/forms/basic",
+    component: () => import("@/pages/Forms/BasicForm.vue"),
+  },
+  {
+    path: "/forms/multi-step",
+    component: () => import("@/pages/Forms/MultiStepForm.vue"),
+  },
+  {
+    path: "/button-usage",
+    component: () => import("@/pages/ButtonUsage/ButtonUsage.vue"),
+  },
+  {
+    path: "/tooltip",
+    component: () => import("@/pages/Tooltip/Tooltip.vue"),
+  },
+  {
+    path: "/auth/signin",
+    component: () => import("@/pages/Auth/SignIn.vue"),
+    meta: { layout: "blank" },
+  },
+  {
+    path: "/auth/forgot",
+    component: () => import("@/pages/Auth/ForgotPassword.vue"),
+    meta: { layout: "blank" },
+  },
+  {
+    path: "/auth/reset",
+    component: () => import("@/pages/Auth/ResetPassword.vue"),
+    meta: { layout: "blank" },
+  },
+  {
+    path: "/auth/register",
+    component: () => import("@/pages/Auth/Register.vue"),
+    meta: { layout: "blank" },
+  },
+  {
+    path: "/patterns/empty",
+    component: () => import("@/pages/Patterns/EmptyStates.vue"),
+  },
+  {
+    path: "/patterns/error",
+    component: () => import("@/pages/Patterns/ErrorPages.vue"),
+  },
+  {
+    path: "/settings/profile",
+    component: () => import("@/pages/Settings/Profile.vue"),
+  },
+  {
+    path: "/notifications",
+    component: () => import("@/pages/Notifications/Notifications.vue"),
+  },
+   {
+     path: "/tabs",
+     component: () => import("@/pages/Tabs/Tabs.vue"),
+   },
+   {
+     path: "/progress",
+     component: () => import("@/pages/Progress/Progress.vue"),
+   },
+   {
+     path: "/timeline",
+     component: () => import("@/pages/Timeline/Timeline.vue"),
+   },
+   {
+     path: "/file-upload",
+     component: () => import("@/pages/FileUpload/FileUpload.vue"),
+   },
+   {
+     path: "/skeleton",
+     component: () => import("@/pages/Skeleton/Skeleton.vue"),
+   },
+   {
+     path: "/alert",
+     component: () => import("@/pages/Alert/Alert.vue"),
+   },
 ];
 
 const router = createRouter({
@@ -159,8 +225,24 @@ const router = createRouter({
   },
 });
 
+// Navigation guard: tampilkan block UI SEBELUM navigasi
+router.beforeEach((to, from, next) => {
+  // Skip jika navigasi ke halaman yang sama
+  if (to.path !== from.path) {
+    const loading = useLoadingStore();
+    loading.startNav("Memuat halaman…");
+  }
+  next();
+});
+
 router.afterEach((to) => {
   document.title = to.meta.title ? `${to.meta.title} · Admin` : "Admin";
+  
+  // Delay 1.5 detik setelah navigasi selesai baru hide block UI
+  setTimeout(() => {
+    const loading = useLoadingStore();
+    loading.stopNav();
+  }, 1500);
 });
 
 export default router;

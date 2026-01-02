@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref } from "vue";
 import StatCard from "@/components/data/StatCard.vue";
+import PageHeader from "@/components/PageHeader.vue";
 
 const copiedId = ref<string | null>(null);
 
@@ -83,14 +84,12 @@ const downloadFile = async () => {
 </script>
 
 <template>
-  <div class="space-y-8 pb-12">
-    <!-- Header -->
-    <header>
-      <h1 class="text-2xl font-bold">StatCard</h1>
-      <p class="text-sm opacity-80">
-        Komponen card untuk menampilkan statistik atau metric di dashboard.
-      </p>
-    </header>
+  <div class="space-y-8">
+    <PageHeader 
+      category="Components"
+      title="StatCard" 
+      description="Komponen card untuk menampilkan statistik atau metric di dashboard."
+    />
 
     <!-- Download Component -->
     <section class="card p-4">

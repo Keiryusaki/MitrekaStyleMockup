@@ -3,6 +3,7 @@
 import { ref, computed, onBeforeUnmount } from "vue";
 import { Icon } from "@/composables/Icon";
 import FloatingTOC, { type TOCItem } from "@/components/FloatingTOC.vue";
+import PageHeader from "@/components/PageHeader.vue";
 
 const tocItems: TOCItem[] = [
   { id: 'controls', label: 'Controls' },
@@ -105,13 +106,11 @@ const exampleOutline = `<SelectDropdown
 
 <template>
   <div class="space-y-8">
-    <!-- Header -->
-    <header class="space-y-1">
-      <h1 class="text-xl font-semibold">Selection Controls · Select</h1>
-      <p class="text-sm opacity-80">
-        Custom Select dengan smooth dropdown (Solid & Outline) + Search & Multi Select.
-      </p>
-    </header>
+    <PageHeader 
+      category="Components"
+      title="Select Option" 
+      description="Custom Select dengan smooth dropdown (Solid & Outline) + Search & Multi Select."
+    />
 
     <div class="card p-4 md:p-6 space-y-5">
       <!-- Controls -->

@@ -4,6 +4,11 @@
     <!-- Kalau route sekarang adalah halaman ticketing public -->
     <Ticketing v-if="isPublicTicket" />
 
+    <!-- Blank layout (auth pages) -->
+    <template v-else-if="isBlankLayout">
+      <router-view />
+    </template>
+
     <!-- Selain itu pakai layout utama -->
     <template v-else>
       <AppLayout />
@@ -35,5 +40,10 @@ const isPublicTicket = computed(() => {
   if (route.path === "/ticketing") return true;
 
   return false;
+});
+
+// flag buat blank layout (auth pages)
+const isBlankLayout = computed(() => {
+  return route.meta.layout === "blank";
 });
 </script>

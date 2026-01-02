@@ -3,6 +3,7 @@
 import { ref, computed, watch, onMounted, onBeforeUnmount } from "vue";
 import { AgGridVue } from "ag-grid-vue3";
 import SelectDropdown from "@/components/controls/SelectDropdown.vue";
+import PageHeader from "@/components/PageHeader.vue";
 import {
   ModuleRegistry,
   AllCommunityModule,
@@ -261,7 +262,13 @@ watch(density, applyDensityToApi);
 </script>
 
 <template>
-  <div class="space-y-3 flex-1 flex flex-col h-[80%]">
+  <div class="space-y-6 flex-1 flex flex-col">
+    <PageHeader 
+      category="Mockup"
+      title="AG Grid" 
+      description="Contoh implementasi AG Grid dengan theme dan density controls."
+    />
+
     <div class="flex flex-wrap items-center gap-3">
       <input type="text" placeholder="Search…" class="input w-64 max-w-full" />
       <div class="flex items-center gap-2">

@@ -2,6 +2,7 @@
 import { ref } from "vue";
 import Card from "@/components/data/Card.vue";
 import FloatingTOC, { type TOCItem } from "@/components/FloatingTOC.vue";
+import PageHeader from "@/components/PageHeader.vue";
 
 const copiedId = ref<string | null>(null);
 
@@ -148,7 +149,7 @@ const codes = {
     <p class="text-sm opacity-80">Card body content</p>
   </div>
   <div class="p-4 border-t border-base-300 flex justify-end gap-2">
-    <button class="btn btn-ghost btn-sm">Cancel</button>
+    <button class="btn btn-secondary btn-sm">Cancel</button>
     <button class="btn btn-primary btn-sm">Save</button>
   </div>
 </div>`,
@@ -166,7 +167,7 @@ const codes = {
   
   <!-- Footer -->
   <div class="p-4 border-t border-base-300 flex justify-end gap-2">
-    <button class="btn btn-ghost btn-sm">Cancel</button>
+    <button class="btn btn-secondary btn-sm">Cancel</button>
     <button class="btn btn-primary btn-sm">Save</button>
   </div>
 </div>`,
@@ -279,14 +280,12 @@ const downloadFile = async () => {
 </script>
 
 <template>
-  <div class="space-y-8 pb-12">
-    <!-- Header -->
-    <header>
-      <h1 class="text-2xl font-bold">Card</h1>
-      <p class="text-sm opacity-80">
-        Komponen container untuk mengelompokkan konten dengan visual yang konsisten.
-      </p>
-    </header>
+  <div class="space-y-8">
+    <PageHeader 
+      category="Components"
+      title="Card" 
+      description="Komponen container untuk mengelompokkan konten dengan visual yang konsisten."
+    />
 
     <!-- Download Component -->
     <section class="card p-4">
@@ -387,13 +386,13 @@ const downloadFile = async () => {
         <div class="card">
           <div class="p-4 border-b border-base-300 flex items-center justify-between">
             <h3 class="font-semibold">Settings</h3>
-            <button class="btn btn-ghost btn-sm">Edit</button>
+            <button class="btn btn-warning btn-sm">Edit</button>
           </div>
           <div class="p-4">
             <p class="text-sm opacity-80">Configure your application settings here. Changes will be saved automatically.</p>
           </div>
           <div class="p-4 border-t border-base-300 flex justify-end gap-2">
-            <button class="btn btn-ghost btn-sm">Reset</button>
+            <button class="btn btn-secondary btn-sm">Reset</button>
             <button class="btn btn-primary btn-sm">Save Changes</button>
           </div>
         </div>

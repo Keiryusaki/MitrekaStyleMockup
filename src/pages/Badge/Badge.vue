@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref, computed } from "vue";
 import FloatingTOC, { type TOCItem } from "@/components/FloatingTOC.vue";
+import PageHeader from "@/components/PageHeader.vue";
 
 const tocItems: TOCItem[] = [
   { id: 'controls', label: 'Controls' },
@@ -59,14 +60,11 @@ const classes = (t: Tone) =>
 
 <template>
   <div class="space-y-8">
-    <!-- Header -->
-    <header>
-      <h1 class="text-xl font-semibold">Component Variants · Badge</h1>
-      <p class="text-sm opacity-80">
-        Solid, Outline, Soft · 7 warna · 5 ukuran (xs–xl). Kelas diambil dari
-        theme CSS.
-      </p>
-    </header>
+    <PageHeader 
+      category="Components"
+      title="Badge" 
+      description="Solid, Outline, Soft. 7 warna, 5 ukuran (xs-xl). Kelas diambil dari theme CSS."
+    />
 
     <div class="card p-4 md:p-6 space-y-5">
       <!-- Controls -->

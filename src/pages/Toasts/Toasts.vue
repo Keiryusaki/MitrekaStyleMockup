@@ -2,6 +2,7 @@
 import { ref } from "vue";
 import { useUi } from "@/stores/ui";
 import FloatingTOC, { type TOCItem } from "@/components/FloatingTOC.vue";
+import PageHeader from "@/components/PageHeader.vue";
 
 const tocItems: TOCItem[] = [
   { id: 'download', label: 'Download Component' },
@@ -128,14 +129,12 @@ const downloadFile = async () => {
 </script>
 
 <template>
-  <div class="space-y-8 pb-12">
-    <!-- Header -->
-    <header>
-      <h1 class="text-2xl font-bold">Toasts</h1>
-      <p class="text-sm opacity-80">
-        Komponen notifikasi toast untuk menampilkan pesan feedback ke user.
-      </p>
-    </header>
+  <div class="space-y-8">
+    <PageHeader 
+      category="Components"
+      title="Toasts" 
+      description="Komponen notifikasi toast untuk menampilkan pesan feedback ke user."
+    />
 
     <!-- Download Component -->
     <section id="download" class="card p-4 scroll-mt-20">

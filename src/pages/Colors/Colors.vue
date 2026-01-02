@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref } from "vue";
 import FloatingTOC, { type TOCItem } from "@/components/FloatingTOC.vue";
+import PageHeader from "@/components/PageHeader.vue";
 
 const tocItems: TOCItem[] = [
   { id: 'state-colors', label: 'State Colors' },
@@ -103,14 +104,12 @@ const codes = {
 </script>
 
 <template>
-  <div class="space-y-8 pb-12">
-    <!-- Header -->
-    <header>
-      <h1 class="text-2xl font-bold">Colors & Palette</h1>
-      <p class="text-sm opacity-80">
-        State colors dan base colors untuk design system Mitreka.
-      </p>
-    </header>
+  <div class="space-y-8">
+    <PageHeader 
+      category="Foundation"
+      title="Colors & Palette" 
+      description="State colors dan base colors untuk design system Mitreka."
+    />
 
     <!-- State Colors Preview -->
     <section id="state-colors" class="card p-6 space-y-4 scroll-mt-20">

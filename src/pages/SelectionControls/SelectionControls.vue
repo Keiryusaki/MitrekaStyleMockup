@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ref, computed, onMounted, watch } from "vue";
+import PageHeader from "@/components/PageHeader.vue";
 
 type Size = "xs" | "sm" | "md" | "lg" | "xl";
 type Tone =
@@ -46,16 +47,11 @@ watch(indeterminate, (v) => {
 
 <template>
   <div class="space-y-8">
-    <!-- Header -->
-    <header class="space-y-1">
-      <h1 class="text-xl font-semibold">
-        Component Variants · Selection Controls
-      </h1>
-      <p class="text-sm opacity-80">
-        Toggle, Checkbox, Radio — 7 warna · 5 ukuran (xs–xl). Disusun sebagai
-        satu halaman.
-      </p>
-    </header>
+    <PageHeader 
+      category="Components"
+      title="Selection Controls" 
+      description="Toggle, Checkbox, Radio. 7 warna, 5 ukuran (xs-xl)."
+    />
 
     <!-- Tabs -->
     <nav

@@ -687,6 +687,12 @@
     opacity: 0.6;
     cursor: not-allowed;
   }
+  /* Textarea specific */
+  textarea.input {
+    height: auto;
+    padding-block: 0.625rem;
+    line-height: 1.5;
+  }
 
   /* Input size */
   .input-xs {

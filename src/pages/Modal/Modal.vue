@@ -2,6 +2,7 @@
 import { ref } from "vue";
 import Modal from "@/components/feedback/Modal.vue";
 import FloatingTOC, { type TOCItem } from "@/components/FloatingTOC.vue";
+import PageHeader from "@/components/PageHeader.vue";
 
 const copiedId = ref<string | null>(null);
 
@@ -168,14 +169,12 @@ const downloadFile = async () => {
 </script>
 
 <template>
-  <div class="space-y-8 pb-12">
-    <!-- Header -->
-    <header>
-      <h1 class="text-2xl font-bold">Modal</h1>
-      <p class="text-sm opacity-80">
-        Komponen dialog overlay untuk konfirmasi, form, atau menampilkan konten tambahan.
-      </p>
-    </header>
+  <div class="space-y-8">
+    <PageHeader 
+      category="Components"
+      title="Modal" 
+      description="Komponen dialog overlay untuk konfirmasi, form, atau menampilkan konten tambahan."
+    />
 
     <!-- Download Component -->
     <section class="card p-4">

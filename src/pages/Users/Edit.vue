@@ -3,7 +3,7 @@
     <div class="flex items-center justify-between">
       <h1 class="text-xl font-semibold">Edit User</h1>
       <div class="flex gap-2">
-        <button class="btn btn-ghost">Cancel</button>
+        <button class="btn btn-secondary">Cancel</button>
         <button class="btn btn-primary">Save</button>
       </div>
     </div>

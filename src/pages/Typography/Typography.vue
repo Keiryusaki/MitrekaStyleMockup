@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref } from "vue";
 import FloatingTOC, { type TOCItem } from "@/components/FloatingTOC.vue";
+import PageHeader from "@/components/PageHeader.vue";
 
 const tocItems: TOCItem[] = [
   { id: 'font-family', label: 'Font Family' },
@@ -95,14 +96,12 @@ body {
 </script>
 
 <template>
-  <div class="space-y-8 pb-12">
-    <!-- Header -->
-    <header>
-      <h1 class="text-2xl font-bold">Typography</h1>
-      <p class="text-sm opacity-80">
-        Font sizes, weights, dan text utilities untuk design system.
-      </p>
-    </header>
+  <div class="space-y-8">
+    <PageHeader 
+      category="Foundation"
+      title="Typography" 
+      description="Font sizes, weights, dan text utilities untuk design system."
+    />
 
     <!-- Font Family -->
     <section id="font-family" class="card p-6 space-y-4 scroll-mt-20">

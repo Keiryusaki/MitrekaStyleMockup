@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref } from "vue";
 import { Icon } from "@/components/icons";
+import PageHeader from "@/components/PageHeader.vue";
 
 const copiedId = ref<string | null>(null);
 
@@ -161,14 +162,12 @@ const downloadFiles = async (filename: string, path: string) => {
 </script>
 
 <template>
-  <div class="space-y-8 pb-12">
-    <!-- Header -->
-    <header>
-      <h1 class="text-2xl font-bold">Sidebar & Navigation</h1>
-      <p class="text-sm opacity-80">
-        Komponen navigasi untuk admin layout: Sidebar, Topbar, dan struktur data navigasi.
-      </p>
-    </header>
+  <div class="space-y-8">
+    <PageHeader 
+      category="Components"
+      title="Sidebar & Navigation" 
+      description="Komponen navigasi untuk admin layout: Sidebar, Topbar, dan struktur data navigasi."
+    />
 
     <!-- Download Files -->
     <section class="card p-4">
