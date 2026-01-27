@@ -1,5 +1,21 @@
 [
   {
+    "version": "2.2.2",
+    "date": "2026-01-27",
+    "label": "Patch",
+    "items": [
+      {
+        "type": "Fixed",
+        "text": "Tooltip arrow kembali segitiga (perbaikan styling variant pada tooltip content)"
+      },
+      {
+        "type": "Changed",
+        "text": "Sync tooltip CSS dengan mitreka-ui v2.2.2"
+      }
+    ],
+    "assets": []
+  },
+  {
     "version": "2.2.1",
     "date": "2026-01-27",
     "label": "Patch",
