@@ -122,16 +122,27 @@ Project ini menggunakan `@keiryusaki/mitreka-ui` dari GitHub Packages.
 
 ### Untuk development lokal:
 
-1. Buat Personal Access Token di https://github.com/settings/tokens
+1. Buat Personal Access Token (classic) di https://github.com/settings/tokens
    - Scope: `read:packages`
+   - Tambah `repo` jika package/repo private
 
-2. Setup global `.npmrc`:
+2. Set environment variable (jangan simpan token di file):
+```bash
+# PowerShell
+$env:GITHUB_TOKEN="YOUR_TOKEN"
+
+# Bash/Zsh
+export GITHUB_TOKEN="YOUR_TOKEN"
+```
+
+3. Setup `.npmrc` (pakai env var):
 ```
 @keiryusaki:registry=https://npm.pkg.github.com
-//npm.pkg.github.com/:_authToken=YOUR_TOKEN_HERE
+//npm.pkg.github.com/:_authToken=${GITHUB_TOKEN}
+always-auth=true
 ```
 
-3. Install dependencies:
+4. Install dependencies:
 ```bash
 npm install
 ```

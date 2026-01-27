@@ -176,6 +176,11 @@ const recentUpdates = [
 
 const gettingStartedSteps = [
   { 
+    title: "Setup GitHub Packages", 
+    desc: "Tambahkan .npmrc dan set GITHUB_TOKEN (jangan taruh token di file)",
+    code: "@keiryusaki:registry=https://npm.pkg.github.com\n//npm.pkg.github.com/:_authToken=${GITHUB_TOKEN}"
+  },
+  { 
     title: "Install Package", 
     desc: "Install @keiryusaki/mitreka-ui via npm",
     code: "npm i @keiryusaki/mitreka-ui"
@@ -183,12 +188,7 @@ const gettingStartedSteps = [
   { 
     title: "Import Styles", 
     desc: "Import CSS di main entry file",
-    code: "import '@keiryusaki/mitreka-ui/style.css'"
-  },
-  { 
-    title: "Gunakan Komponen", 
-    desc: "Import dan gunakan komponen sesuai kebutuhan",
-    code: null
+    code: "import '@keiryusaki/mitreka-ui/css'"
   },
 ];
 </script>

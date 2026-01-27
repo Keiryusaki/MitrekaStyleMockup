@@ -53,7 +53,11 @@ const copyCode = async (code: string, id: string) => {
 // Code snippets
 const codes = {
   install: `npm install @keiryusaki/mitreka-ui`,
-  npmrc: `@keiryusaki:registry=https://npm.pkg.github.com`,
+  npmrc: `@keiryusaki:registry=https://npm.pkg.github.com
+//npm.pkg.github.com/:_authToken=\${GITHUB_TOKEN}
+always-auth=true`,
+  tokenPowershell: `$env:GITHUB_TOKEN="YOUR_TOKEN"`,
+  tokenBash: `export GITHUB_TOKEN="YOUR_TOKEN"`,
   importAll: `// main.ts atau main.js
 im` + `port "@keiryusaki/mitreka-ui/css";`,
   importIndividual: `// Import individual components
@@ -354,8 +358,25 @@ const showModal = ref(false);
           <pre><code>{{ codes.npmrc }}</code></pre>
         </div>
         <p class="text-xs opacity-70">
-          💡 Package sudah public, tidak perlu token untuk install.
+          GitHub Packages tetap butuh token. Simpan token di environment variable, jangan taruh di file.
+          Untuk private package: scope <code class="code-inline">read:packages</code> + <code class="code-inline">repo</code>.
         </p>
+      </div>
+      <div class="space-y-3">
+        <h3 class="font-medium">Step 1b: Set environment variable</h3>
+        <p class="text-sm opacity-80">Pilih salah satu sesuai terminal:</p>
+        <div class="code-block">
+          <button class="copy-btn" @click="copyCode(codes.tokenPowershell, 'tokenPowershell')">
+            {{ copiedId === 'tokenPowershell' ? 'Copied!' : 'Copy' }}
+          </button>
+          <pre><code>{{ codes.tokenPowershell }}</code></pre>
+        </div>
+        <div class="code-block">
+          <button class="copy-btn" @click="copyCode(codes.tokenBash, 'tokenBash')">
+            {{ copiedId === 'tokenBash' ? 'Copied!' : 'Copy' }}
+          </button>
+          <pre><code>{{ codes.tokenBash }}</code></pre>
+        </div>
       </div>
 
       <div class="space-y-3">
@@ -1134,3 +1155,4 @@ section[id] {
   scroll-margin-top: 5rem;
 }
 </style>
+
