@@ -2,10 +2,10 @@
 import { ref, onMounted, onUnmounted } from "vue";
 import { useRouter } from "vue-router";
 import { Icon } from "@/composables/Icon";
-import { useUi } from "@/stores/ui";
+import { useToast } from "@keiryusaki/mitreka-ui/composables";
 
 const router = useRouter();
-const ui = useUi();
+const toast = useToast();
 const isOpen = ref(false);
 const dropdownRef = ref<HTMLElement | null>(null);
 
@@ -39,7 +39,7 @@ const navigate = (path: string) => {
 
 const logout = () => {
   isOpen.value = false;
-  ui.notify({ type: "info", message: "Logging out…" });
+  toast.notify({ type: "info", message: "Logging out…" });
 };
 
 const handleClickOutside = (e: MouseEvent) => {

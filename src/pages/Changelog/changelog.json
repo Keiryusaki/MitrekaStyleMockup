@@ -1,4 +1,20 @@
 [
+  {
+    "version": "2.2.1",
+    "date": "2026-01-27",
+    "label": "Patch",
+    "items": [
+      {
+        "type": "Fixed",
+        "text": "LoadingLogo/LoadingOverlay animasi kembali normal setelah CSS komponen diimport di library"
+      },
+      {
+        "type": "Changed",
+        "text": "Loading styles dipindah ke CSS components agar konsisten antara mockup dan mitreka-ui"
+      }
+    ],
+    "assets": []
+  },
    {
      "version": "2.2.0",
      "date": "2026-01-02",
@@ -10,6 +26,8 @@
        { "type": "Added", "text": "FileUpload Component - dropzone, image preview, multiple selection", "href": "/file-upload" },
        { "type": "Added", "text": "Skeleton Component - loading placeholders", "href": "/skeleton" },
        { "type": "Added", "text": "Alert & Banner Component - update styles, color variables integration", "href": "/alert" },
+       { "type": "Added", "text": "Library components synced to mitreka-ui: LoadingLogo, Toasts, Tooltip, Pagination, Avatar, Breadcrumbs, StatCard, PageHeader, ThemeSwitcher, Sidebar" },
+       { "type": "Added", "text": "Icon registry centralized in mitreka-ui for consistent usage" },
        { "type": "Fixed", "text": "Vertical Steps styling issue (connecting line)" },
        { "type": "Changed", "text": "Alert colors updated to use global theme variables (color-mix)" },
        { "type": "Changed", "text": "File Input styling improvement (vertical align, consistent button)" },

@@ -78,7 +78,7 @@
           <button
             class="btn btn-primary w-max"
             @click="
-              ui.notify({
+              toast.notify({
                 type: 'success',
                 title: 'Saved',
                 message: 'Email settings updated',
@@ -95,6 +95,8 @@
 <script setup lang="ts">
 import { ref } from "vue";
 import { useUi } from "@/stores/ui";
+import { useToast } from "@keiryusaki/mitreka-ui/composables";
 const ui = useUi();
+const toast = useToast();
 const tab = ref<"general" | "appearance" | "email">("general");
 </script>

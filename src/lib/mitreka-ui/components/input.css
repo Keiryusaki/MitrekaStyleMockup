@@ -82,3 +82,11 @@
 .form-hint-success { color: var(--color-success); }
 .form-hint-warning { color: var(--color-warning); }
 .form-hint-error { color: var(--color-error); }
+
+ 
+ /* File Input */
+ .file-input { height: 3rem; padding: 0; padding-right: 1rem; font-size: 0.875rem; border-radius: var(--radius-box); background: var(--color-base-100); display: flex; align-items: center; }
+ .file-input-bordered { border: 1px solid var(--color-base-300); }
+ .file-input::file-selector-button { border: none; background: var(--color-base-300); border-right: 1px solid var(--color-base-300); padding: 0 1rem; height: 100%; margin-right: 1rem; cursor: pointer; color: var(--color-base-content); font-weight: 500; }
+ .file-input-primary::file-selector-button { background: var(--color-primary); color: white; border: none; }
+ 

@@ -1,0 +1,24 @@
+/* =========================================
+    @mitreka/ui - Timeline Component
+    ========================================= */
+ 
+ .timeline { list-style: none; padding: 0; margin: 0; position: relative; }
+ .timeline-item { display: flex; gap: 1rem; position: relative; padding-bottom: 1.5rem; }
+ .timeline-item:last-child { padding-bottom: 0; }
+ .timeline-item::before { content: ''; position: absolute; left: 0.6875rem; top: 1.5rem; bottom: 0; width: 2px; background: var(--color-base-300); }
+ .timeline-item:last-child::before { display: none; }
+ .timeline-marker { width: 1.5rem; height: 1.5rem; border-radius: 9999px; background: var(--color-primary); flex-shrink: 0; display: flex; align-items: center; justify-content: center; z-index: 1; }
+ .timeline-content { flex: 1; padding-top: 0.125rem; }
+ 
+ /* Compact Variant */
+ .timeline-compact .timeline-item { padding-bottom: 0.75rem; }
+ .timeline-compact .timeline-marker { width: 1.5rem; height: 1.5rem; }
+ .timeline-compact .timeline-item::before { left: 0.6875rem; top: 1.5rem; }
+ 
+ /* Alternating Layout */
+ .timeline-alternating { padding-left: 50%; }
+ .timeline-alternating .timeline-item::before { left: 50%; transform: translateX(-50%); }
+ .timeline-alternating .timeline-marker { position: absolute; left: 50%; transform: translateX(-50%); }
+ .timeline-left { padding-right: calc(50% + 2rem); padding-left: 0; justify-content: flex-end; text-align: right; }
+ .timeline-right { padding-left: calc(50% + 2rem); }
+ 

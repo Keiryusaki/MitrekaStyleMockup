@@ -50,10 +50,13 @@
 import { useUi } from "@/stores/ui";
 import logoUrl from "@/assets/logo.png";
 import NotificationDropdown from "@/components/nav/NotificationDropdown.vue";
+import { useToast } from "@keiryusaki/mitreka-ui/composables";
+
 const ui = useUi();
+const toast = useToast();
 
 function logout() {
   // Stub logout; ganti dengan logic auth kamu
-  ui.notify({ type: "info", message: "Logging out…" });
+  toast.notify({ type: "info", message: "Logging out…" });
 }
 </script>

@@ -55,12 +55,12 @@ const codes = {
   install: `npm install @keiryusaki/mitreka-ui`,
   npmrc: `@keiryusaki:registry=https://npm.pkg.github.com`,
   importAll: `// main.ts atau main.js
-import "@keiryusaki/mitreka-ui/css";`,
+im` + `port "@keiryusaki/mitreka-ui/css";`,
   importIndividual: `// Import individual components
-import "@keiryusaki/mitreka-ui/css/base";
-import "@keiryusaki/mitreka-ui/css/components/button.css";
-import "@keiryusaki/mitreka-ui/css/components/input.css";
-import "@keiryusaki/mitreka-ui/css/components/badge.css";`,
+im` + `port "@keiryusaki/mitreka-ui/css/base";
+im` + `port "@keiryusaki/mitreka-ui/css/components/button.css";
+im` + `port "@keiryusaki/mitreka-ui/css/components/input.css";
+im` + `port "@keiryusaki/mitreka-ui/css/components/badge.css";`,
   buttonBasic: `<button class="btn">Default</button>
 <button class="btn btn-primary">Primary</button>
 <button class="btn btn-secondary">Secondary</button>

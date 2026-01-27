@@ -1,0 +1,59 @@
+/* =========================================
+   @mitreka/ui - Breadcrumbs Component
+   ========================================= */
+
+.mitreka-breadcrumbs {
+  font-size: 0.75rem;
+  margin-bottom: 0.5rem;
+  overflow-x: auto;
+}
+
+@media (min-width: 640px) {
+  .mitreka-breadcrumbs {
+    font-size: 0.875rem;
+  }
+}
+
+.breadcrumbs-list {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  white-space: nowrap;
+}
+
+@media (min-width: 640px) {
+  .breadcrumbs-list {
+    gap: 0.5rem;
+  }
+}
+
+.breadcrumbs-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.breadcrumbs-sep {
+  opacity: 0.5;
+}
+
+.breadcrumbs-link {
+  color: var(--color-primary);
+  text-decoration: none;
+}
+
+[data-theme="mitrekadark"] .breadcrumbs-link {
+  color: var(--color-accent);
+}
+
+.breadcrumbs-link:hover {
+  text-decoration: underline;
+}
+
+.breadcrumbs-text {
+  opacity: 0.7;
+}
+
+.breadcrumbs-current {
+  opacity: 0.7;
+}

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref } from "vue";
-import { useUi } from "@/stores/ui";
+import { useToast } from "@keiryusaki/mitreka-ui/composables";
 import FloatingTOC, { type TOCItem } from "@/components/FloatingTOC.vue";
 import PageHeader from "@/components/PageHeader.vue";
 
@@ -19,7 +19,7 @@ const tocItems: TOCItem[] = [
   { id: 'options', label: 'Toast Options' },
 ];
 
-const ui = useUi();
+const toast = useToast();
 const copiedId = ref<string | null>(null);
 
 const copyCode = async (code: string, id: string) => {
@@ -30,56 +30,56 @@ const copyCode = async (code: string, id: string) => {
 
 // Code snippets
 const codes = {
-  import: `import { useUi } from "@/stores/ui";
-const ui = useUi();`,
+  import: `import { useToast } from "@keiryusaki/mitreka-ui/composables";
+const toast = useToast();`,
   basic: `// Info toast
-ui.notify({ type: "info", message: "Ini adalah info toast" });
+toast.notify({ type: "info", message: "Ini adalah info toast" });
 
 // Success toast
-ui.notify({ type: "success", message: "Data berhasil disimpan!" });
+toast.notify({ type: "success", message: "Data berhasil disimpan!" });
 
 // Warning toast
-ui.notify({ type: "warning", message: "Perhatian: koneksi lambat" });
+toast.notify({ type: "warning", message: "Perhatian: koneksi lambat" });
 
 // Error toast
-ui.notify({ type: "error", message: "Gagal menyimpan data" });
+toast.notify({ type: "error", message: "Gagal menyimpan data" });
 
 // Primary toast
-ui.notify({ type: "primary", message: "Notifikasi primary" });`,
-  withTitle: `ui.notify({
+toast.notify({ type: "primary", message: "Notifikasi primary" });`,
+  withTitle: `toast.notify({
   type: "success",
   title: "Berhasil!",
   message: "Data pengguna telah diperbarui"
 });`,
   customTimeout: `// Toast dengan timeout 5 detik
-ui.notify({
+toast.notify({
   type: "info",
   message: "Toast ini bertahan 5 detik",
   timeout: 5000
 });
 
 // Toast tanpa auto-dismiss (timeout: 0)
-ui.notify({
+toast.notify({
   type: "warning",
   title: "Perhatian",
   message: "Toast ini tidak akan hilang otomatis",
   timeout: 0
 });`,
   dismiss: `// Simpan ID toast
-const toastId = ui.notify({
+const toastId = toast.notify({
   type: "info",
   message: "Loading...",
   timeout: 0
 });
 
 // Dismiss manual
-ui.dismiss(toastId);
+toast.dismiss(toastId);
 
 // Clear semua toast
-ui.clearToasts();`,
-  component: `<!-- Tambahkan Toasts.vue di App.vue atau layout utama -->
+toast.clearToasts();`,
+  component: `<!-- Tambahkan Toasts di App.vue atau layout utama -->
 <` + `script setup>
-import Toasts from "@/components/feedback/Toasts.vue";
+import { Toasts } from "@keiryusaki/mitreka-ui/vue";
 </` + `script>
 
 <template>
@@ -100,13 +100,13 @@ type ToastItem = {
   timeout?: number; // default: 3000ms
 };`,
   variantSoft: `// Soft variant (default)
-ui.notify({ type: "success", variant: "soft", message: "Soft toast" });`,
+toast.notify({ type: "success", variant: "soft", message: "Soft toast" });`,
   variantSolid: `// Solid variant
-ui.notify({ type: "success", variant: "solid", message: "Solid toast" });`,
+toast.notify({ type: "success", variant: "solid", message: "Solid toast" });`,
   variantOutline: `// Outline variant
-ui.notify({ type: "success", variant: "outline", message: "Outline toast" });`,
+toast.notify({ type: "success", variant: "outline", message: "Outline toast" });`,
   position: `// Set toast position
-ui.setToastPosition("top-right");
+toast.setToastPosition("top-right");
 
 // Available positions:
 // "top-left" | "top-center" | "top-right"
@@ -153,8 +153,8 @@ const downloadFile = async () => {
     <section id="setup" class="card p-6 space-y-4 scroll-mt-20">
       <h2 class="text-lg font-semibold border-b border-base-300 pb-2">Setup</h2>
       <p class="text-sm opacity-80">
-        Toasts menggunakan Pinia store untuk state management. Pastikan komponen 
-        <code class="code-inline">Toasts.vue</code> ditambahkan di root layout.
+        Toasts menggunakan <code class="code-inline">useToast()</code> composable. 
+        Pastikan komponen <code class="code-inline">Toasts</code> ditambahkan di root layout.
       </p>
       <div class="code-block">
         <button class="copy-btn" @click="copyCode(codes.component, 'component')">
@@ -182,31 +182,31 @@ const downloadFile = async () => {
       <div class="flex flex-wrap gap-2">
         <button 
           class="btn btn-info btn-sm" 
-          @click="ui.notify({ type: 'info', message: 'Ini adalah info toast' })"
+          @click="toast.notify({ type: 'info', message: 'Ini adalah info toast' })"
         >
           Info
         </button>
         <button 
           class="btn btn-success btn-sm" 
-          @click="ui.notify({ type: 'success', message: 'Data berhasil disimpan!' })"
+          @click="toast.notify({ type: 'success', message: 'Data berhasil disimpan!' })"
         >
           Success
         </button>
         <button 
           class="btn btn-warning btn-sm" 
-          @click="ui.notify({ type: 'warning', message: 'Perhatian: koneksi lambat' })"
+          @click="toast.notify({ type: 'warning', message: 'Perhatian: koneksi lambat' })"
         >
           Warning
         </button>
         <button 
           class="btn btn-error btn-sm" 
-          @click="ui.notify({ type: 'error', message: 'Gagal menyimpan data' })"
+          @click="toast.notify({ type: 'error', message: 'Gagal menyimpan data' })"
         >
           Error
         </button>
         <button 
           class="btn btn-primary btn-sm" 
-          @click="ui.notify({ type: 'primary', message: 'Notifikasi primary' })"
+          @click="toast.notify({ type: 'primary', message: 'Notifikasi primary' })"
         >
           Primary
         </button>
@@ -229,11 +229,11 @@ const downloadFile = async () => {
       <div class="space-y-2">
         <h3 class="font-medium">Soft (Default)</h3>
         <div class="flex flex-wrap gap-2">
-          <button class="btn btn-soft-info btn-sm" @click="ui.notify({ type: 'info', variant: 'soft', message: 'Soft info toast' })">Info</button>
-          <button class="btn btn-soft-success btn-sm" @click="ui.notify({ type: 'success', variant: 'soft', message: 'Soft success toast' })">Success</button>
-          <button class="btn btn-soft-warning btn-sm" @click="ui.notify({ type: 'warning', variant: 'soft', message: 'Soft warning toast' })">Warning</button>
-          <button class="btn btn-soft-error btn-sm" @click="ui.notify({ type: 'error', variant: 'soft', message: 'Soft error toast' })">Error</button>
-          <button class="btn btn-soft-primary btn-sm" @click="ui.notify({ type: 'primary', variant: 'soft', message: 'Soft primary toast' })">Primary</button>
+          <button class="btn btn-soft-info btn-sm" @click="toast.notify({ type: 'info', variant: 'soft', message: 'Soft info toast' })">Info</button>
+          <button class="btn btn-soft-success btn-sm" @click="toast.notify({ type: 'success', variant: 'soft', message: 'Soft success toast' })">Success</button>
+          <button class="btn btn-soft-warning btn-sm" @click="toast.notify({ type: 'warning', variant: 'soft', message: 'Soft warning toast' })">Warning</button>
+          <button class="btn btn-soft-error btn-sm" @click="toast.notify({ type: 'error', variant: 'soft', message: 'Soft error toast' })">Error</button>
+          <button class="btn btn-soft-primary btn-sm" @click="toast.notify({ type: 'primary', variant: 'soft', message: 'Soft primary toast' })">Primary</button>
         </div>
         <div class="code-block">
           <button class="copy-btn" @click="copyCode(codes.variantSoft, 'variantSoft')">
@@ -247,11 +247,11 @@ const downloadFile = async () => {
       <div class="space-y-2">
         <h3 class="font-medium">Solid</h3>
         <div class="flex flex-wrap gap-2">
-          <button class="btn btn-info btn-sm" @click="ui.notify({ type: 'info', variant: 'solid', message: 'Solid info toast' })">Info</button>
-          <button class="btn btn-success btn-sm" @click="ui.notify({ type: 'success', variant: 'solid', message: 'Solid success toast' })">Success</button>
-          <button class="btn btn-warning btn-sm" @click="ui.notify({ type: 'warning', variant: 'solid', message: 'Solid warning toast' })">Warning</button>
-          <button class="btn btn-error btn-sm" @click="ui.notify({ type: 'error', variant: 'solid', message: 'Solid error toast' })">Error</button>
-          <button class="btn btn-primary btn-sm" @click="ui.notify({ type: 'primary', variant: 'solid', message: 'Solid primary toast' })">Primary</button>
+          <button class="btn btn-info btn-sm" @click="toast.notify({ type: 'info', variant: 'solid', message: 'Solid info toast' })">Info</button>
+          <button class="btn btn-success btn-sm" @click="toast.notify({ type: 'success', variant: 'solid', message: 'Solid success toast' })">Success</button>
+          <button class="btn btn-warning btn-sm" @click="toast.notify({ type: 'warning', variant: 'solid', message: 'Solid warning toast' })">Warning</button>
+          <button class="btn btn-error btn-sm" @click="toast.notify({ type: 'error', variant: 'solid', message: 'Solid error toast' })">Error</button>
+          <button class="btn btn-primary btn-sm" @click="toast.notify({ type: 'primary', variant: 'solid', message: 'Solid primary toast' })">Primary</button>
         </div>
         <div class="code-block">
           <button class="copy-btn" @click="copyCode(codes.variantSolid, 'variantSolid')">
@@ -265,11 +265,11 @@ const downloadFile = async () => {
       <div class="space-y-2">
         <h3 class="font-medium">Outline</h3>
         <div class="flex flex-wrap gap-2">
-          <button class="btn btn-outline btn-outline-info btn-sm" @click="ui.notify({ type: 'info', variant: 'outline', message: 'Outline info toast' })">Info</button>
-          <button class="btn btn-outline btn-outline-success btn-sm" @click="ui.notify({ type: 'success', variant: 'outline', message: 'Outline success toast' })">Success</button>
-          <button class="btn btn-outline btn-outline-warning btn-sm" @click="ui.notify({ type: 'warning', variant: 'outline', message: 'Outline warning toast' })">Warning</button>
-          <button class="btn btn-outline btn-outline-error btn-sm" @click="ui.notify({ type: 'error', variant: 'outline', message: 'Outline error toast' })">Error</button>
-          <button class="btn btn-outline btn-outline-primary btn-sm" @click="ui.notify({ type: 'primary', variant: 'outline', message: 'Outline primary toast' })">Primary</button>
+          <button class="btn btn-outline btn-outline-info btn-sm" @click="toast.notify({ type: 'info', variant: 'outline', message: 'Outline info toast' })">Info</button>
+          <button class="btn btn-outline btn-outline-success btn-sm" @click="toast.notify({ type: 'success', variant: 'outline', message: 'Outline success toast' })">Success</button>
+          <button class="btn btn-outline btn-outline-warning btn-sm" @click="toast.notify({ type: 'warning', variant: 'outline', message: 'Outline warning toast' })">Warning</button>
+          <button class="btn btn-outline btn-outline-error btn-sm" @click="toast.notify({ type: 'error', variant: 'outline', message: 'Outline error toast' })">Error</button>
+          <button class="btn btn-outline btn-outline-primary btn-sm" @click="toast.notify({ type: 'primary', variant: 'outline', message: 'Outline primary toast' })">Primary</button>
         </div>
         <div class="code-block">
           <button class="copy-btn" @click="copyCode(codes.variantOutline, 'variantOutline')">
@@ -287,13 +287,13 @@ const downloadFile = async () => {
       <div class="flex flex-wrap gap-2">
         <button 
           class="btn btn-success btn-sm" 
-          @click="ui.notify({ type: 'success', title: 'Berhasil!', message: 'Data pengguna telah diperbarui' })"
+          @click="toast.notify({ type: 'success', title: 'Berhasil!', message: 'Data pengguna telah diperbarui' })"
         >
           Success dengan Title
         </button>
         <button 
           class="btn btn-error btn-sm" 
-          @click="ui.notify({ type: 'error', title: 'Error!', message: 'Terjadi kesalahan saat menyimpan' })"
+          @click="toast.notify({ type: 'error', title: 'Error!', message: 'Terjadi kesalahan saat menyimpan' })"
         >
           Error dengan Title
         </button>
@@ -315,13 +315,13 @@ const downloadFile = async () => {
       <div class="flex flex-wrap gap-2">
         <button 
           class="btn btn-outline btn-sm" 
-          @click="ui.notify({ type: 'info', message: 'Toast ini bertahan 5 detik', timeout: 5000 })"
+          @click="toast.notify({ type: 'info', message: 'Toast ini bertahan 5 detik', timeout: 5000 })"
         >
           5 Detik
         </button>
         <button 
           class="btn btn-outline btn-sm" 
-          @click="ui.notify({ type: 'warning', title: 'Perhatian', message: 'Toast ini tidak akan hilang otomatis', timeout: 0 })"
+          @click="toast.notify({ type: 'warning', title: 'Perhatian', message: 'Toast ini tidak akan hilang otomatis', timeout: 0 })"
         >
           Persistent (no auto-dismiss)
         </button>
@@ -342,7 +342,7 @@ const downloadFile = async () => {
       <div class="flex flex-wrap gap-2">
         <button 
           class="btn btn-outline btn-sm" 
-          @click="ui.clearToasts()"
+          @click="toast.clearToasts()"
         >
           Clear All Toasts
         </button>
@@ -362,15 +362,15 @@ const downloadFile = async () => {
       <p class="text-sm opacity-80">Ubah posisi toast container. Default: bottom-right</p>
       
       <div class="grid grid-cols-3 gap-2 max-w-md">
-        <button class="btn btn-outline btn-sm" @click="ui.setToastPosition('top-left'); ui.notify({ type: 'info', message: 'Top Left' })">Top Left</button>
-        <button class="btn btn-outline btn-sm" @click="ui.setToastPosition('top-center'); ui.notify({ type: 'info', message: 'Top Center' })">Top Center</button>
-        <button class="btn btn-outline btn-sm" @click="ui.setToastPosition('top-right'); ui.notify({ type: 'info', message: 'Top Right' })">Top Right</button>
-        <button class="btn btn-outline btn-sm" @click="ui.setToastPosition('bottom-left'); ui.notify({ type: 'info', message: 'Bottom Left' })">Bottom Left</button>
-        <button class="btn btn-outline btn-sm" @click="ui.setToastPosition('bottom-center'); ui.notify({ type: 'info', message: 'Bottom Center' })">Bottom Center</button>
-        <button class="btn btn-outline btn-sm" @click="ui.setToastPosition('bottom-right'); ui.notify({ type: 'info', message: 'Bottom Right' })">Bottom Right</button>
+        <button class="btn btn-outline btn-sm" @click="toast.setToastPosition('top-left'); toast.notify({ type: 'info', message: 'Top Left' })">Top Left</button>
+        <button class="btn btn-outline btn-sm" @click="toast.setToastPosition('top-center'); toast.notify({ type: 'info', message: 'Top Center' })">Top Center</button>
+        <button class="btn btn-outline btn-sm" @click="toast.setToastPosition('top-right'); toast.notify({ type: 'info', message: 'Top Right' })">Top Right</button>
+        <button class="btn btn-outline btn-sm" @click="toast.setToastPosition('bottom-left'); toast.notify({ type: 'info', message: 'Bottom Left' })">Bottom Left</button>
+        <button class="btn btn-outline btn-sm" @click="toast.setToastPosition('bottom-center'); toast.notify({ type: 'info', message: 'Bottom Center' })">Bottom Center</button>
+        <button class="btn btn-outline btn-sm" @click="toast.setToastPosition('bottom-right'); toast.notify({ type: 'info', message: 'Bottom Right' })">Bottom Right</button>
       </div>
 
-      <p class="text-xs opacity-60">Current position: <code class="code-inline">{{ ui.toastPosition }}</code></p>
+      <p class="text-xs opacity-60">Current position: <code class="code-inline">{{ toast.toastPosition }}</code></p>
 
       <div class="code-block">
         <button class="copy-btn" @click="copyCode(codes.position, 'position')">
@@ -528,3 +528,4 @@ const downloadFile = async () => {
   font-family: ui-monospace, monospace;
 }
 </style>
+
