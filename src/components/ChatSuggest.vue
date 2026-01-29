@@ -29,14 +29,15 @@
           <button class="btn btn-ghost btn-xs btn-circle" @click="open = false">✕</button>
         </div>
         
-        <div class="flex mt-3 p-1 bg-base-200 rounded-lg">
+      <div class="flex mt-3 p-1 bg-base-200 rounded-lg">
           <button 
             @click="activeTab = 'saran'"
             :class="['flex-1 py-1.5 text-xs font-medium rounded-md transition-all', activeTab === 'saran' ? 'bg-white shadow-sm text-primary' : 'text-neutral/60 hover:text-neutral']"
           >
             ✉️ Kotak Saran
           </button>
-          <button 
+          <button
+            v-if="liveChatEnabled"
             @click="activeTab = 'chat'"
             :class="['flex-1 py-1.5 text-xs font-medium rounded-md transition-all', activeTab === 'chat' ? 'bg-white shadow-sm text-primary' : 'text-neutral/60 hover:text-neutral']"
           >
@@ -93,7 +94,7 @@
           </div>
         </div>
 
-        <div v-else-if="activeTab === 'chat'" class="h-full flex flex-col">
+        <div v-else-if="liveChatEnabled && activeTab === 'chat'" class="h-full flex flex-col">
           
           <div v-if="!isChatActive" class="p-5 flex flex-col justify-center h-full space-y-4">
             <div class="text-center space-y-2 mb-4">
@@ -140,14 +141,14 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted, reactive, nextTick } from "vue";
-import { io } from "socket.io-client"; // 🔥 WAJIB INSTALL: npm install socket.io-client
+import { ref, computed, reactive, nextTick } from "vue";
 
 /* =========================================
    GLOBAL & UI STATE
 ========================================= */
 const open = ref(false);
 const activeTab = ref('saran'); // 'saran' | 'chat'
+const liveChatEnabled = ref(false);
 const isConnected = ref(false); // Status koneksi socket
 
 function togglePanel() {
@@ -230,29 +231,7 @@ const chatForm = reactive({ name: "", email: "", message: "" });
 const sessionToken = ref(localStorage.getItem('chat_token') || "");
 
 // 1. Setup Socket saat Component Load
-onMounted(() => {
-   socket.value = io("http://localhost:3000"); // Arahin ke Backend Node.js lo
-
-   socket.value.on("connect", () => {
-      isConnected.value = true;
-      // Kalo ada token lama, lgsg join room
-      if (sessionToken.value) {
-         socket.value.emit("join_session", sessionToken.value);
-         isChatActive.value = true; 
-         // Kasih history dummy (opsional)
-         if (chatMessages.value.length === 0) {
-            chatMessages.value.push({ sender: "System", content: "Melanjutkan sesi chat...", isMe: false });
-         }
-      }
-   });
-
-   socket.value.on("receive_message", (data) => {
-      chatMessages.value.push({ sender: data.sender || "Support", content: data.content, isMe: false });
-      scrollToBottom();
-      // Auto open panel kalo ada balesan (opsional)
-      if (!open.value) open.value = true;
-   });
-});
+// Live chat dimatikan sementara (testing)
 
 // 2. Mulai Chat Baru
 function startChat() {

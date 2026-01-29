@@ -199,6 +199,40 @@
   ) !important;
 }
 
+/* Garis pemisah header row vs floating filter (lebih tegas) */
+.agx
+  :is(
+    .ag-header-row.ag-header-row-column,
+    .ag-pinned-left-header .ag-header-row.ag-header-row-column,
+    .ag-pinned-right-header .ag-header-row.ag-header-row-column
+  ) {
+  box-shadow: none;
+}
+.agx
+  :is(
+    .ag-header-row.ag-header-row-column-filter,
+    .ag-pinned-left-header .ag-header-row.ag-header-row-column-filter,
+    .ag-pinned-right-header .ag-header-row.ag-header-row-column-filter
+  ) {
+  box-shadow: none;
+}
+.agx
+  :is(
+    .ag-header-row.ag-header-row-column .ag-header-cell,
+    .ag-pinned-left-header .ag-header-row.ag-header-row-column .ag-header-cell,
+    .ag-pinned-right-header .ag-header-row.ag-header-row-column .ag-header-cell
+  ) {
+  border-bottom: 2px solid var(--color-primary, #60a5fa) !important;
+}
+.agx
+  :is(
+    .ag-header-row.ag-header-row-column-filter .ag-header-cell,
+    .ag-pinned-left-header .ag-header-row.ag-header-row-column-filter .ag-header-cell,
+    .ag-pinned-right-header .ag-header-row.ag-header-row-column-filter .ag-header-cell
+  ) {
+  border-top: 2px solid var(--color-primary, #60a5fa) !important;
+}
+
 /* Paksa input filter ikut dark tokens */
 .dark .agx .ag-input-field-input,
 .dark .agx .ag-text-field-input {

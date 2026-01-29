@@ -37,6 +37,7 @@ export const NAV: NavItem[] = [
     children: [
       { id: "ticket", label: "Ticketing", to: "/ticketing" },
       { id: "aggrid", label: "AG Grid", to: "/aggrid" },
+      { id: "project-budgeting", label: "Project Budgeting", to: "/project-budgeting" },
       { id: "OKRInitiatives", label: "OKR Initiatives", to: "/OKRInitiatives" },
     ],
   },
