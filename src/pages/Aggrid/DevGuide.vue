@@ -73,11 +73,13 @@ const downloadFile = async (filename: string) => {
         </li>
 
         <li>
-          <h4 class="font-semibold">Hapus CSS Legacy</h4>
-          <pre v-pre class="code"><code>// ❌ Hapus import tema lama:
+          <h4 class="font-semibold">Legacy Quartz Theme</h4>
+          <pre v-pre class="code"><code>// ✅ Import base + theme
 import 'ag-grid-community/styles/ag-grid.css'
 import 'ag-grid-community/styles/ag-theme-quartz.css'
-import 'ag-grid-community/styles/ag-theme-alpine.css'</code></pre>
+
+// ❌ Hapus tema legacy lain kalau tidak dipakai:
+// import 'ag-grid-community/styles/ag-theme-alpine.css'</code></pre>
         </li>
 
         <li>

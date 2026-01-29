@@ -5,7 +5,7 @@
       <slot name="toolbar" />
     </div>
     <div class="overflow-x-auto">
-      <table class="w-full text-sm min-w-[600px]">
+      <table class="table-hover w-full text-sm min-w-[600px]">
         <thead class="bg-base-200">
           <tr>
             <th v-for="h in headers" :key="h.key" class="text-left p-2 sm:p-3 whitespace-nowrap">

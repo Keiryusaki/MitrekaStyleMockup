@@ -98,7 +98,7 @@ table[data-als]:not([data-striped="false"]) tbody tr:nth-child(even) {
 /* hover row */
 [data-als] tbody tr:hover,
 table[data-als] tbody tr:hover {
-  background: #eef2ff33; /* hint indigo */
+  background: color-mix(in oklch, var(--als-bg), var(--als-primary) 8%);
 }
 
 /* selected row (kalau kamu kasih class is-selected di tr) */
@@ -332,7 +332,7 @@ table[data-als][data-theme="mitrekadark"]:not([data-striped="false"])
 [data-als][data-theme="mitrekadark"] tbody tr:hover,
 .dark table[data-als] tbody tr:hover,
 table[data-als][data-theme="mitrekadark"] tbody tr:hover {
-  background: rgba(96, 165, 250, 0.08); /* blue-400 tint */
+  background: color-mix(in oklch, var(--als-bg), var(--als-primary) 12%);
 }
 
 /* selected row */

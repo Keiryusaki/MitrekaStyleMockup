@@ -8,6 +8,7 @@ export default defineConfig({
     alias: {
       "@": path.resolve(__dirname, "./src"),
     },
+    dedupe: ["ag-grid-community", "ag-grid-vue3"],
   },
   base: "/MitrekaStyleMockup/",
 });

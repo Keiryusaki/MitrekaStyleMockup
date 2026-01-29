@@ -4,15 +4,11 @@ import { ref, computed, watch, onMounted, onBeforeUnmount } from "vue";
 import { AgGridVue } from "ag-grid-vue3";
 import SelectDropdown from "@/components/controls/SelectDropdown.vue";
 import PageHeader from "@/components/PageHeader.vue";
-import {
-  ModuleRegistry,
-  AllCommunityModule,
-  themeQuartz,
-} from "ag-grid-community";
+import "ag-grid-community/styles/ag-grid.css";
+import "ag-grid-community/styles/ag-theme-quartz.css";
 import "@/styles/aggrid-soft.css";
 import DevGuide from "./DevGuide.vue";
 import { iconRegistry } from "@/composables/Icon";
-ModuleRegistry.registerModules([AllCommunityModule]);
 
 /* -------------------------
    1) Dark/Light detector INLINE (khusus AG Grid)
@@ -43,6 +39,7 @@ onBeforeUnmount(() => htmlObs?.disconnect());
 --------------------------*/
 const density = ref<"compact" | "cozy" | "spacious">("cozy");
 const striped = ref(true);
+const search = ref("");
 const densityClass = computed(() =>
   density.value === "compact"
     ? "agx-compact"
@@ -50,52 +47,18 @@ const densityClass = computed(() =>
     ? "agx-spacious"
     : ""
 );
-
-/* -------------------------
-   3) Theme builder (ikut isDark)
---------------------------*/
-function buildTheme(
-  dark: boolean,
-  dens: typeof density.value,
-  stripe: boolean
-) {
-  // header fixed, body row tinggi by density (step rapi)
-  const rowH = dens === "compact" ? 25 : dens === "spacious" ? 48 : 40;
-  const headH = 44;
-
-  return themeQuartz.withParams({
-    colorScheme: dark ? "dark" : "light",
-    fontFamily:
-      'ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial, "Noto Sans"',
-    fontSize: 15,
-    rowHeight: rowH,
-    headerHeight: headH,
-    borderRadius: 12,
-
-    // warna utama
-    backgroundColor: dark ? "#0b1220" : "#ffffff",
-    foregroundColor: dark ? "#e5e7eb" : "#111827",
-    borderColor: dark ? "#374151" : "#E5E7EB",
-    headerBackgroundColor: dark ? "#111827" : "#F8FAFC",
-    headerForegroundColor: dark ? "#f3f4f6" : "#0F172A",
-    rowHoverColor: dark ? "#1f2937" : "#F1F5F9",
-    selectedRowBackgroundColor: dark ? "#0b2c5a" : "#EFF6FF",
-    accentColor: dark ? "#60a5fa" : "#2563eb",
-    inputBackgroundColor: dark ? "#0f172a" : "#ffffff",
-    inputForegroundColor: dark ? "#e5e7eb" : "#111827",
-    inputBorderColor: dark ? "#64748b" : "#cbd5e1",
-    inputFocusBorderColor: dark ? "#93c5fd" : "#60a5fa",
-    inputPlaceholderColor: dark ? "#94a3b8" : "#9ca3af",
-
-    // striped lebih kontras
-    oddRowBackgroundColor: stripe ? (dark ? "#0d1a33" : "#F3F4F6") : undefined,
-  });
-}
-const gridTheme = computed(() =>
-  buildTheme(isDark.value, density.value, striped.value)
+const themeClass = computed(() =>
+  isDark.value ? "ag-theme-quartz-dark" : "ag-theme-quartz"
 );
-
-// key untuk paksa re-mount saat dark/light ganti → theme apply bersih
+const minRows = 10;
+const headerHeight = 44;
+const paginationHeight = 56;
+const rowHeightOf = (dens = density.value) =>
+  dens === "compact" ? 25 : dens === "spacious" ? 48 : 40;
+const minGridHeight = computed(
+  () => headerHeight + rowHeightOf() * minRows + paginationHeight
+);
+// key untuk paksa re-mount saat dark/light ganti
 const gridKey = computed(
   () => `${isDark.value ? "dark" : "light"}|${density.value}|${striped.value}`
 );
@@ -122,22 +85,20 @@ const names = [
   "India",
   "Juliet",
 ];
-const rowData = ref<Row[]>(
-  Array.from({ length: 100 }, (_, i) => {
-    const n = i + 1,
-      nm = names[i % names.length],
-      ch = String.fromCharCode(65 + (i % 26));
-    return {
-      id: n,
-      no: n,
-      code: i % 2 === 0 ? ch : ch + ch,
-      name: nm,
-      description: `${nm} description #${n}`,
-    };
-  })
-);
+const rowData: Row[] = Array.from({ length: 100 }, (_, i) => {
+  const n = i + 1,
+    nm = names[i % names.length],
+    ch = String.fromCharCode(65 + (i % 26));
+  return {
+    id: n,
+    no: n,
+    code: i % 2 === 0 ? ch : ch + ch,
+    name: nm,
+    description: `${nm} description #${n}`,
+  };
+});
 
-const columnDefs = ref([
+const columnDefs = [
   // pakai rowSelection di gridOptions, jadi kolom select gak usah difilter
   {
     field: "no",
@@ -194,10 +155,6 @@ const columnDefs = ref([
         return b;
       };
 
-      watch(density, () =>
-        api.value?.refreshCells({ columns: ["actions"], force: true })
-      );
-
       root.append(
         mkBtn("warning", "Edit", "pencil"),
         mkBtn("error", "Hapus", "trash")
@@ -205,7 +162,7 @@ const columnDefs = ref([
       return root;
     },
   },
-]);
+];
 
 const defaultColDef = {
   flex: 1,
@@ -241,12 +198,16 @@ const gridOptions: any = {
 const api = ref<any>(null);
 function applyDensityToApi() {
   if (!api.value) return;
-  const rowH =
-    density.value === "compact" ? 25 : density.value === "spacious" ? 48 : 40;
+  const rowH = rowHeightOf();
   api.value.setGridOption("rowHeight", rowH);
   api.value.resetRowHeights();
 }
+const exportCsv = () => {
+  api.value?.exportDataAsCsv({ fileName: "aggrid-export.csv" });
+};
+
 function onGridReady(params: any) {
+  api.value = params.api;
   // pastikan urutan kolom
   params.api.applyColumnState({
     state: [
@@ -257,8 +218,16 @@ function onGridReady(params: any) {
     ],
     applyOrder: true,
   });
+  applyDensityToApi();
+  params.api.setGridOption("quickFilterText", search.value);
 }
-watch(density, applyDensityToApi);
+watch(density, () => {
+  applyDensityToApi();
+  api.value?.refreshCells({ columns: ["actions"], force: true });
+});
+watch(search, (value) => {
+  api.value?.setGridOption("quickFilterText", value);
+});
 </script>
 
 <template>
@@ -270,7 +239,25 @@ watch(density, applyDensityToApi);
     />
 
     <div class="flex flex-wrap items-center gap-3">
-      <input type="text" placeholder="Search…" class="input w-64 max-w-full" />
+      <div class="flex items-center gap-2 w-full sm:w-auto">
+        <input
+          v-model="search"
+          type="text"
+          placeholder="Search..."
+          class="input w-64 max-w-full"
+        />
+        <button
+          class="btn btn-ghost btn-sm"
+          type="button"
+          :disabled="!search"
+          @click="search = ''"
+        >
+          Clear
+        </button>
+      </div>
+      <button class="btn btn-outline btn-sm" type="button" @click="exportCsv">
+        Export CSV
+      </button>
       <div class="flex items-center gap-2">
         <span class="text-sm opacity-70">Density</span>
         <SelectDropdown
@@ -290,16 +277,28 @@ watch(density, applyDensityToApi);
       </label>
     </div>
 
-    <AgGridVue
-      :key="gridKey"
-      :class="['agx', densityClass, 'w-full', 'flex-1', 'min-h-0']"
-      :theme="gridTheme"
-      :rowData="rowData"
-      :columnDefs="columnDefs"
-      :defaultColDef="defaultColDef"
-      :gridOptions="gridOptions"
-      @grid-ready="onGridReady"
-    />
+    <div
+      class="w-full"
+      :style="{ minHeight: `${minGridHeight}px`, height: '80vh' }"
+    >
+      <AgGridVue
+        :key="gridKey"
+        :class="['agx', themeClass, densityClass, 'w-full', 'h-full', 'min-h-0']"
+        theme="legacy"
+        :style="{
+          '--ag-odd-row-background-color': striped
+            ? isDark
+              ? '#0d1a33'
+              : '#F3F4F6'
+            : 'transparent',
+        }"
+        :rowData="rowData"
+        :columnDefs="columnDefs"
+        :defaultColDef="defaultColDef"
+        :gridOptions="gridOptions"
+        @grid-ready="onGridReady"
+      />
+    </div>
   </div>
   <DevGuide />
 </template>

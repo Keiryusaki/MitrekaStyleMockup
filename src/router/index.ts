@@ -38,6 +38,10 @@ const routes: RouteRecordRaw[] = [
     component: () => import("@/pages/Input/Input.vue"),
   },
   {
+    path: "/datetime-picker",
+    component: () => import("@/pages/DateTimePicker/DateTimePicker.vue"),
+  },
+  {
     path: "/SelectOption",
     component: () => import("@/pages/SelectOption/SelectOption.vue"),
   },

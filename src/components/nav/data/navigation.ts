@@ -50,6 +50,7 @@ export const NAV: NavItem[] = [
       { id: "button", label: "Button", to: "/button" },
       { id: "badge", label: "Badge", to: "/badge" },
       { id: "input", label: "Input", to: "/input" },
+      { id: "datetime-picker", label: "Date & Time Picker", to: "/datetime-picker" },
       {
         id: "SelectOption",
         label: "Select Option",

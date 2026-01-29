@@ -723,6 +723,22 @@
     padding-inline: 1rem;
   }
 
+  /* Table hover (basic + DataTable) */
+  table.table-hover tbody tr,
+  table.min-w-full tbody tr,
+  table.w-full tbody tr {
+    transition: background-color 0.12s ease;
+  }
+  table.table-hover tbody tr:hover,
+  table.min-w-full tbody tr:hover,
+  table.w-full tbody tr:hover {
+    background-color: color-mix(
+      in oklch,
+      var(--color-base-200),
+      var(--color-primary) 6%
+    );
+  }
+
   /* Input state variants (border + focus ring) */
   .input-primary {
     border-color: var(--color-primary);

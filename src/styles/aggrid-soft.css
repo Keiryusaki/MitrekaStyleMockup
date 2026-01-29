@@ -53,6 +53,20 @@
 /* Row cells */
 .agx .ag-row .ag-cell {
   background-color: var(--ag-background-color) !important;
+  color: var(--ag-foreground-color, #111827) !important;
+  font-size: 14px;
+  line-height: 1.4;
+  display: flex;
+  align-items: center;
+}
+.agx .ag-cell-value {
+  color: var(--ag-foreground-color, #111827) !important;
+  opacity: 1 !important;
+  font-size: 14px;
+  line-height: 1.4;
+}
+.agx .ag-cell-wrapper {
+  align-items: center;
 }
 .agx .ag-row-odd .ag-cell {
   background-color: var(
@@ -91,6 +105,12 @@
 .agx .ag-header-cell-text,
 .agx .ag-header-group-text {
   font-weight: 600;
+  color: var(--ag-header-foreground-color, var(--ag-foreground-color, #111827)) !important;
+}
+
+.dark .agx .ag-row .ag-cell,
+.dark .agx .ag-cell-value {
+  color: var(--ag-foreground-color, #e5e7eb) !important;
 }
 
 /* === Row separators (center & pinned) === */
@@ -116,7 +136,7 @@
   height: var(--agx-ff-height);
   line-height: var(--agx-ff-height);
   margin-block: var(--agx-ff-margin);
-  border-radius: 9999px;
+  border-radius: var(--radius-field-md);
   border: 2px solid #cbd5e1;
   background: #fff;
   width: 100%;
