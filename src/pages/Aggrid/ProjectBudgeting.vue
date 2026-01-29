@@ -363,26 +363,35 @@ const reloadData = () => {
 </script>
 
 <template>
-  <div class="space-y-5 flex-1 flex flex-col">
-    <nav class="text-sm flex items-center gap-2 min-w-0 whitespace-nowrap">
-      <span class="text-primary hover:underline cursor-pointer">Home</span>
-      <span class="text-base-content/60">/</span>
-      <span class="text-base-content/70">Mockup Pages</span>
-      <span class="text-base-content/60">/</span>
-      <span class="text-base-content truncate">Project Budgeting</span>
+  <div class="flex-1 flex flex-col">
+    <nav class="mitreka-breadcrumbs mb-4" aria-label="Breadcrumb">
+      <ol class="breadcrumbs-list">
+        <li class="breadcrumbs-item">
+          <a href="/" class="breadcrumbs-link">Home</a>
+        </li>
+        <li class="breadcrumbs-item">
+          <span class="breadcrumbs-sep">/</span>
+          <span class="breadcrumbs-current">Mockup Pages</span>
+        </li>
+        <li class="breadcrumbs-item">
+          <span class="breadcrumbs-sep">/</span>
+          <span class="breadcrumbs-current">Project Budgeting</span>
+        </li>
+      </ol>
     </nav>
 
-    <PageHeader
-      category="Mockup"
-      title="Project Budgeting"
-      description="Ringkasan budget per proyek & per waktu"
-    />
+    <div class="space-y-4">
+      <PageHeader
+        category="Mockup"
+        title="Project Budgeting"
+        description="Ringkasan budget per proyek & per waktu"
+      />
 
-    <div class="card p-2">
-      <div class="flex flex-wrap items-center gap-3 justify-end w-full">
-        <SelectDropdown
-          v-model="selectedYear"
-          :options="yearOptions"
+      <div class="card p-2">
+        <div class="flex flex-wrap items-center gap-3 justify-end w-full">
+          <SelectDropdown
+            v-model="selectedYear"
+            :options="yearOptions"
           size="sm"
           variant="outline"
         />
@@ -410,48 +419,48 @@ const reloadData = () => {
           size="sm"
           variant="outline"
         />
-        <button class="btn btn-success btn-sm" type="button" @click="reloadData">
-          Reload
+          <button class="btn btn-success btn-sm" type="button" @click="reloadData">
+            Reload
+          </button>
+        </div>
+      </div>
+
+      <div class="tabs">
+        <button
+          class="tab"
+          :class="{ 'tab-active': activeTab === 'value' }"
+          @click="activeTab = 'value'"
+          type="button"
+        >
+          <Icon name="clipboard" class="h-4 w-4" />
+          Budget Value
+        </button>
+        <button
+          class="tab"
+          :class="{ 'tab-active': activeTab === 'timeline' }"
+          @click="activeTab = 'timeline'"
+          type="button"
+        >
+          <Icon name="calendar-days" class="h-4 w-4" />
+          Budget Timeline
         </button>
       </div>
-    </div>
 
-    <div class="tabs">
-      <button
-        class="tab"
-        :class="{ 'tab-active': activeTab === 'value' }"
-        @click="activeTab = 'value'"
-        type="button"
-      >
-        <Icon name="clipboard" class="h-4 w-4" />
-        Budget Value
-      </button>
-      <button
-        class="tab"
-        :class="{ 'tab-active': activeTab === 'timeline' }"
-        @click="activeTab = 'timeline'"
-        type="button"
-      >
-        <Icon name="calendar-days" class="h-4 w-4" />
-        Budget Timeline
-      </button>
-    </div>
-
-    <div v-if="activeTab === 'value'" class="space-y-3">
-      <div class="grid gap-3 md:grid-cols-3 lg:grid-cols-7 text-xs text-base-content/70">
-        <div class="summary-card">
-          <div class="summary-icon">
-            <Icon name="clipboard" class="h-4 w-4" />
-          </div>
-          <div class="summary-content">
-            <div class="summary-label">Nilai Kontrak</div>
-            <div class="summary-value-wrap">
-              <Tooltip class="summary-tooltip" :text="fmt.format(totals.nilai)">
-                <span class="summary-value">{{ fmt.format(totals.nilai) }}</span>
-              </Tooltip>
+      <div v-if="activeTab === 'value'" class="space-y-3">
+        <div class="grid gap-3 md:grid-cols-3 lg:grid-cols-7 text-xs text-base-content/70">
+          <div class="summary-card">
+            <div class="summary-icon">
+              <Icon name="clipboard" class="h-4 w-4" />
+            </div>
+            <div class="summary-content">
+              <div class="summary-label">Nilai Kontrak</div>
+              <div class="summary-value-wrap">
+                <Tooltip class="summary-tooltip" :text="fmt.format(totals.nilai)">
+                  <span class="summary-value">{{ fmt.format(totals.nilai) }}</span>
+                </Tooltip>
+              </div>
             </div>
           </div>
-        </div>
         <div class="summary-card">
           <div class="summary-icon">
             <Icon name="info" class="h-4 w-4" />
@@ -556,21 +565,21 @@ const reloadData = () => {
       </div>
     </div>
 
-    <div v-else class="space-y-3">
-      <div class="grid gap-3 md:grid-cols-4 text-xs text-base-content/70">
-        <div class="summary-card">
-          <div class="summary-icon">
-            <Icon name="clipboard" class="h-4 w-4" />
-          </div>
-          <div class="summary-content">
-            <div class="summary-label">Nilai Kontrak</div>
-            <div class="summary-value-wrap">
-              <Tooltip class="summary-tooltip" :text="fmt.format(timelineTotals.nilai)">
-                <span class="summary-value">{{ fmt.format(timelineTotals.nilai) }}</span>
-              </Tooltip>
+      <div v-else class="space-y-3">
+        <div class="grid gap-3 md:grid-cols-4 text-xs text-base-content/70">
+          <div class="summary-card">
+            <div class="summary-icon">
+              <Icon name="clipboard" class="h-4 w-4" />
+            </div>
+            <div class="summary-content">
+              <div class="summary-label">Nilai Kontrak</div>
+              <div class="summary-value-wrap">
+                <Tooltip class="summary-tooltip" :text="fmt.format(timelineTotals.nilai)">
+                  <span class="summary-value">{{ fmt.format(timelineTotals.nilai) }}</span>
+                </Tooltip>
+              </div>
             </div>
           </div>
-        </div>
         <div class="summary-card">
           <div class="summary-icon">
             <Icon name="calendar-days" class="h-4 w-4" />
@@ -635,6 +644,7 @@ const reloadData = () => {
           :gridOptions="gridOptions"
           @grid-ready="onGridReady"
         />
+        </div>
       </div>
     </div>
   </div>
