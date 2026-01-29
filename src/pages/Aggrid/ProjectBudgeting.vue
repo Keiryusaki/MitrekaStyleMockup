@@ -364,11 +364,11 @@ const reloadData = () => {
 
 <template>
   <div class="space-y-5 flex-1 flex flex-col">
-    <nav class="text-xs text-base-content/60 flex items-center gap-2 min-w-0 whitespace-nowrap">
-      <span class="hover:text-base-content cursor-pointer">Home</span>
-      <span>/</span>
-      <span class="hover:text-base-content cursor-pointer">Mockup Pages</span>
-      <span>/</span>
+    <nav class="text-sm flex items-center gap-2 min-w-0 whitespace-nowrap">
+      <span class="text-primary hover:underline cursor-pointer">Home</span>
+      <span class="text-base-content/60">/</span>
+      <span class="text-base-content/70">Mockup Pages</span>
+      <span class="text-base-content/60">/</span>
       <span class="text-base-content truncate">Project Budgeting</span>
     </nav>
 
