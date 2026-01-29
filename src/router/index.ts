@@ -28,6 +28,7 @@ const routes: RouteRecordRaw[] = [
   {
     path: "/project-budgeting",
     component: () => import("@/pages/Aggrid/ProjectBudgeting.vue"),
+    meta: { hideBreadcrumbs: true },
   },
   {
     path: "/button",

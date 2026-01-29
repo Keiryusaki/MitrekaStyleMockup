@@ -4,6 +4,7 @@ import { computed, onBeforeUnmount, onMounted, ref } from "vue";
 import { AgGridVue } from "ag-grid-vue3";
 import SelectDropdown from "@/components/controls/SelectDropdown.vue";
 import PageHeader from "@/components/PageHeader.vue";
+import Tooltip from "@/components/Tooltip.vue";
 import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-quartz.css";
 import "@/styles/aggrid-soft.css";
@@ -363,12 +364,12 @@ const reloadData = () => {
 
 <template>
   <div class="space-y-5 flex-1 flex flex-col">
-    <nav class="text-xs text-base-content/60 flex items-center gap-2">
+    <nav class="text-xs text-base-content/60 flex items-center gap-2 min-w-0 whitespace-nowrap">
       <span class="hover:text-base-content cursor-pointer">Home</span>
       <span>/</span>
       <span class="hover:text-base-content cursor-pointer">Mockup Pages</span>
       <span>/</span>
-      <span class="text-base-content">Project Budgeting</span>
+      <span class="text-base-content truncate">Project Budgeting</span>
     </nav>
 
     <PageHeader
@@ -378,7 +379,7 @@ const reloadData = () => {
     />
 
     <div class="card p-2">
-      <div class="flex flex-wrap items-center gap-3">
+      <div class="flex flex-wrap items-center gap-3 justify-end w-full">
         <SelectDropdown
           v-model="selectedYear"
           :options="yearOptions"
@@ -409,19 +410,20 @@ const reloadData = () => {
           size="sm"
           variant="outline"
         />
-        <button class="btn btn-success btn-sm ml-auto" type="button" @click="reloadData">
+        <button class="btn btn-success btn-sm" type="button" @click="reloadData">
           Reload
         </button>
       </div>
     </div>
 
-    <div class="tabs tabs-pills">
+    <div class="tabs">
       <button
         class="tab"
         :class="{ 'tab-active': activeTab === 'value' }"
         @click="activeTab = 'value'"
         type="button"
       >
+        <Icon name="clipboard" class="h-4 w-4" />
         Budget Value
       </button>
       <button
@@ -430,6 +432,7 @@ const reloadData = () => {
         @click="activeTab = 'timeline'"
         type="button"
       >
+        <Icon name="calendar-days" class="h-4 w-4" />
         Budget Timeline
       </button>
     </div>
@@ -440,63 +443,91 @@ const reloadData = () => {
           <div class="summary-icon">
             <Icon name="clipboard" class="h-4 w-4" />
           </div>
-          <div>
+          <div class="summary-content">
             <div class="summary-label">Nilai Kontrak</div>
-            <div class="summary-value">{{ fmt.format(totals.nilai) }}</div>
+            <div class="summary-value-wrap">
+              <Tooltip class="summary-tooltip" :text="fmt.format(totals.nilai)">
+                <span class="summary-value">{{ fmt.format(totals.nilai) }}</span>
+              </Tooltip>
+            </div>
           </div>
         </div>
         <div class="summary-card">
           <div class="summary-icon">
             <Icon name="info" class="h-4 w-4" />
           </div>
-          <div>
+          <div class="summary-content">
             <div class="summary-label">PPN</div>
-            <div class="summary-value">{{ fmt.format(totals.ppn) }}</div>
+            <div class="summary-value-wrap">
+              <Tooltip class="summary-tooltip" :text="fmt.format(totals.ppn)">
+                <span class="summary-value">{{ fmt.format(totals.ppn) }}</span>
+              </Tooltip>
+            </div>
           </div>
         </div>
         <div class="summary-card">
           <div class="summary-icon">
             <Icon name="alert-triangle" class="h-4 w-4" />
           </div>
-          <div>
+          <div class="summary-content">
             <div class="summary-label">PPh</div>
-            <div class="summary-value">{{ fmt.format(totals.pph) }}</div>
+            <div class="summary-value-wrap">
+              <Tooltip class="summary-tooltip" :text="fmt.format(totals.pph)">
+                <span class="summary-value">{{ fmt.format(totals.pph) }}</span>
+              </Tooltip>
+            </div>
           </div>
         </div>
         <div class="summary-card">
           <div class="summary-icon">
             <Icon name="trendingUp" class="h-4 w-4" />
           </div>
-          <div>
+          <div class="summary-content">
             <div class="summary-label">Net Sales</div>
-            <div class="summary-value">{{ fmt.format(totals.netSales) }}</div>
+            <div class="summary-value-wrap">
+              <Tooltip class="summary-tooltip" :text="fmt.format(totals.netSales)">
+                <span class="summary-value">{{ fmt.format(totals.netSales) }}</span>
+              </Tooltip>
+            </div>
           </div>
         </div>
         <div class="summary-card">
           <div class="summary-icon">
             <Icon name="calendar-days" class="h-4 w-4" />
           </div>
-          <div>
+          <div class="summary-content">
             <div class="summary-label">Budget Plan</div>
-            <div class="summary-value">{{ fmt.format(totals.budgetPlan) }}</div>
+            <div class="summary-value-wrap">
+              <Tooltip class="summary-tooltip" :text="fmt.format(totals.budgetPlan)">
+                <span class="summary-value">{{ fmt.format(totals.budgetPlan) }}</span>
+              </Tooltip>
+            </div>
           </div>
         </div>
         <div class="summary-card">
           <div class="summary-icon">
             <Icon name="sparkles" class="h-4 w-4" />
           </div>
-          <div>
+          <div class="summary-content">
             <div class="summary-label">Est. Profit</div>
-            <div class="summary-value">{{ fmt.format(totals.estProfit) }}</div>
+            <div class="summary-value-wrap">
+              <Tooltip class="summary-tooltip" :text="fmt.format(totals.estProfit)">
+                <span class="summary-value">{{ fmt.format(totals.estProfit) }}</span>
+              </Tooltip>
+            </div>
           </div>
         </div>
         <div class="summary-card">
           <div class="summary-icon">
             <Icon name="zap" class="h-4 w-4" />
           </div>
-          <div>
+          <div class="summary-content">
             <div class="summary-label">% Est.</div>
-            <div class="summary-value">{{ fmtPct(estPctTotal) }}</div>
+            <div class="summary-value-wrap">
+              <Tooltip class="summary-tooltip" :text="fmtPct(estPctTotal)">
+                <span class="summary-value">{{ fmtPct(estPctTotal) }}</span>
+              </Tooltip>
+            </div>
           </div>
         </div>
       </div>
@@ -531,36 +562,54 @@ const reloadData = () => {
           <div class="summary-icon">
             <Icon name="clipboard" class="h-4 w-4" />
           </div>
-          <div>
+          <div class="summary-content">
             <div class="summary-label">Nilai Kontrak</div>
-            <div class="summary-value">{{ fmt.format(timelineTotals.nilai) }}</div>
+            <div class="summary-value-wrap">
+              <Tooltip class="summary-tooltip" :text="fmt.format(timelineTotals.nilai)">
+                <span class="summary-value">{{ fmt.format(timelineTotals.nilai) }}</span>
+              </Tooltip>
+            </div>
           </div>
         </div>
         <div class="summary-card">
           <div class="summary-icon">
             <Icon name="calendar-days" class="h-4 w-4" />
           </div>
-          <div>
+          <div class="summary-content">
             <div class="summary-label">Budget Plan</div>
-            <div class="summary-value">{{ fmt.format(timelineTotals.budgetPlan) }}</div>
+            <div class="summary-value-wrap">
+              <Tooltip class="summary-tooltip" :text="fmt.format(timelineTotals.budgetPlan)">
+                <span class="summary-value">{{ fmt.format(timelineTotals.budgetPlan) }}</span>
+              </Tooltip>
+            </div>
           </div>
         </div>
         <div class="summary-card">
           <div class="summary-icon">
             <Icon name="trendingUp" class="h-4 w-4" />
           </div>
-          <div>
+          <div class="summary-content">
             <div class="summary-label">Budget By Time</div>
-            <div class="summary-value">{{ fmt.format(timelineTotals.budgetByTime) }}</div>
+            <div class="summary-value-wrap">
+              <Tooltip class="summary-tooltip" :text="fmt.format(timelineTotals.budgetByTime)">
+                <span class="summary-value">
+                  {{ fmt.format(timelineTotals.budgetByTime) }}
+                </span>
+              </Tooltip>
+            </div>
           </div>
         </div>
         <div class="summary-card">
           <div class="summary-icon">
             <Icon name="alert-triangle" class="h-4 w-4" />
           </div>
-          <div>
+          <div class="summary-content">
             <div class="summary-label">Selisih</div>
-            <div class="summary-value">{{ fmt.format(timelineTotals.selisih) }}</div>
+            <div class="summary-value-wrap">
+              <Tooltip class="summary-tooltip" :text="fmt.format(timelineTotals.selisih)">
+                <span class="summary-value">{{ fmt.format(timelineTotals.selisih) }}</span>
+              </Tooltip>
+            </div>
           </div>
         </div>
       </div>
@@ -594,39 +643,34 @@ const reloadData = () => {
 <style scoped>
 .tabs {
   display: flex;
-  gap: 0.5rem;
+  gap: 0.25rem;
+  border-bottom: 2px solid color-mix(in oklch, var(--color-base-300), var(--color-base-content) 18%);
 }
 .tab {
   display: inline-flex;
   align-items: center;
-  padding: 0.5rem 0.875rem;
+  gap: 0.5rem;
+  padding: 0.625rem 1rem;
   font-size: 0.875rem;
   font-weight: 600;
   color: var(--color-base-content);
   opacity: 0.7;
   background: transparent;
   border: none;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -1px;
   cursor: pointer;
   transition: all 0.15s ease;
   white-space: nowrap;
 }
 .tab:hover {
   opacity: 1;
+  background: var(--color-base-200);
 }
 .tab-active {
   opacity: 1;
   color: var(--color-primary);
-  background: var(--color-base-100);
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-}
-.tabs-pills {
-  background: var(--color-base-300);
-  padding: 0.25rem;
-  border-radius: 0.5rem;
-  width: fit-content;
-}
-.tabs-pills .tab {
-  border-radius: 0.375rem;
+  border-bottom-color: var(--color-primary);
 }
 .summary-card {
   display: flex;
@@ -636,6 +680,11 @@ const reloadData = () => {
   border-radius: 0.5rem;
   background: var(--color-base-100);
   border: 1px solid var(--color-base-300);
+  min-width: 0;
+}
+.summary-content {
+  min-width: 0;
+  flex: 1 1 auto;
 }
 .summary-icon {
   height: 28px;
@@ -653,8 +702,21 @@ const reloadData = () => {
   opacity: 0.6;
 }
 .summary-value {
+  display: block;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
   font-size: 0.875rem;
   font-weight: 600;
   color: var(--color-base-content);
+}
+.summary-value-wrap {
+  min-width: 0;
+  width: 100%;
+}
+.summary-value-wrap :deep(.summary-tooltip) {
+  display: block;
+  max-width: 100%;
 }
 </style>

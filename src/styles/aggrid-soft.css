@@ -9,7 +9,7 @@
   /* --ag-font-size: 13px; */
   --ag-col-border-color: #e5e7eb;
   --ag-col-border-width: 1px;
-  --ag-row-border-color: #e5e7eb;
+  --ag-row-border-color: #94a3b8;
   --ag-row-border-width: 1px;
 
   /* header padding (fixed) */
@@ -166,7 +166,7 @@
 .dark .agx,
 .agx.dark {
   --ag-col-border-color: #4b5563;
-  --ag-row-border-color: #4b5563;
+  --ag-row-border-color: #9ca3af;
 }
 .dark .agx :is(.ag-root-wrapper, .ag-root) {
   box-shadow: 0 8px 28px -10px rgba(0, 0, 0, 0.45);
