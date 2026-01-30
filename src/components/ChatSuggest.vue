@@ -193,13 +193,12 @@ async function submitSaran() {
          return;
       }
       const pageUrl = window.location.href;
-      const separator = "----------";
       const fd = new FormData();
       const payload = {
          username: "Kotak Saran",
          embeds: [{
             title: "ðŸ’¬ Masukan / Pertanyaan Baru",
-            description: `${separator}\n${form.value.deskripsi}\n${separator}`,
+            description: form.value.deskripsi,
             color: 0x00ff00,
             fields: [
                { name: "Nama", value: form.value.nama || "-", inline: true },
