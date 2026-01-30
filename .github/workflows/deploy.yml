@@ -19,6 +19,14 @@ jobs:
           cache-dependency-path: package-lock.json
           registry-url: "https://npm.pkg.github.com"
           scope: "@keiryusaki"
+      - name: Validate webhook env
+        run: |
+          if [ -z "$VITE_DISCORD_WEBHOOK_URL" ]; then
+            echo "VITE_DISCORD_WEBHOOK_URL is not set"
+            exit 1
+          fi
+        env:
+          VITE_DISCORD_WEBHOOK_URL: ${{ secrets.VITE_DISCORD_WEBHOOK_URL }}
       - run: npm ci
         env:
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

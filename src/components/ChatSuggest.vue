@@ -162,7 +162,7 @@ function togglePanel() {
    LOGIC TAB 1: KOTAK SARAN (WEBHOOK)
    (Ini logic asli punya lo, gw rapihin dikit)
 ========================================= */
-const WEBHOOK_URL = import.meta.env.VITE_DISCORD_WEBHOOK_URL ?? "MASUKAN_URL_WEBHOOK_DISCORD_DISINI"; 
+const WEBHOOK_URL = import.meta.env.VITE_DISCORD_WEBHOOK_URL ?? "";
 const MAX = 2000;
 const loading = ref(false);
 const ok = ref(false);
@@ -188,6 +188,10 @@ const canSend = computed(() => form.value.nama && form.value.deskripsi && cap.va
 async function submitSaran() {
    loading.value = true;
    try {
+      if (!WEBHOOK_URL) {
+         alert("Webhook Kotak Saran belum diset. Hubungi admin.");
+         return;
+      }
       const fd = new FormData();
       const payload = {
          username: "Kotak Saran",
