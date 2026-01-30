@@ -1,0 +1,390 @@
+const a=`/* ==================  THEME TOKENS (NAMESPACED)  ================== */
+[data-als] {
+  --als-bg: #fff;
+  --als-bg-alt: #f3f4f6; /* zebra */
+  --als-border: #e5e7eb; /* slate-200 */
+  --als-border-strong: #d1d5db; /* slate-300 */
+  --als-text: #0f172a; /* slate-900 */
+  --als-text-dim: #334155; /* slate-700 */
+  --als-header-bg: #f8fafc;
+  --als-primary: #3b82f6;
+  --als-focus: rgba(59, 130, 246, 0.35);
+
+  /* density default: Cozy */
+  --als-font-size: 0.875rem; /* 14px */
+  --als-cell-py: 0.25rem; /* y padding */
+  --als-cell-px: 0.75rem; /* x padding */
+}
+
+/* density override via data-attribute di parent/table */
+[data-als][data-density="compact"] {
+  /*--als-font-size: 0.8125rem;*/
+  --als-cell-py: 0;
+  --als-cell-px: 0.5rem;
+}
+[data-als][data-density="comfortable"] {
+  --als-font-size: 0.875rem;
+  --als-cell-py: 0.5rem;
+  --als-cell-px: 1rem;
+}
+
+/* ==================  SCOPE: PARENT ATAU TABLE  ================== */
+/* Kamu boleh menaruh attribute data-als di parent WRAPPER atau langsung di <table>. */
+[data-als] {
+  border: 1px solid var(--als-border);
+  border-radius: 0.5rem;
+  background: var(--als-bg);
+  overflow: hidden; /* biar rounded rapi */
+}
+
+/* bikin container jadi overflow untuk sticky header */
+[data-als] {
+  overflow: auto;
+}
+
+/* target semua table di dalam scope, atau table[data-als] itu sendiri */
+[data-als] table,
+table[data-als] {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  font-size: var(--als-font-size);
+  color: var(--als-text);
+  background: var(--als-bg);
+}
+
+/* ============ HEADER (sticky) ============ */
+[data-als] thead th,
+table[data-als] thead th {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  background: var(--als-header-bg);
+  color: var(--als-text-dim);
+  font-weight: 600;
+  text-align: left;
+  white-space: nowrap;
+  padding: 1rem var(--als-cell-px);
+  border-bottom: 1px solid var(--als-border-strong);
+}
+
+/* garis vertikal antar kolom */
+[data-als] thead th + th,
+table[data-als] thead th + th,
+[data-als] tbody td + td,
+table[data-als] tbody td + td {
+  border-left: 1px solid var(--als-border);
+}
+
+/* ============ BODY ============ */
+[data-als] tbody tr,
+table[data-als] tbody tr {
+  background: var(--als-bg);
+  border-bottom: 1px solid var(--als-border);
+  transition: background-color 0.12s ease;
+}
+[data-als] tbody td,
+table[data-als] tbody td {
+  padding: var(--als-cell-py) var(--als-cell-px);
+  vertical-align: middle;
+}
+
+/* zebra/striped: default ON; bisa dimatikan dengan data-striped="false" */
+[data-als]:not([data-striped="false"]) tbody tr:nth-child(even),
+table[data-als]:not([data-striped="false"]) tbody tr:nth-child(even) {
+  background: var(--als-bg-alt);
+}
+
+/* hover row */
+[data-als] tbody tr:hover,
+table[data-als] tbody tr:hover {
+  background: color-mix(in oklch, var(--als-bg), var(--als-primary) 8%);
+}
+
+/* selected row (kalau kamu kasih class is-selected di tr) */
+[data-als] tr.is-selected,
+table[data-als] tr.is-selected {
+  background: #dbeafe;
+}
+
+/* input/select feel (hanya yg berada di dalam scope) */
+[data-als] input[type="text"],
+[data-als] input[type="search"],
+[data-als] select,
+table[data-als] input[type="text"],
+table[data-als] input[type="search"],
+table[data-als] select {
+  height: 2rem;
+  padding: 0 0.5rem;
+  border: 1px solid var(--als-border);
+  border-radius: 0.375rem;
+  background: #fff;
+  color: var(--als-text);
+}
+[data-als] input:focus,
+[data-als] select:focus,
+table[data-als] input:focus,
+table[data-als] select:focus {
+  outline: none;
+  border-color: var(--als-primary);
+  box-shadow: 0 0 0 3px var(--als-focus);
+}
+
+/* helper width opsional via attribute (tanpa ganti class kolom) */
+[data-als] th[data-col="checkbox"],
+[data-als] td[data-col="checkbox"],
+table[data-als] th[data-col="checkbox"],
+table[data-als] td[data-col="checkbox"] {
+  width: 44px;
+  text-align: center;
+}
+[data-als] th[data-col="index"],
+[data-als] td[data-col="index"],
+table[data-als] th[data-col="index"],
+table[data-als] td[data-col="index"] {
+  width: 64px;
+  color: var(--als-text-dim);
+}
+[data-als] th[data-col="actions"],
+[data-als] td[data-col="actions"],
+table[data-als] th[data-col="actions"],
+table[data-als] td[data-col="actions"] {
+  width: 120px;
+  text-align: right;
+}
+
+/* scrollbar halus (tak wajib) */
+[data-als]::-webkit-scrollbar {
+  height: 12px;
+  width: 12px;
+}
+[data-als]::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 8px;
+  border: 3px solid #f8fafc;
+}
+
+/* ---------- Toolbar terpisah (namespaced) ---------- */
+.als-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 0.75rem;
+  color: var(--als-text-dim);
+  font-size: 0.875rem;
+}
+.als-toolbar__spacer {
+  flex: 1 1 auto;
+}
+
+/* Input kecil biar rapih */
+.als-select,
+.als-checkbox {
+  height: 2rem;
+}
+.als-select {
+  appearance: none;
+  border: 1px solid var(--als-border);
+  border-radius: 0.5rem;
+  padding: 0 0.5rem;
+  background: #fff;
+}
+
+/* ---------- Card tabel (wrapper skin) ---------- */
+.als-card {
+  border-radius: 0.5rem;
+  overflow: hidden;
+  /* kalau butuh border di luar scope data-als, tambahkan:
+     border: 1px solid var(--als-border);
+  */
+}
+
+/* ---------- Viewport (thead sticky perlu overflow di sini) ---------- */
+.als-viewport {
+  overflow: auto;
+  max-height: var(--als-max-h, 560px); /* set tinggi via CSS var jika perlu */
+}
+
+/* ---------- Footer rapi ---------- */
+.als-footer {
+  border-top: 1px solid var(--als-border);
+  background: var(--als-bg);
+  padding: 0.5rem 0.75rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  color: var(--als-text-dim);
+  font-size: 0.875rem;
+}
+.als-footer__left,
+.als-footer__center,
+.als-footer__right {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.als-pagination {
+  display: flex;
+  gap: 0.25rem;
+}
+
+/* Buttons (namespaced) */
+.als-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.375rem;
+  height: 2rem;
+  padding: 0 0.625rem;
+  border-radius: 0.5rem;
+  border: 1px solid transparent;
+  font-weight: 600;
+  cursor: pointer;
+}
+.als-btn--icon {
+  width: 2rem;
+  padding: 0;
+}
+.als-btn--warn {
+  background: #f97316;
+  color: #fff;
+}
+.als-btn--warn:hover {
+  background: #ea580c;
+}
+.als-btn--danger {
+  background: #ef4444;
+  color: #fff;
+}
+.als-btn--danger:hover {
+  background: #dc2626;
+}
+.als-btn[disabled] {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* ========================== */
+/*       DARK MODE TOKENS     */
+/* ========================== */
+/* Aktif kalau ada parent .dark (Tailwind) ATAU langsung data-theme="mitrekadark" di wrapper */
+.dark [data-als],
+[data-als][data-theme="mitrekadark"],
+.dark table[data-als],
+table[data-als][data-theme="mitrekadark"] {
+  --als-bg: #0f172a; /* slate-900 */
+  --als-bg-alt: #0b1220; /* sedikit beda untuk zebra */
+  --als-header-bg: #0b1220; /* header sedikit lebih terang/kontras dari body */
+  --als-border: #1f2937; /* gray-800 */
+  --als-border-strong: #334155; /* slate-700 */
+  --als-text: #e5e7eb; /* slate-200 */
+  --als-text-dim: #94a3b8; /* slate-400 */
+  --als-primary: #60a5fa; /* blue-400 */
+  --als-focus: rgba(96, 165, 250, 0.35);
+}
+
+/* warna dasar elemen di scope dark */
+.dark [data-als] table,
+[data-als][data-theme="mitrekadark"] table,
+.dark table[data-als],
+table[data-als][data-theme="mitrekadark"] {
+  background: var(--als-bg);
+  color: var(--als-text);
+}
+
+/* header */
+.dark [data-als] thead th,
+[data-als][data-theme="mitrekadark"] thead th,
+.dark table[data-als] thead th,
+table[data-als][data-theme="mitrekadark"] thead th {
+  background: var(--als-header-bg);
+  color: var(--als-text);
+  border-bottom-color: var(--als-border-strong);
+}
+
+/* garis vertikal antar kolom */
+.dark [data-als] thead th + th,
+.dark [data-als] tbody td + td,
+[data-als][data-theme="mitrekadark"] thead th + th,
+[data-als][data-theme="mitrekadark"] tbody td + td,
+.dark table[data-als] thead th + th,
+.dark table[data-als] tbody td + td,
+table[data-als][data-theme="mitrekadark"] thead th + th,
+table[data-als][data-theme="mitrekadark"] tbody td + td {
+  border-left-color: var(--als-border);
+}
+
+/* zebra */
+.dark [data-als]:not([data-striped="false"]) tbody tr:nth-child(even),
+[data-als][data-theme="mitrekadark"]:not([data-striped="false"])
+  tbody
+  tr:nth-child(even),
+.dark table[data-als]:not([data-striped="false"]) tbody tr:nth-child(even),
+table[data-als][data-theme="mitrekadark"]:not([data-striped="false"])
+  tbody
+  tr:nth-child(even) {
+  background: var(--als-bg-alt);
+}
+
+/* hover halus */
+.dark [data-als] tbody tr:hover,
+[data-als][data-theme="mitrekadark"] tbody tr:hover,
+.dark table[data-als] tbody tr:hover,
+table[data-als][data-theme="mitrekadark"] tbody tr:hover {
+  background: color-mix(in oklch, var(--als-bg), var(--als-primary) 12%);
+}
+
+/* selected row */
+.dark [data-als] tr.is-selected,
+[data-als][data-theme="mitrekadark"] tr.is-selected,
+.dark table[data-als] tr.is-selected,
+table[data-als][data-theme="mitrekadark"] tr.is-selected {
+  background: rgba(96, 165, 250, 0.18);
+}
+
+/* input/select di dark */
+.dark [data-als] input[type="text"],
+.dark [data-als] input[type="search"],
+.dark [data-als] select,
+[data-als][data-theme="mitrekadark"] input[type="text"],
+[data-als][data-theme="mitrekadark"] input[type="search"],
+[data-als][data-theme="mitrekadark"] select,
+.dark table[data-als] input[type="text"],
+.dark table[data-als] input[type="search"],
+.dark table[data-als] select,
+table[data-als][data-theme="mitrekadark"] input[type="text"],
+table[data-als][data-theme="mitrekadark"] input[type="search"],
+table[data-als][data-theme="mitrekadark"] select {
+  background: #0b1220;
+  color: var(--als-text);
+  border-color: var(--als-border-strong);
+}
+.dark [data-als] input:focus,
+.dark [data-als] select:focus,
+[data-als][data-theme="mitrekadark"] input:focus,
+[data-als][data-theme="mitrekadark"] select:focus,
+.dark table[data-als] input:focus,
+.dark table[data-als] select:focus,
+table[data-als][data-theme="mitrekadark"] input:focus,
+table[data-als][data-theme="mitrekadark"] select:focus {
+  border-color: var(--als-primary);
+  box-shadow: 0 0 0 3px var(--als-focus);
+}
+
+/* footer & toolbar mengikuti warna teks/border dark */
+.dark .als-footer,
+[data-als][data-theme="mitrekadark"] ~ .als-footer,
+.dark .als-toolbar {
+  color: var(--als-text-dim);
+}
+
+/* scrollbar gelap */
+.dark [data-als]::-webkit-scrollbar-thumb,
+[data-als][data-theme="mitrekadark"]::-webkit-scrollbar-thumb,
+.dark table[data-als]::-webkit-scrollbar-thumb,
+table[data-als][data-theme="mitrekadark"]::-webkit-scrollbar-thumb {
+  background: #334155; /* slate-700 */
+  border-color: #0f172a; /* bg dark */
+}
+`;export{a as default};

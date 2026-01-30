@@ -1,0 +1,1 @@
+import{d as t,p as o,u as r,X as a,o as c}from"./index-DiwQE97j.js";const l=t({__name:"PageHeader",props:{title:{},description:{},category:{}},setup(e){return(i,n)=>(c(),o(r(a),{title:e.title,description:e.description,category:e.category},null,8,["title","description","category"]))}});export{l as _};
