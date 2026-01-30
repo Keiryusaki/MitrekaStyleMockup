@@ -5,6 +5,7 @@ on:
 
 permissions:
   contents: write
+  packages: read
 
 jobs:
   build:
@@ -16,7 +17,11 @@ jobs:
           node-version: "20"
           cache: "npm"
           cache-dependency-path: package-lock.json
+          registry-url: "https://npm.pkg.github.com"
+          scope: "@keiryusaki"
       - run: npm ci
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - run: npm run build
         env:
           VITE_DISCORD_WEBHOOK_URL: ${{ secrets.VITE_DISCORD_WEBHOOK_URL }}
