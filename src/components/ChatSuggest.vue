@@ -213,7 +213,7 @@ async function submitSaran() {
       const payload = {
          username: "Kotak Saran",
          embeds: [{
-            title: "Masukan / Pertanyaan Baru",
+            title: "📩 Masukan / Pertanyaan Baru",
             description: form.value.deskripsi,
             color: 0x00ff00,
             fields: [
