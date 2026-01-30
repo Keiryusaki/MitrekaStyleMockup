@@ -26,7 +26,9 @@
               <div class="text-[10px] text-neutral/70">Tim kami siap membantu</div>
             </div>
           </div>
-          <button class="btn btn-ghost btn-xs btn-circle" @click="open = false">âœ•</button>
+          <button class="btn btn-ghost btn-xs btn-circle" @click="open = false" aria-label="Tutup">
+            <Icon name="x" class="w-4 h-4" />
+          </button>
         </div>
         
       <div class="flex mt-3 p-1 bg-base-200 rounded-lg">
@@ -34,14 +36,20 @@
             @click="activeTab = 'saran'"
             :class="['flex-1 py-1.5 text-xs font-medium rounded-md transition-all', activeTab === 'saran' ? 'bg-white shadow-sm text-primary' : 'text-neutral/60 hover:text-neutral']"
           >
-            âœ‰ï¸ Kotak Saran
+            <span class="inline-flex items-center justify-center gap-1">
+              <Icon name="mail" class="w-3.5 h-3.5" />
+              Kotak Saran
+            </span>
           </button>
           <button
             v-if="liveChatEnabled"
             @click="activeTab = 'chat'"
             :class="['flex-1 py-1.5 text-xs font-medium rounded-md transition-all', activeTab === 'chat' ? 'bg-white shadow-sm text-primary' : 'text-neutral/60 hover:text-neutral']"
           >
-            ðŸ’¬ Live Chat
+            <span class="inline-flex items-center justify-center gap-1">
+              <Icon name="message-circle" class="w-3.5 h-3.5" />
+              Live Chat
+            </span>
           </button>
         </div>
       </div>
@@ -74,7 +82,10 @@
              <input type="file" accept="image/*" multiple @change="onPickFiles" class="file-input file-input-sm file-input-bordered w-full text-xs" />
              <div v-if="files.length" class="flex flex-wrap gap-1">
                 <span v-for="(f, i) in files" :key="i" class="badge badge-neutral badge-xs gap-1">
-                   {{ f.name.substring(0,10) }}... <button @click="removeFile(i)">Ã—</button>
+                   {{ f.name.substring(0,10) }}...
+                   <button @click="removeFile(i)" aria-label="Hapus file">
+                     <Icon name="x" class="w-3 h-3" />
+                   </button>
                 </span>
              </div>
              <p v-if="fileErr" class="text-xs text-error">{{ fileErr }}</p>
@@ -98,7 +109,9 @@
           
           <div v-if="!isChatActive" class="p-5 flex flex-col justify-center h-full space-y-4">
             <div class="text-center space-y-2 mb-4">
-              <div class="w-16 h-16 bg-primary/10 text-primary rounded-full flex items-center justify-center mx-auto text-3xl">ðŸ‘‹</div>
+              <div class="w-16 h-16 bg-primary/10 text-primary rounded-full flex items-center justify-center mx-auto">
+                <Icon name="message-circle" class="w-7 h-7" />
+              </div>
               <h3 class="font-bold">Mulai Percakapan</h3>
               <p class="text-xs text-gray-500">Admin kami akan membalas pesanmu secara langsung via Discord.</p>
             </div>
@@ -130,7 +143,9 @@
                   class="input input-sm input-bordered w-full" 
                   placeholder="Ketik pesan..." 
                />
-               <button @click="sendReply" class="btn btn-sm btn-square btn-primary">âž¤</button>
+               <button @click="sendReply" class="btn btn-sm btn-square btn-primary" aria-label="Kirim">
+                 <Icon name="chevron-right" class="w-4 h-4" />
+               </button>
             </div>
           </div>
         </div>
@@ -142,6 +157,7 @@
 
 <script setup>
 import { ref, computed, reactive, nextTick } from "vue";
+import { Icon } from "@/components/icons";
 
 /* =========================================
    GLOBAL & UI STATE
@@ -197,7 +213,7 @@ async function submitSaran() {
       const payload = {
          username: "Kotak Saran",
          embeds: [{
-            title: "ðŸ’¬ Masukan / Pertanyaan Baru",
+            title: "Masukan / Pertanyaan Baru",
             description: form.value.deskripsi,
             color: 0x00ff00,
             fields: [
@@ -253,7 +269,7 @@ function startChat() {
    socket.value.emit("join_session", newToken);
 
    // Kirim Pesan Pertama (Data Form)
-   const initialMsg = `**USER BARU**\nðŸ‘¤ ${chatForm.name} (${chatForm.email})\nðŸ“ ${chatForm.message}`;
+   const initialMsg = `**USER BARU**\nNama: ${chatForm.name} (${chatForm.email})\nPesan: ${chatForm.message}`;
    socket.value.emit("send_message", { token: newToken, message: initialMsg });
 
    // Update UI
