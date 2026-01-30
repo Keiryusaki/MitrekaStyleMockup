@@ -1,1 +1,0 @@
-import{d as e,p as n,q as o,u as c,W as r,o as l}from"./index-DiwQE97j.js";const u=e({__name:"Icon",props:{name:{},class:{default:"w-5 h-5"}},setup(a){const s=a;return(t,m)=>(l(),n(c(r),{name:s.name,class:o(s.class)},null,8,["name","class"]))}});export{u as _};

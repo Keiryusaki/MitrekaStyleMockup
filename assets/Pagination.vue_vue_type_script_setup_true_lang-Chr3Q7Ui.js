@@ -1,0 +1,1 @@
+import{d as p,p as t,u as g,V as r,o as i}from"./index-CTK3vSMT.js";const u=p({__name:"Pagination",props:{page:{},pages:{}},emits:["change"],setup(e,{emit:n}){const s=n;return(m,a)=>(i(),t(g(r),{page:e.page,pages:e.pages,onChange:a[0]||(a[0]=o=>s("change",o))},null,8,["page","pages"]))}});export{u as _};
