@@ -1,7 +1,7 @@
 // src/router/index.ts
 import {
   createRouter,
-  createWebHistory,
+  createWebHashHistory,
   type RouteRecordRaw,
 } from "vue-router";
 import Dashboard from "@/pages/Dashboard.vue";
@@ -218,7 +218,7 @@ const routes: RouteRecordRaw[] = [
 
 const router = createRouter({
   // penting: pakai base dari Vite, supaya path jadi /MitrekaStyleMockup/ di GH Pages
-  history: createWebHistory(import.meta.env.BASE_URL),
+  history: createWebHashHistory(import.meta.env.BASE_URL),
   routes,
   scrollBehavior(to, from, savedPosition) {
     // Kalo ada saved position (misal back button), pake itu
