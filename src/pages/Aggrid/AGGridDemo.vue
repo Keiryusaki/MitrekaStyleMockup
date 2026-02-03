@@ -89,12 +89,14 @@ const rowData: Row[] = Array.from({ length: 100 }, (_, i) => {
   const n = i + 1,
     nm = names[i % names.length],
     ch = String.fromCharCode(65 + (i % 26));
+  const longDesc =
+    "Ini deskripsi yang sengaja dipanjangin biar nge-wrap sampai dua baris di kolom Description, jadi ada tambahan kata-kata biar lebih panjang dan pasti turun ke baris berikutnya.";
   return {
     id: n,
     no: n,
     code: i % 2 === 0 ? ch : ch + ch,
     name: nm,
-    description: `${nm} description #${n}`,
+    description: i === 0 ? `${nm} — ${longDesc}` : `${nm} description #${n}`,
   };
 });
 
@@ -122,6 +124,9 @@ const columnDefs = [
     field: "description",
     headerName: "Description",
     filter: "agTextColumnFilter",
+    wrapText: true,
+    autoHeight: true,
+    cellStyle: { whiteSpace: "normal", lineHeight: "1.3" },
   },
   {
     headerName: "Actions",

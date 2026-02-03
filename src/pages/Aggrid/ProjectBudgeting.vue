@@ -137,8 +137,8 @@ const makeRows = (count = 12): BudgetRow[] => {
     "2025-Jasamarga - Konsultan TI",
     "2025-ASABRI - ASABRI Mobile",
     "2026-TES utk cek fitur",
-    "2026-KEMENLU - Paket Pekerjaan",
-    "2026-TELKOM - Revamp Platform",
+    "2026-KEMENLU - Paket Pekerjaan Integrasi Data dan Layanan Publik Digital",
+    "2026-TELKOM - Revamp Platform Customer Experience untuk Multi Channel Support",
   ];
 
   return Array.from({ length: count }, (_, i) => {
@@ -237,7 +237,14 @@ const columnDefs = [
     filter: "agNumberColumnFilter",
   },
   { field: "customer", headerName: "Customer", filter: "agTextColumnFilter" },
-  { field: "project", headerName: "Project", filter: "agTextColumnFilter" },
+  {
+    field: "project",
+    headerName: "Project",
+    filter: "agTextColumnFilter",
+    wrapText: true,
+    autoHeight: true,
+    cellStyle: { whiteSpace: "normal", lineHeight: "1.3" },
+  },
   {
     field: "nilai",
     headerName: "Nilai",
@@ -299,7 +306,14 @@ const timelineColumnDefs = [
     filter: "agNumberColumnFilter",
   },
   { field: "customer", headerName: "Customer", filter: "agTextColumnFilter" },
-  { field: "project", headerName: "Project", filter: "agTextColumnFilter" },
+  {
+    field: "project",
+    headerName: "Project",
+    filter: "agTextColumnFilter",
+    wrapText: true,
+    autoHeight: true,
+    cellStyle: { whiteSpace: "normal", lineHeight: "1.3" },
+  },
   {
     field: "nilai",
     headerName: "Nilai",
