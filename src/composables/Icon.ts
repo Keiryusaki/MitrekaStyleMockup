@@ -1,6 +1,5 @@
-import { Icon as BaseIcon } from "@keiryusaki/mitreka-ui/vue";
-import { iconRegistry, type IconName } from "@keiryusaki/mitreka-ui";
+import Icon from "@/components/icons/Icon.vue";
+import { iconRegistry, type IconName } from "@/components/icons/icons";
 
-export const Icon = BaseIcon;
-export { iconRegistry };
+export { Icon, iconRegistry };
 export type { IconName };
