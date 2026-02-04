@@ -451,7 +451,7 @@ const cashflowRowClassRules = {
           description="Revenue, budget plan, and cashflow by month"
         />
         <div class="flex items-center gap-2">
-          <button class="btn btn-ghost btn-sm" type="button">Kembali</button>
+          <button class="btn btn-outline btn-secondary btn-sm" type="button">Kembali</button>
           <button class="btn btn-success btn-sm" type="button">Reload</button>
         </div>
       </div>
