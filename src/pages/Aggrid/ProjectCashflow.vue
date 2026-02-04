@@ -1,8 +1,14 @@
 <script setup lang="ts">
-import { computed, onBeforeUnmount, onMounted, ref } from "vue";
+import { computed, onBeforeUnmount, onMounted, ref, nextTick } from "vue";
 import { AgGridVue } from "ag-grid-vue3";
 import PageHeader from "@/components/PageHeader.vue";
-import { createCompareRowClassRules } from "@/composables/useCompareRows";
+import { attachPinnedShadowsToElement } from "@/composables/useAgGridPinnedShadows";
+import {
+  createCompareRowClassRules,
+  createSpacerRow,
+  createSpacerRowClassRules,
+  createSpacerRowHeight,
+} from "@/composables/useCompareRows";
 import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-quartz.css";
 import "@/styles/aggrid-soft.css";
@@ -198,10 +204,7 @@ const revenueRowData = computed(() => [
     item: "Total",
     ...buildMonthFields("m", revenuePlanTotal.value),
   },
-  {
-    rowType: "spacer",
-    item: "",
-  },
+  createSpacerRow(),
   {
     rowType: "group",
     block: "realized",
@@ -228,10 +231,7 @@ const revenueRowData = computed(() => [
     item: "Total",
     ...buildMonthFields("m", revenueActualTotal.value),
   },
-  {
-    rowType: "spacer",
-    item: "",
-  },
+  createSpacerRow(),
   {
     rowType: "gap",
     item: "Gap Revenue",
@@ -264,8 +264,8 @@ const budgetRowData = computed(() => [
   })(),
 ]);
 
-const cashflowRowData = computed(() =>
-  cashflowRows.map((row) => {
+const cashflowRowData = computed(() => {
+  const rows = cashflowRows.map((row) => {
     const isRealized =
       row.label === "Realisasi/Bln" || row.label === "Acc.Realisasi";
     return {
@@ -276,8 +276,10 @@ const cashflowRowData = computed(() =>
       item: row.label,
       ...buildMonthFields("m", row.values),
     };
-  })
-);
+  });
+  rows.splice(2, 0, createSpacerRow());
+  return rows;
+});
 
 const numberFormatter = (p: any) => formatValue(p.value ?? 0);
 const negativeCellRules = {
@@ -383,8 +385,7 @@ const gridOptions = {
   animateRows: false,
   rowHeight: 26,
   headerHeight: 44,
-  getRowHeight: (params: any) =>
-    params?.data?.rowType === "spacer" ? 14 : 26,
+  getRowHeight: createSpacerRowHeight({ spacerHeight: 24 }),
 };
 const cashflowGridOptions = {
   ...gridOptions,
@@ -393,6 +394,10 @@ const cashflowGridOptions = {
 
 const isDark = ref(false);
 let htmlObs: MutationObserver | null = null;
+const pinnedShadowCleanups: Array<() => void> = [];
+const revenueGridWrap = ref<HTMLElement | null>(null);
+const budgetGridWrap = ref<HTMLElement | null>(null);
+const cashflowGridWrap = ref<HTMLElement | null>(null);
 
 const computeDark = () => {
   const html = document.documentElement;
@@ -411,7 +416,29 @@ onMounted(() => {
   });
 });
 
-onBeforeUnmount(() => htmlObs?.disconnect());
+onMounted(async () => {
+  await nextTick();
+  if (revenueGridWrap.value) {
+    pinnedShadowCleanups.push(
+      attachPinnedShadowsToElement(revenueGridWrap.value)
+    );
+  }
+  if (budgetGridWrap.value) {
+    pinnedShadowCleanups.push(
+      attachPinnedShadowsToElement(budgetGridWrap.value)
+    );
+  }
+  if (cashflowGridWrap.value) {
+    pinnedShadowCleanups.push(
+      attachPinnedShadowsToElement(cashflowGridWrap.value)
+    );
+  }
+});
+
+onBeforeUnmount(() => {
+  htmlObs?.disconnect();
+  pinnedShadowCleanups.splice(0).forEach((cleanup) => cleanup());
+});
 
 const themeClass = computed(() =>
   isDark.value ? "ag-theme-quartz-dark" : "ag-theme-quartz"
@@ -421,7 +448,7 @@ const baseRowClassRules = {
   "pcf-row-group": (p: any) => p.data?.rowType === "group",
   "pcf-row-total": (p: any) => p.data?.rowType === "total",
   "pcf-row-gap": (p: any) => p.data?.rowType === "gap",
-  "pcf-row-spacer": (p: any) => p.data?.rowType === "spacer",
+  ...createSpacerRowClassRules(),
 };
 const compareRowClassRules = createCompareRowClassRules({
   defaultTheme: "success",
@@ -531,7 +558,7 @@ const cashflowRowClassRules = {
 
       <section class="card p-4 space-y-3">
         <div class="pcf-section-title">Revenue</div>
-        <div class="pcf-grid">
+        <div class="pcf-grid" ref="revenueGridWrap">
           <AgGridVue
             :class="['agx', 'agx-compact', themeClass, 'w-full', 'h-full']"
             theme="legacy"
@@ -539,17 +566,17 @@ const cashflowRowClassRules = {
               '--ag-odd-row-background-color': isDark ? '#0d1a33' : '#F3F4F6',
             }"
             :rowData="revenueRowData"
-            :columnDefs="revenueColumnDefs"
-            :defaultColDef="defaultColDef"
-            :gridOptions="gridOptions"
-            :rowClassRules="revenueRowClassRules"
-          />
-        </div>
-      </section>
+          :columnDefs="revenueColumnDefs"
+          :defaultColDef="defaultColDef"
+          :gridOptions="gridOptions"
+          :rowClassRules="revenueRowClassRules"
+        />
+      </div>
+    </section>
 
       <section class="card p-4 space-y-3">
         <div class="pcf-section-title">Budget Plan</div>
-        <div class="pcf-grid">
+        <div class="pcf-grid" ref="budgetGridWrap">
           <AgGridVue
             :class="['agx', 'agx-compact', themeClass, 'w-full', 'h-full']"
             theme="legacy"
@@ -557,17 +584,17 @@ const cashflowRowClassRules = {
               '--ag-odd-row-background-color': isDark ? '#0d1a33' : '#F3F4F6',
             }"
             :rowData="budgetRowData"
-            :columnDefs="budgetColumnDefs"
-            :defaultColDef="defaultColDef"
-            :gridOptions="gridOptions"
-            :rowClassRules="baseRowClassRules"
-          />
-        </div>
-      </section>
+          :columnDefs="budgetColumnDefs"
+          :defaultColDef="defaultColDef"
+          :gridOptions="gridOptions"
+          :rowClassRules="baseRowClassRules"
+        />
+      </div>
+    </section>
 
       <section class="card p-4 space-y-3">
         <div class="pcf-section-title">Cashflow</div>
-        <div class="pcf-grid pcf-grid-auto">
+        <div class="pcf-grid pcf-grid-auto" ref="cashflowGridWrap">
           <AgGridVue
             :class="['agx', 'agx-compact', themeClass, 'w-full', 'h-full']"
             theme="legacy"
@@ -575,13 +602,13 @@ const cashflowRowClassRules = {
               '--ag-odd-row-background-color': isDark ? '#0d1a33' : '#F3F4F6',
             }"
             :rowData="cashflowRowData"
-            :columnDefs="cashflowColumnDefs"
-            :defaultColDef="defaultColDef"
-            :gridOptions="cashflowGridOptions"
-            :rowClassRules="cashflowRowClassRules"
-          />
-        </div>
-      </section>
+          :columnDefs="cashflowColumnDefs"
+          :defaultColDef="defaultColDef"
+          :gridOptions="cashflowGridOptions"
+          :rowClassRules="cashflowRowClassRules"
+        />
+      </div>
+    </section>
     </div>
   </div>
 </template>
@@ -622,11 +649,6 @@ const cashflowRowClassRules = {
     var(--color-primary),
     transparent 92%
   ) !important;
-}
-.pcf-grid :deep(.ag-row.pcf-row-spacer .ag-cell) {
-  background: transparent !important;
-  border-top-color: transparent !important;
-  border-bottom-color: transparent !important;
 }
 .pcf-grid :deep(.pcf-indent) {
   padding-left: 1.5rem;

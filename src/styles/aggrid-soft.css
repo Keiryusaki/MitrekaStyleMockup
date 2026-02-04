@@ -120,6 +120,19 @@
 .agx .ag-row.cmp-theme-neutral {
   --agx-compare-tone: var(--agx-compare-neutral);
 }
+.agx .cmp-row-spacer {
+  background: transparent !important;
+}
+.agx .cmp-row-spacer .ag-cell {
+  background: transparent !important;
+  background-image: none !important;
+  border-color: transparent !important;
+  color: transparent !important;
+  padding: 0 !important;
+}
+.agx .cmp-row-spacer .ag-cell .ag-cell-value {
+  display: none !important;
+}
 
 /* === Vertical dividers === */
 .agx
@@ -161,6 +174,80 @@
   )
   .ag-row {
   border-bottom: var(--ag-row-border-width) solid var(--ag-row-border-color);
+}
+
+/* === Pinned column shadows (hint scrollable columns) === */
+.agx.agx-shadow-right .ag-pinned-right-cols-container,
+.agx.agx-shadow-right .ag-pinned-right-header,
+.ag-root-wrapper.agx-shadow-right .ag-pinned-right-cols-container,
+.ag-root-wrapper.agx-shadow-right .ag-pinned-right-header {
+  box-shadow: -10px 0 12px -10px rgba(15, 23, 42, 0.45) inset;
+}
+.agx.agx-shadow-left .ag-pinned-left-cols-container,
+.agx.agx-shadow-left .ag-pinned-left-header,
+.ag-root-wrapper.agx-shadow-left .ag-pinned-left-cols-container,
+.ag-root-wrapper.agx-shadow-left .ag-pinned-left-header {
+  box-shadow: 10px 0 12px -10px rgba(15, 23, 42, 0.4) inset;
+}
+.dark .agx.agx-shadow-right .ag-pinned-right-cols-container,
+.dark .agx.agx-shadow-right .ag-pinned-right-header,
+.dark .ag-root-wrapper.agx-shadow-right .ag-pinned-right-cols-container,
+.dark .ag-root-wrapper.agx-shadow-right .ag-pinned-right-header {
+  box-shadow: -10px 0 14px -10px rgba(15, 23, 42, 0.7) inset;
+}
+.dark .agx.agx-shadow-left .ag-pinned-left-cols-container,
+.dark .agx.agx-shadow-left .ag-pinned-left-header,
+.dark .ag-root-wrapper.agx-shadow-left .ag-pinned-left-cols-container,
+.dark .ag-root-wrapper.agx-shadow-left .ag-pinned-left-header {
+  box-shadow: 10px 0 14px -10px rgba(15, 23, 42, 0.6) inset;
+}
+
+.agx-shadow-host {
+  position: relative;
+  overflow: hidden;
+}
+.agx-pinned-shadow {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 18px;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 120ms ease;
+  z-index: 4;
+}
+.agx-pinned-shadow.is-visible {
+  opacity: 1;
+}
+.agx-pinned-shadow-left {
+  left: var(--agx-pinned-left-width, 0px);
+  background: linear-gradient(
+    90deg,
+    rgba(15, 23, 42, 0.16),
+    rgba(15, 23, 42, 0)
+  );
+}
+.agx-pinned-shadow-right {
+  right: var(--agx-pinned-right-width, 0px);
+  background: linear-gradient(
+    270deg,
+    rgba(15, 23, 42, 0.18),
+    rgba(15, 23, 42, 0)
+  );
+}
+.dark .agx-pinned-shadow-left {
+  background: linear-gradient(
+    90deg,
+    rgba(15, 23, 42, 0.3),
+    rgba(15, 23, 42, 0)
+  );
+}
+.dark .agx-pinned-shadow-right {
+  background: linear-gradient(
+    270deg,
+    rgba(15, 23, 42, 0.34),
+    rgba(15, 23, 42, 0)
+  );
 }
 
 /* === Floating filter === */

@@ -1,10 +1,11 @@
 <!-- ProjectBudgeting.vue -->
 <script setup lang="ts">
-import { computed, onBeforeUnmount, onMounted, ref } from "vue";
+import { computed, onBeforeUnmount, onMounted, ref, nextTick } from "vue";
 import { AgGridVue } from "ag-grid-vue3";
 import SelectDropdown from "@/components/controls/SelectDropdown.vue";
 import PageHeader from "@/components/PageHeader.vue";
 import Tooltip from "@/components/Tooltip.vue";
+import { attachPinnedShadowsToElement } from "@/composables/useAgGridPinnedShadows";
 import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-quartz.css";
 import "@/styles/aggrid-soft.css";
@@ -35,6 +36,9 @@ type TimelineRow = {
 
 const isDark = ref(false);
 let htmlObs: MutationObserver | null = null;
+const pinnedShadowCleanups: Array<() => void> = [];
+const valueGridWrap = ref<HTMLElement | null>(null);
+const timelineGridWrap = ref<HTMLElement | null>(null);
 
 const computeDark = () => {
   const html = document.documentElement;
@@ -52,7 +56,10 @@ onMounted(() => {
     attributeFilter: ["class", "data-theme"],
   });
 });
-onBeforeUnmount(() => htmlObs?.disconnect());
+onBeforeUnmount(() => {
+  htmlObs?.disconnect();
+  pinnedShadowCleanups.splice(0).forEach((cleanup) => cleanup());
+});
 
 const density = ref<"compact" | "cozy" | "spacious">("compact");
 const striped = ref(true);
@@ -371,6 +378,20 @@ function onGridReady(params: any) {
   api.value.resetRowHeights();
 }
 
+onMounted(async () => {
+  await nextTick();
+  if (valueGridWrap.value) {
+    pinnedShadowCleanups.push(
+      attachPinnedShadowsToElement(valueGridWrap.value)
+    );
+  }
+  if (timelineGridWrap.value) {
+    pinnedShadowCleanups.push(
+      attachPinnedShadowsToElement(timelineGridWrap.value)
+    );
+  }
+});
+
 const reloadData = () => {
   rowData.value = makeRows(16);
 };
@@ -556,6 +577,7 @@ const reloadData = () => {
       </div>
 
       <div
+        ref="valueGridWrap"
         class="w-full"
         :style="{ minHeight: `${minGridHeight}px`, height: '70vh' }"
       >
@@ -638,6 +660,7 @@ const reloadData = () => {
       </div>
 
       <div
+        ref="timelineGridWrap"
         class="w-full"
         :style="{ minHeight: `${minGridHeight}px`, height: '70vh' }"
       >

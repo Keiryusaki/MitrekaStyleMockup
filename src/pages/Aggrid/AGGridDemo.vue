@@ -1,6 +1,6 @@
 <!-- AGGridDemo.vue (v2.6) — Fixed header height; density applies to body rows only -->
 <script setup lang="ts">
-import { ref, computed, watch, onMounted, onBeforeUnmount } from "vue";
+import { ref, computed, watch, onMounted, onBeforeUnmount, nextTick } from "vue";
 import { AgGridVue } from "ag-grid-vue3";
 import SelectDropdown from "@/components/controls/SelectDropdown.vue";
 import PageHeader from "@/components/PageHeader.vue";
@@ -9,7 +9,13 @@ import "ag-grid-community/styles/ag-theme-quartz.css";
 import "@/styles/aggrid-soft.css";
 import DevGuide from "./DevGuide.vue";
 import { iconRegistry } from "@/composables/Icon";
-import { createCompareRowClassRules } from "@/composables/useCompareRows";
+import { attachPinnedShadowsToElement } from "@/composables/useAgGridPinnedShadows";
+import {
+  createCompareRowClassRules,
+  createSpacerRow,
+  createSpacerRowClassRules,
+  createSpacerRowHeight,
+} from "@/composables/useCompareRows";
 
 /* -------------------------
    1) Dark/Light detector INLINE (khusus AG Grid)
@@ -202,6 +208,9 @@ const gridOptions: any = {
 
 /* Apply density → hanya rowHeight; header fixed */
 const api = ref<any>(null);
+const pinnedShadowCleanups: Array<() => void> = [];
+const mainGridWrap = ref<HTMLElement | null>(null);
+const compareGridWrap = ref<HTMLElement | null>(null);
 function applyDensityToApi() {
   if (!api.value) return;
   const rowH = rowHeightOf();
@@ -258,6 +267,7 @@ const compareRowData = [
     compareRole: "row",
     compareTheme: "info",
   },
+  createSpacerRow(),
   {
     item: "Realisasi/Bln",
     jan: 0,
@@ -320,14 +330,34 @@ const compareGridOptions = {
   headerHeight: 44,
   suppressHeaderMenuButton: true,
   domLayout: "autoHeight",
+  getRowHeight: createSpacerRowHeight({ spacerHeight: 24 }),
 };
 const compareRowClassRules = createCompareRowClassRules({
   defaultTheme: "success",
 });
+const compareSpacerRules = createSpacerRowClassRules();
 
 function onCompareGridReady(params: any) {
   params.api.sizeColumnsToFit();
 }
+
+onMounted(async () => {
+  await nextTick();
+  if (mainGridWrap.value) {
+    pinnedShadowCleanups.push(
+      attachPinnedShadowsToElement(mainGridWrap.value)
+    );
+  }
+  if (compareGridWrap.value) {
+    pinnedShadowCleanups.push(
+      attachPinnedShadowsToElement(compareGridWrap.value)
+    );
+  }
+});
+
+onBeforeUnmount(() => {
+  pinnedShadowCleanups.splice(0).forEach((cleanup) => cleanup());
+});
 </script>
 
 <template>
@@ -378,6 +408,7 @@ function onCompareGridReady(params: any) {
     </div>
 
     <div
+      ref="mainGridWrap"
       class="w-full"
       :style="{ minHeight: `${minGridHeight}px`, height: '80vh' }"
     >
@@ -402,7 +433,12 @@ function onCompareGridReady(params: any) {
 
     <section class="card p-4 space-y-3">
       <div class="text-sm font-semibold">Compare Rows (Visual)</div>
-      <div class="w-full">
+      <div class="text-xs opacity-70">
+        Tambahkan spacer dengan helper <code>createSpacerRow()</code>, aktifkan
+        class rules via <code>createSpacerRowClassRules()</code>, dan set tinggi
+        row dengan <code>createSpacerRowHeight()</code>.
+      </div>
+      <div class="w-full" ref="compareGridWrap">
         <AgGridVue
           :class="['agx', 'agx-compact', themeClass, 'w-full']"
           theme="legacy"
@@ -423,7 +459,7 @@ function onCompareGridReady(params: any) {
             suppressHeaderMenuButton: true,
           }"
           :gridOptions="compareGridOptions"
-          :rowClassRules="compareRowClassRules"
+          :rowClassRules="{ ...compareRowClassRules, ...compareSpacerRules }"
           @grid-ready="onCompareGridReady"
         />
       </div>

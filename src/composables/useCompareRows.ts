@@ -11,6 +11,17 @@ export type CompareRowClassOptions = {
   defaultTheme?: CompareTheme;
 };
 
+export type SpacerRowOptions = {
+  rowType?: string;
+  item?: string;
+};
+
+export type SpacerRowHeightOptions = {
+  spacerHeight?: number;
+  defaultHeight?: number;
+  rowType?: string;
+};
+
 export const createCompareRowClassRules = (
   options: CompareRowClassOptions = {}
 ) => {
@@ -34,3 +45,21 @@ export const createCompareRowClassRules = (
       !!p.data?.compareBlock && resolveTheme(p) === "neutral",
   };
 };
+
+export const createSpacerRow = (options: SpacerRowOptions = {}) => ({
+  rowType: options.rowType ?? "spacer",
+  item: options.item ?? "",
+});
+
+export const createSpacerRowClassRules = (rowType = "spacer") => ({
+  "cmp-row-spacer": (p: any) => p.data?.rowType === rowType,
+});
+
+export const createSpacerRowHeight =
+  (options: SpacerRowHeightOptions = {}) =>
+  (params: any) => {
+    const rowType = options.rowType ?? "spacer";
+    const defaultHeight = options.defaultHeight ?? 26;
+    const spacerHeight = options.spacerHeight ?? 24;
+    return params?.data?.rowType === rowType ? spacerHeight : defaultHeight;
+  };
