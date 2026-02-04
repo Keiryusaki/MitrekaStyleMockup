@@ -120,6 +120,10 @@
 .agx .ag-row.cmp-theme-neutral {
   --agx-compare-tone: var(--agx-compare-neutral);
 }
+.agx .ag-row.pcf-row-total .ag-cell,
+.agx .ag-row.cmp-role-total .ag-cell {
+  border-top: 2px solid var(--ag-row-border-color);
+}
 .agx .cmp-row-spacer {
   background: transparent !important;
 }
