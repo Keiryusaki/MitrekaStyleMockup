@@ -1,0 +1,248 @@
+/* =========================================
+   @mitreka/ui - Button Component
+   ========================================= */
+
+/* Button (base md) */
+.btn {
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  height: var(--size-field-md);
+  padding-inline: 1rem;
+  border: var(--border) solid transparent;
+  border-radius: var(--radius-field-md);
+  background: var(--color-base-200);
+  color: var(--color-base-content);
+  font-size: var(--font-size-md);
+  line-height: 1;
+  user-select: none;
+  cursor: pointer;
+  transition: background-color 0.15s, color 0.15s, border-color 0.15s,
+    box-shadow 0.15s, transform 0.02s;
+}
+.btn:active {
+  transform: translateY(0.5px);
+}
+.btn:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 3px color-mix(in oklch, var(--color-primary), white 70%);
+}
+.btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Button size variants */
+.btn-xs {
+  height: var(--size-field-xs);
+  border-radius: var(--radius-field-xs);
+  padding-inline: 0.625rem;
+  font-size: var(--font-size-xs);
+}
+.btn-sm {
+  height: var(--size-field-sm);
+  border-radius: var(--radius-field-sm);
+  padding-inline: 0.75rem;
+  font-size: var(--font-size-sm);
+}
+.btn-lg {
+  height: var(--size-field-lg);
+  border-radius: var(--radius-field-lg);
+  padding-inline: 1.125rem;
+  font-size: var(--font-size-lg);
+}
+.btn-xl {
+  height: var(--size-field-xl);
+  border-radius: var(--radius-field-xl);
+  padding-inline: 1.25rem;
+  font-size: var(--font-size-xl);
+}
+
+/* Button color variants (solid) */
+.btn-primary {
+  background: var(--color-primary);
+  color: var(--color-primary-content);
+  border-color: color-mix(in oklch, var(--color-primary), black 12%);
+}
+.btn-secondary {
+  background: var(--color-secondary);
+  color: var(--color-secondary-content);
+  border-color: color-mix(in oklch, var(--color-secondary), black 10%);
+}
+.btn-accent {
+  background: var(--color-accent);
+  color: var(--color-accent-content);
+  border-color: color-mix(in oklch, var(--color-accent), black 10%);
+}
+.btn-info {
+  background: var(--color-info);
+  color: var(--color-info-content);
+  border-color: color-mix(in oklch, var(--color-info), black 10%);
+}
+.btn-success {
+  background: var(--color-success);
+  color: var(--color-success-content);
+  border-color: color-mix(in oklch, var(--color-success), black 10%);
+}
+.btn-warning {
+  background: var(--color-warning);
+  color: var(--color-warning-content);
+  border-color: color-mix(in oklch, var(--color-warning), black 10%);
+}
+.btn-error {
+  background: var(--color-error);
+  color: var(--color-error-content);
+  border-color: color-mix(in oklch, var(--color-error), black 10%);
+}
+
+/* Hover states */
+.btn-primary:hover { background: color-mix(in oklch, var(--color-primary), black 15%); }
+.btn-secondary:hover { background: color-mix(in oklch, var(--color-secondary), black 15%); }
+.btn-accent:hover { background: color-mix(in oklch, var(--color-accent), black 15%); }
+.btn-info:hover { background: color-mix(in oklch, var(--color-info), black 15%); }
+.btn-success:hover { background: color-mix(in oklch, var(--color-success), black 15%); }
+.btn-warning:hover { background: color-mix(in oklch, var(--color-warning), black 15%); }
+.btn-error:hover { background: color-mix(in oklch, var(--color-error), black 15%); }
+
+/* Ghost (transparent) */
+.btn-ghost {
+  background: transparent;
+  color: var(--color-base-content);
+  border-color: transparent;
+}
+.btn-ghost:hover {
+  background: color-mix(in oklch, var(--color-base-200), transparent 40%);
+}
+
+/* Outline */
+.btn-outline {
+  background: transparent;
+  color: var(--color-base-content);
+  border-color: color-mix(in oklch, var(--color-base-300), var(--color-base-content) 28%);
+}
+.btn-outline:hover {
+  background: color-mix(in oklch, var(--color-base-200), transparent 40%);
+}
+.btn-outline-primary { color: var(--color-primary); border-color: var(--color-primary); }
+.btn-outline-secondary { 
+  color: var(--color-secondary-content); 
+  border-color: color-mix(in oklch, var(--color-secondary), black 10%); 
+}
+.btn-outline-accent { color: var(--color-accent); border-color: var(--color-accent); }
+.btn-outline-info { color: var(--color-info); border-color: var(--color-info); }
+.btn-outline-success { color: var(--color-success); border-color: var(--color-success); }
+.btn-outline-warning { color: var(--color-warning); border-color: var(--color-warning); }
+.btn-outline-error { color: var(--color-error); border-color: var(--color-error); }
+
+.btn-outline-primary:hover { background: color-mix(in oklch, var(--color-primary), white 88%); }
+.btn-outline-secondary:hover { 
+  background: color-mix(in oklch, var(--color-secondary), white 10%); 
+  border-color: color-mix(in oklch, var(--color-secondary), var(--color-base-content) 68%); 
+}
+.btn-outline-accent:hover { background: color-mix(in oklch, var(--color-accent), white 88%); }
+.btn-outline-info:hover { background: color-mix(in oklch, var(--color-info), white 88%); }
+.btn-outline-success:hover { background: color-mix(in oklch, var(--color-success), white 88%); }
+.btn-outline-warning:hover { background: color-mix(in oklch, var(--color-warning), white 88%); }
+.btn-outline-error:hover { background: color-mix(in oklch, var(--color-error), white 88%); }
+
+/* Soft (pastel) */
+.btn-soft-primary {
+  background: color-mix(in oklch, var(--color-primary), transparent 85%);
+  color: var(--color-primary);
+  border-color: color-mix(in oklch, var(--color-primary), transparent 70%);
+}
+.btn-soft-secondary {
+  background: color-mix(in oklch, var(--color-secondary), transparent 85%);
+  color: var(--color-secondary);
+  border-color: color-mix(in oklch, var(--color-secondary), transparent 70%);
+}
+.btn-soft-accent {
+  background: color-mix(in oklch, var(--color-accent), transparent 85%);
+  color: var(--color-accent);
+  border-color: color-mix(in oklch, var(--color-accent), transparent 70%);
+}
+.btn-soft-info {
+  background: color-mix(in oklch, var(--color-info), transparent 85%);
+  color: var(--color-info);
+  border-color: color-mix(in oklch, var(--color-info), transparent 70%);
+}
+.btn-soft-success {
+  background: color-mix(in oklch, var(--color-success), transparent 85%);
+  color: var(--color-success);
+  border-color: color-mix(in oklch, var(--color-success), transparent 70%);
+}
+.btn-soft-warning {
+  background: color-mix(in oklch, var(--color-warning), transparent 85%);
+  color: var(--color-warning);
+  border-color: color-mix(in oklch, var(--color-warning), transparent 70%);
+}
+.btn-soft-error {
+  background: color-mix(in oklch, var(--color-error), transparent 85%);
+  color: var(--color-error);
+  border-color: color-mix(in oklch, var(--color-error), transparent 70%);
+}
+
+.btn-soft-primary:hover { background: color-mix(in oklch, var(--color-primary), white 90%); }
+.btn-soft-secondary:hover { background: color-mix(in oklch, var(--color-secondary), white 90%); }
+.btn-soft-accent:hover { background: color-mix(in oklch, var(--color-accent), white 90%); }
+.btn-soft-info:hover { background: color-mix(in oklch, var(--color-info), white 90%); }
+.btn-soft-success:hover { background: color-mix(in oklch, var(--color-success), white 90%); }
+.btn-soft-warning:hover { background: color-mix(in oklch, var(--color-warning), white 90%); }
+.btn-soft-error:hover { background: color-mix(in oklch, var(--color-error), white 90%); }
+
+/* Icon Button */
+.icon-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0;
+  width: calc(var(--size-field-md) - 0.5rem);
+  height: calc(var(--size-field-md) - 0.5rem);
+  border: var(--border) solid var(--color-base-300);
+  border-radius: var(--radius-field-md);
+  background: transparent;
+  color: var(--color-base-content);
+  line-height: 1;
+  user-select: none;
+  cursor: pointer;
+  transition: background-color 0.15s, color 0.15s, border-color 0.15s,
+    box-shadow 0.15s, transform 0.02s;
+}
+.icon-btn:active { transform: translateY(0.5px); }
+.icon-btn:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 3px color-mix(in oklch, var(--color-primary), white 78%);
+}
+.icon-btn:disabled { opacity: 0.6; cursor: not-allowed; }
+.icon-btn:hover { background: color-mix(in oklch, var(--color-base-200), transparent 60%); }
+
+/* Icon Button Sizes */
+.icon-btn-xs { width: calc(var(--size-field-xs) - 0.35rem); height: calc(var(--size-field-xs) - 0.35rem); border-radius: var(--radius-field-xs); font-size: var(--font-size-xs); }
+.icon-btn-sm { width: calc(var(--size-field-sm) - 0.4rem); height: calc(var(--size-field-sm) - 0.4rem); border-radius: var(--radius-field-sm); font-size: var(--font-size-sm); }
+.icon-btn-lg { width: calc(var(--size-field-lg) - 0.6rem); height: calc(var(--size-field-lg) - 0.6rem); border-radius: var(--radius-field-lg); font-size: var(--font-size-lg); }
+.icon-btn-xl { width: calc(var(--size-field-xl) - 0.7rem); height: calc(var(--size-field-xl) - 0.7rem); border-radius: var(--radius-field-xl); font-size: var(--font-size-xl); }
+.icon-btn-round { border-radius: 9999px; }
+
+/* Icon Button Color Variants */
+.icon-btn-outline-primary { border-color: var(--color-primary); color: var(--color-primary); }
+.icon-btn-outline-primary:hover { background: color-mix(in oklch, var(--color-primary), white 88%); }
+.icon-btn-outline-secondary { 
+  border-color: color-mix(in oklch, var(--color-secondary), var(--color-base-content) 50%); 
+  color: color-mix(in oklch, var(--color-secondary-content), var(--color-base-content) 55%); 
+}
+.icon-btn-outline-secondary:hover { 
+  background: color-mix(in oklch, var(--color-secondary), white 10%); 
+  border-color: color-mix(in oklch, var(--color-secondary), var(--color-base-content) 68%); 
+}
+.icon-btn-outline-accent { border-color: var(--color-accent); color: var(--color-accent); }
+.icon-btn-outline-accent:hover { background: color-mix(in oklch, var(--color-accent), white 88%); }
+.icon-btn-outline-info { border-color: var(--color-info); color: var(--color-info); }
+.icon-btn-outline-info:hover { background: color-mix(in oklch, var(--color-info), white 88%); }
+.icon-btn-outline-success { border-color: var(--color-success); color: var(--color-success); }
+.icon-btn-outline-success:hover { background: color-mix(in oklch, var(--color-success), white 88%); }
+.icon-btn-outline-warning { border-color: var(--color-warning); color: var(--color-warning); }
+.icon-btn-outline-warning:hover { background: color-mix(in oklch, var(--color-warning), white 88%); }
+.icon-btn-outline-error { border-color: var(--color-error); color: var(--color-error); }
+.icon-btn-outline-error:hover { background: color-mix(in oklch, var(--color-error), white 88%); }

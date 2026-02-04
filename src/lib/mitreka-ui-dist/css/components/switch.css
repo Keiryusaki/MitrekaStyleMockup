@@ -1,0 +1,107 @@
+/* =========================================
+   @mitreka/ui - Switch, Checkbox, Radio
+   ========================================= */
+
+/* Switch base */
+.switch {
+  appearance: none;
+  cursor: pointer;
+  position: relative;
+  display: inline-block;
+  width: calc(var(--size-field-md) * 1.5);
+  height: calc(var(--size-field-md) * 0.8);
+  background: var(--color-base-300);
+  border-radius: calc(var(--size-field-md) / 2);
+  border: var(--border) solid transparent;
+  transition: background-color 0.15s;
+}
+.switch::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 0.15rem;
+  transform: translateY(-50%);
+  width: calc(var(--size-field-md) - 0.7rem);
+  height: calc(var(--size-field-md) - 0.7rem);
+  border-radius: 999px;
+  background: var(--color-base-100);
+  box-shadow: 0 1px 2px rgb(0 0 0 / 0.2);
+  transition: left 0.15s, background-color 0.15s;
+}
+.switch:checked {
+  background: color-mix(in oklch, var(--color-primary), transparent 30%);
+}
+.switch:checked::after {
+  left: calc(100% - (var(--size-field-md) - 0.55rem));
+  background: var(--color-primary);
+}
+
+/* Switch sizes */
+.switch-xs {
+  height: calc(var(--size-field-xs) * 0.8);
+  width: calc(var(--size-field-xs) * 1.5);
+  border-radius: calc(var(--size-field-xs) / 2);
+}
+.switch-xs::after { width: calc(var(--size-field-xs) - 0.7rem); height: calc(var(--size-field-xs) - 0.7rem); }
+.switch-xs:checked::after { left: calc(100% - (var(--size-field-xs) - 0.55rem)); }
+
+.switch-sm {
+  height: calc(var(--size-field-sm) * 0.8);
+  width: calc(var(--size-field-sm) * 1.5);
+  border-radius: calc(var(--size-field-sm) / 2);
+}
+.switch-sm::after { width: calc(var(--size-field-sm) - 0.7rem); height: calc(var(--size-field-sm) - 0.7rem); }
+.switch-sm:checked::after { left: calc(100% - (var(--size-field-sm) - 0.55rem)); }
+
+.switch-lg {
+  height: calc(var(--size-field-lg) * 0.8);
+  width: calc(var(--size-field-lg) * 1.5);
+  border-radius: calc(var(--size-field-lg) / 2);
+}
+.switch-lg::after { width: calc(var(--size-field-lg) - 0.7rem); height: calc(var(--size-field-lg) - 0.7rem); }
+.switch-lg:checked::after { left: calc(100% - (var(--size-field-lg) - 0.55rem)); }
+
+.switch-xl {
+  height: calc(var(--size-field-xl) * 0.8);
+  width: calc(var(--size-field-xl) * 1.5);
+  border-radius: calc(var(--size-field-xl) / 2);
+}
+.switch-xl::after { width: calc(var(--size-field-xl) - 0.7rem); height: calc(var(--size-field-xl) - 0.7rem); }
+.switch-xl:checked::after { left: calc(100% - (var(--size-field-xl) - 0.55rem)); }
+
+/* Switch color variants */
+.switch-primary:checked { background: color-mix(in oklch, var(--color-primary), transparent 30%); }
+.switch-primary:checked::after { background: var(--color-primary); }
+.switch-secondary:checked { background: color-mix(in oklch, var(--color-secondary), transparent 30%); }
+.switch-secondary:checked::after { background: var(--color-secondary); }
+.switch-accent:checked { background: color-mix(in oklch, var(--color-accent), transparent 30%); }
+.switch-accent:checked::after { background: var(--color-accent); }
+.switch-info:checked { background: color-mix(in oklch, var(--color-info), transparent 30%); }
+.switch-info:checked::after { background: var(--color-info); }
+.switch-success:checked { background: color-mix(in oklch, var(--color-success), transparent 30%); }
+.switch-success:checked::after { background: var(--color-success); }
+.switch-warning:checked { background: color-mix(in oklch, var(--color-warning), transparent 30%); }
+.switch-warning:checked::after { background: var(--color-warning); }
+.switch-error:checked { background: color-mix(in oklch, var(--color-error), transparent 30%); }
+.switch-error:checked::after { background: var(--color-error); }
+
+/* Checkbox & Radio */
+.checkbox, .radio {
+  accent-color: var(--color-primary);
+  width: 1.15em;
+  height: 1.15em;
+  cursor: pointer;
+}
+.checkbox-xs, .radio-xs { width: 0.9em; height: 0.9em; }
+.checkbox-sm, .radio-sm { width: 1em; height: 1em; }
+.checkbox-lg, .radio-lg { width: 1.3em; height: 1.3em; }
+.checkbox-xl, .radio-xl { width: 1.45em; height: 1.45em; }
+
+/* Checkbox & Radio colors */
+.checkbox-primary, .radio-primary { accent-color: var(--color-primary); }
+.checkbox-secondary, .radio-secondary { accent-color: var(--color-secondary); }
+.checkbox-accent, .radio-accent { accent-color: var(--color-accent); }
+.checkbox-info, .radio-info { accent-color: var(--color-info); }
+.checkbox-success, .radio-success { accent-color: var(--color-success); }
+.checkbox-warning, .radio-warning { accent-color: var(--color-warning); }
+.checkbox-error, .radio-error { accent-color: var(--color-error); }

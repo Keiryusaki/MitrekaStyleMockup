@@ -1,0 +1,55 @@
+/* =========================================
+   @mitreka/ui - Alert Component
+   ========================================= */
+
+.alert {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 0.75rem;
+  align-items: start;
+  padding: 0.875rem 1rem;
+  border-radius: var(--radius-box);
+  border: var(--border) solid var(--color-base-300);
+  background: var(--color-base-100);
+  color: var(--color-base-content);
+}
+.alert-title {
+  font-weight: 600;
+  margin-bottom: 0.25rem;
+}
+.alert-desc {
+  opacity: 0.9;
+}
+
+/* Alert color variants */
+.alert-primary {
+  border-color: color-mix(in oklch, var(--color-primary), transparent 80%);
+  background: color-mix(in oklch, var(--color-primary), transparent 92%);
+}
+.alert-secondary {
+  border-color: color-mix(in oklch, var(--color-secondary), transparent 80%);
+  background: color-mix(in oklch, var(--color-secondary), transparent 92%);
+}
+.alert-accent {
+  border-color: color-mix(in oklch, var(--color-accent), transparent 80%);
+  background: color-mix(in oklch, var(--color-accent), transparent 92%);
+}
+.alert-info { background: color-mix(in oklch, var(--color-info), transparent 90%); color: var(--color-info); border: 1px solid color-mix(in oklch, var(--color-info), transparent 80%); }
+.alert-success { background: color-mix(in oklch, var(--color-success), transparent 90%); color: var(--color-success); border: 1px solid color-mix(in oklch, var(--color-success), transparent 80%); }
+.alert-warning { background: color-mix(in oklch, var(--color-warning), transparent 90%); color: var(--color-warning); border: 1px solid color-mix(in oklch, var(--color-warning), transparent 80%); }
+.alert-error { background: color-mix(in oklch, var(--color-error), transparent 90%); color: var(--color-error); border: 1px solid color-mix(in oklch, var(--color-error), transparent 80%); }
+
+/* Alert outline */
+.alert-outline { background: transparent; }
+.alert-outline.alert-primary { border-color: var(--color-primary); }
+.alert-outline.alert-secondary { border-color: var(--color-secondary); }
+.alert-outline.alert-accent { border-color: var(--color-accent); }
+.alert-outline.alert-info { background: color-mix(in oklch, var(--color-info), transparent 90%); color: var(--color-info); border: 1px solid color-mix(in oklch, var(--color-info), transparent 80%); }
+.alert-outline.alert-success { background: color-mix(in oklch, var(--color-success), transparent 90%); color: var(--color-success); border: 1px solid color-mix(in oklch, var(--color-success), transparent 80%); }
+.alert-outline.alert-warning { background: color-mix(in oklch, var(--color-warning), transparent 90%); color: var(--color-warning); border: 1px solid color-mix(in oklch, var(--color-warning), transparent 80%); }
+.alert-outline.alert-error { background: color-mix(in oklch, var(--color-error), transparent 90%); color: var(--color-error); border: 1px solid color-mix(in oklch, var(--color-error), transparent 80%); }
+
+
+/* Banner */
+.banner { position: relative; padding: 0.75rem 3rem; text-align: center; }
+.banner-info { background: var(--color-primary); color: white; }

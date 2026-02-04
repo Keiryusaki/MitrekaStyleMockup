@@ -1,0 +1,110 @@
+/* =========================================
+   @mitreka/ui - Select Component
+   ========================================= */
+
+:root {
+  --select-caret-svg: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><polyline points='6 9 12 15 18 9'/></svg>");
+}
+
+.select {
+  appearance: none;
+  -moz-appearance: none;
+  width: auto;
+  height: var(--size-field-md);
+  border: var(--border) solid var(--color-base-300);
+  border-radius: var(--radius-field-md);
+  background-color: var(--color-base-100);
+  color: var(--color-base-content);
+  padding-inline: 0.75rem 2rem;
+  font-size: var(--font-size-md);
+  line-height: 1;
+  cursor: pointer;
+  background-image: var(--select-caret-svg);
+  background-repeat: no-repeat;
+  background-position: right 0.65rem center;
+  background-size: 1em 1em;
+}
+
+/* Select sizes */
+.select-xs {
+  height: var(--size-field-xs);
+  border-radius: var(--radius-field-xs);
+  font-size: var(--font-size-xs);
+  padding-inline: 0.625rem 1.75rem;
+  background-position: right 0.6rem center;
+}
+.select-sm {
+  height: var(--size-field-sm);
+  border-radius: var(--radius-field-sm);
+  font-size: var(--font-size-sm);
+  padding-inline: 0.675rem 1.9rem;
+  background-position: right 0.625rem center;
+}
+.select-lg {
+  height: var(--size-field-lg);
+  border-radius: var(--radius-field-lg);
+  font-size: var(--font-size-lg);
+  padding-inline: 0.875rem 2.25rem;
+  background-position: right 0.7rem center;
+}
+.select-xl {
+  height: var(--size-field-xl);
+  border-radius: var(--radius-field-xl);
+  font-size: var(--font-size-xl);
+  padding-inline: 1rem 2.5rem;
+  background-position: right 0.8rem center;
+}
+
+/* Select color variants */
+.select-primary, .select-outline.select-primary { --select-color: var(--color-primary); }
+.select-secondary, .select-outline.select-secondary { --select-color: var(--color-secondary); }
+.select-accent, .select-outline.select-accent { --select-color: var(--color-accent); }
+.select-info, .select-outline.select-info { --select-color: var(--color-info); }
+.select-success, .select-outline.select-success { --select-color: var(--color-success); }
+.select-warning, .select-outline.select-warning { --select-color: var(--color-warning); }
+.select-error, .select-outline.select-error { --select-color: var(--color-error); }
+
+/* Solid */
+.select:not(.select-outline)[class*="select-"] {
+  background-color: var(--select-color, var(--color-base-100));
+  border-color: var(--select-color, var(--color-base-300));
+}
+.select:not(.select-outline)[class*="select-"]:hover {
+  background-color: color-mix(in oklch, var(--select-color, var(--color-base-100)), black 6%);
+  border-color: color-mix(in oklch, var(--select-color, var(--color-base-300)), black 10%);
+}
+.select:not(.select-outline)[class*="select-"]:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px color-mix(in oklch, var(--select-color, var(--color-primary)), white 78%);
+  border-color: var(--select-color, var(--color-base-400));
+}
+.select:not(.select-outline).select-primary { color: var(--color-primary-content); }
+.select:not(.select-outline).select-secondary { color: var(--color-secondary-content); }
+.select:not(.select-outline).select-accent { color: var(--color-accent-content); }
+.select:not(.select-outline).select-info { color: var(--color-info-content); }
+.select:not(.select-outline).select-success { color: var(--color-success-content); }
+.select:not(.select-outline).select-warning { color: var(--color-warning-content); }
+.select:not(.select-outline).select-error { color: var(--color-error-content); }
+
+/* Outline */
+.select.select-outline {
+  background-color: transparent;
+  border-width: 1px;
+  border-style: solid;
+  border-color: color-mix(in oklch, var(--color-base-300), var(--color-base-content) 28%);
+  color: var(--color-base-content);
+}
+.select.select-outline[class*="select-"] {
+  border-color: var(--select-color);
+  color: var(--select-color);
+}
+.select.select-outline.select-secondary { color: var(--color-base-content); }
+.select.select-outline:hover {
+  background-color: color-mix(in oklch, var(--color-base-200), transparent 40%);
+}
+.select.select-outline:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px color-mix(in oklch, var(--select-color, var(--color-base-content)), white 90%);
+}
+
+select.select::-ms-expand { display: none; }

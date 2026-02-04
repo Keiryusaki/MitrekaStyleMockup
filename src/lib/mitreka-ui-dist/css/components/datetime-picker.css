@@ -1,0 +1,30 @@
+@import "flatpickr/dist/flatpickr.css";
+@import "flatpickr/dist/plugins/monthSelect/style.css";
+
+.flatpickr-calendar {
+  z-index: 60;
+}
+
+.flatpickr-year-only {
+  width: 220px;
+}
+.flatpickr-year-only .flatpickr-monthDropdown-months,
+.flatpickr-year-only .flatpickr-current-month .cur-month,
+.flatpickr-year-only .flatpickr-days,
+.flatpickr-year-only .flatpickr-weekdays,
+.flatpickr-year-only .flatpickr-day {
+  display: none !important;
+}
+.flatpickr-year-only .flatpickr-current-month {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+.flatpickr-year-only .numInputWrapper {
+  margin-left: 0;
+}
+.flatpickr-year-only .numInputWrapper input {
+  font-size: 18px;
+  font-weight: 600;
+  text-align: center;
+}

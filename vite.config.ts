@@ -9,11 +9,11 @@ export default defineConfig({
       "@": path.resolve(__dirname, "./src"),
       "@keiryusaki/mitreka-ui/vue": path.resolve(
         __dirname,
-        "./src/lib/mitreka-ui/vue/index.ts"
+        "./src/lib/mitreka-ui-dist/vue/index.js"
       ),
       "@keiryusaki/mitreka-ui/composables": path.resolve(
         __dirname,
-        "./src/composables/mitreka-ui.ts"
+        "./src/lib/mitreka-ui-dist/composables/index.js"
       ),
     },
     dedupe: ["ag-grid-community", "ag-grid-vue3"],
