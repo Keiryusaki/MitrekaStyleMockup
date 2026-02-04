@@ -31,6 +31,7 @@ const attachPinnedShadowsToElement = (
     const hasPinnedRight = !!pinnedRightEl;
 
     const shadowHost =
+      (rootEl.querySelector(".ag-center-cols-viewport") as HTMLElement | null) ??
       (rootEl.querySelector(".ag-body-viewport") as HTMLElement | null) ??
       rootWrapper ??
       host;
