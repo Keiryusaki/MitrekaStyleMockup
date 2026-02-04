@@ -16,6 +16,7 @@
 @import './components/table.css';
 @import './components/collapse.css';
 @import './components/accordion.css';
+
 @import './components/tabs.css';
 @import './components/progress.css';
 @import './components/timeline.css';
@@ -25,6 +26,7 @@
 @import './components/tooltip.css';
 @import './components/pagination.css';
 @import './components/avatar.css';
+@import './components/datetime-picker.css';
 @import './components/breadcrumbs.css';
 @import './components/stat-card.css';
 @import './components/page-header.css';

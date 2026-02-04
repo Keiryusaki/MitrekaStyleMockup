@@ -1,5 +1,21 @@
 [
   {
+    "version": "2.2.4",
+    "date": "2026-02-04",
+    "label": "Patch",
+    "items": [
+      {
+        "type": "Changed",
+        "text": "Sync CSS mitreka-ui v2.2.4 (base, components, plugins)"
+      },
+      {
+        "type": "Added",
+        "text": "AG Grid compare rows helper + theme overlay via mitreka-ui"
+      }
+    ],
+    "assets": []
+  },
+  {
     "version": "2.2.2",
     "date": "2026-01-27",
     "label": "Patch",

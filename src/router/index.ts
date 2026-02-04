@@ -31,6 +31,11 @@ const routes: RouteRecordRaw[] = [
     meta: { hideBreadcrumbs: true },
   },
   {
+    path: "/project-cashflow",
+    component: () => import("@/pages/Aggrid/ProjectCashflow.vue"),
+    meta: { hideBreadcrumbs: true },
+  },
+  {
     path: "/button",
     component: () => import("@/pages/Buttons/Buttons.vue"),
   },

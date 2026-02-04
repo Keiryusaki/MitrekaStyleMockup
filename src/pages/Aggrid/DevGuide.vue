@@ -116,6 +116,28 @@ ModuleRegistry.registerModules([AllCommunityModule])</code></pre>
         </li>
 
         <li>
+          <h4 class="font-semibold">Compare Rows (Perbandingan)</h4>
+          <p class="text-sm opacity-80">
+            Tambahkan metadata <code>compareBlock</code> + <code>compareTheme</code>
+            pada row, lalu pakai helper <code>createCompareRowClassRules</code>.
+          </p>
+          <pre v-pre class="code"><code>import { createCompareRowClassRules } from '@keiryusaki/mitreka-ui/composables'
+
+const rowClassRules = {
+  ...baseRowClassRules,
+  ...createCompareRowClassRules({ defaultTheme: 'success' }),
+}
+
+// Contoh row
+{
+  item: 'Realisasi/Bln',
+  compareBlock: 'realized',
+  compareRole: 'row',
+  compareTheme: 'success',
+}</code></pre>
+        </li>
+
+        <li>
           <h4 class="font-semibold">Quick Filter &amp; Export</h4>
           <pre
             v-pre

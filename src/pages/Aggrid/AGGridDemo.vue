@@ -9,6 +9,7 @@ import "ag-grid-community/styles/ag-theme-quartz.css";
 import "@/styles/aggrid-soft.css";
 import DevGuide from "./DevGuide.vue";
 import { iconRegistry } from "@/composables/Icon";
+import { createCompareRowClassRules } from "@keiryusaki/mitreka-ui/composables";
 
 /* -------------------------
    1) Dark/Light detector INLINE (khusus AG Grid)
@@ -233,6 +234,100 @@ watch(density, () => {
 watch(search, (value) => {
   api.value?.setGridOption("quickFilterText", value);
 });
+
+/* -------------------------
+   5) Compare Rows demo (visual)
+--------------------------*/
+const fmt = new Intl.NumberFormat("id-ID");
+const compareRowData = [
+  {
+    item: "Plan/Bln",
+    jan: -619978400,
+    feb: 194694000,
+    mar: 0,
+    compareBlock: "plan",
+    compareRole: "row",
+    compareTheme: "info",
+  },
+  {
+    item: "Acc.Plan",
+    jan: -619978400,
+    feb: -425284400,
+    mar: -425284400,
+    compareBlock: "plan",
+    compareRole: "row",
+    compareTheme: "info",
+  },
+  {
+    item: "Realisasi/Bln",
+    jan: 0,
+    feb: 0,
+    mar: 0,
+    compareBlock: "realized",
+    compareRole: "row",
+    compareTheme: "success",
+  },
+  {
+    item: "Acc.Realisasi",
+    jan: 0,
+    feb: 0,
+    mar: 0,
+    compareBlock: "realized",
+    compareRole: "row",
+    compareTheme: "success",
+  },
+];
+
+const compareColumnDefs = [
+  {
+    field: "item",
+    headerName: "Item",
+    pinned: "left",
+    lockPinned: true,
+    width: 180,
+  },
+  {
+    headerName: "2026",
+    children: [
+      {
+        field: "jan",
+        headerName: "Jan",
+        valueFormatter: (p: any) => fmt.format(p.value ?? 0),
+        cellClass: "ag-right-aligned-cell",
+        width: 120,
+      },
+      {
+        field: "feb",
+        headerName: "Feb",
+        valueFormatter: (p: any) => fmt.format(p.value ?? 0),
+        cellClass: "ag-right-aligned-cell",
+        width: 120,
+      },
+      {
+        field: "mar",
+        headerName: "Mar",
+        valueFormatter: (p: any) => fmt.format(p.value ?? 0),
+        cellClass: "ag-right-aligned-cell",
+        width: 120,
+      },
+    ],
+  },
+];
+
+const compareGridOptions = {
+  animateRows: false,
+  rowHeight: 26,
+  headerHeight: 44,
+  suppressHeaderMenuButton: true,
+  domLayout: "autoHeight",
+};
+const compareRowClassRules = createCompareRowClassRules({
+  defaultTheme: "success",
+});
+
+function onCompareGridReady(params: any) {
+  params.api.sizeColumnsToFit();
+}
 </script>
 
 <template>
@@ -304,6 +399,35 @@ watch(search, (value) => {
         @grid-ready="onGridReady"
       />
     </div>
+
+    <section class="card p-4 space-y-3">
+      <div class="text-sm font-semibold">Compare Rows (Visual)</div>
+      <div class="w-full">
+        <AgGridVue
+          :class="['agx', 'agx-compact', themeClass, 'w-full']"
+          theme="legacy"
+          :style="{
+            '--ag-odd-row-background-color': striped
+              ? isDark
+                ? '#0d1a33'
+                : '#F3F4F6'
+              : 'transparent',
+          }"
+          :rowData="compareRowData"
+          :columnDefs="compareColumnDefs"
+          :defaultColDef="{
+            resizable: true,
+            sortable: false,
+            filter: false,
+            floatingFilter: false,
+            suppressHeaderMenuButton: true,
+          }"
+          :gridOptions="compareGridOptions"
+          :rowClassRules="compareRowClassRules"
+          @grid-ready="onCompareGridReady"
+        />
+      </div>
+    </section>
   </div>
   <DevGuide />
 </template>

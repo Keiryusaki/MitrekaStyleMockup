@@ -1,7 +1,31 @@
-Kalau sudah oke, next kita bisa bikin:
+SOP Sync mitreka-ui <-> MitrekaStyleMockup (lokal saja)
 
-halaman Sign in / Forgot / Reset,
+Tujuan:
+- Update komponen/CSS di mitreka-ui dan memastikan mockup ikut sinkron.
+- Catatan ini untuk internal, bukan untuk developer.
 
-Role & Permission matrix,
+Checklist:
+1) Update mitreka-ui
+   - Edit di: mitreka-ui/src
+   - Bump versi (mitreka-ui/package.json)
+   - Build: npm run build (di repo mitreka-ui)
 
-atau DataTable server-side stub.
+2) Sync ke Mockup
+   - Copy mitreka-ui/dist/css -> MitrekaStyleMockup/src/lib/mitreka-ui
+   - Update versi app: MitrekaStyleMockup/package.json
+   - Update changelog halaman jika rilisnya memang mau diumumkan
+
+3) Dependency mode
+   - Belum publish: gunakan "file:../mitreka-ui" di MitrekaStyleMockup/package.json
+   - Sudah publish: ganti ke versi semver dan npm install
+
+Catatan:
+- Untuk pengingat internal, cukup baca halaman Changelog jika butuh konteks rilis.
+- Tambah entry changelog hanya saat memang mau tampil di halaman changelog (publik).
+
+Checklist ringkas (5 langkah):
+1) Update `mitreka-ui/src` + bump version
+2) `npm run build` di repo mitreka-ui
+3) Copy `dist/css` -> `MitrekaStyleMockup/src/lib/mitreka-ui`
+4) Update versi di `MitrekaStyleMockup/package.json`
+5) Jika sudah publish: ganti dependency `file:` ke semver + `npm install`

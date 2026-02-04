@@ -18,5 +18,6 @@ export const menu: MenuItem[] = [
   },
   { key: 'companies', label: 'Companies', icon: 'ri-building-4-line', to: '/companies' },
   { key: 'ag-grid', label: 'AG Grid', icon: 'ri-clipboard-line', to: '/aggrid' },
+  { key: 'project-cashflow', label: 'Project Cashflow', icon: 'ri-money-dollar-circle-line', to: '/project-cashflow' },
   { key: 'settings', label: 'Settings', icon: 'ri-settings-3-line', to: '/settings' },
 ]
