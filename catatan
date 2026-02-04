@@ -29,3 +29,9 @@ Checklist ringkas (5 langkah):
 3) Copy `dist/css` -> `MitrekaStyleMockup/src/lib/mitreka-ui`
 4) Update versi di `MitrekaStyleMockup/package.json`
 5) Jika sudah publish: ganti dependency `file:` ke semver + `npm install`
+
+Catatan deploy GH Pages (biar gak gagal):
+1) Jangan import `@keiryusaki/mitreka-ui/*` langsung di mockup (runner tidak punya akses repo/registry private).
+2) Gunakan vendor dist: `src/lib/mitreka-ui-dist` dan alias Vite ke sana.
+3) CSS pakai lokal: `src/lib/mitreka-ui/index.css` (bukan `@keiryusaki/mitreka-ui/css`).
+4) Setiap update mitreka-ui: re-copy `mitreka-ui/dist` -> `mitreka-ui-dist` sebelum push.
