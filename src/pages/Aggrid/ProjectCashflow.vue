@@ -199,6 +199,10 @@ const revenueRowData = computed(() => [
     ...buildMonthFields("m", revenuePlanTotal.value),
   },
   {
+    rowType: "spacer",
+    item: "",
+  },
+  {
     rowType: "group",
     block: "realized",
     compareBlock: "realized",
@@ -223,6 +227,10 @@ const revenueRowData = computed(() => [
     compareTheme: "success",
     item: "Total",
     ...buildMonthFields("m", revenueActualTotal.value),
+  },
+  {
+    rowType: "spacer",
+    item: "",
   },
   {
     rowType: "gap",
@@ -375,6 +383,8 @@ const gridOptions = {
   animateRows: false,
   rowHeight: 26,
   headerHeight: 44,
+  getRowHeight: (params: any) =>
+    params?.data?.rowType === "spacer" ? 14 : 26,
 };
 const cashflowGridOptions = {
   ...gridOptions,
@@ -411,6 +421,7 @@ const baseRowClassRules = {
   "pcf-row-group": (p: any) => p.data?.rowType === "group",
   "pcf-row-total": (p: any) => p.data?.rowType === "total",
   "pcf-row-gap": (p: any) => p.data?.rowType === "gap",
+  "pcf-row-spacer": (p: any) => p.data?.rowType === "spacer",
 };
 const compareRowClassRules = createCompareRowClassRules({
   defaultTheme: "success",
@@ -611,6 +622,11 @@ const cashflowRowClassRules = {
     var(--color-primary),
     transparent 92%
   ) !important;
+}
+.pcf-grid :deep(.ag-row.pcf-row-spacer .ag-cell) {
+  background: transparent !important;
+  border-top-color: transparent !important;
+  border-bottom-color: transparent !important;
 }
 .pcf-grid :deep(.pcf-indent) {
   padding-left: 1.5rem;
