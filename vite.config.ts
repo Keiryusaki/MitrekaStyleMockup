@@ -7,6 +7,14 @@ export default defineConfig({
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "./src"),
+      "@keiryusaki/mitreka-ui/vue": path.resolve(
+        __dirname,
+        "./src/lib/mitreka-ui/vue/index.ts"
+      ),
+      "@keiryusaki/mitreka-ui/composables": path.resolve(
+        __dirname,
+        "./src/composables/mitreka-ui.ts"
+      ),
     },
     dedupe: ["ag-grid-community", "ag-grid-vue3"],
   },
