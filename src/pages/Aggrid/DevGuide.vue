@@ -121,7 +121,7 @@ ModuleRegistry.registerModules([AllCommunityModule])</code></pre>
             Tambahkan metadata <code>compareBlock</code> + <code>compareTheme</code>
             pada row, lalu pakai helper <code>createCompareRowClassRules</code>.
           </p>
-          <pre v-pre class="code"><code>import { createCompareRowClassRules } from '@keiryusaki/mitreka-ui/composables'
+          <pre v-pre class="code"><code>import { createCompareRowClassRules } from '@/composables/useCompareRows'
 
 const rowClassRules = {
   ...baseRowClassRules,

@@ -9,7 +9,7 @@ import "ag-grid-community/styles/ag-theme-quartz.css";
 import "@/styles/aggrid-soft.css";
 import DevGuide from "./DevGuide.vue";
 import { iconRegistry } from "@/composables/Icon";
-import { createCompareRowClassRules } from "@keiryusaki/mitreka-ui/composables";
+import { createCompareRowClassRules } from "@/composables/useCompareRows";
 
 /* -------------------------
    1) Dark/Light detector INLINE (khusus AG Grid)

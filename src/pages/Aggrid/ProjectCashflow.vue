@@ -2,7 +2,7 @@
 import { computed, onBeforeUnmount, onMounted, ref } from "vue";
 import { AgGridVue } from "ag-grid-vue3";
 import PageHeader from "@/components/PageHeader.vue";
-import { createCompareRowClassRules } from "@keiryusaki/mitreka-ui/composables";
+import { createCompareRowClassRules } from "@/composables/useCompareRows";
 import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-quartz.css";
 import "@/styles/aggrid-soft.css";
