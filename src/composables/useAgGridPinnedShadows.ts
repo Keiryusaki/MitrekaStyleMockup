@@ -35,6 +35,9 @@ const attachPinnedShadowsToElement = (
       (rootEl.querySelector(".ag-body-viewport") as HTMLElement | null) ??
       rootWrapper ??
       host;
+    const isCenterHost = shadowHost.classList.contains(
+      "ag-center-cols-viewport"
+    );
     shadowHost.classList.add("agx-shadow-host");
     const leftShadow = document.createElement("div");
     leftShadow.className = "agx-pinned-shadow agx-pinned-shadow-left";
@@ -43,8 +46,12 @@ const attachPinnedShadowsToElement = (
     shadowHost.append(leftShadow, rightShadow);
 
     const setClasses = (left: number, maxScroll: number) => {
-      const leftWidth = pinnedLeftEl?.getBoundingClientRect().width ?? 0;
-      const rightWidth = pinnedRightEl?.getBoundingClientRect().width ?? 0;
+      const leftWidth = isCenterHost
+        ? 0
+        : pinnedLeftEl?.getBoundingClientRect().width ?? 0;
+      const rightWidth = isCenterHost
+        ? 0
+        : pinnedRightEl?.getBoundingClientRect().width ?? 0;
       shadowHost.style.setProperty(
         "--agx-pinned-left-width",
         `${leftWidth}px`
