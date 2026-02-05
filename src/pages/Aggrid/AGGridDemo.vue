@@ -438,6 +438,12 @@ onBeforeUnmount(() => {
         class rules via <code>createSpacerRowClassRules()</code>, dan set tinggi
         row dengan <code>createSpacerRowHeight()</code>.
       </div>
+      <div class="text-xs opacity-70">
+        Garis tebal di header dikontrol di <code>aggrid-soft.css</code> (header
+        separator 3px). Garis di atas <code>Total</code> pakai selector
+        <code>.pcf-row-total</code> atau <code>.cmp-role-total</code> dengan
+        warna lebih terang.
+      </div>
       <div class="w-full" ref="compareGridWrap">
         <AgGridVue
           :class="['agx', 'agx-compact', themeClass, 'w-full']"
