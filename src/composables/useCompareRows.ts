@@ -1,4 +1,12 @@
-export type CompareTheme = "success" | "info" | "warning" | "primary" | "neutral";
+export type CompareTheme =
+  | "success"
+  | "info"
+  | "warning"
+  | "primary"
+  | "neutral"
+  | "accent"
+  | "secondary"
+  | "error";
 export type CompareRole = "header" | "row" | "total";
 
 export type CompareRowMeta = {
@@ -43,6 +51,12 @@ export const createCompareRowClassRules = (
       !!p.data?.compareBlock && resolveTheme(p) === "primary",
     "cmp-theme-neutral": (p: any) =>
       !!p.data?.compareBlock && resolveTheme(p) === "neutral",
+    "cmp-theme-accent": (p: any) =>
+      !!p.data?.compareBlock && resolveTheme(p) === "accent",
+    "cmp-theme-secondary": (p: any) =>
+      !!p.data?.compareBlock && resolveTheme(p) === "secondary",
+    "cmp-theme-error": (p: any) =>
+      !!p.data?.compareBlock && resolveTheme(p) === "error",
   };
 };
 
