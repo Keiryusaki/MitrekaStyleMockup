@@ -1090,7 +1090,7 @@ loading.stop();                   // hide</code></pre>
 
     <!-- Footer -->
     <footer class="text-center text-sm opacity-60 pt-8">
-      <p>@keiryusaki/mitreka-ui v1.0.0</p>
+      <p>@keiryusaki/mitreka-ui v2.2.13</p>
       <p>
         <a
           href="https://github.com/Keiryusaki/mitreka-ui"

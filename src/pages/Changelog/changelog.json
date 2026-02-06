@@ -1,5 +1,25 @@
 [
   {
+    "version": "2.2.13",
+    "date": "2026-02-06",
+    "label": "Patch",
+    "items": [
+      {
+        "type": "Added",
+        "text": "AG Grid helper: auto row height by font size (useAgGridRowHeight)"
+      },
+      {
+        "type": "Changed",
+        "text": "AG Grid demo: density + auto height tuned, status badge column example"
+      },
+      {
+        "type": "Changed",
+        "text": "Publish mitreka-ui v2.2.13"
+      }
+    ],
+    "assets": []
+  },
+  {
     "version": "2.2.4",
     "date": "2026-02-04",
     "label": "Patch",
