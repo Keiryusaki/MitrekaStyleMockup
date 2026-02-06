@@ -6,6 +6,10 @@ import SelectDropdown from "@/components/controls/SelectDropdown.vue";
 import PageHeader from "@/components/PageHeader.vue";
 import Tooltip from "@/components/Tooltip.vue";
 import { attachPinnedShadowsToElement } from "@/composables/useAgGridPinnedShadows";
+import {
+  calcAgRowHeight,
+  resolveAgFontPx,
+} from "@/composables/useAgGridRowHeight";
 import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-quartz.css";
 import "@/styles/aggrid-soft.css";
@@ -76,11 +80,12 @@ const themeClass = computed(() =>
   isDark.value ? "ag-theme-quartz-dark" : "ag-theme-quartz"
 );
 
+const agFontPx = ref(13);
 const headerHeight = 44;
 const paginationHeight = 56;
 const minRows = 8;
 const rowHeightOf = (dens = density.value) =>
-  dens === "compact" ? 26 : dens === "spacious" ? 48 : 40;
+  calcAgRowHeight(agFontPx.value, dens);
 const minGridHeight = computed(
   () => headerHeight + rowHeightOf() * minRows + paginationHeight
 );
@@ -380,6 +385,11 @@ function onGridReady(params: any) {
 
 onMounted(async () => {
   await nextTick();
+  agFontPx.value = resolveAgFontPx(valueGridWrap.value || timelineGridWrap.value);
+  if (api.value) {
+    api.value.setGridOption("rowHeight", rowHeightOf());
+    api.value.resetRowHeights();
+  }
   if (valueGridWrap.value) {
     pinnedShadowCleanups.push(
       attachPinnedShadowsToElement(valueGridWrap.value)

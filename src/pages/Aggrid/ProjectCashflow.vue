@@ -7,8 +7,11 @@ import {
   createCompareRowClassRules,
   createSpacerRow,
   createSpacerRowClassRules,
-  createSpacerRowHeight,
 } from "@/composables/useCompareRows";
+import {
+  calcAgRowHeight,
+  resolveAgFontPx,
+} from "@/composables/useAgGridRowHeight";
 import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-quartz.css";
 import "@/styles/aggrid-soft.css";
@@ -379,13 +382,16 @@ const defaultColDef = {
   suppressHeaderMenuButton: true,
 };
 
+const agFontPx = ref(13);
+const baseRowHeight = computed(() => calcAgRowHeight(agFontPx.value, "compact"));
+
 const gridOptions = {
   suppressMenuHide: true,
   suppressHeaderMenuButton: true,
   animateRows: false,
-  rowHeight: 26,
   headerHeight: 44,
-  getRowHeight: createSpacerRowHeight({ spacerHeight: 24 }),
+  getRowHeight: (params: any) =>
+    params?.data?.rowType === "spacer" ? 24 : baseRowHeight.value,
 };
 const cashflowGridOptions = {
   ...gridOptions,
@@ -418,6 +424,9 @@ onMounted(() => {
 
 onMounted(async () => {
   await nextTick();
+  agFontPx.value = resolveAgFontPx(
+    revenueGridWrap.value || budgetGridWrap.value || cashflowGridWrap.value
+  );
   if (revenueGridWrap.value) {
     pinnedShadowCleanups.push(
       attachPinnedShadowsToElement(revenueGridWrap.value)

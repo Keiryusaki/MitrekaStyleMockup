@@ -16,6 +16,10 @@ import {
   createSpacerRowClassRules,
   createSpacerRowHeight,
 } from "@/composables/useCompareRows";
+import {
+  calcAgRowHeight,
+  resolveAgFontPx,
+} from "@/composables/useAgGridRowHeight";
 
 /* -------------------------
    1) Dark/Light detector INLINE (khusus AG Grid)
@@ -60,8 +64,9 @@ const themeClass = computed(() =>
 const minRows = 10;
 const headerHeight = 44;
 const paginationHeight = 56;
+const agFontPx = ref(13);
 const rowHeightOf = (dens = density.value) =>
-  dens === "compact" ? 25 : dens === "spacious" ? 48 : 40;
+  calcAgRowHeight(agFontPx.value, dens);
 const minGridHeight = computed(
   () => headerHeight + rowHeightOf() * minRows + paginationHeight
 );
@@ -107,7 +112,7 @@ const rowData: Row[] = Array.from({ length: 100 }, (_, i) => {
   };
 });
 
-const columnDefs = [
+const columnDefs = computed(() => [
   // pakai rowSelection di gridOptions, jadi kolom select gak usah difilter
   {
     field: "no",
@@ -133,7 +138,10 @@ const columnDefs = [
     filter: "agTextColumnFilter",
     wrapText: true,
     autoHeight: true,
-    cellStyle: { whiteSpace: "normal", lineHeight: "1.3" },
+    cellStyle: {
+      whiteSpace: "normal",
+      lineHeight: "1.3",
+    },
   },
   {
     headerName: "Actions",
@@ -157,7 +165,11 @@ const columnDefs = [
           ? "icon-btn-md"
           : "icon-btn-sm";
 
-      const mkBtn = (variant: string, title: string, iconName: keyof typeof iconRegistry) => {
+      const mkBtn = (
+        variant: string,
+        title: string,
+        iconName: keyof typeof iconRegistry
+      ) => {
         const b = document.createElement("button");
         b.type = "button";
         b.className = `icon-btn icon-btn-solid-${variant} ${sizeClass}`;
@@ -174,7 +186,7 @@ const columnDefs = [
       return root;
     },
   },
-];
+]);
 
 const defaultColDef = {
   flex: 1,
@@ -215,7 +227,9 @@ function applyDensityToApi() {
   if (!api.value) return;
   const rowH = rowHeightOf();
   api.value.setGridOption("rowHeight", rowH);
+  api.value.setGridOption("getRowHeight", () => rowH);
   api.value.resetRowHeights();
+  api.value.refreshCells({ force: true });
 }
 const exportCsv = () => {
   api.value?.exportDataAsCsv({ fileName: "aggrid-export.csv" });
@@ -236,12 +250,45 @@ function onGridReady(params: any) {
   applyDensityToApi();
   params.api.setGridOption("quickFilterText", search.value);
 }
-watch(density, () => {
-  applyDensityToApi();
-  api.value?.refreshCells({ columns: ["actions"], force: true });
+watch(density, (value) => {
+  if (api.value) {
+    api.value.destroy();
+    api.value = null;
+  }
+  if (compareApi.value) {
+    compareApi.value.destroy();
+    compareApi.value = null;
+  }
+  nextTick(() => {
+    applyDensityToApi();
+    api.value?.refreshCells({ columns: ["actions"], force: true });
+    if (compareApi.value) {
+      const rowH = rowHeightOf(value);
+      compareApi.value.setGridOption("rowHeight", rowH);
+      compareApi.value.setGridOption("getRowHeight", (p: any) =>
+        p?.data?.rowType === "spacer" ? 24 : rowH
+      );
+      compareApi.value.resetRowHeights();
+      compareApi.value.refreshCells({ force: true });
+    }
+  });
 });
 watch(search, (value) => {
   api.value?.setGridOption("quickFilterText", value);
+});
+onMounted(async () => {
+  await nextTick();
+  agFontPx.value = resolveAgFontPx(mainGridWrap.value);
+  applyDensityToApi();
+  if (compareApi.value) {
+    const rowH = rowHeightOf();
+    compareApi.value.setGridOption("rowHeight", rowH);
+    compareApi.value.setGridOption("getRowHeight", (p: any) =>
+      p?.data?.rowType === "spacer" ? 24 : rowH
+    );
+    compareApi.value.resetRowHeights();
+    compareApi.value.refreshCells({ force: true });
+  }
 });
 
 /* -------------------------
@@ -326,18 +373,22 @@ const compareColumnDefs = [
 
 const compareGridOptions = {
   animateRows: false,
-  rowHeight: 26,
   headerHeight: 44,
   suppressHeaderMenuButton: true,
   domLayout: "autoHeight",
-  getRowHeight: createSpacerRowHeight({ spacerHeight: 24 }),
+  getRowHeight: (params: any) =>
+    params?.data?.rowType === "spacer" ? 24 : rowHeightOf(),
 };
 const compareRowClassRules = createCompareRowClassRules({
   defaultTheme: "success",
 });
 const compareSpacerRules = createSpacerRowClassRules();
+const compareApi = ref<any>(null);
 
 function onCompareGridReady(params: any) {
+  compareApi.value = params.api;
+  compareApi.value.setGridOption("rowHeight", rowHeightOf());
+  compareApi.value.resetRowHeights();
   params.api.sizeColumnsToFit();
 }
 
@@ -426,6 +477,7 @@ onBeforeUnmount(() => {
         :rowData="rowData"
         :columnDefs="columnDefs"
         :defaultColDef="defaultColDef"
+        :rowHeight="rowHeightOf()"
         :gridOptions="gridOptions"
         @grid-ready="onGridReady"
       />
@@ -464,6 +516,7 @@ onBeforeUnmount(() => {
             floatingFilter: false,
             suppressHeaderMenuButton: true,
           }"
+          :rowHeight="rowHeightOf()"
           :gridOptions="compareGridOptions"
           :rowClassRules="{ ...compareRowClassRules, ...compareSpacerRules }"
           @grid-ready="onCompareGridReady"

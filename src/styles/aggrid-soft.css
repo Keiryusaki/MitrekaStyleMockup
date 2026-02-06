@@ -6,7 +6,7 @@
 /* === Core tokens === */
 .agx {
   --ag-border-radius: 12px;
-  /* --ag-font-size: 13px; */
+  --ag-font-size: var(--font-size-xs, 13px);
   --ag-col-border-color: #e5e7eb;
   --ag-col-border-width: 1px;
   --ag-row-border-color: #94a3b8;
@@ -54,7 +54,7 @@
 .agx .ag-row .ag-cell {
   background-color: var(--ag-background-color) !important;
   color: var(--ag-foreground-color, #111827) !important;
-  font-size: 14px;
+  font-size: var(--ag-font-size);
   line-height: 1.4;
   display: flex;
   align-items: center;
@@ -62,7 +62,7 @@
 .agx .ag-cell-value {
   color: var(--ag-foreground-color, #111827) !important;
   opacity: 1 !important;
-  font-size: 14px;
+  font-size: var(--ag-font-size);
   line-height: 1.4;
 }
 .agx .ag-cell-wrapper {
