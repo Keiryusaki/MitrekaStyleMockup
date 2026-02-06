@@ -143,10 +143,10 @@ const columnDefs = computed(() => [
       const status = params.value as Row["status"];
       const badge =
         status === "Active"
-          ? "badge badge-success badge-sm"
+          ? "badge badge-success badge-xs"
           : status === "Pending"
-          ? "badge badge-warning badge-sm"
-          : "badge badge-error badge-sm";
+          ? "badge badge-warning badge-xs"
+          : "badge badge-error badge-xs";
       const text = status ?? "-";
       return `<span class="${badge}">${text}</span>`;
     },
