@@ -6,7 +6,7 @@
       <div class="relative z-10">
         <div class="flex items-center gap-3 mb-4">
           <Icon name="sparkles" class="w-8 h-8" />
-          <span class="text-sm font-medium bg-white/20 px-3 py-1 rounded-full">v1.0.0</span>
+          <span class="text-sm font-medium bg-white/20 px-3 py-1 rounded-full">v{{ appVersion }}</span>
         </div>
         <h1 class="text-3xl md:text-4xl font-bold mb-3">Mitreka Design System</h1>
         <p class="text-lg opacity-90 max-w-2xl mb-6">
@@ -144,6 +144,9 @@
 
 <script setup lang="ts">
 import { Icon, type IconName } from "@/composables/Icon";
+import { version } from "../../package.json";
+
+const appVersion = version;
 
 const stats = [
   { icon: "box" as IconName, value: "40+", label: "Komponen" },
