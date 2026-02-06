@@ -83,6 +83,7 @@ type Row = {
   no: number;
   code: string;
   name: string;
+  status: "Active" | "Pending" | "Closed";
   description: string;
 };
 const names = [
@@ -101,6 +102,8 @@ const rowData: Row[] = Array.from({ length: 100 }, (_, i) => {
   const n = i + 1,
     nm = names[i % names.length],
     ch = String.fromCharCode(65 + (i % 26));
+  const status =
+    n % 3 === 0 ? "Closed" : n % 2 === 0 ? "Pending" : "Active";
   const longDesc =
     "Ini deskripsi yang sengaja dipanjangin biar nge-wrap sampai dua baris di kolom Description, jadi ada tambahan kata-kata biar lebih panjang dan pasti turun ke baris berikutnya.";
   return {
@@ -108,6 +111,7 @@ const rowData: Row[] = Array.from({ length: 100 }, (_, i) => {
     no: n,
     code: i % 2 === 0 ? ch : ch + ch,
     name: nm,
+    status,
     description: i === 0 ? `${nm} — ${longDesc}` : `${nm} description #${n}`,
   };
 });
@@ -130,6 +134,22 @@ const columnDefs = computed(() => [
     pinned: "left",
     lockPinned: true,
     lockPosition: true,
+  },
+  {
+    field: "status",
+    headerName: "Status",
+    maxWidth: 140,
+    cellRenderer: (params: any) => {
+      const status = params.value as Row["status"];
+      const badge =
+        status === "Active"
+          ? "badge badge-success badge-sm"
+          : status === "Pending"
+          ? "badge badge-warning badge-sm"
+          : "badge badge-error badge-sm";
+      const text = status ?? "-";
+      return `<span class="${badge}">${text}</span>`;
+    },
   },
   { field: "name", headerName: "Name", filter: "agTextColumnFilter" },
   {
@@ -526,3 +546,6 @@ onBeforeUnmount(() => {
   </div>
   <DevGuide />
 </template>
+
+
+
