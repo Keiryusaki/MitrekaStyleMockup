@@ -4,6 +4,7 @@
 
 .agx {
   --ag-border-radius: 12px;
+  --ag-font-size: var(--font-size-xs, 13px);
   --ag-col-border-color: #e5e7eb;
   --ag-col-border-width: 1px;
   --ag-row-border-color: #e5e7eb;
@@ -37,6 +38,8 @@
 /* Row cells */
 .agx .ag-row .ag-cell {
   background-color: var(--ag-background-color) !important;
+  font-size: var(--ag-font-size);
+  line-height: 1.4;
 }
 .agx .ag-row-odd .ag-cell {
   background-color: var(--ag-odd-row-background-color, color-mix(in srgb, var(--ag-background-color) 88%, #000 12%)) !important;
@@ -52,6 +55,9 @@
   --agx-compare-warning: color-mix(in srgb, #f59e0b 16%, transparent);
   --agx-compare-primary: color-mix(in srgb, #6366f1 14%, transparent);
   --agx-compare-neutral: color-mix(in srgb, #94a3b8 18%, transparent);
+  --agx-compare-accent: color-mix(in srgb, var(--color-accent, #22d3ee) 14%, transparent);
+  --agx-compare-secondary: color-mix(in srgb, var(--color-secondary, #64748b) 14%, transparent);
+  --agx-compare-error: color-mix(in srgb, var(--color-error, #ef4444) 14%, transparent);
 }
 .dark .agx {
   --agx-compare-success: color-mix(in srgb, #22c55e 18%, transparent);
@@ -59,6 +65,9 @@
   --agx-compare-warning: color-mix(in srgb, #f59e0b 20%, transparent);
   --agx-compare-primary: color-mix(in srgb, #818cf8 18%, transparent);
   --agx-compare-neutral: color-mix(in srgb, #cbd5f5 18%, transparent);
+  --agx-compare-accent: color-mix(in srgb, var(--color-accent, #67e8f9) 18%, transparent);
+  --agx-compare-secondary: color-mix(in srgb, var(--color-secondary, #94a3b8) 18%, transparent);
+  --agx-compare-error: color-mix(in srgb, var(--color-error, #f87171) 18%, transparent);
 }
 .agx .ag-row.cmp-block .ag-cell {
   background-image: linear-gradient(
@@ -83,6 +92,32 @@
 .agx .ag-row.cmp-theme-neutral {
   --agx-compare-tone: var(--agx-compare-neutral);
 }
+.agx .ag-row.cmp-theme-accent {
+  --agx-compare-tone: var(--agx-compare-accent);
+}
+.agx .ag-row.cmp-theme-secondary {
+  --agx-compare-tone: var(--agx-compare-secondary);
+}
+.agx .ag-row.cmp-theme-error {
+  --agx-compare-tone: var(--agx-compare-error);
+}
+.agx .ag-row.pcf-row-total .ag-cell,
+.agx .ag-row.cmp-role-total .ag-cell {
+  border-top: 2px solid color-mix(in srgb, var(--ag-row-border-color), #000 20%);
+}
+.agx .cmp-row-spacer {
+  background: transparent !important;
+}
+.agx .cmp-row-spacer .ag-cell {
+  background: transparent !important;
+  background-image: none !important;
+  border-color: transparent !important;
+  color: transparent !important;
+  padding: 0 !important;
+}
+.agx .cmp-row-spacer .ag-cell .ag-cell-value {
+  display: none !important;
+}
 
 /* Vertical dividers */
 .agx :is(.ag-center-cols-container, .ag-pinned-left-cols-container, .ag-pinned-right-cols-container) .ag-cell {
@@ -101,9 +136,57 @@
   font-weight: 600;
 }
 
+/* Header row separators (tegas) */
+.agx
+  :is(
+    .ag-header-row.ag-header-row-column .ag-header-cell,
+    .ag-pinned-left-header .ag-header-row.ag-header-row-column .ag-header-cell,
+    .ag-pinned-right-header .ag-header-row.ag-header-row-column .ag-header-cell
+  ) {
+  border-bottom: 3px solid var(--color-primary, #60a5fa) !important;
+}
+.agx
+  :is(
+    .ag-header-row.ag-header-row-column-filter .ag-header-cell,
+    .ag-pinned-left-header .ag-header-row.ag-header-row-column-filter .ag-header-cell,
+    .ag-pinned-right-header .ag-header-row.ag-header-row-column-filter .ag-header-cell
+  ) {
+  border-top: 2px solid var(--color-primary, #60a5fa) !important;
+}
+
 /* Row separators */
 .agx :is(.ag-center-cols-container, .ag-pinned-left-cols-container, .ag-pinned-right-cols-container) .ag-row {
   border-bottom: var(--ag-row-border-width) solid var(--ag-row-border-color);
+}
+
+/* Scroll shadows (body viewport overlay) */
+.ag-body-viewport {
+  position: relative;
+  overflow: hidden;
+}
+.ag-body-viewport.agx-shadow-left::before,
+.ag-body-viewport.agx-shadow-right::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  height: var(--agx-shadow-h, 100%);
+  width: 20px;
+  pointer-events: none;
+  z-index: 6;
+}
+.ag-body-viewport.agx-shadow-left::before {
+  left: var(--agx-left-shadow-x, 0px);
+  box-shadow: inset 18px 0 14px -12px rgba(0, 0, 0, 0.28);
+}
+.ag-body-viewport.agx-shadow-right::after {
+  right: var(--agx-right-shadow-x, 0px);
+  box-shadow: inset -18px 0 14px -12px rgba(0, 0, 0, 0.28);
+}
+.dark .ag-body-viewport.agx-shadow-left::before {
+  box-shadow: inset 18px 0 14px -12px rgba(0, 0, 0, 0.48);
+}
+.dark .ag-body-viewport.agx-shadow-right::after {
+  box-shadow: inset -18px 0 14px -12px rgba(0, 0, 0, 0.48);
 }
 
 /* Floating filter */

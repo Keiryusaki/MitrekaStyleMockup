@@ -1,7 +1,7 @@
 /**
  * @mitreka/ui - Badge Component
  */
-type Size = 'xs' | 'sm' | 'md' | 'lg' | 'xl';
+type Size = 'xxs' | 'xs' | 'sm' | 'md' | 'lg' | 'xl';
 type Variant = 'solid' | 'outline' | 'soft';
 type Color = 'default' | 'primary' | 'secondary' | 'accent' | 'info' | 'success' | 'warning' | 'error';
 interface Props {
