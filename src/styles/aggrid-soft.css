@@ -68,6 +68,12 @@
 .agx .ag-cell-wrapper {
   align-items: center;
 }
+.agx .agx-cell-badge .ag-cell-value {
+  display: flex;
+  align-items: center;
+  height: 100%;
+  line-height: 1;
+}
 .agx .ag-row-odd .ag-cell {
   background-color: var(
     --ag-odd-row-background-color,

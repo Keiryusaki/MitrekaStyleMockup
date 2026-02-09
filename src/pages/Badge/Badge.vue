@@ -12,7 +12,7 @@ const tocItems: TOCItem[] = [
   { id: 'notes', label: 'Notes' },
 ];
 
-type Size = "xs" | "sm" | "md" | "lg" | "xl";
+type Size = "xxs" | "xs" | "sm" | "md" | "lg" | "xl";
 type Tone =
   | "default"
   | "primary"
@@ -63,7 +63,7 @@ const classes = (t: Tone) =>
     <PageHeader 
       category="Components"
       title="Badge" 
-      description="Solid, Outline, Soft. 7 warna, 5 ukuran (xs-xl). Kelas diambil dari theme CSS."
+      description="Solid, Outline, Soft. 7 warna, 6 ukuran (xxs-xl). Kelas diambil dari theme CSS."
     />
 
     <div class="card p-4 md:p-6 space-y-5">
@@ -100,6 +100,13 @@ const classes = (t: Tone) =>
           <div class="flex items-center gap-2">
             <span class="text-sm opacity-80">Size</span>
             <div class="join">
+              <button
+                class="btn btn-sm join-item"
+                :class="{ 'btn-primary': size === 'xxs' }"
+                @click="size = 'xxs'"
+              >
+                xxs
+              </button>
               <button
                 class="btn btn-sm join-item"
                 :class="{ 'btn-primary': size === 'xs' }"
@@ -255,7 +262,7 @@ const classes = (t: Tone) =>
             :contentReference[oaicite:2]{index=2}
           </li>
           <li>
-            Ukuran: <code>.badge-{xs|sm|md|lg|xl}</code> (default md).
+            Ukuran: <code>.badge-{xxs|xs|sm|md|lg|xl}</code> (default md).
             :contentReference[oaicite:3]{index=3}
           </li>
           <li>

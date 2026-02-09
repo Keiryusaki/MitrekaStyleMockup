@@ -1,5 +1,25 @@
 [
   {
+    "version": "2.2.14",
+    "date": "2026-02-09",
+    "label": "Patch",
+    "items": [
+      {
+        "type": "Added",
+        "text": "Badge size baru: .badge-xxs untuk use case tabel/space ketat"
+      },
+      {
+        "type": "Added",
+        "text": "Utility .badge-inline untuk alignment badge di inline text"
+      },
+      {
+        "type": "Changed",
+        "text": "AG Grid demo: status badge pakai size xxs + inline alignment"
+      }
+    ],
+    "assets": []
+  },
+  {
     "version": "2.2.13",
     "date": "2026-02-06",
     "label": "Patch",

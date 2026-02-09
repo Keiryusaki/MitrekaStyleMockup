@@ -822,6 +822,15 @@
     font-size: var(--font-size-md);
     line-height: 1;
   }
+  .badge-inline {
+    vertical-align: middle;
+  }
+  .badge-xxs {
+    border-radius: var(--radius-field-xs);
+    height: calc(var(--size-field-xs) * 0.5);
+    padding-inline: 0.4rem;
+    font-size: 0.75rem;
+  }
   .badge-xs {
     border-radius: var(--radius-field-xs);
     height: calc(var(--size-field-xs) * 0.6);

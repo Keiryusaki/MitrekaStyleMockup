@@ -139,14 +139,15 @@ const columnDefs = computed(() => [
     field: "status",
     headerName: "Status",
     maxWidth: 140,
+    cellClass: "agx-cell-badge",
     cellRenderer: (params: any) => {
       const status = params.value as Row["status"];
       const badge =
         status === "Active"
-          ? "badge badge-success badge-xs"
+          ? "badge badge-inline badge-success badge-xxs"
           : status === "Pending"
-          ? "badge badge-warning badge-xs"
-          : "badge badge-error badge-xs";
+          ? "badge badge-inline badge-warning badge-xxs"
+          : "badge badge-inline badge-error badge-xxs";
       const text = status ?? "-";
       return `<span class="${badge}">${text}</span>`;
     },
@@ -546,6 +547,4 @@ onBeforeUnmount(() => {
   </div>
   <DevGuide />
 </template>
-
-
 
