@@ -50,10 +50,10 @@ declare const _default: import('vue').DefineComponent<import('vue').ExtractPropT
     "onUpdate:modelValue"?: ((value: string | string[]) => any) | undefined;
 }>, {
     mode: Mode;
+    placeholder: string;
     picker: Picker;
     enableTime: boolean;
     noCalendar: boolean;
-    placeholder: string;
     time24hr: boolean;
     inputClass: string;
 }, {}, {}, {}, string, import('vue').ComponentProvideOptions, true, {}, any>;

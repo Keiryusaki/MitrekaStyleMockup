@@ -5,8 +5,8 @@ const downloadFile = async (filename: string) => {
     let fileUrl = "";
 
     // Cek file mana yang mau di-download
-    if (filename === "aggrid-soft.css") {
-      fileUrl = (await import("@/styles/aggrid-soft.css?raw")).default;
+    if (filename === "aggrid.css") {
+      fileUrl = (await import("@/lib/mitreka-ui/plugins/aggrid.css?raw")).default;
     } else if (filename === "agTheme.ts") {
       fileUrl = (await import("@/styles/agTheme.ts?raw")).default;
     } else {
@@ -30,10 +30,10 @@ const downloadFile = async (filename: string) => {
 <template>
   <details class="card p-6 mt-10">
     <summary class="cursor-pointer text-sm font-medium">
-      AG Grid – Dev Guide
+      AG Grid - Dev Guide
     </summary>
     <div class="mt-3 rounded-xl border border-base-300 p-4 bg-base-200">
-      <h3 class="text-lg font-semibold mb-2">AG Grid – Dev Guide (Standard)</h3>
+      <h3 class="text-lg font-semibold mb-2">AG Grid - Dev Guide (Standard)</h3>
 
       <div class="mb-4 p-3 bg-base-300 rounded-lg">
         <p class="text-sm font-medium mb-2">Downloads</p>
@@ -43,10 +43,10 @@ const downloadFile = async (filename: string) => {
               class="btn btn-accent btn-xs"
               href="javascript:;"
               rel="noopener"
-              @click="downloadFile('aggrid-soft.css')"
-              >aggrid-soft.css</a
+              @click="downloadFile('aggrid.css')"
+              >aggrid.css</a
             >
-            → simpan ke <code>src/styles/aggrid-soft.css</code>
+            -> simpan ke <code>src/lib/mitreka-ui/plugins/aggrid.css</code>
           </li>
           <li>
             <a
@@ -56,7 +56,7 @@ const downloadFile = async (filename: string) => {
               @click="downloadFile('agTheme.ts')"
               >agTheme.ts</a
             >
-            → simpan ke <code>src/styles/agTheme.ts</code>
+            -> simpan ke <code>src/styles/agTheme.ts</code>
           </li>
         </ul>
         <p class="text-xs opacity-70 mt-2">
@@ -67,27 +67,26 @@ const downloadFile = async (filename: string) => {
       <ol class="space-y-6 list-decimal ml-5">
         <li>
           <h4 class="font-semibold">Install</h4>
-          <pre v-pre class="code"><code>npm i ag-grid-community ag-grid-vue3
-# atau: yarn add ag-grid-community ag-grid-vue3
-# atau: pnpm add ag-grid-community ag-grid-vue3</code></pre>
+          <pre v-pre class="code"><code>npm i ag-grid-community ag-grid-vue3 @keiryusaki/mitreka-ui
+# atau: yarn add ag-grid-community ag-grid-vue3 @keiryusaki/mitreka-ui
+# atau: pnpm add ag-grid-community ag-grid-vue3 @keiryusaki/mitreka-ui</code></pre>
         </li>
 
         <li>
           <h4 class="font-semibold">Legacy Quartz Theme</h4>
-          <pre v-pre class="code"><code>// ✅ Import base + theme
+          <pre v-pre class="code"><code>// [OK] Import base + theme
 import 'ag-grid-community/styles/ag-grid.css'
 import 'ag-grid-community/styles/ag-theme-quartz.css'
 
-// ❌ Hapus tema legacy lain kalau tidak dipakai:
+// [REMOVE] Hapus tema legacy lain kalau tidak dipakai:
 // import 'ag-grid-community/styles/ag-theme-alpine.css'</code></pre>
         </li>
 
         <li>
           <h4 class="font-semibold">Struktur Modular</h4>
           <pre v-pre class="code"><code>src/
-  styles/
-    aggrid-soft.css
-    agTheme.ts
+  lib/mitreka-ui/plugins/aggrid.css
+  styles/agTheme.ts
   pages/Aggrid/
     AGGridDemo.vue
     DevGuide.vue</code></pre>
@@ -99,11 +98,17 @@ import 'ag-grid-community/styles/ag-theme-quartz.css'
             v-pre
             class="code"
           ><code>import { ModuleRegistry, AllCommunityModule } from 'ag-grid-community'
-import { AgGridVue } from 'ag-grid-vue3'
-import '@/styles/aggrid-soft.css'
-import { useAgDarkDetector, buildAgTheme, densityClassOf } from '@/styles/agTheme'
+import { AgGridSurface } from '@keiryusaki/mitreka-ui/vue'
+import '@keiryusaki/mitreka-ui/css/plugins/aggrid.css'
 
-ModuleRegistry.registerModules([AllCommunityModule])</code></pre>
+ModuleRegistry.registerModules([AllCommunityModule])
+
+&lt;AgGridSurface
+  :rowData="rowData"
+  :columnDefs="columnDefs"
+  :gridOptions="gridOptions"
+  :autoRowHeight="false"
+/&gt;</code></pre>
         </li>
 
         <li>
@@ -149,7 +154,7 @@ api.value?.exportDataAsCsv({ fileName: 'data.csv' })</code></pre>
         <li>
           <h4 class="font-semibold">Troubleshooting</h4>
           <ul class="text-sm list-disc ml-4">
-            <li>Error #106/#239: masih ada CSS legacy—hapus import-nya.</li>
+            <li>Error #106/#239: masih ada CSS legacy - hapus import-nya.</li>
             <li>
               Selection column tidak di kiri: pakai
               <code>applyColumnState</code> + <code>pinned:'left'</code>.
@@ -161,3 +166,4 @@ api.value?.exportDataAsCsv({ fileName: 'data.csv' })</code></pre>
     </div>
   </details>
 </template>
+

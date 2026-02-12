@@ -1,7 +1,7 @@
 <!-- ProjectBudgeting.vue -->
 <script setup lang="ts">
 import { computed, onBeforeUnmount, onMounted, ref, nextTick } from "vue";
-import { AgGridVue } from "ag-grid-vue3";
+import { AgGridSurface } from "@keiryusaki/mitreka-ui/vue";
 import SelectDropdown from "@/components/controls/SelectDropdown.vue";
 import PageHeader from "@/components/PageHeader.vue";
 import Tooltip from "@/components/Tooltip.vue";
@@ -12,7 +12,7 @@ import {
 } from "@/composables/useAgGridRowHeight";
 import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-quartz.css";
-import "@/styles/aggrid-soft.css";
+import "@/lib/mitreka-ui/plugins/aggrid.css";
 
 type BudgetRow = {
   id: number;
@@ -591,7 +591,7 @@ const reloadData = () => {
         class="w-full"
         :style="{ minHeight: `${minGridHeight}px`, height: '70vh' }"
       >
-        <AgGridVue
+        <AgGridSurface :auto-row-height="false" :pinned-shadows="false"
           :key="gridKey"
           :class="['agx', themeClass, densityClass, 'w-full', 'h-full', 'min-h-0']"
           theme="legacy"
@@ -674,7 +674,7 @@ const reloadData = () => {
         class="w-full"
         :style="{ minHeight: `${minGridHeight}px`, height: '70vh' }"
       >
-        <AgGridVue
+        <AgGridSurface :auto-row-height="false" :pinned-shadows="false"
           :key="gridKey + '-timeline'"
           :class="['agx', themeClass, densityClass, 'w-full', 'h-full', 'min-h-0']"
           theme="legacy"
@@ -777,3 +777,4 @@ const reloadData = () => {
   max-width: 100%;
 }
 </style>
+

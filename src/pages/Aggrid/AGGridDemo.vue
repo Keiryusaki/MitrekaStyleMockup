@@ -1,12 +1,12 @@
-<!-- AGGridDemo.vue (v2.6) — Fixed header height; density applies to body rows only -->
+<!-- AGGridDemo.vue (v2.6) - Fixed header height; density applies to body rows only -->
 <script setup lang="ts">
 import { ref, computed, watch, onMounted, onBeforeUnmount, nextTick } from "vue";
-import { AgGridVue } from "ag-grid-vue3";
+import { AgGridSurface } from "@keiryusaki/mitreka-ui/vue";
 import SelectDropdown from "@/components/controls/SelectDropdown.vue";
 import PageHeader from "@/components/PageHeader.vue";
 import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-quartz.css";
-import "@/styles/aggrid-soft.css";
+import "@/lib/mitreka-ui/plugins/aggrid.css";
 import DevGuide from "./DevGuide.vue";
 import { iconRegistry } from "@/composables/Icon";
 import { attachPinnedShadowsToElement } from "@/composables/useAgGridPinnedShadows";
@@ -112,7 +112,7 @@ const rowData: Row[] = Array.from({ length: 100 }, (_, i) => {
     code: i % 2 === 0 ? ch : ch + ch,
     name: nm,
     status,
-    description: i === 0 ? `${nm} — ${longDesc}` : `${nm} description #${n}`,
+    description: i === 0 ? `${nm} - ${longDesc}` : `${nm} description #${n}`,
   };
 });
 
@@ -239,7 +239,7 @@ const gridOptions: any = {
   paginationPageSizeSelector: [50, 100],
 };
 
-/* Apply density → hanya rowHeight; header fixed */
+/* Apply density -> hanya rowHeight; header fixed */
 const api = ref<any>(null);
 const pinnedShadowCleanups: Array<() => void> = [];
 const mainGridWrap = ref<HTMLElement | null>(null);
@@ -484,7 +484,7 @@ onBeforeUnmount(() => {
       class="w-full"
       :style="{ minHeight: `${minGridHeight}px`, height: '80vh' }"
     >
-      <AgGridVue
+      <AgGridSurface :auto-row-height="false" :pinned-shadows="false"
         :key="gridKey"
         :class="['agx', themeClass, densityClass, 'w-full', 'h-full', 'min-h-0']"
         theme="legacy"
@@ -512,13 +512,13 @@ onBeforeUnmount(() => {
         row dengan <code>createSpacerRowHeight()</code>.
       </div>
       <div class="text-xs opacity-70">
-        Garis tebal di header dikontrol di <code>aggrid-soft.css</code> (header
+        Garis tebal di header dikontrol di <code>@/lib/mitreka-ui/plugins/aggrid.css</code> (header
         separator 3px). Garis di atas <code>Total</code> pakai selector
         <code>.pcf-row-total</code> atau <code>.cmp-role-total</code> dengan
         warna lebih terang.
       </div>
       <div class="w-full" ref="compareGridWrap">
-        <AgGridVue
+        <AgGridSurface :auto-row-height="false" :pinned-shadows="false"
           :class="['agx', 'agx-compact', themeClass, 'w-full']"
           theme="legacy"
           :style="{
@@ -547,4 +547,5 @@ onBeforeUnmount(() => {
   </div>
   <DevGuide />
 </template>
+
 

@@ -34,8 +34,8 @@ declare const __VLS_component: import('vue').DefineComponent<import('vue').Extra
     variant: Variant;
     size: Size;
     disabled: boolean;
-    color: Color;
     loading: boolean;
+    color: Color;
 }, {}, {}, {}, string, import('vue').ComponentProvideOptions, true, {}, any>;
 declare const _default: __VLS_WithTemplateSlots<typeof __VLS_component, ReturnType<typeof __VLS_template>>;
 export default _default;

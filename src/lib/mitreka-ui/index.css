@@ -35,3 +35,7 @@
 @import './components/icon.css';
 @import './components/loading-logo.css';
 @import './components/loading-overlay.css';
+
+/* MitrekaStyleMockup extra utilities & layout styles (option A) */
+@import './mockup.css';
+@import './plugins/aggrid.css';

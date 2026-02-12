@@ -22,3 +22,4 @@ export { default as ThemeSwitcher } from './ThemeSwitcher.vue';
 export { default as Sidebar } from './Sidebar.vue';
 export { default as Icon } from './Icon.vue';
 export { default as DateTimePicker } from './DateTimePicker.vue';
+export { default as AgGridSurface } from './AgGridSurface.vue';

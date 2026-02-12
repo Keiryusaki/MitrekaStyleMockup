@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed, onBeforeUnmount, onMounted, ref, nextTick } from "vue";
-import { AgGridVue } from "ag-grid-vue3";
+import { AgGridSurface } from "@keiryusaki/mitreka-ui/vue";
 import PageHeader from "@/components/PageHeader.vue";
 import { attachPinnedShadowsToElement } from "@/composables/useAgGridPinnedShadows";
 import {
@@ -14,7 +14,7 @@ import {
 } from "@/composables/useAgGridRowHeight";
 import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-quartz.css";
-import "@/styles/aggrid-soft.css";
+import "@/lib/mitreka-ui/plugins/aggrid.css";
 
 const fmt = new Intl.NumberFormat("id-ID");
 const formatValue = (value: number | null | undefined) =>
@@ -568,7 +568,7 @@ const cashflowRowClassRules = {
       <section class="card p-4 space-y-3">
         <div class="pcf-section-title">Revenue</div>
         <div class="pcf-grid" ref="revenueGridWrap">
-          <AgGridVue
+          <AgGridSurface :auto-row-height="false" :pinned-shadows="false"
             :class="['agx', 'agx-compact', themeClass, 'w-full', 'h-full']"
             theme="legacy"
             :style="{
@@ -586,7 +586,7 @@ const cashflowRowClassRules = {
       <section class="card p-4 space-y-3">
         <div class="pcf-section-title">Budget Plan</div>
         <div class="pcf-grid" ref="budgetGridWrap">
-          <AgGridVue
+          <AgGridSurface :auto-row-height="false" :pinned-shadows="false"
             :class="['agx', 'agx-compact', themeClass, 'w-full', 'h-full']"
             theme="legacy"
             :style="{
@@ -604,7 +604,7 @@ const cashflowRowClassRules = {
       <section class="card p-4 space-y-3">
         <div class="pcf-section-title">Cashflow</div>
         <div class="pcf-grid pcf-grid-auto" ref="cashflowGridWrap">
-          <AgGridVue
+          <AgGridSurface :auto-row-height="false" :pinned-shadows="false"
             :class="['agx', 'agx-compact', themeClass, 'w-full', 'h-full']"
             theme="legacy"
             :style="{
@@ -726,3 +726,4 @@ const cashflowRowClassRules = {
   margin-left: 0.25rem;
 }
 </style>
+
