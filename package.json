@@ -1,7 +1,7 @@
 {
   "name": "mitreka-style-mockup",
   "private": true,
-  "version": "2.2.15",
+  "version": "2.2.17",
   "type": "module",
   "scripts": {
     "dev": "vite",
