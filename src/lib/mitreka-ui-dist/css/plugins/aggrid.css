@@ -13,7 +13,7 @@
   --ag-row-border-width: 1px;
 
   /* header padding (fixed) */
-  --agx-header-gap: 6px;
+  --agx-header-gap: 4px;
 
   /* floating filter input (cozy default) */
   --agx-ff-height: 22px;
@@ -207,6 +207,12 @@
 .agx .ag-header-group-text {
   font-weight: 600;
   color: var(--ag-header-foreground-color, var(--ag-foreground-color, #111827)) !important;
+  line-height: 1.2;
+}
+.agx .ag-header-cell-label,
+.agx .ag-header-group-cell-label {
+  height: 100%;
+  align-items: center;
 }
 
 .dark .agx .ag-row .ag-cell,
@@ -284,6 +290,7 @@
 /* === Density classes (body-only) === */
 .agx-compact {
   --agx-ff-height: 18px;
+  --agx-header-gap: 2px;
 }
 .agx-compact .ag-cell {
   padding-top: 0;
@@ -291,6 +298,7 @@
 }
 .agx-spacious {
   --agx-ff-height: 26px;
+  --agx-header-gap: 7px;
 }
 
 /* === Dark mode === */

@@ -17,6 +17,7 @@ import {
   createSpacerRowHeight,
 } from "@/composables/useCompareRows";
 import {
+  calcAgHeaderHeight,
   calcAgRowHeight,
   resolveAgFontPx,
 } from "@/composables/useAgGridRowHeight";
@@ -51,24 +52,22 @@ onBeforeUnmount(() => htmlObs?.disconnect());
 const density = ref<"compact" | "cozy" | "spacious">("cozy");
 const striped = ref(true);
 const search = ref("");
-const densityClass = computed(() =>
-  density.value === "compact"
-    ? "agx-compact"
-    : density.value === "spacious"
-    ? "agx-spacious"
-    : ""
-);
 const themeClass = computed(() =>
   isDark.value ? "ag-theme-quartz-dark" : "ag-theme-quartz"
 );
+const autoHeightThreshold = 15;
 const minRows = 10;
-const headerHeight = 44;
 const paginationHeight = 56;
 const agFontPx = ref(13);
 const rowHeightOf = (dens = density.value) =>
   calcAgRowHeight(agFontPx.value, dens);
 const minGridHeight = computed(
-  () => headerHeight + rowHeightOf() * minRows + paginationHeight
+  () => calcAgHeaderHeight(density.value) + rowHeightOf() * minRows + paginationHeight
+);
+const mainGridWrapStyle = computed(() =>
+  useAutoHeight.value
+    ? { height: "auto" }
+    : { minHeight: `${minGridHeight.value}px`, height: "80vh" }
 );
 // key untuk paksa re-mount saat dark/light ganti
 const gridKey = computed(
@@ -115,6 +114,10 @@ const rowData: Row[] = Array.from({ length: 100 }, (_, i) => {
     description: i === 0 ? `${nm} - ${longDesc}` : `${nm} description #${n}`,
   };
 });
+const displayedRowCount = ref(rowData.length);
+const useAutoHeight = computed(
+  () => displayedRowCount.value < autoHeightThreshold
+);
 
 const columnDefs = computed(() => [
   // pakai rowSelection di gridOptions, jadi kolom select gak usah difilter
@@ -244,11 +247,27 @@ const api = ref<any>(null);
 const pinnedShadowCleanups: Array<() => void> = [];
 const mainGridWrap = ref<HTMLElement | null>(null);
 const compareGridWrap = ref<HTMLElement | null>(null);
+function resolveVisibleRowCount(gridApi: any) {
+  if (!gridApi) return rowData.length;
+  if (typeof gridApi.paginationGetRowCount === "function") {
+    const count = gridApi.paginationGetRowCount();
+    if (Number.isFinite(count)) return count;
+  }
+  if (typeof gridApi.getDisplayedRowCount === "function") {
+    const count = gridApi.getDisplayedRowCount();
+    if (Number.isFinite(count)) return count;
+  }
+  return rowData.length;
+}
+function syncVisibleRowCount(gridApi: any = api.value) {
+  displayedRowCount.value = Math.max(0, resolveVisibleRowCount(gridApi));
+}
 function applyDensityToApi() {
   if (!api.value) return;
   const rowH = rowHeightOf();
   api.value.setGridOption("rowHeight", rowH);
   api.value.setGridOption("getRowHeight", () => rowH);
+  api.value.setGridOption("domLayout", useAutoHeight.value ? "autoHeight" : "normal");
   api.value.resetRowHeights();
   api.value.refreshCells({ force: true });
 }
@@ -270,18 +289,15 @@ function onGridReady(params: any) {
   });
   applyDensityToApi();
   params.api.setGridOption("quickFilterText", search.value);
+  syncVisibleRowCount(params.api);
+  ["modelUpdated", "paginationChanged", "filterChanged"].forEach((eventName) =>
+    params.api.addEventListener(eventName, () => syncVisibleRowCount(params.api))
+  );
 }
 watch(density, (value) => {
-  if (api.value) {
-    api.value.destroy();
-    api.value = null;
-  }
-  if (compareApi.value) {
-    compareApi.value.destroy();
-    compareApi.value = null;
-  }
   nextTick(() => {
     applyDensityToApi();
+    syncVisibleRowCount();
     api.value?.refreshCells({ columns: ["actions"], force: true });
     if (compareApi.value) {
       const rowH = rowHeightOf(value);
@@ -293,6 +309,10 @@ watch(density, (value) => {
       compareApi.value.refreshCells({ force: true });
     }
   });
+});
+watch(useAutoHeight, (isAuto) => {
+  if (!api.value) return;
+  api.value.setGridOption("domLayout", isAuto ? "autoHeight" : "normal");
 });
 watch(search, (value) => {
   api.value?.setGridOption("quickFilterText", value);
@@ -394,7 +414,6 @@ const compareColumnDefs = [
 
 const compareGridOptions = {
   animateRows: false,
-  headerHeight: 44,
   suppressHeaderMenuButton: true,
   domLayout: "autoHeight",
   getRowHeight: (params: any) =>
@@ -482,11 +501,12 @@ onBeforeUnmount(() => {
     <div
       ref="mainGridWrap"
       class="w-full"
-      :style="{ minHeight: `${minGridHeight}px`, height: '80vh' }"
+      :style="mainGridWrapStyle"
     >
       <AgGridSurface :auto-row-height="false" :pinned-shadows="false"
+        :density="density"
         :key="gridKey"
-        :class="['agx', themeClass, densityClass, 'w-full', 'h-full', 'min-h-0']"
+        :class="['agx', themeClass, 'w-full', 'h-full', 'min-h-0']"
         theme="legacy"
         :style="{
           '--ag-odd-row-background-color': striped
@@ -500,6 +520,7 @@ onBeforeUnmount(() => {
         :defaultColDef="defaultColDef"
         :rowHeight="rowHeightOf()"
         :gridOptions="gridOptions"
+        :domLayout="useAutoHeight ? 'autoHeight' : 'normal'"
         @grid-ready="onGridReady"
       />
     </div>
@@ -519,7 +540,8 @@ onBeforeUnmount(() => {
       </div>
       <div class="w-full" ref="compareGridWrap">
         <AgGridSurface :auto-row-height="false" :pinned-shadows="false"
-          :class="['agx', 'agx-compact', themeClass, 'w-full']"
+          :density="density"
+          :class="['agx', themeClass, 'w-full']"
           theme="legacy"
           :style="{
             '--ag-odd-row-background-color': striped

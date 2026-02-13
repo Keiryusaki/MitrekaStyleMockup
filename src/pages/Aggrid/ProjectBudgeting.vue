@@ -7,6 +7,7 @@ import PageHeader from "@/components/PageHeader.vue";
 import Tooltip from "@/components/Tooltip.vue";
 import { attachPinnedShadowsToElement } from "@/composables/useAgGridPinnedShadows";
 import {
+  calcAgHeaderHeight,
   calcAgRowHeight,
   resolveAgFontPx,
 } from "@/composables/useAgGridRowHeight";
@@ -81,13 +82,12 @@ const themeClass = computed(() =>
 );
 
 const agFontPx = ref(13);
-const headerHeight = 44;
 const paginationHeight = 56;
 const minRows = 8;
 const rowHeightOf = (dens = density.value) =>
   calcAgRowHeight(agFontPx.value, dens);
 const minGridHeight = computed(
-  () => headerHeight + rowHeightOf() * minRows + paginationHeight
+  () => calcAgHeaderHeight(density.value) + rowHeightOf() * minRows + paginationHeight
 );
 
 const yearOptions = [
@@ -592,6 +592,7 @@ const reloadData = () => {
         :style="{ minHeight: `${minGridHeight}px`, height: '70vh' }"
       >
         <AgGridSurface :auto-row-height="false" :pinned-shadows="false"
+          :density="density"
           :key="gridKey"
           :class="['agx', themeClass, densityClass, 'w-full', 'h-full', 'min-h-0']"
           theme="legacy"
@@ -675,6 +676,7 @@ const reloadData = () => {
         :style="{ minHeight: `${minGridHeight}px`, height: '70vh' }"
       >
         <AgGridSurface :auto-row-height="false" :pinned-shadows="false"
+          :density="density"
           :key="gridKey + '-timeline'"
           :class="['agx', themeClass, densityClass, 'w-full', 'h-full', 'min-h-0']"
           theme="legacy"

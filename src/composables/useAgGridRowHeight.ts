@@ -48,3 +48,9 @@ export const calcAgRowHeight = (fontPx: number, density: AgxDensity) => {
   const factor = density === "compact" ? 1.7 : density === "spacious" ? 2.8 : 2.2;
   return Math.max(20, Math.round(fontPx * factor));
 };
+
+export const calcAgHeaderHeight = (density: AgxDensity) =>
+  density === "compact" ? 30 : density === "spacious" ? 52 : 44;
+
+export const calcAgGroupHeaderHeight = (density: AgxDensity) =>
+  density === "compact" ? 24 : density === "spacious" ? 48 : 40;

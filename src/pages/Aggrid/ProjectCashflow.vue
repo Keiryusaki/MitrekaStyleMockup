@@ -389,7 +389,6 @@ const gridOptions = {
   suppressMenuHide: true,
   suppressHeaderMenuButton: true,
   animateRows: false,
-  headerHeight: 44,
   getRowHeight: (params: any) =>
     params?.data?.rowType === "spacer" ? 24 : baseRowHeight.value,
 };
@@ -569,6 +568,7 @@ const cashflowRowClassRules = {
         <div class="pcf-section-title">Revenue</div>
         <div class="pcf-grid" ref="revenueGridWrap">
           <AgGridSurface :auto-row-height="false" :pinned-shadows="false"
+            density="compact"
             :class="['agx', 'agx-compact', themeClass, 'w-full', 'h-full']"
             theme="legacy"
             :style="{
@@ -585,8 +585,9 @@ const cashflowRowClassRules = {
 
       <section class="card p-4 space-y-3">
         <div class="pcf-section-title">Budget Plan</div>
-        <div class="pcf-grid" ref="budgetGridWrap">
+        <div class="pcf-grid pcf-grid-auto" ref="budgetGridWrap">
           <AgGridSurface :auto-row-height="false" :pinned-shadows="false"
+            density="compact"
             :class="['agx', 'agx-compact', themeClass, 'w-full', 'h-full']"
             theme="legacy"
             :style="{
@@ -605,7 +606,8 @@ const cashflowRowClassRules = {
         <div class="pcf-section-title">Cashflow</div>
         <div class="pcf-grid pcf-grid-auto" ref="cashflowGridWrap">
           <AgGridSurface :auto-row-height="false" :pinned-shadows="false"
-            :class="['agx', 'agx-compact', themeClass, 'w-full', 'h-full']"
+            density="compact"
+            :class="['agx', 'agx-compact', themeClass, 'w-full']"
             theme="legacy"
             :style="{
               '--ag-odd-row-background-color': isDark ? '#0d1a33' : '#F3F4F6',
@@ -633,6 +635,17 @@ const cashflowRowClassRules = {
 }
 .pcf-grid-auto {
   height: auto;
+}
+.pcf-grid-auto :deep(.ag-layout-auto-height .ag-center-cols-clipper),
+.pcf-grid-auto :deep(.ag-layout-auto-height .ag-center-cols-viewport),
+.pcf-grid-auto :deep(.ag-layout-auto-height .ag-center-cols-container),
+.pcf-grid-auto :deep(.ag-layout-auto-height .ag-pinned-left-cols-clipper),
+.pcf-grid-auto :deep(.ag-layout-auto-height .ag-pinned-left-cols-viewport),
+.pcf-grid-auto :deep(.ag-layout-auto-height .ag-pinned-left-cols-container),
+.pcf-grid-auto :deep(.ag-layout-auto-height .ag-pinned-right-cols-clipper),
+.pcf-grid-auto :deep(.ag-layout-auto-height .ag-pinned-right-cols-viewport),
+.pcf-grid-auto :deep(.ag-layout-auto-height .ag-pinned-right-cols-container) {
+  min-height: 0 !important;
 }
 .pcf-grid :deep(.ag-row.pcf-row-group .ag-cell) {
   font-weight: 600;
