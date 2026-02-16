@@ -4,16 +4,27 @@ Tujuan:
 - Update komponen/CSS di mitreka-ui dan memastikan mockup ikut sinkron.
 - Catatan ini untuk internal, bukan untuk developer.
 
+Lokasi repo (lokal):
+- mitreka-ui: D:\Mitreka\Office\Product\MitrekaStyleGuide\mitreka-ui
+- MitrekaStyleMockup: D:\Mitreka\Office\Product\MitrekaStyleGuide\MitrekaStyleMockup
+
 Checklist:
 1) Update mitreka-ui
    - Edit di: mitreka-ui/src
    - Bump versi (mitreka-ui/package.json)
    - Build: npm run build (di repo mitreka-ui)
+   - Jika pakai Vue component, update tipe props di src/vue/*.vue
+   - Catatan: build menghasilkan dist + d.ts (dist/vue/*.d.ts)
+   - Catatan baru: CSS tambahan dari MitrekaStyleMockup sudah digabung ke mitreka-ui
+     lewat `mitreka-ui/src/css/mockup.css` dan diimport di `mitreka-ui/src/css/index.css`.
+     Jadi consumer cukup pakai `@keiryusaki/mitreka-ui/css` untuk full style.
 
 2) Sync ke Mockup
    - Copy mitreka-ui/dist/css -> MitrekaStyleMockup/src/lib/mitreka-ui
+   - Copy mitreka-ui/dist -> MitrekaStyleMockup/src/lib/mitreka-ui-dist
    - Update versi app: MitrekaStyleMockup/package.json
    - Update changelog halaman jika rilisnya memang mau diumumkan
+   - Pastikan versi sinkron: package mitreka-ui, versi app mockup, dan entry terbaru di changelog
 
 3) Dependency mode
    - Belum publish: gunakan "file:../mitreka-ui" di MitrekaStyleMockup/package.json
@@ -22,6 +33,8 @@ Checklist:
 Catatan:
 - Untuk pengingat internal, cukup baca halaman Changelog jika butuh konteks rilis.
 - Tambah entry changelog hanya saat memang mau tampil di halaman changelog (publik).
+- Cek ulang sebelum push: jangan ada mismatch versi (contoh: changelog 2.2.14, dashboard 2.2.15, package 2.2.17).
+- File `MitrekaStyleMockup/catatan` adalah catatan internal; tidak wajib ikut commit/push.
 
 Checklist ringkas (5 langkah):
 1) Update `mitreka-ui/src` + bump version
@@ -29,6 +42,23 @@ Checklist ringkas (5 langkah):
 3) Copy `dist/css` -> `MitrekaStyleMockup/src/lib/mitreka-ui`
 4) Update versi di `MitrekaStyleMockup/package.json`
 5) Jika sudah publish: ganti dependency `file:` ke semver + `npm install`
+
+Catatan bantuan sistem (Codex):
+- Biasanya minta bantuan Codex untuk sync, push, dan publish package.
+- Minta bantuan Codex untuk menjalankan checklist di atas secara berurutan.
+
+Opsional (backup tanpa Codex):
+- Tambah script `sync:mockup` di mitreka-ui untuk copy dist ke mockup.
+- Tambah script `release:local` untuk `npm run build && npm run sync:mockup`.
+
+Publish (pakai GitHub Packages):
+1) Pastikan sudah commit perubahan di mitreka-ui
+2) `npm publish` (prepublishOnly akan jalan build otomatis)
+3) Push repo mitreka-ui setelah publish
+
+Catatan publish:
+- `npm publish` bisa auto-normalize `repository.url` (warning). Opsional: `npm pkg fix`.
+- Setelah publish, ulangi sync dist ke mockup dan commit.
 
 Catatan deploy GH Pages (biar gak gagal):
 1) Jangan import `@keiryusaki/mitreka-ui/*` langsung di mockup (runner tidak punya akses repo/registry private).

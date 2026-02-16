@@ -7,7 +7,7 @@
         @click="ui.sidebarOpen = false"
       ></div>
       <aside
-        class="fixed inset-y-0 left-0 z-50 w-72 bg-base-100 border-r border-base-300 overflow-y-auto"
+        class="fixed inset-y-0 left-0 z-50 w-72 theme-sidebar border-r border-base-300 overflow-y-auto"
       >
         <SidebarElegant />
       </aside>
@@ -15,7 +15,7 @@
 
     <!-- Desktop sidebar -->
     <aside
-      class="hidden md:flex flex-col h-full min-h-0 bg-base-100 border-r border-base-300 relative overflow-hidden"
+      class="hidden md:flex flex-col h-full min-h-0 theme-sidebar border-r border-base-300 relative overflow-hidden"
       :class="ui.sidebarCollapsed ? 'w-20' : 'w-[264px]'"
     >
       <SidebarElegant :collapsed="ui.sidebarCollapsed" />

@@ -78,8 +78,18 @@ const props = defineProps<{
 const ui = useUi();
 const route = useRoute();
 
-const match = (path: string, item: NavItem) =>
-  item.exact ? route.path === path : route.path.startsWith(path);
+const normalizePath = (value: string): string => {
+  if (!value) return "/";
+  const trimmed = value.replace(/\/+$/, "");
+  return trimmed || "/";
+};
+
+const match = (path: string, item: NavItem) => {
+  const current = normalizePath(route.path);
+  const target = normalizePath(path);
+  if (item.exact) return current === target;
+  return current === target || current.startsWith(`${target}/`);
+};
 
 const active = computed(() =>
   props.item.to ? match(props.item.to, props.item) : false

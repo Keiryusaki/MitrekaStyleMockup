@@ -22,8 +22,17 @@ export function useSidebar() {
   const route = useRoute();
 
   /* ====== UTIL STATE ====== */
-  const match = (path: string, item: NavItem) =>
-    item.exact ? route.path === path : route.path.startsWith(path);
+  const normalizePath = (value: string): string => {
+    if (!value) return "/";
+    const trimmed = value.replace(/\/+$/, "");
+    return trimmed || "/";
+  };
+  const match = (path: string, item: NavItem) => {
+    const current = normalizePath(route.path);
+    const target = normalizePath(path);
+    if (item.exact) return current === target;
+    return current === target || current.startsWith(`${target}/`);
+  };
   const isActive = (item: NavItem) => (item.to ? match(item.to, item) : false);
   const isGroupOpen = (item: NavItem) => {
     // Auto-expand all groups when searching

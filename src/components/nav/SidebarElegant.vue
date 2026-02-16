@@ -19,7 +19,7 @@ export default defineComponent({
     return () =>
       h("div", { class: "flex flex-col h-full min-h-0" }, [
         // Header user / brand area (sticky)
-        h("div", { class: "px-3 pt-4 pb-3 border-b border-base-300 flex-shrink-0 bg-base-100" }, [
+        h("div", { class: "px-3 pt-4 pb-3 border-b border-base-300 flex-shrink-0 theme-sidebar" }, [
           h(
             "div",
             {
@@ -104,7 +104,7 @@ export default defineComponent({
                         "relative flex items-center gap-3 h-field rounded-field cursor-pointer",
                         "px-3 border border-transparent",
                         active
-                          ? "bg-primary/10 text-primary dark:text-accent border-l-[5px] border-primary dark:border-accent pl-[10px]"
+                          ? "sidebar-item-active sidebar-item-active-border"
                           : "sidebar-hover",
                       ],
                       "aria-current": active ? "page" : undefined,
@@ -198,7 +198,7 @@ export default defineComponent({
                               "border border-transparent",
                               "pl-3 pr-[.75rem]",
                               active
-                                ? "bg-primary/10 text-primary dark:text-accent border-l-[5px] border-primary dark:border-accent pl-[10px]" // Style Child Active
+                                ? "sidebar-item-active sidebar-item-active-border" // Style Child Active
                                 : "sidebar-hover", // Style Child Inactive (hover)
                             ],
                             "aria-current": active ? "page" : undefined,

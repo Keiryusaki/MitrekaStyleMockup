@@ -10,6 +10,7 @@ import { AgGridVue } from "ag-grid-vue3";
 import { ModuleRegistry, AllCommunityModule } from "ag-grid-community";
 import IconPlugin from "@/plugins/icon";
 import { createLoadingPlugin } from "@/plugins/loading-plugin";
+import { initThemeOverrideFromStorage } from "@/composables/themeBuilder";
 
 const app = createApp(App);
 const pinia = createPinia();
@@ -23,6 +24,7 @@ ModuleRegistry.registerModules([AllCommunityModule]);
 
 const ui = useUi();
 ui.applyTheme();
+initThemeOverrideFromStorage();
 
 app.use(IconPlugin);
 

@@ -93,6 +93,22 @@
   --border: 1px;
   --depth: 1;
   --noise: 0;
+
+  /* Additive layout/link tokens (safe default mapping) */
+  --color-layout-topbar-bg: var(--color-primary);
+  --color-layout-topbar-text: #ffffff;
+  --color-layout-sidebar-bg: var(--color-base-100);
+  --color-layout-sidebar-text: var(--color-base-content);
+  --color-sidebar-hover-bg: rgb(209 213 219 / 0.5);
+  --color-sidebar-active-bg: color-mix(in oklch, var(--color-primary), transparent 90%);
+  --color-sidebar-active-text: var(--color-primary);
+  --color-sidebar-active-border: var(--color-primary);
+  --color-sidebar-open-bg: color-mix(in oklch, var(--color-primary), transparent 90%);
+  --color-sidebar-open-text: var(--color-primary);
+  --color-sidebar-active-mark: var(--color-primary);
+  --color-link: var(--color-primary);
+  --color-link-hover: color-mix(in oklch, var(--color-primary), black 16%);
+  --color-link-visited: color-mix(in oklch, var(--color-primary), var(--color-accent) 28%);
 }
 
 /* ---------- LIGHT THEME (Mitreka) ---------- */
@@ -135,6 +151,21 @@
   --size-selector-md: 2.5rem;
   --radius-box: 0.5rem;
   --depth: 1;
+
+  --color-layout-topbar-bg: var(--color-primary);
+  --color-layout-topbar-text: #ffffff;
+  --color-layout-sidebar-bg: var(--color-base-100);
+  --color-layout-sidebar-text: var(--color-base-content);
+  --color-sidebar-hover-bg: rgb(209 213 219 / 0.5);
+  --color-sidebar-active-bg: color-mix(in oklch, var(--color-primary), transparent 90%);
+  --color-sidebar-active-text: var(--color-primary);
+  --color-sidebar-active-border: var(--color-primary);
+  --color-sidebar-open-bg: color-mix(in oklch, var(--color-primary), transparent 90%);
+  --color-sidebar-open-text: var(--color-primary);
+  --color-sidebar-active-mark: var(--color-primary);
+  --color-link: var(--color-primary);
+  --color-link-hover: color-mix(in oklch, var(--color-primary), black 16%);
+  --color-link-visited: color-mix(in oklch, var(--color-primary), var(--color-accent) 28%);
 }
 
 /* ---------- DARK THEME (Mitreka) ---------- */
@@ -177,6 +208,21 @@
   --size-selector-md: 2.5rem;
   --radius-box: 0.5rem;
   --depth: 0;
+
+  --color-layout-topbar-bg: var(--color-primary);
+  --color-layout-topbar-text: #ffffff;
+  --color-layout-sidebar-bg: var(--color-base-100);
+  --color-layout-sidebar-text: var(--color-base-content);
+  --color-sidebar-hover-bg: rgb(229 231 235 / 0.2);
+  --color-sidebar-active-bg: color-mix(in oklch, var(--color-primary), transparent 90%);
+  --color-sidebar-active-text: var(--color-accent);
+  --color-sidebar-active-border: var(--color-accent);
+  --color-sidebar-open-bg: color-mix(in oklch, var(--color-accent), transparent 90%);
+  --color-sidebar-open-text: var(--color-accent);
+  --color-sidebar-active-mark: var(--color-accent);
+  --color-link: var(--color-accent);
+  --color-link-hover: color-mix(in oklch, var(--color-accent), white 24%);
+  --color-link-visited: color-mix(in oklch, var(--color-accent), #a78bfa 28%);
 }
 
 /* =========================================
@@ -252,6 +298,27 @@
     background-color: var(--color-error);
   }
 
+  .theme-topbar {
+    background-color: var(--color-layout-topbar-bg) !important;
+    color: var(--color-layout-topbar-text);
+  }
+  /* Ensure topbar token wins against dark-mode .glass overrides */
+  .theme-topbar.glass {
+    background-color: var(--color-layout-topbar-bg) !important;
+  }
+  .theme-topbar .btn-ghost,
+  .theme-topbar .btn-ghost * {
+    color: var(--color-layout-topbar-text) !important;
+  }
+  .text-layout-topbar {
+    color: var(--color-layout-topbar-text);
+  }
+
+  .theme-sidebar {
+    background-color: var(--color-layout-sidebar-bg);
+    color: var(--color-layout-sidebar-text);
+  }
+
   /* Text colors (base token) */
   .text-base {
     color: var(--color-base-content);
@@ -281,6 +348,13 @@
     color: var(--color-error);
   }
 
+  .text-link {
+    color: var(--color-link);
+  }
+  .hover\:text-link-hover:hover {
+    color: var(--color-link-hover);
+  }
+
   /* Text colors (contrast/content token) */
   .text-base-content {
     color: var(--color-base-content);
@@ -308,6 +382,16 @@
   }
   .text-error-content {
     color: var(--color-error-content);
+  }
+
+  a.text-primary {
+    color: var(--color-link);
+  }
+  a.text-primary:hover {
+    color: var(--color-link-hover);
+  }
+  a.text-primary:visited {
+    color: var(--color-link-visited);
   }
 
   /* Border colors */
@@ -1211,28 +1295,35 @@
 
   /* Sidebar hover utilities - works with both light and dark themes */
   .sidebar-hover:hover {
-    background-color: rgb(209 213 219 / 0.5); /* gray-300/50 for light */
-  }
-  [data-theme="mitrekadark"] .sidebar-hover:hover {
-    background-color: rgb(229 231 235 / 0.2); /* gray-200/20 for dark */
+    background-color: var(--color-sidebar-hover-bg);
   }
 
   /* Sidebar active mark (Discord-style pill indicator) */
   .sidebar-active-mark {
-    background-color: var(--color-primary); /* primary for light */
+    background-color: var(--color-sidebar-active-mark);
   }
   [data-theme="mitrekadark"] .sidebar-active-mark {
-    background-color: var(--color-accent); /* accent for dark */
+    background-color: var(--color-sidebar-active-mark);
+  }
+
+  .sidebar-item-active {
+    background-color: var(--color-sidebar-active-bg);
+    color: var(--color-sidebar-active-text);
+  }
+  .sidebar-item-active-border {
+    border-left-width: 5px;
+    border-color: var(--color-sidebar-active-border);
+    padding-left: 10px;
   }
 
   /* Sidebar parent open state */
   .sidebar-parent-open {
-    background-color: color-mix(in oklch, var(--color-primary), transparent 90%); /* soft primary for light */
-    color: var(--color-primary);
+    background-color: var(--color-sidebar-open-bg);
+    color: var(--color-sidebar-open-text);
   }
   [data-theme="mitrekadark"] .sidebar-parent-open {
-    background-color: color-mix(in oklch, var(--color-accent), transparent 90%); /* soft accent for dark */
-    color: var(--color-accent);
+    background-color: var(--color-sidebar-open-bg);
+    color: var(--color-sidebar-open-text);
   }
 
   /* Sidebar active item border - dark mode uses accent */
@@ -1242,32 +1333,20 @@
 
   /* Sidebar collapse toggle button */
   .sidebar-collapse-btn {
-    background-color: color-mix(in oklch, var(--color-primary), transparent 90%);
-    color: var(--color-primary);
-    border-color: color-mix(in oklch, var(--color-primary), transparent 70%);
+    background-color: var(--color-sidebar-open-bg);
+    color: var(--color-sidebar-open-text);
+    border-color: var(--color-sidebar-active-border);
   }
 
   .sidebar-collapse-btn:hover {
-    background-color: var(--color-primary);
-    color: var(--color-primary-content);
-    border-color: var(--color-primary);
-  }
-
-  [data-theme="mitrekadark"] .sidebar-collapse-btn {
-    background-color: color-mix(in oklch, var(--color-accent), transparent 90%);
-    color: var(--color-accent);
-    border-color: color-mix(in oklch, var(--color-accent), transparent 70%);
-  }
-
-  [data-theme="mitrekadark"] .sidebar-collapse-btn:hover {
-    background-color: var(--color-accent);
-    color: var(--color-accent-content);
-    border-color: var(--color-accent);
+    background-color: color-mix(in oklch, var(--color-sidebar-active-bg), var(--color-sidebar-active-border) 22%);
+    color: var(--color-sidebar-active-text);
+    border-color: var(--color-sidebar-active-border);
   }
 
   /* Link/text-primary dark mode override */
   [data-theme="mitrekadark"] .text-primary {
-    color: var(--color-accent);
+    color: var(--color-link);
   }
 }
 

@@ -1,5 +1,30 @@
 [
   {
+    "version": "2.2.18",
+    "date": "2026-02-16",
+    "label": "Patch",
+    "items": [
+      {
+        "type": "Added",
+        "text": "Theme Builder documentation page untuk panduan implementasi tema di aplikasi consumer",
+        "href": "/theme-builder-docs"
+      },
+      {
+        "type": "Changed",
+        "text": "Theme Builder: perbaikan alur preset/live preview, mode selector topbar, dan sinkronisasi token (layout/sidebar/link/radius)"
+      },
+      {
+        "type": "Fixed",
+        "text": "Sidebar navigation active-state matcher kini berbasis path segment (menghindari double active pada /theme-builder-docs dan /button-usage)"
+      },
+      {
+        "type": "Changed",
+        "text": "Sync package @keiryusaki/mitreka-ui v2.2.18 ke mockup vendor dist"
+      }
+    ],
+    "assets": []
+  },
+  {
     "version": "2.2.17",
     "date": "2026-02-13",
     "label": "Patch",

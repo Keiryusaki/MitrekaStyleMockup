@@ -1241,32 +1241,20 @@
 
   /* Sidebar collapse toggle button */
   .sidebar-collapse-btn {
-    background-color: color-mix(in oklch, var(--color-primary), transparent 90%);
-    color: var(--color-primary);
-    border-color: color-mix(in oklch, var(--color-primary), transparent 70%);
+    background-color: var(--color-sidebar-open-bg);
+    color: var(--color-sidebar-open-text);
+    border-color: var(--color-sidebar-active-border);
   }
 
   .sidebar-collapse-btn:hover {
-    background-color: var(--color-primary);
-    color: var(--color-primary-content);
-    border-color: var(--color-primary);
-  }
-
-  [data-theme="mitrekadark"] .sidebar-collapse-btn {
-    background-color: color-mix(in oklch, var(--color-accent), transparent 90%);
-    color: var(--color-accent);
-    border-color: color-mix(in oklch, var(--color-accent), transparent 70%);
-  }
-
-  [data-theme="mitrekadark"] .sidebar-collapse-btn:hover {
-    background-color: var(--color-accent);
-    color: var(--color-accent-content);
-    border-color: var(--color-accent);
+    background-color: color-mix(in oklch, var(--color-sidebar-active-bg), var(--color-sidebar-active-border) 22%);
+    color: var(--color-sidebar-active-text);
+    border-color: var(--color-sidebar-active-border);
   }
 
   /* Link/text-primary dark mode override */
   [data-theme="mitrekadark"] .text-primary {
-    color: var(--color-accent);
+    color: var(--color-link);
   }
 }
 

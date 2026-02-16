@@ -128,6 +128,14 @@ const routes: RouteRecordRaw[] = [
     component: () => import("@/pages/ThemeSwitcher/ThemeSwitcher.vue"),
   },
   {
+    path: "/theme-builder",
+    component: () => import("@/pages/ThemeBuilder/ThemeBuilder.vue"),
+  },
+  {
+    path: "/theme-builder-docs",
+    component: () => import("@/pages/ThemeBuilder/ThemeBuilderDocs.vue"),
+  },
+  {
     path: "/sidebar",
     component: () => import("@/pages/Sidebar/Sidebar.vue"),
   },

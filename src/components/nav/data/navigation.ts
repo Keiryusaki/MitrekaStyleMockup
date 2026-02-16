@@ -75,7 +75,6 @@ export const NAV: NavItem[] = [
       { id: "loading", label: "Loading", to: "/loading" },
       { id: "statcard", label: "StatCard", to: "/statcard" },
       { id: "pagination", label: "Pagination", to: "/pagination" },
-      { id: "themeswitcher", label: "ThemeSwitcher", to: "/themeswitcher" },
       { id: "sidebar", label: "Sidebar & Nav", to: "/sidebar" },
       { id: "icon", label: "Icons", to: "/icon" },
       { id: "pageheader", label: "PageHeader", to: "/pageheader" },
@@ -86,6 +85,16 @@ export const NAV: NavItem[] = [
        { id: "file-upload", label: "File Upload", to: "/file-upload" },
        { id: "skeleton", label: "Skeleton", to: "/skeleton" },
        { id: "alert", label: "Alert & Banner", to: "/alert" },
+    ],
+  },
+  {
+    id: "utility",
+    label: "Utility",
+    icon: "settings",
+    children: [
+      { id: "themeswitcher", label: "Theme Switcher", to: "/themeswitcher" },
+      { id: "theme-builder", label: "Theme Builder", to: "/theme-builder" },
+      { id: "theme-builder-docs", label: "Theme Builder Docs", to: "/theme-builder-docs" },
     ],
   },
   {

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref } from "vue";
+import { onMounted, ref } from "vue";
 import FloatingTOC, { type TOCItem } from "@/components/FloatingTOC.vue";
 import PageHeader from "@/components/PageHeader.vue";
 
@@ -13,6 +13,58 @@ const tocItems: TOCItem[] = [
 ];
 
 const copiedId = ref<string | null>(null);
+
+type BaseThemePreview = {
+  base100: string;
+  base200: string;
+  base300: string;
+  baseContent: string;
+};
+
+const lightPreview = ref<BaseThemePreview>({
+  base100: "#ffffff",
+  base200: "#f3f4f6",
+  base300: "#e5e5e5",
+  baseContent: "#1a1a1a",
+});
+
+const darkPreview = ref<BaseThemePreview>({
+  base100: "#0f172a",
+  base200: "#1e293b",
+  base300: "#334155",
+  baseContent: "#f8fafc",
+});
+
+function readThemeBasePreview(theme: "mitrekalight" | "mitrekadark"): BaseThemePreview {
+  const root = document.documentElement;
+  const previousTheme = root.getAttribute("data-theme");
+  const hadDarkClass = root.classList.contains("dark");
+
+  root.setAttribute("data-theme", theme);
+  root.classList.toggle("dark", theme === "mitrekadark");
+
+  const style = getComputedStyle(root);
+  const preview: BaseThemePreview = {
+    base100: style.getPropertyValue("--color-base-100").trim(),
+    base200: style.getPropertyValue("--color-base-200").trim(),
+    base300: style.getPropertyValue("--color-base-300").trim(),
+    baseContent: style.getPropertyValue("--color-base-content").trim(),
+  };
+
+  if (previousTheme) {
+    root.setAttribute("data-theme", previousTheme);
+  } else {
+    root.removeAttribute("data-theme");
+  }
+  root.classList.toggle("dark", hadDarkClass);
+
+  return preview;
+}
+
+function refreshThemeBasePreviews() {
+  lightPreview.value = readThemeBasePreview("mitrekalight");
+  darkPreview.value = readThemeBasePreview("mitrekadark");
+}
 
 const copyCode = async (code: string, id: string) => {
   await navigator.clipboard.writeText(code);
@@ -101,6 +153,10 @@ const codes = {
   --color-base-content: oklch(21% 0.006 285.885);
 }`,
 };
+
+onMounted(() => {
+  refreshThemeBasePreviews();
+});
 </script>
 
 <template>
@@ -172,31 +228,31 @@ const codes = {
         <!-- Light Theme -->
         <div class="rounded-box overflow-hidden border border-base-300">
           <div class="px-4 py-2 bg-base-200 font-medium text-sm">Light Theme</div>
-          <div class="p-4 space-y-2" style="background: #ffffff;">
+          <div class="p-4 space-y-2" :style="{ background: lightPreview.base100 }">
             <div class="flex items-center gap-3">
-              <div class="w-12 h-8 rounded" style="background: #ffffff; border: 1px solid #e5e5e5;"></div>
-              <div class="text-xs" style="color: #1a1a1a;">
-                <code>base-100</code> <span class="opacity-60">#ffffff</span>
+              <div class="w-12 h-8 rounded" :style="{ background: lightPreview.base100, border: `1px solid ${lightPreview.base300}` }"></div>
+              <div class="text-xs" :style="{ color: lightPreview.baseContent }">
+                <code>base-100</code> <span class="opacity-60">{{ lightPreview.base100 }}</span>
               </div>
             </div>
             <div class="flex items-center gap-3">
-              <div class="w-12 h-8 rounded" style="background: #f3f4f6;"></div>
-              <div class="text-xs" style="color: #1a1a1a;">
-                <code>base-200</code> <span class="opacity-60">#f3f4f6</span>
+              <div class="w-12 h-8 rounded" :style="{ background: lightPreview.base200 }"></div>
+              <div class="text-xs" :style="{ color: lightPreview.baseContent }">
+                <code>base-200</code> <span class="opacity-60">{{ lightPreview.base200 }}</span>
               </div>
             </div>
             <div class="flex items-center gap-3">
-              <div class="w-12 h-8 rounded" style="background: #e5e5e5;"></div>
-              <div class="text-xs" style="color: #1a1a1a;">
-                <code>base-300</code> <span class="opacity-60">#e5e5e5</span>
+              <div class="w-12 h-8 rounded" :style="{ background: lightPreview.base300 }"></div>
+              <div class="text-xs" :style="{ color: lightPreview.baseContent }">
+                <code>base-300</code> <span class="opacity-60">{{ lightPreview.base300 }}</span>
               </div>
             </div>
             <div class="flex items-center gap-3">
-              <div class="w-12 h-8 rounded flex items-center justify-center" style="background: #1a1a1a;">
-                <span class="text-white text-xs">Aa</span>
+              <div class="w-12 h-8 rounded flex items-center justify-center" :style="{ background: lightPreview.baseContent }">
+                <span class="text-xs" :style="{ color: lightPreview.base100 }">Aa</span>
               </div>
-              <div class="text-xs" style="color: #1a1a1a;">
-                <code>base-content</code> <span class="opacity-60">#1a1a1a</span>
+              <div class="text-xs" :style="{ color: lightPreview.baseContent }">
+                <code>base-content</code> <span class="opacity-60">{{ lightPreview.baseContent }}</span>
               </div>
             </div>
           </div>
@@ -205,31 +261,31 @@ const codes = {
         <!-- Dark Theme -->
         <div class="rounded-box overflow-hidden border border-base-300">
           <div class="px-4 py-2 bg-base-200 font-medium text-sm">Dark Theme</div>
-          <div class="p-4 space-y-2" style="background: #1e1b4b;">
+          <div class="p-4 space-y-2" :style="{ background: darkPreview.base100 }">
             <div class="flex items-center gap-3">
-              <div class="w-12 h-8 rounded" style="background: #1e1b4b; border: 1px solid #4338ca;"></div>
-              <div class="text-xs" style="color: #f5f5f5;">
-                <code>base-100</code> <span class="opacity-60">#1e1b4b</span>
+              <div class="w-12 h-8 rounded" :style="{ background: darkPreview.base100, border: `1px solid ${darkPreview.base300}` }"></div>
+              <div class="text-xs" :style="{ color: darkPreview.baseContent }">
+                <code>base-100</code> <span class="opacity-60">{{ darkPreview.base100 }}</span>
               </div>
             </div>
             <div class="flex items-center gap-3">
-              <div class="w-12 h-8 rounded" style="background: #312e81;"></div>
-              <div class="text-xs" style="color: #f5f5f5;">
-                <code>base-200</code> <span class="opacity-60">#312e81</span>
+              <div class="w-12 h-8 rounded" :style="{ background: darkPreview.base200 }"></div>
+              <div class="text-xs" :style="{ color: darkPreview.baseContent }">
+                <code>base-200</code> <span class="opacity-60">{{ darkPreview.base200 }}</span>
               </div>
             </div>
             <div class="flex items-center gap-3">
-              <div class="w-12 h-8 rounded" style="background: #4338ca;"></div>
-              <div class="text-xs" style="color: #f5f5f5;">
-                <code>base-300</code> <span class="opacity-60">#4338ca</span>
+              <div class="w-12 h-8 rounded" :style="{ background: darkPreview.base300 }"></div>
+              <div class="text-xs" :style="{ color: darkPreview.baseContent }">
+                <code>base-300</code> <span class="opacity-60">{{ darkPreview.base300 }}</span>
               </div>
             </div>
             <div class="flex items-center gap-3">
-              <div class="w-12 h-8 rounded flex items-center justify-center" style="background: #f5f5f5;">
-                <span class="text-xs" style="color: #1e1b4b;">Aa</span>
+              <div class="w-12 h-8 rounded flex items-center justify-center" :style="{ background: darkPreview.baseContent }">
+                <span class="text-xs" :style="{ color: darkPreview.base100 }">Aa</span>
               </div>
-              <div class="text-xs" style="color: #f5f5f5;">
-                <code>base-content</code> <span class="opacity-60">#f5f5f5</span>
+              <div class="text-xs" :style="{ color: darkPreview.baseContent }">
+                <code>base-content</code> <span class="opacity-60">{{ darkPreview.baseContent }}</span>
               </div>
             </div>
           </div>

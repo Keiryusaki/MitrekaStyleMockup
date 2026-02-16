@@ -7,6 +7,10 @@ Demo & development environment untuk **Mitreka Design System**. Project ini digu
 
 **Live Demo:** https://keiryusaki.github.io/MitrekaStyleMockup/
 
+## Documentation
+
+- Theme Builder: `docs/THEME_BUILDER.md`
+
 ## Quick Start
 
 ```bash
