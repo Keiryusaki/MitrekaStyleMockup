@@ -7,7 +7,7 @@
         @click="ui.sidebarOpen = false"
       ></div>
       <aside
-        class="fixed inset-y-0 left-0 z-50 w-72 theme-sidebar border-r border-base-300 overflow-y-auto"
+        class="fixed top-14 left-0 z-50 w-72 h-[calc(100dvh-56px)] theme-sidebar border-r border-base-300 overflow-y-auto overscroll-y-contain"
       >
         <SidebarElegant />
       </aside>

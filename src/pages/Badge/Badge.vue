@@ -288,22 +288,4 @@ const classes = (t: Tone) =>
   </div>
 </template>
 
-<style scoped>
-/* helper for the “join” segmented control (optional, feel free to remove if you already have one) */
-.join {
-  display: inline-flex;
-  border-radius: 0.5rem;
-  overflow: hidden;
-}
-.join .join-item {
-  border-radius: 0;
-}
-.join .join-item:first-child {
-  border-top-left-radius: 0.5rem;
-  border-bottom-left-radius: 0.5rem;
-}
-.join .join-item:last-child {
-  border-top-right-radius: 0.5rem;
-  border-bottom-right-radius: 0.5rem;
-}
-</style>
+

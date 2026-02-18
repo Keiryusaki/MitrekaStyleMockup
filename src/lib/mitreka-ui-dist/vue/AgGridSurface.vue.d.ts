@@ -11,6 +11,7 @@ declare const _default: import('vue').DefineComponent<import('vue').ExtractPropT
     autoHeaderHeight?: boolean;
     autoHeightWhenFewRows?: boolean;
     autoHeightThreshold?: number;
+    normalLayoutHeight?: string;
     pinnedShadows?: boolean;
 }>, {
     density: string;
@@ -21,6 +22,7 @@ declare const _default: import('vue').DefineComponent<import('vue').ExtractPropT
     autoHeaderHeight: boolean;
     autoHeightWhenFewRows: boolean;
     autoHeightThreshold: number;
+    normalLayoutHeight: string;
     pinnedShadows: boolean;
 }>>, {}, {}, {}, {}, import('vue').ComponentOptionsMixin, import('vue').ComponentOptionsMixin, {
     "grid-ready": (params: GridReadyEvent<any, any>) => void;
@@ -33,6 +35,7 @@ declare const _default: import('vue').DefineComponent<import('vue').ExtractPropT
     autoHeaderHeight?: boolean;
     autoHeightWhenFewRows?: boolean;
     autoHeightThreshold?: number;
+    normalLayoutHeight?: string;
     pinnedShadows?: boolean;
 }>, {
     density: string;
@@ -43,6 +46,7 @@ declare const _default: import('vue').DefineComponent<import('vue').ExtractPropT
     autoHeaderHeight: boolean;
     autoHeightWhenFewRows: boolean;
     autoHeightThreshold: number;
+    normalLayoutHeight: string;
     pinnedShadows: boolean;
 }>>> & Readonly<{
     "onGrid-ready"?: ((params: GridReadyEvent<any, any>) => any) | undefined;
@@ -55,6 +59,7 @@ declare const _default: import('vue').DefineComponent<import('vue').ExtractPropT
     autoHeaderHeight: boolean;
     autoHeightWhenFewRows: boolean;
     autoHeightThreshold: number;
+    normalLayoutHeight: string;
     pinnedShadows: boolean;
 }, {}, {}, {}, string, import('vue').ComponentProvideOptions, true, {}, any>;
 export default _default;

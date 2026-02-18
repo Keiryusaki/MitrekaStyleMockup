@@ -34,6 +34,33 @@
   cursor: not-allowed;
 }
 
+/* Join utility (reusable for button/input/select/mixed controls) */
+.join {
+  --join-radius: var(--radius-field-md);
+  display: inline-flex;
+  align-items: stretch;
+  border-radius: var(--join-radius);
+  isolation: isolate;
+}
+.join .join-item {
+  border-radius: 0 !important;
+  position: relative;
+}
+.join .join-item + .join-item {
+  margin-left: calc(var(--border) * -1);
+}
+.join .join-item:first-child {
+  border-top-left-radius: var(--join-radius) !important;
+  border-bottom-left-radius: var(--join-radius) !important;
+}
+.join .join-item:last-child {
+  border-top-right-radius: var(--join-radius) !important;
+  border-bottom-right-radius: var(--join-radius) !important;
+}
+.join .join-item:focus-visible {
+  z-index: 2;
+}
+
 /* Button size variants */
 .btn-xs {
   height: var(--size-field-xs);

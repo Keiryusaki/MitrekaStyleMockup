@@ -28,11 +28,11 @@ const downloadFile = async (filename: string) => {
 </script>
 
 <template>
-  <details class="card p-6 mt-10">
+  <details class="card p-6 mt-10 min-w-0">
     <summary class="cursor-pointer text-sm font-medium">
       AG Grid - Dev Guide
     </summary>
-    <div class="mt-3 rounded-xl border border-base-300 p-4 bg-base-200">
+    <div class="mt-3 rounded-xl border border-base-300 p-4 bg-base-200 min-w-0">
       <h3 class="text-lg font-semibold mb-2">AG Grid - Dev Guide (Standard)</h3>
 
       <div class="mb-4 p-3 bg-base-300 rounded-lg">
@@ -121,6 +121,57 @@ ModuleRegistry.registerModules([AllCommunityModule])
         </li>
 
         <li>
+          <h4 class="font-semibold">Parameter Height Otomatis</h4>
+          <p class="text-sm opacity-80">
+            Default behavior: jika row di bawah threshold maka
+            <code>autoHeight</code>, jika sama/di atas threshold maka
+            <code>normal</code> dengan tinggi container yang bisa diatur.
+          </p>
+          <pre v-pre class="code"><code>&lt;AgGridSurface
+  :rowData="rows"
+  :columnDefs="cols"
+  :autoHeightWhenFewRows="true"
+  :autoHeightThreshold="15"
+  normalLayoutHeight="80vh"
+/&gt;</code></pre>
+          <ul class="text-sm list-disc ml-4">
+            <li><code>autoHeightWhenFewRows</code>: aktif/nonaktif logika otomatis.</li>
+            <li><code>autoHeightThreshold</code>: batas jumlah row (default 15).</li>
+            <li><code>normalLayoutHeight</code>: tinggi mode normal (default <code>80vh</code>).</li>
+          </ul>
+        </li>
+
+        <li>
+          <h4 class="font-semibold">Pemisah Kolom Per Bulan</h4>
+          <p class="text-sm opacity-80">
+            Untuk tabel model bulanan (Rencana/Realisasi), gunakan flag page-level
+            agar border pemisah bulan bisa on/off tanpa memengaruhi tabel lain.
+          </p>
+          <pre v-pre class="code"><code>const enableBudgetMonthSeparator = ref(true)
+
+const columnDefs = computed(() => [
+  {
+    headerName: '2026',
+    children: months.map((month, idx) => ({
+      headerName: month,
+      headerClass: enableBudgetMonthSeparator.value ? 'pcf-month-sep-group' : undefined,
+      children: [
+        { field: `plan${idx + 1}`, headerName: 'Rencana' },
+        {
+          field: `actual${idx + 1}`,
+          headerName: 'Realisasi',
+          headerClass: enableBudgetMonthSeparator.value ? 'pcf-month-sep' : undefined,
+          cellClass: enableBudgetMonthSeparator.value
+            ? 'ag-right-aligned-cell pcf-month-sep'
+            : 'ag-right-aligned-cell',
+        },
+      ],
+    })),
+  },
+])</code></pre>
+        </li>
+
+        <li>
           <h4 class="font-semibold">Compare Rows (Perbandingan)</h4>
           <p class="text-sm opacity-80">
             Tambahkan metadata <code>compareBlock</code> + <code>compareTheme</code>
@@ -166,4 +217,15 @@ api.value?.exportDataAsCsv({ fileName: 'data.csv' })</code></pre>
     </div>
   </details>
 </template>
+
+<style scoped>
+.code {
+  display: block;
+  max-width: 100%;
+  overflow-x: auto;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+</style>
 

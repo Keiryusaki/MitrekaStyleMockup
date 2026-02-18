@@ -11,6 +11,13 @@
     font-size: var(--font-size-xs);
   }
 
+  /* Prevent mobile overflow from long inline code tokens inside text/list boxes */
+  code:not(pre code) {
+    white-space: normal;
+    overflow-wrap: anywhere;
+    word-break: break-word;
+  }
+
   /* Custom scrollbar - elegant mobile-like style */
   * {
     scrollbar-width: thin;

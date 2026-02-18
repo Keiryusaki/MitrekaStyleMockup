@@ -11,10 +11,12 @@
       <Sidebar />
 
       <!-- Main Content -->
-      <main ref="mainContent" class="overflow-y-auto min-h-0 bg-base-200 flex flex-col">
-        <div class="flex-1 p-4 md:p-6">
+      <main ref="mainContent" class="overflow-y-auto overflow-x-hidden min-h-0 min-w-0 bg-base-200 flex flex-col">
+        <div class="flex-1 min-w-0 p-4 md:p-6">
           <Breadcrumbs v-if="!route.meta.hideBreadcrumbs" class="mb-4" />
-          <router-view />
+          <div class="min-w-0">
+            <router-view />
+          </div>
         </div>
         <Footer />
       </main>

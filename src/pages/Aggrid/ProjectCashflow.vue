@@ -96,7 +96,8 @@ const revenueGapTotal = computed(() =>
   )
 );
 
-const budgetPlanRows = [
+const enableBudgetMonthSeparator = ref(true);
+const budgetBaseRows = [
   {
     code: "51101",
     name: "HPP PRJ - Gaji Produksi Tim Internal",
@@ -152,6 +153,26 @@ const budgetPlanRows = [
     actual: [0, 0, 0, 0, 0],
   },
 ];
+const budgetPlanRows = Array.from({ length: 50 }, (_, idx) => {
+  const base = budgetBaseRows[idx % budgetBaseRows.length];
+  const ratio = 1 + ((idx % 5) - 2) * 0.05;
+  const janPlan = Math.max(0, Math.round((base.plan[0] ?? 0) * ratio));
+  const febPlan = Math.round(janPlan * (idx % 2 === 0 ? 0.12 : 0.08));
+  const marPlan = Math.round(janPlan * (idx % 3 === 0 ? 0.1 : 0.06));
+  const aprPlan = Math.round(janPlan * 0.04);
+  const meiPlan = Math.round(janPlan * 0.03);
+  const janActual = Math.round(janPlan * (idx % 4 === 0 ? 0.75 : 0.55));
+  const febActual = Math.round(febPlan * 0.7);
+  const marActual = Math.round(marPlan * 0.6);
+  const aprActual = Math.round(aprPlan * 0.4);
+  const meiActual = Math.round(meiPlan * 0.35);
+  return {
+    code: `${base.code}-${String(idx + 1).padStart(2, "0")}`,
+    name: `${base.name} ${idx + 1}`,
+    plan: [janPlan, febPlan, marPlan, aprPlan, meiPlan],
+    actual: [janActual, febActual, marActual, aprActual, meiActual],
+  };
+});
 
 const budgetPlanTotals = computed(() => {
   const planTotals = monthsBudget.map((_, idx) =>
@@ -327,6 +348,8 @@ const budgetColumnDefs = computed(() => [
     headerName: "2026",
     children: monthsBudget.map((month, idx) => ({
       headerName: month,
+      headerClass:
+        enableBudgetMonthSeparator.value ? "pcf-month-sep-group" : undefined,
       children: [
         {
           field: `plan${idx + 1}`,
@@ -342,8 +365,12 @@ const budgetColumnDefs = computed(() => [
           headerName: "Realisasi",
           type: "numericColumn",
           valueFormatter: numberFormatter,
-          cellClass: "ag-right-aligned-cell",
+          cellClass: enableBudgetMonthSeparator.value
+            ? "ag-right-aligned-cell pcf-month-sep"
+            : "ag-right-aligned-cell",
           cellClassRules: negativeCellRules,
+          headerClass:
+            enableBudgetMonthSeparator.value ? "pcf-month-sep" : undefined,
           width: 120,
         },
       ],
@@ -391,6 +418,10 @@ const gridOptions = {
   animateRows: false,
   getRowHeight: (params: any) =>
     params?.data?.rowType === "spacer" ? 24 : baseRowHeight.value,
+};
+const budgetGridOptions = {
+  ...gridOptions,
+  pagination: false,
 };
 const cashflowGridOptions = {
   ...gridOptions,
@@ -568,6 +599,7 @@ const cashflowRowClassRules = {
         <div class="pcf-section-title">Revenue</div>
         <div class="pcf-grid" ref="revenueGridWrap">
           <AgGridSurface :auto-row-height="false" :pinned-shadows="false"
+            :auto-height-threshold="16"
             density="compact"
             :class="['agx', 'agx-compact', themeClass, 'w-full', 'h-full']"
             theme="legacy"
@@ -587,16 +619,18 @@ const cashflowRowClassRules = {
         <div class="pcf-section-title">Budget Plan</div>
         <div class="pcf-grid pcf-grid-auto" ref="budgetGridWrap">
           <AgGridSurface :auto-row-height="false" :pinned-shadows="false"
+            :auto-height-threshold="15"
+            normal-layout-height="80vh"
             density="compact"
             :class="['agx', 'agx-compact', themeClass, 'w-full', 'h-full']"
             theme="legacy"
             :style="{
               '--ag-odd-row-background-color': isDark ? '#0d1a33' : '#F3F4F6',
             }"
-            :rowData="budgetRowData"
+          :rowData="budgetRowData"
           :columnDefs="budgetColumnDefs"
           :defaultColDef="defaultColDef"
-          :gridOptions="gridOptions"
+          :gridOptions="budgetGridOptions"
           :rowClassRules="baseRowClassRules"
         />
       </div>
@@ -694,6 +728,12 @@ const cashflowRowClassRules = {
 }
 .pcf-grid :deep(.pcf-item-strong) {
   font-weight: 600;
+}
+.pcf-grid :deep(.ag-cell.pcf-month-sep),
+.pcf-grid :deep(.ag-header-cell.pcf-month-sep),
+.pcf-grid :deep(.ag-header-group-cell.pcf-month-sep-group) {
+  border-right: 2px solid
+    color-mix(in oklch, var(--color-base-content), transparent 60%) !important;
 }
 .summary-card {
   display: flex;

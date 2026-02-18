@@ -1,5 +1,5 @@
 <template>
-  <div class="space-y-8">
+  <div class="space-y-8 min-w-0">
     <!-- Hero Section -->
     <section class="relative overflow-hidden rounded-2xl hero-gradient p-8 md:p-12 text-white">
       <div class="absolute inset-0 bg-[url('data:image/svg+xml,%3Csvg%20width%3D%2260%22%20height%3D%2260%22%20viewBox%3D%220%200%2060%2060%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%3Cg%20fill%3D%22none%22%20fill-rule%3D%22evenodd%22%3E%3Cg%20fill%3D%22%23ffffff%22%20fill-opacity%3D%220.08%22%3E%3Cpath%20d%3D%22M36%2034v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6%2034v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6%204V0H4v4H0v2h4v4h2V6h4V4H6z%22%2F%3E%3C%2Fg%3E%3C%2Fg%3E%3C%2Fsvg%3E')] opacity-30"></div>
@@ -118,7 +118,7 @@
     </div>
 
     <!-- Getting Started -->
-    <section class="card p-6 md:p-8">
+    <section class="card p-6 md:p-8 min-w-0">
       <div class="flex items-start gap-4 mb-6">
         <div class="w-12 h-12 rounded-xl rocket-icon-bg flex items-center justify-center text-white flex-shrink-0">
           <Icon name="rocket" class="w-6 h-6" />
@@ -128,14 +128,17 @@
           <p class="text-sm opacity-70">Mulai gunakan Mitreka Design System di project kamu</p>
         </div>
       </div>
-      <div class="grid md:grid-cols-3 gap-4">
-        <div v-for="(step, idx) in gettingStartedSteps" :key="step.title" class="p-4 rounded-xl bg-base-200/50 border border-base-300">
+      <div class="grid md:grid-cols-3 gap-4 min-w-0">
+        <div v-for="(step, idx) in gettingStartedSteps" :key="step.title" class="p-4 rounded-xl bg-base-200/50 border border-base-300 min-w-0">
           <div class="w-8 h-8 rounded-full step-number-bg text-primary dark:text-accent font-bold flex items-center justify-center mb-3">
             {{ idx + 1 }}
           </div>
           <h3 class="font-semibold mb-1">{{ step.title }}</h3>
           <p class="text-sm opacity-70">{{ step.desc }}</p>
-          <code v-if="step.code" class="block mt-3 text-xs bg-base-300 p-2 rounded overflow-x-auto">{{ step.code }}</code>
+          <code
+            v-if="step.code"
+            class="block mt-3 max-w-full overflow-x-auto whitespace-pre-wrap break-words text-xs bg-base-300 p-2 rounded"
+          >{{ step.code }}</code>
         </div>
       </div>
     </section>

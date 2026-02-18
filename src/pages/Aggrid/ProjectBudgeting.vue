@@ -70,13 +70,6 @@ const density = ref<"compact" | "cozy" | "spacious">("compact");
 const striped = ref(true);
 const activeTab = ref<"value" | "timeline">("value");
 
-const densityClass = computed(() =>
-  density.value === "compact"
-    ? "agx-compact"
-    : density.value === "spacious"
-    ? "agx-spacious"
-    : ""
-);
 const themeClass = computed(() =>
   isDark.value ? "ag-theme-quartz-dark" : "ag-theme-quartz"
 );
@@ -491,7 +484,7 @@ const reloadData = () => {
         </button>
       </div>
 
-      <div v-if="activeTab === 'value'" class="space-y-3">
+      <div v-if="activeTab === 'value'" class="space-y-3 pb-4">
         <div class="grid gap-3 md:grid-cols-3 lg:grid-cols-7 text-xs text-base-content/70">
           <div class="summary-card">
             <div class="summary-icon">
@@ -588,13 +581,13 @@ const reloadData = () => {
 
       <div
         ref="valueGridWrap"
-        class="w-full"
-        :style="{ minHeight: `${minGridHeight}px`, height: '70vh' }"
+        class="w-full project-grid-wrap"
+        :style="{ minHeight: `${minGridHeight}px` }"
       >
-        <AgGridSurface :auto-row-height="false" :pinned-shadows="false"
+        <AgGridSurface :auto-row-height="false" :pinned-shadows="false" normal-layout-height="100%"
           :density="density"
           :key="gridKey"
-          :class="['agx', themeClass, densityClass, 'w-full', 'h-full', 'min-h-0']"
+          :class="['agx', themeClass, 'w-full', 'h-full', 'min-h-0']"
           theme="legacy"
           :style="{
             '--ag-odd-row-background-color': striped
@@ -612,7 +605,7 @@ const reloadData = () => {
       </div>
     </div>
 
-      <div v-else class="space-y-3">
+      <div v-else class="space-y-3 pb-4">
         <div class="grid gap-3 md:grid-cols-4 text-xs text-base-content/70">
           <div class="summary-card">
             <div class="summary-icon">
@@ -672,13 +665,13 @@ const reloadData = () => {
 
       <div
         ref="timelineGridWrap"
-        class="w-full"
-        :style="{ minHeight: `${minGridHeight}px`, height: '70vh' }"
+        class="w-full project-grid-wrap"
+        :style="{ minHeight: `${minGridHeight}px` }"
       >
-        <AgGridSurface :auto-row-height="false" :pinned-shadows="false"
+        <AgGridSurface :auto-row-height="false" :pinned-shadows="false" normal-layout-height="100%"
           :density="density"
           :key="gridKey + '-timeline'"
-          :class="['agx', themeClass, densityClass, 'w-full', 'h-full', 'min-h-0']"
+          :class="['agx', themeClass, 'w-full', 'h-full', 'min-h-0']"
           theme="legacy"
           :style="{
             '--ag-odd-row-background-color': striped
@@ -777,6 +770,16 @@ const reloadData = () => {
 .summary-value-wrap :deep(.summary-tooltip) {
   display: block;
   max-width: 100%;
+}
+.project-grid-wrap {
+  height: clamp(360px, 58dvh, 70vh);
+  overscroll-behavior: contain;
+  margin-bottom: 0.5rem;
+}
+@media (max-width: 767px) {
+  .project-grid-wrap {
+    height: clamp(320px, 52dvh, 56dvh);
+  }
 }
 </style>
 

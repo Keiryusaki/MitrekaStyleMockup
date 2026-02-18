@@ -57,14 +57,14 @@ const outlineClass = (k: Kind) => {
 </script>
 
 <template>
-  <div class="space-y-8">
+  <div class="space-y-8 min-w-0">
     <PageHeader 
       category="Components"
       title="Button" 
       description="Solid & Outline, 9 warna, 5 ukuran. Class disediakan via theme CSS."
     />
 
-    <div class="card p-4 md:p-6 space-y-5">
+    <div class="card p-4 md:p-6 space-y-5 min-w-0">
       <!-- Controls -->
       <section id="controls" class="rounded-box border border-base-300 p-4 scroll-mt-20">
         <div class="flex flex-wrap items-center gap-4">
@@ -519,22 +519,4 @@ const outlineClass = (k: Kind) => {
   </div>
 </template>
 
-<style scoped>
-/* helper for the “join” segmented control (optional, feel free to remove if you already have one) */
-.join {
-  display: inline-flex;
-  border-radius: 0.5rem;
-  overflow: hidden;
-}
-.join .join-item {
-  border-radius: 0;
-}
-.join .join-item:first-child {
-  border-top-left-radius: 0.5rem;
-  border-bottom-left-radius: 0.5rem;
-}
-.join .join-item:last-child {
-  border-top-right-radius: 0.5rem;
-  border-bottom-right-radius: 0.5rem;
-}
-</style>
+

@@ -24,6 +24,18 @@
       <input class="input input-sm w-48 lg:w-64 hidden md:block" placeholder="Search..." />
       <NotificationDropdown />
 
+      <button
+        class="btn btn-ghost btn-sm text-layout-topbar relative"
+        title="What's New"
+        @click="whatsNewOpen = true"
+      >
+        <Icon name="megaphone" class="w-5 h-5" />
+        <span
+          v-if="showWhatsNewDot"
+          class="absolute -top-0.5 -right-0.5 block h-2 w-2 rounded-full bg-warning"
+        />
+      </button>
+
       <div ref="themeMenuRef" class="relative">
         <button
           class="btn btn-ghost btn-sm text-layout-topbar"
@@ -113,6 +125,15 @@
       class="absolute inset-0 bg-gradient-to-b from-black/30 via-black/30 via-40% to-black/50"
     ></div>
   </header>
+
+  <WhatsNewGlassModal
+    v-model="whatsNewOpen"
+    :release-version="RELEASE_VERSION"
+    :starter-pack-name="STARTER_PACK_FILENAME"
+    :starter-pack-version="STARTER_PACK_VERSION"
+    :total-components="TOTAL_COMPONENTS"
+    @dismissed="markWhatsNewSeen"
+  />
 </template>
 
 <script setup lang="ts">
@@ -120,6 +141,7 @@ import { computed, onMounted, onUnmounted, ref } from "vue";
 import { useUi } from "@/stores/ui";
 import logoUrl from "@/assets/logo.png";
 import NotificationDropdown from "@/components/nav/NotificationDropdown.vue";
+import WhatsNewGlassModal from "@/components/nav/WhatsNewGlassModal.vue";
 import { useToast } from "@keiryusaki/mitreka-ui/composables";
 import {
   applyThemeOverride,
@@ -136,12 +158,20 @@ const toast = useToast();
 
 const THEME_MODE_KEY = "ui-theme-mode-v1";
 const CODE_PRESET_KEY = "ui-code-theme-preset-v1";
+const RELEASE_VERSION = "2.2.22";
+const STARTER_PACK_FILENAME = "mitreka-design-system-starter-pack-v2.2.22.zip";
+const STARTER_PACK_VERSION =
+  STARTER_PACK_FILENAME.match(/-v(\d+\.\d+\.\d+)\.zip$/)?.[1] ?? RELEASE_VERSION;
+const TOTAL_COMPONENTS = 36;
+const WHATS_NEW_SEEN_KEY = `ui-whats-new-seen-${RELEASE_VERSION}`;
 type ThemeMode = "light" | "system" | "dark";
 
 const themeMenuOpen = ref(false);
 const themeMenuRef = ref<HTMLElement | null>(null);
 const themeMode = ref<ThemeMode>("system");
 const selectedCodePresetId = ref("");
+const whatsNewOpen = ref(false);
+const showWhatsNewDot = ref(false);
 
 const codePresetThemes = computed(() => codeThemePresets);
 
@@ -200,6 +230,11 @@ function logout() {
   toast.notify({ type: "info", message: "Logging out..." });
 }
 
+function markWhatsNewSeen() {
+  showWhatsNewDot.value = false;
+  localStorage.setItem(WHATS_NEW_SEEN_KEY, "1");
+}
+
 let mediaQuery: MediaQueryList | null = null;
 
 onMounted(() => {
@@ -213,6 +248,12 @@ onMounted(() => {
   }
 
   applyThemeMode(themeMode.value);
+  if (!localStorage.getItem(WHATS_NEW_SEEN_KEY)) {
+    showWhatsNewDot.value = true;
+    setTimeout(() => {
+      whatsNewOpen.value = true;
+    }, 320);
+  }
   mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
   mediaQuery.addEventListener("change", handleSystemThemeChange);
   document.addEventListener("click", handleClickOutside);

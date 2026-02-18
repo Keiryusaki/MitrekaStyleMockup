@@ -34,6 +34,12 @@ const attachPinnedShadowsToElement = (
     const centerViewport = rootEl.querySelector(
       ".ag-center-cols-viewport"
     ) as HTMLElement | null;
+    const centerContainer = rootEl.querySelector(
+      ".ag-center-cols-container"
+    ) as HTMLElement | null;
+    const hScrollViewport = rootEl.querySelector(
+      ".ag-body-horizontal-scroll-viewport"
+    ) as HTMLElement | null;
 
     const setClasses = (left: number, maxScroll: number) => {
       const leftWidth = pinnedLeftEl?.getBoundingClientRect().width ?? 0;
@@ -64,11 +70,35 @@ const attachPinnedShadowsToElement = (
 
     const ro = new ResizeObserver(update);
     ro.observe(viewport);
+    if (centerContainer) ro.observe(centerContainer);
+    if (hScrollViewport) ro.observe(hScrollViewport);
+    if (shadowHost && shadowHost !== viewport) ro.observe(shadowHost);
+
+    const mo = new MutationObserver(update);
+    if (centerContainer) {
+      mo.observe(centerContainer, {
+        childList: true,
+        subtree: true,
+        attributes: true,
+        attributeFilter: ["style", "class"],
+      });
+    }
+    mo.observe(viewport, {
+      childList: true,
+      subtree: true,
+      attributes: true,
+      attributeFilter: ["style", "class"],
+    });
+
+    const onWindowResize = () => update();
+    window.addEventListener("resize", onWindowResize, { passive: true });
 
     update();
 
     return () => {
       viewport.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", onWindowResize);
+      mo.disconnect();
       ro.disconnect();
       shadowHost.classList.remove("agx-shadow-left", "agx-shadow-right");
     };

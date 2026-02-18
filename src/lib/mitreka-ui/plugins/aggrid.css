@@ -384,3 +384,52 @@
   border-color: var(--ag-input-focus-border-color, #93c5fd) !important;
   box-shadow: 0 0 0 3px rgba(147, 197, 253, 0.25);
 }
+
+/* Mobile pagination cleanup */
+@media (max-width: 640px) {
+  .agx .ag-paging-panel {
+    height: auto;
+    min-height: var(--ag-pagination-panel-height);
+    padding: 8px;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px;
+    overflow: visible;
+  }
+
+  .agx .ag-paging-panel > * {
+    margin: 0 !important;
+    flex: 0 0 auto;
+  }
+
+  .agx .ag-paging-row-summary-panel {
+    display: none;
+  }
+
+  .agx .ag-paging-page-size {
+    order: 1;
+    flex: 0 0 100%;
+    display: flex !important;
+    justify-content: center;
+  }
+
+  .agx .ag-paging-page-summary-panel {
+    order: 2;
+    flex: 0 0 100%;
+    margin-left: 0;
+    gap: 6px;
+    display: flex !important;
+    justify-content: center;
+    align-items: center;
+    white-space: nowrap;
+  }
+
+  .agx .ag-paging-button {
+    padding: 4px;
+  }
+
+  .agx .ag-paging-page-size .ag-wrapper {
+    min-width: 72px;
+  }
+}

@@ -65,3 +65,27 @@ Catatan deploy GH Pages (biar gak gagal):
 2) Gunakan vendor dist: `src/lib/mitreka-ui-dist` dan alias Vite ke sana.
 3) CSS pakai lokal: `src/lib/mitreka-ui/index.css` (bukan `@keiryusaki/mitreka-ui/css`).
 4) Setiap update mitreka-ui: re-copy `mitreka-ui/dist` -> `mitreka-ui-dist` sebelum push.
+
+Standar Starter Pack (wajib konsisten):
+- `MitrekaStyleMockup` = source of truth Design System.
+- `mitreka-consumer-test` = sandbox testing + validasi standarisasi starter pack.
+- Starter pack selalu diturunkan dari `mitreka-consumer-test` yang sudah lolos uji.
+
+Output starter pack:
+1) Folder mentah (tanpa install dependency, tanpa node_modules).
+2) File zip siap bagikan.
+
+Format nama zip starter pack:
+- `mitreka-design-system-starter-pack-vX.Y.Z.zip`
+- Contoh: `mitreka-design-system-starter-pack-v2.2.20.zip`
+
+Rule versi starter pack:
+- Versi starter pack mengikuti versi komponen/package compatible terbaru.
+- Tidak wajib generate starter pack baru setiap ada update package,
+  selama update masih backward compatible terhadap starter pack saat ini.
+- Jika ada breaking change atau perubahan setup penting, wajib generate ulang starter pack.
+
+Ritual awal sesi (biar konteks gak miss):
+1) Review file `MitrekaStyleMockup/catatan`.
+2) Pastikan alignment 3 repo: `mitreka-ui`, `MitrekaStyleMockup`, `mitreka-consumer-test`.
+3) Cek apakah perlu regenerate starter pack berdasarkan compatibility versi terbaru.

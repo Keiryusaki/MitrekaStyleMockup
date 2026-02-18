@@ -1,5 +1,61 @@
 [
   {
+    "version": "2.2.21",
+    "date": "2026-02-18",
+    "label": "Patch",
+    "items": [
+      {
+        "type": "Added",
+        "text": "Utility global .join + .join-item di CSS komponen untuk segmented controls reusable (button/select/input dan kombinasi mixed controls)"
+      },
+      {
+        "type": "Changed",
+        "text": "Starter pack: refactor kontrol segmented agar pakai utility join global (hapus style scoped lokal)"
+      },
+      {
+        "type": "Changed",
+        "text": "Sync package @keiryusaki/mitreka-ui v2.2.21 ke mockup vendor dist"
+      }
+    ],
+    "assets": []
+  },
+  {
+    "version": "2.2.20",
+    "date": "2026-02-18",
+    "label": "Patch",
+    "items": [
+      {
+        "type": "Fixed",
+        "text": "CSS Select caret SVG data URI di mockup.css di-escape/encode untuk kompatibilitas parser Tailwind v4 (menghindari error 'Unterminated string')"
+      },
+      {
+        "type": "Changed",
+        "text": "Sync package @keiryusaki/mitreka-ui v2.2.20 ke mockup vendor dist"
+      }
+    ],
+    "assets": []
+  },
+  {
+    "version": "2.2.19",
+    "date": "2026-02-18",
+    "label": "Patch",
+    "items": [
+      {
+        "type": "Fixed",
+        "text": "AG Grid (AgGridSurface): auto-height vs normal-height kini dihitung ulang setelah first data render agar threshold row selalu akurat"
+      },
+      {
+        "type": "Added",
+        "text": "AG Grid Dev Guide: dokumentasi parameter autoHeightWhenFewRows, autoHeightThreshold, normalLayoutHeight, dan pola pemisah kolom per bulan"
+      },
+      {
+        "type": "Changed",
+        "text": "Sync package @keiryusaki/mitreka-ui v2.2.19 ke mockup vendor dist"
+      }
+    ],
+    "assets": []
+  },
+  {
     "version": "2.2.18",
     "date": "2026-02-16",
     "label": "Patch",
@@ -20,6 +76,10 @@
       {
         "type": "Changed",
         "text": "Sync package @keiryusaki/mitreka-ui v2.2.18 ke mockup vendor dist"
+      },
+      {
+        "type": "Added",
+        "text": "AG Grid Dev Guide: dokumentasi parameter auto height threshold/normal layout height + pola pemisah kolom per bulan"
       }
     ],
     "assets": []
