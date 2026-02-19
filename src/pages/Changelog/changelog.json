@@ -1,5 +1,25 @@
 [
   {
+    "version": "2.2.23",
+    "date": "2026-02-19",
+    "label": "Patch",
+    "items": [
+      {
+        "type": "Fixed",
+        "text": "Layering UI: topbar/dropdown/modal/toast kini memakai skala z-index token agar tidak saling menutup"
+      },
+      {
+        "type": "Changed",
+        "text": "Release Update (What's New) disinkronkan ke versi 2.2.23"
+      },
+      {
+        "type": "Changed",
+        "text": "Sync package @keiryusaki/mitreka-ui v2.2.23 ke mockup vendor dist"
+      }
+    ],
+    "assets": []
+  },
+  {
     "version": "2.2.21",
     "date": "2026-02-18",
     "label": "Patch",
