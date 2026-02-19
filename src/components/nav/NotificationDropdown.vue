@@ -89,7 +89,7 @@ onUnmounted(() => document.removeEventListener("click", handleClickOutside));
     >
       <div
         v-if="isOpen"
-        class="fixed left-2 right-2 top-16 sm:absolute sm:left-auto sm:right-0 sm:top-full sm:mt-2 sm:w-80 bg-base-100 text-base-content rounded-lg shadow-xl border border-base-300 overflow-hidden z-[120]"
+        class="fixed left-2 right-2 top-16 sm:absolute sm:left-auto sm:right-0 sm:top-full sm:mt-2 sm:w-80 bg-base-100 text-base-content rounded-lg shadow-xl border border-base-300 overflow-hidden z-[var(--z-topbar-dropdown)]"
       >
         <!-- Header -->
         <div class="p-3 border-b border-base-300 flex items-center justify-between bg-base-200/50">

@@ -3,7 +3,7 @@
     class="h-full bg-base-100 text-base-content grid"
     style="grid-template-rows: auto 1fr"
   >
-    <Topbar class="sticky top-0 z-30 bg-base-100/90 glass" />
+    <Topbar class="bg-base-100/90 glass" />
 
     <!-- Grid: Sidebar + Main -->
     <div class="grid overflow-hidden min-h-0 grid-cols-1 md:grid-cols-[auto_1fr]">

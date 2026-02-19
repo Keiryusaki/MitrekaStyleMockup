@@ -1,6 +1,6 @@
 <template>
   <header
-    class="theme-topbar px-3 sm:px-4 md:px-6 h-14 sm:h-15 flex items-center justify-between glass glass-border sticky top-0 z-[80] isolate"
+    class="theme-topbar px-3 sm:px-4 md:px-6 h-14 sm:h-15 flex items-center justify-between glass glass-border sticky top-0 z-[var(--z-topbar)] isolate"
   >
     <div class="flex items-center gap-2 sm:gap-3 z-10">
       <button
@@ -55,7 +55,7 @@
         >
           <div
             v-if="themeMenuOpen"
-            class="absolute right-0 top-full mt-2 w-60 bg-base-100 text-base-content rounded-lg shadow-xl border border-base-300 p-3 z-[120]"
+            class="absolute right-0 top-full mt-2 w-60 bg-base-100 text-base-content rounded-lg shadow-xl border border-base-300 p-3 z-[var(--z-topbar-dropdown)]"
             @click.stop
           >
             <div class="theme-mode-pills">

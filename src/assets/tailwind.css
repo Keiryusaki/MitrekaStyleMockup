@@ -116,6 +116,16 @@
   --color-link: var(--color-primary);
   --color-link-hover: color-mix(in oklch, var(--color-primary), black 16%);
   --color-link-visited: color-mix(in oklch, var(--color-primary), var(--color-accent) 28%);
+
+  /* Layer scale */
+  --layout-topbar-height: 3.5rem;
+  --z-sticky: 40;
+  --z-topbar: 300;
+  --z-topbar-dropdown: 350;
+  --z-toast: 700;
+  --z-modal-backdrop: 800;
+  --z-modal: 900;
+  --z-loading: 9999;
 }
 
 /* ---------- LIGHT THEME (Mitreka) ---------- */
@@ -236,6 +246,34 @@
    UTILITIES (compat: map kelas -> CSS vars)
    ========================================= */
 @layer utilities {
+  .z-sticky {
+    z-index: var(--z-sticky);
+  }
+  .z-topbar {
+    z-index: var(--z-topbar);
+  }
+  .z-topbar-dropdown {
+    z-index: var(--z-topbar-dropdown);
+  }
+  .z-toast {
+    z-index: var(--z-toast);
+  }
+  .z-modal-backdrop {
+    z-index: var(--z-modal-backdrop);
+  }
+  .z-modal {
+    z-index: var(--z-modal);
+  }
+
+  .toast-container {
+    z-index: var(--z-toast);
+  }
+  .toast-pos-top-left,
+  .toast-pos-top-center,
+  .toast-pos-top-right {
+    top: calc(var(--layout-topbar-height) + 0.75rem);
+  }
+
   /* Glass demo */
   .glass {
     background-color: rgb(255 255 255 / 0.7);

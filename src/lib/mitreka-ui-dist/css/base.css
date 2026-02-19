@@ -56,6 +56,17 @@
   --border: 1px;
   --depth: 1;
   --noise: 0;
+
+  /* Layer scale */
+  --layout-topbar-height: 0px;
+  --layout-topbar-toast-gap: 0px;
+  --z-sticky: 40;
+  --z-topbar: 300;
+  --z-topbar-dropdown: 350;
+  --z-toast: 700;
+  --z-modal-backdrop: 800;
+  --z-modal: 900;
+  --z-loading: 9999;
 }
 
 /* ---------- LIGHT THEME (Mitreka) ---------- */

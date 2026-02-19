@@ -4,16 +4,26 @@
 
 .toast-container {
   position: fixed;
-  z-index: 50;
+  z-index: var(--z-toast, 700);
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
   width: min(92vw, 360px);
 }
 
-.toast-pos-top-left { top: 1rem; left: 1rem; }
-.toast-pos-top-center { top: 1rem; left: 50%; transform: translateX(-50%); }
-.toast-pos-top-right { top: 1rem; right: 1rem; }
+.toast-pos-top-left {
+  top: max(1rem, calc(var(--layout-topbar-height, 0px) + var(--layout-topbar-toast-gap, 0px)));
+  left: 1rem;
+}
+.toast-pos-top-center {
+  top: max(1rem, calc(var(--layout-topbar-height, 0px) + var(--layout-topbar-toast-gap, 0px)));
+  left: 50%;
+  transform: translateX(-50%);
+}
+.toast-pos-top-right {
+  top: max(1rem, calc(var(--layout-topbar-height, 0px) + var(--layout-topbar-toast-gap, 0px)));
+  right: 1rem;
+}
 .toast-pos-bottom-left { bottom: 1rem; left: 1rem; }
 .toast-pos-bottom-center { bottom: 1rem; left: 50%; transform: translateX(-50%); }
 .toast-pos-bottom-right { bottom: 1rem; right: 1rem; }

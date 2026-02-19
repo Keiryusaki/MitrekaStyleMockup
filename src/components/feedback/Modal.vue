@@ -59,7 +59,7 @@ watch(
     <Transition name="fade">
       <div
         v-if="open"
-        class="fixed inset-0 z-40 bg-black/40"
+        class="fixed inset-0 z-[var(--z-modal-backdrop)] bg-black/40"
         @click="handleBackdropClick"
       ></div>
     </Transition>
@@ -69,7 +69,7 @@ watch(
       <div
         v-if="open"
         :class="[
-          'fixed inset-0 z-50 flex items-center justify-center pointer-events-none',
+          'fixed inset-0 z-[var(--z-modal)] flex items-center justify-center pointer-events-none',
           size === 'full' ? 'p-0' : 'p-4'
         ]"
       >

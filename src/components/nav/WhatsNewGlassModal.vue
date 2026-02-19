@@ -195,7 +195,7 @@ onMounted(() => {
 .whatsnew-overlay {
   position: fixed;
   inset: 0;
-  z-index: 150;
+  z-index: var(--z-modal);
   display: grid;
   place-items: center;
   padding: 1rem;
