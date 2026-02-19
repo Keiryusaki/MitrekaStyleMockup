@@ -35,6 +35,8 @@ Catatan:
 - Tambah entry changelog hanya saat memang mau tampil di halaman changelog (publik).
 - Cek ulang sebelum push: jangan ada mismatch versi (contoh: changelog 2.2.14, dashboard 2.2.15, package 2.2.17).
 - File `MitrekaStyleMockup/catatan` adalah catatan internal; tidak wajib ikut commit/push.
+- Wajib cek konsistensi versi lintas area sebelum push:
+  package version, release label di dashboard/what's new, footer/app version, dan halaman changelog.
 
 Checklist ringkas (5 langkah):
 1) Update `mitreka-ui/src` + bump version
@@ -85,7 +87,51 @@ Rule versi starter pack:
   selama update masih backward compatible terhadap starter pack saat ini.
 - Jika ada breaking change atau perubahan setup penting, wajib generate ulang starter pack.
 
+Starter pack otomatis (update baru):
+- Jangan hardcode versi starter pack di UI.
+- Sistem sekarang pakai manifest: `public/downloads/starter-pack.json`.
+- Generator manifest: `npm run starter-pack:manifest`
+  (script: `scripts/generate-starter-pack-manifest.mjs`).
+- `npm run build` di mockup sekarang otomatis generate manifest dulu, lalu build.
+- Manifest memilih file zip starter pack dengan versi semver paling besar
+  dari folder `public/downloads` (format wajib: `mitreka-design-system-starter-pack-vX.Y.Z.zip`).
+- Jadi: kalau ada starter pack baru, cukup taruh zip terbaru di `public/downloads`,
+  lalu build (tanpa edit kode `Topbar.vue` lagi).
+
+Checklist final sebelum commit/push rilis:
+1) Cek `mitreka-ui/package.json` version sudah benar.
+2) Cek `MitrekaStyleMockup/package.json` version sudah sinkron.
+3) Cek What's New:
+   - `releaseVersion` mengikuti package release.
+   - starter pack mengikuti manifest `public/downloads/starter-pack.json`.
+4) Cek changelog:
+   - `mitreka-ui/CHANGELOG.md` untuk package.
+   - `MitrekaStyleMockup/src/pages/Changelog/changelog.json` untuk halaman publik.
+5) Cek versi yang tampil di dashboard/footer sudah update.
+
 Ritual awal sesi (biar konteks gak miss):
 1) Review file `MitrekaStyleMockup/catatan`.
 2) Pastikan alignment 3 repo: `mitreka-ui`, `MitrekaStyleMockup`, `mitreka-consumer-test`.
 3) Cek apakah perlu regenerate starter pack berdasarkan compatibility versi terbaru.
+
+Guardrail command destruktif (WAJIB):
+1) Hindari `rmdir /s /q`, `del /f /q`, atau command hapus massal dengan path manual.
+2) Jika harus hapus, wajib pakai alur soft-delete backup dulu:
+   - Rename folder target ke `<nama>_backup_yyyyMMdd_HHmmss`
+   - Atau copy dulu ke folder backup terpisah sebelum delete.
+3) Sebelum eksekusi hapus, wajib verifikasi path absolut yang akan dihapus (echo/print path).
+4) Dilarang menjalankan delete berantai yang mencakup parent directory.
+
+SOP soft-delete (default):
+1) Tentukan target: `<TARGET_PATH>`
+2) Buat backup name: `<TARGET_PATH>_backup_yyyyMMdd_HHmmss`
+3) Rename target -> backup (lebih cepat daripada copy)
+4) Kerjakan perubahan pada target baru (fresh clone / fresh copy)
+5) Setelah verifikasi aman, backup lama baru boleh dihapus manual
+
+SOP packaging aman (tanpa delete by filter):
+1) Buat staging folder baru kosong (nama unik per proses).
+2) Copy file/folder dengan whitelist (yang memang mau masuk pack).
+3) Generate zip dari staging.
+4) Validasi isi zip (tidak boleh ada node_modules/dist/public/downloads/scripts jika tidak perlu).
+5) Baru replace artifact final + update manifest.
