@@ -158,8 +158,8 @@ const toast = useToast();
 
 const THEME_MODE_KEY = "ui-theme-mode-v1";
 const CODE_PRESET_KEY = "ui-code-theme-preset-v1";
-const RELEASE_VERSION = "2.2.22";
-const STARTER_PACK_FILENAME = "mitreka-design-system-starter-pack-v2.2.22.zip";
+const RELEASE_VERSION = "2.2.23";
+const STARTER_PACK_FILENAME = "mitreka-design-system-starter-pack-v2.2.23.zip";
 const STARTER_PACK_VERSION =
   STARTER_PACK_FILENAME.match(/-v(\d+\.\d+\.\d+)\.zip$/)?.[1] ?? RELEASE_VERSION;
 const TOTAL_COMPONENTS = 36;
