@@ -129,8 +129,8 @@
   <WhatsNewGlassModal
     v-model="whatsNewOpen"
     :release-version="RELEASE_VERSION"
-    :starter-pack-name="STARTER_PACK_FILENAME"
-    :starter-pack-version="STARTER_PACK_VERSION"
+    :starter-pack-name="starterPackFilename"
+    :starter-pack-version="starterPackVersion"
     :total-components="TOTAL_COMPONENTS"
     @dismissed="markWhatsNewSeen"
   />
@@ -159,12 +159,14 @@ const toast = useToast();
 const THEME_MODE_KEY = "ui-theme-mode-v1";
 const CODE_PRESET_KEY = "ui-code-theme-preset-v1";
 const RELEASE_VERSION = "2.2.23";
-const STARTER_PACK_FILENAME = "mitreka-design-system-starter-pack-v2.2.22.zip";
-const STARTER_PACK_VERSION =
-  STARTER_PACK_FILENAME.match(/-v(\d+\.\d+\.\d+)\.zip$/)?.[1] ?? RELEASE_VERSION;
+const DEFAULT_STARTER_PACK_FILENAME = "mitreka-design-system-starter-pack-v2.2.22.zip";
 const TOTAL_COMPONENTS = 36;
 const WHATS_NEW_SEEN_KEY = `ui-whats-new-seen-${RELEASE_VERSION}`;
 type ThemeMode = "light" | "system" | "dark";
+type StarterPackManifest = {
+  latest?: string;
+  version?: string;
+};
 
 const themeMenuOpen = ref(false);
 const themeMenuRef = ref<HTMLElement | null>(null);
@@ -172,8 +174,13 @@ const themeMode = ref<ThemeMode>("system");
 const selectedCodePresetId = ref("");
 const whatsNewOpen = ref(false);
 const showWhatsNewDot = ref(false);
+const starterPackFilename = ref(DEFAULT_STARTER_PACK_FILENAME);
 
 const codePresetThemes = computed(() => codeThemePresets);
+const starterPackVersion = computed(
+  () =>
+    starterPackFilename.value.match(/-v(\d+\.\d+\.\d+)\.zip$/)?.[1] ?? RELEASE_VERSION
+);
 
 const activeModeIcon = computed(() => {
   if (themeMode.value === "light") return "sun";
@@ -226,6 +233,23 @@ function handleClickOutside(e: MouseEvent) {
   }
 }
 
+async function loadStarterPackManifest() {
+  try {
+    const url = `${import.meta.env.BASE_URL}downloads/starter-pack.json`;
+    const response = await fetch(url, { cache: "no-store" });
+    if (!response.ok) return;
+
+    const manifest = (await response.json()) as StarterPackManifest;
+    const file = manifest.latest?.trim();
+    if (!file) return;
+    if (!/^mitreka-design-system-starter-pack-v\d+\.\d+\.\d+\.zip$/.test(file)) return;
+
+    starterPackFilename.value = file;
+  } catch {
+    // Fallback to default starter pack filename.
+  }
+}
+
 function logout() {
   toast.notify({ type: "info", message: "Logging out..." });
 }
@@ -238,6 +262,8 @@ function markWhatsNewSeen() {
 let mediaQuery: MediaQueryList | null = null;
 
 onMounted(() => {
+  void loadStarterPackManifest();
+
   const savedMode = localStorage.getItem(THEME_MODE_KEY) as ThemeMode | null;
   if (savedMode === "light" || savedMode === "system" || savedMode === "dark") {
     themeMode.value = savedMode;

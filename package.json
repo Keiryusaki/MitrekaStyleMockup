@@ -5,7 +5,8 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "vite build",
+    "starter-pack:manifest": "node ./scripts/generate-starter-pack-manifest.mjs",
+    "build": "npm run starter-pack:manifest && vite build",
     "preview": "vite preview",
     "type-check": "vue-tsc --noEmit -p tsconfig.json",
     "release:css": "powershell -ExecutionPolicy Bypass -File ./scripts/release-css.ps1"
