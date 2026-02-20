@@ -203,7 +203,7 @@
 </template>
 
 <script setup>
-import { ref, computed, reactive, nextTick, onBeforeUnmount } from "vue";
+import { ref, computed, reactive, nextTick, onBeforeUnmount, watch } from "vue";
 import { Icon } from "@/components/icons";
 import SelectDropdown from "@/components/controls/SelectDropdown.vue";
 import TextareaInput from "@/components/controls/TextareaInput.vue";
@@ -312,6 +312,7 @@ const chatForm = reactive({ name: "", email: "", message: "" });
 const resumeTokenInput = ref("");
 const sessionToken = ref(localStorage.getItem("chat_token") || "");
 let historyTimer = null;
+let autoResumeTried = false;
 
 const apiUrl = (path) => `${LIVE_CHAT_API_BASE_URL}${path}`;
 
@@ -408,6 +409,31 @@ async function resumeChat() {
   }
 }
 
+async function autoResumeIfPossible() {
+  if (!liveChatEnabled.value) return;
+  if (activeTab.value !== "chat") return;
+  if (!open.value) return;
+  if (isChatActive.value || chatBusy.value || autoResumeTried) return;
+
+  const token = (sessionToken.value || "").trim();
+  if (!token) return;
+
+  autoResumeTried = true;
+  chatMode.value = "resume";
+  resumeTokenInput.value = token;
+
+  chatBusy.value = true;
+  try {
+    await loadHistory(token);
+    startHistoryPolling();
+    chatError.value = "";
+  } catch (err) {
+    chatError.value = err.message || "Sesi sebelumnya tidak bisa dipulihkan.";
+  } finally {
+    chatBusy.value = false;
+  }
+}
+
 // 3. Kirim Balasan Chat
 async function sendReply() {
   if (!currentReply.value.trim() || !sessionToken.value || chatBusy.value) return;
@@ -449,6 +475,18 @@ function scrollToBottom() {
 onBeforeUnmount(() => {
   stopHistoryPolling();
 });
+
+watch(
+  () => [open.value, activeTab.value, sessionToken.value],
+  async () => {
+    if (!open.value) {
+      autoResumeTried = false;
+      return;
+    }
+    await autoResumeIfPossible();
+  },
+  { immediate: true }
+);
 
 // Init Captcha pertama kali
 regenCaptcha();
