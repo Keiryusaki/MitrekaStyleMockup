@@ -258,7 +258,7 @@ router.beforeEach((to, from, next) => {
 });
 
 router.afterEach((to) => {
-  document.title = to.meta.title ? `${to.meta.title} Â· Admin` : "Admin";
+  document.title = to.meta.title ? `${to.meta.title} · Mitreka Design System` : "Mitreka Design System";
   
   // Delay 1.5 detik setelah navigasi selesai baru hide block UI
   setTimeout(() => {
