@@ -167,13 +167,18 @@
               <span class="text-[11px] truncate">Token: <code class="font-mono">{{ sessionToken }}</code></span>
               <button class="btn btn-ghost btn-xs" @click="copyToken">Copy</button>
             </div>
-            <div id="chat-box" class="flex-1 overflow-y-auto p-4 space-y-3">
-               <div v-for="(msg, idx) in chatMessages" :key="idx" :class="['chat', msg.isMe ? 'chat-end' : 'chat-start']">
-                  <div class="chat-header text-[10px] opacity-50 mb-1" :class="['chat', msg.isMe ? '' : 'text-right']">{{ msg.sender }}</div>
-                  <div :class="['chat-bubble text-sm', msg.isMe ? 'chat-bubble-primary' : 'bg-base-200 text-base-content text-right']">
-                    {{ msg.content }}
-                  </div>
-               </div>
+            <div id="chat-box" class="flex-1 overflow-y-auto p-3 space-y-2 bg-base-50/60 chat-box-modern">
+              <div
+                v-for="(msg, idx) in chatMessages"
+                :key="idx"
+                class="chat-row"
+                :class="{ 'chat-row-me': msg.isMe }"
+              >
+                <div class="chat-sender">{{ msg.sender }}</div>
+                <div class="chat-bubble-modern" :class="{ 'chat-bubble-me': msg.isMe }">
+                  {{ msg.content }}
+                </div>
+              </div>
             </div>
             
             <div class="p-3 bg-base-100 border-t border-base-200 flex gap-2">
@@ -181,7 +186,7 @@
                   v-model="currentReply" 
                   @keyup.enter="sendReply"
                   type="text" 
-                  class="input input-sm input-bordered w-full" 
+                  class="input input-sm input-bordered w-full chat-composer-input" 
                   placeholder="Ketik pesan..." 
                />
                <button @click="sendReply" class="btn btn-sm btn-square btn-primary" aria-label="Kirim" :disabled="chatBusy">
@@ -460,5 +465,55 @@ regenCaptcha();
 :root[data-theme="mitrekadark"] .glass-border,
 .dark .glass-border {
   background-color: rgb(15 23 42 / 0.7);
+}
+
+.chat-box-modern {
+  background-image:
+    radial-gradient(circle at 20% 0%, rgb(59 130 246 / 0.06), transparent 38%),
+    radial-gradient(circle at 80% 100%, rgb(16 185 129 / 0.05), transparent 35%);
+}
+
+.chat-row {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.2rem;
+}
+
+.chat-row-me {
+  align-items: flex-end;
+}
+
+.chat-sender {
+  font-size: 10px;
+  line-height: 1;
+  color: rgb(100 116 139);
+  padding: 0 0.35rem;
+}
+
+.chat-bubble-modern {
+  max-width: 86%;
+  font-size: 13px;
+  line-height: 1.35;
+  padding: 0.55rem 0.7rem;
+  border-radius: 0.85rem;
+  border-top-left-radius: 0.25rem;
+  background: rgb(255 255 255 / 0.95);
+  color: rgb(30 41 59);
+  border: 1px solid rgb(226 232 240);
+  box-shadow: 0 3px 12px rgb(2 6 23 / 0.06);
+  word-break: break-word;
+}
+
+.chat-bubble-me {
+  border-top-left-radius: 0.85rem;
+  border-top-right-radius: 0.25rem;
+  background: linear-gradient(145deg, rgb(37 99 235), rgb(30 64 175));
+  color: white;
+  border-color: rgb(29 78 216);
+}
+
+.chat-composer-input {
+  border-radius: 0.75rem;
 }
 </style>
