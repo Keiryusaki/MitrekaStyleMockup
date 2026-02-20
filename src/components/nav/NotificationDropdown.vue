@@ -64,7 +64,7 @@ onUnmounted(() => document.removeEventListener("click", handleClickOutside));
   <div ref="dropdownRef" class="relative">
     <!-- Bell Button -->
     <button
-      class="btn btn-ghost btn-sm text-white! relative"
+      class="btn btn-ghost btn-sm topbar-compact-btn sm:px-3 text-white! relative topbar-trigger"
       title="Notifikasi"
       @click.stop="isOpen = !isOpen"
     >
@@ -89,7 +89,7 @@ onUnmounted(() => document.removeEventListener("click", handleClickOutside));
     >
       <div
         v-if="isOpen"
-        class="fixed left-2 right-2 top-16 sm:absolute sm:left-auto sm:right-0 sm:top-full sm:mt-2 sm:w-80 bg-base-100 text-base-content rounded-lg shadow-xl border border-base-300 overflow-hidden z-[var(--z-topbar-dropdown)]"
+        class="notif-panel fixed left-2 right-2 top-16 sm:absolute sm:left-auto sm:right-0 sm:top-full sm:mt-2 sm:w-80 bg-base-100 text-base-content rounded-lg shadow-xl border border-base-300 overflow-hidden z-[var(--z-topbar-dropdown)]"
       >
         <!-- Header -->
         <div class="p-3 border-b border-base-300 flex items-center justify-between bg-base-200/50">
@@ -157,5 +157,21 @@ onUnmounted(() => document.removeEventListener("click", handleClickOutside));
 <style scoped>
 .notif-list > :not(:last-child) {
   border-bottom: 1px solid color-mix(in srgb, var(--color-base-300) 70%, transparent);
+}
+
+.notif-panel .btn-ghost,
+.notif-panel .btn-ghost * {
+  color: var(--color-base-content) !important;
+}
+
+.notif-panel .text-primary {
+  color: var(--color-primary) !important;
+}
+
+@media (max-width: 639px) {
+  .topbar-compact-btn {
+    padding-inline: 0.35rem !important;
+    min-width: 2rem;
+  }
 }
 </style>

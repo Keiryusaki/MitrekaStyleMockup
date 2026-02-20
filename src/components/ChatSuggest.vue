@@ -10,12 +10,12 @@
     <span v-if="isConnected" class="absolute top-2 right-2 w-3 h-3 bg-green-500 rounded-full border-2 border-white"></span>
   </button>
 
-  <div v-if="open" @click.self="open = false" class="fixed inset-0 z-30 bg-black/25"></div>
+  <div v-if="open" @click.self="open = false" class="fixed inset-0 z-[360] bg-black/25"></div>
 
   <transition name="slide-up">
     <div
       v-if="open"
-      class="fixed bottom-24 md:bottom-[150px] right-5 z-40 w-[min(92vw,380px)] h-[550px] flex flex-col rounded-2xl border border-base-300 bg-base-100 text-base shadow-xl overflow-hidden"
+      class="fixed bottom-5 md:bottom-[70px] right-5 z-[400] w-[min(92vw,380px)] h-auto max-h-[calc(100dvh-7rem)] md:max-h-[calc(100dvh-11rem)] flex flex-col rounded-2xl border border-base-300 bg-base-100 text-base shadow-xl overflow-hidden"
     >
       <div class="flex-none px-4 py-3 glass-border border-b border-base-200">
         <div class="flex items-center justify-between">
@@ -54,7 +54,7 @@
         </div>
       </div>
 
-      <div class="flex-1 overflow-y-auto relative bg-base-50/50">
+      <div class="flex-1 overflow-y-auto relative bg-base-50/50 chat-panel-body">
         
         <div v-if="activeTab === 'saran'" class="px-4 py-4 space-y-3">
           <div>
@@ -64,17 +64,26 @@
 
           <div>
             <label class="block text-xs font-medium mb-1">Jenis</label>
-            <select v-model="form.jenis" class="select select-sm w-full select-bordered">
-              <option value="saran">Masukan / Saran</option>
-              <option value="bertanya">Pertanyaan Umum</option>
-              <option value="bug">Lapor Bug</option>
-            </select>
+            <SelectDropdown
+              v-model="form.jenis"
+              :options="jenisOptions"
+              size="sm"
+              color="default"
+              variant="outline"
+              placeholder="Pilih jenis"
+            />
           </div>
 
-          <div class="relative">
+          <div>
             <label class="block text-xs font-medium mb-1">Pesan <span class="text-error">*</span></label>
-            <textarea v-model="form.deskripsi" :maxlength="MAX" rows="4" class="textarea textarea-bordered w-full text-sm resize-none" placeholder="Tulis pesanmu disini..."></textarea>
-            <span class="absolute bottom-2 right-3 text-[10px] text-neutral/50">{{ form.deskripsi.length }}/{{ MAX }}</span>
+            <TextareaInput
+              v-model="form.deskripsi"
+              size="sm"
+              :maxlength="MAX"
+              :rows="4"
+              show-counter
+              placeholder="Tulis pesanmu disini..."
+            />
           </div>
 
           <div class="space-y-2">
@@ -118,7 +127,12 @@
 
             <input v-model="chatForm.name" class="input input-sm input-bordered w-full" placeholder="Nama Lengkap" />
             <input v-model="chatForm.email" class="input input-sm input-bordered w-full" placeholder="Email (Opsional)" />
-            <textarea v-model="chatForm.message" class="textarea textarea-bordered h-24 resize-none" placeholder="Ceritakan kendalamu..."></textarea>
+            <TextareaInput
+              v-model="chatForm.message"
+              size="sm"
+              :rows="4"
+              placeholder="Ceritakan kendalamu..."
+            />
             
             <button class="btn btn-primary btn-sm w-full" @click="startChat" :disabled="!chatForm.name || !chatForm.message">
                Mulai Chat Sekarang
@@ -158,6 +172,8 @@
 <script setup>
 import { ref, computed, reactive, nextTick } from "vue";
 import { Icon } from "@/components/icons";
+import SelectDropdown from "@/components/controls/SelectDropdown.vue";
+import TextareaInput from "@/components/controls/TextareaInput.vue";
 
 /* =========================================
    GLOBAL & UI STATE
@@ -186,6 +202,11 @@ const form = ref({ nama: "", jenis: "saran", deskripsi: "" });
 const files = ref([]);
 const fileErr = ref("");
 const cap = ref({ a: 0, b: 0, answer: null });
+const jenisOptions = [
+  { value: "saran", label: "Masukan / Saran" },
+  { value: "bertanya", label: "Pertanyaan Umum" },
+  { value: "bug", label: "Lapor Bug" },
+];
 
 // Helpers File & Captcha
 function onPickFiles(e) { /* Logic file upload lo... (sama persis) */ 

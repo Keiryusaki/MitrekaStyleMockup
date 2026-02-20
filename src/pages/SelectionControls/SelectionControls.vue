@@ -54,30 +54,30 @@ watch(indeterminate, (v) => {
     />
 
     <!-- Tabs -->
-    <nav
-      class="card inline-flex overflow-hidden rounded-lg border border-base-300 rounded-box border border-base-300 p-4"
-    >
+    <nav class="card rounded-box border border-base-300 p-4">
+      <div class="join">
       <button
-        class="btn btn-sm rounded-none first:rounded-l-lg last:rounded-r-lg"
+        class="btn btn-sm join-item"
         :class="tab === 'switch' && 'btn-primary'"
         @click="tab = 'switch'"
       >
         Toggle
       </button>
       <button
-        class="btn btn-sm rounded-none first:rounded-l-lg last:rounded-r-lg"
+        class="btn btn-sm join-item"
         :class="tab === 'checkbox' && 'btn-primary'"
         @click="tab = 'checkbox'"
       >
         Checkbox
       </button>
       <button
-        class="btn btn-sm rounded-none first:rounded-l-lg last:rounded-r-lg"
+        class="btn btn-sm join-item"
         :class="tab === 'radio' && 'btn-primary'"
         @click="tab = 'radio'"
       >
         Radio
       </button>
+      </div>
     </nav>
 
     <div class="card p-4 md:p-6 space-y-5">
@@ -87,37 +87,37 @@ watch(indeterminate, (v) => {
           <!-- Size -->
           <div class="flex items-center gap-2">
             <span class="text-sm opacity-80">Size</span>
-            <div class="inline-flex overflow-hidden rounded-lg">
+            <div class="join">
               <button
-                class="btn btn-sm rounded-none first:rounded-l-lg last:rounded-r-lg"
+                class="btn btn-sm join-item"
                 :class="{ 'btn-primary': size === 'xs' }"
                 @click="size = 'xs'"
               >
                 xs
               </button>
               <button
-                class="btn btn-sm rounded-none first:rounded-l-lg last:rounded-r-lg"
+                class="btn btn-sm join-item"
                 :class="{ 'btn-primary': size === 'sm' }"
                 @click="size = 'sm'"
               >
                 sm
               </button>
               <button
-                class="btn btn-sm rounded-none first:rounded-l-lg last:rounded-r-lg"
+                class="btn btn-sm join-item"
                 :class="{ 'btn-primary': size === 'md' }"
                 @click="size = 'md'"
               >
                 md
               </button>
               <button
-                class="btn btn-sm rounded-none first:rounded-l-lg last:rounded-r-lg"
+                class="btn btn-sm join-item"
                 :class="{ 'btn-primary': size === 'lg' }"
                 @click="size = 'lg'"
               >
                 lg
               </button>
               <button
-                class="btn btn-sm rounded-none first:rounded-l-lg last:rounded-r-lg"
+                class="btn btn-sm join-item"
                 :class="{ 'btn-primary': size === 'xl' }"
                 @click="size = 'xl'"
               >

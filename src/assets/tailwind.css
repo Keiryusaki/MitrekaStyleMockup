@@ -351,8 +351,8 @@
   .theme-topbar.glass {
     background-color: var(--color-layout-topbar-bg) !important;
   }
-  .theme-topbar .btn-ghost,
-  .theme-topbar .btn-ghost * {
+  .theme-topbar .topbar-trigger,
+  .theme-topbar .topbar-trigger * {
     color: var(--color-layout-topbar-text) !important;
   }
   .text-layout-topbar {

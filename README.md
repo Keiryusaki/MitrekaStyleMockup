@@ -18,6 +18,21 @@ npm install
 npm run dev
 ```
 
+## DevTools Prank (Optional)
+
+Feature ini nonaktif secara default. Aktifkan dengan env berikut:
+
+```bash
+VITE_DEVTOOLS_PRANK=true
+```
+
+Secara default prank otomatis nonaktif di `localhost` / `127.0.0.1`.
+Untuk test di lokal, tambahkan:
+
+```bash
+VITE_DEVTOOLS_PRANK_ALLOW_LOCAL=true
+```
+
 ## Project Structure
 
 ```

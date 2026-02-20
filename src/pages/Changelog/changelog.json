@@ -1,5 +1,25 @@
 [
   {
+    "version": "2.2.24",
+    "date": "2026-02-20",
+    "label": "Patch",
+    "items": [
+      {
+        "type": "Added",
+        "text": "Textarea input component untuk kebutuhan field pesan multi-baris + dokumentasi varian resize (default, both, vertical, horizontal)"
+      },
+      {
+        "type": "Changed",
+        "text": "Topbar apps/account dropdown: quick access Finance App & Sales App + logout action"
+      },
+      {
+        "type": "Changed",
+        "text": "Sync package @keiryusaki/mitreka-ui v2.2.24 ke mockup vendor dist"
+      }
+    ],
+    "assets": []
+  },
+  {
     "version": "2.2.23",
     "date": "2026-02-19",
     "label": "Patch",

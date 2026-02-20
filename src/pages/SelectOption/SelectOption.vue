@@ -118,16 +118,16 @@ const exampleOutline = `<SelectDropdown
         <div class="flex flex-wrap items-center gap-4">
           <div class="flex items-center gap-2">
             <span class="text-sm opacity-80">Variant</span>
-            <div class="inline-flex overflow-hidden rounded-lg">
+            <div class="join">
               <button
-                class="btn btn-sm rounded-none first:rounded-l-lg last:rounded-r-lg"
+                class="btn btn-sm join-item"
                 :class="{ 'btn-primary': variant === 'solid' }"
                 @click="variant = 'solid'"
               >
                 Solid
               </button>
               <button
-                class="btn btn-sm rounded-none first:rounded-l-lg last:rounded-r-lg"
+                class="btn btn-sm join-item"
                 :class="{ 'btn-primary': variant === 'outline' }"
                 @click="variant = 'outline'"
               >
@@ -137,11 +137,11 @@ const exampleOutline = `<SelectDropdown
           </div>
           <div class="flex items-center gap-2">
             <span class="text-sm opacity-80">Size</span>
-            <div class="inline-flex overflow-hidden rounded-lg">
+            <div class="join">
               <button
                 v-for="s in sizes"
                 :key="s"
-                class="btn btn-sm rounded-none first:rounded-l-lg last:rounded-r-lg"
+                class="btn btn-sm join-item"
                 :class="{ 'btn-primary': size === s }"
                 @click="size = s"
               >

@@ -2,10 +2,12 @@
 import { ref, computed } from "vue";
 import FloatingTOC, { type TOCItem } from "@/components/FloatingTOC.vue";
 import PageHeader from "@/components/PageHeader.vue";
+import TextareaInput from "@/components/controls/TextareaInput.vue";
 
 const tocItems: TOCItem[] = [
   { id: 'controls', label: 'Controls' },
   { id: 'playground', label: 'Playground' },
+  { id: 'textarea', label: 'Textarea' },
   { id: 'sizes', label: 'Sizes' },
   { id: 'states', label: 'States' },
   { id: 'notes', label: 'Notes' },
@@ -26,6 +28,11 @@ const size = ref<Size>("md");
 const tone = ref<Tone>("default");
 const disabled = ref(false);
 const readonly = ref(false);
+const textareaValue = ref("");
+const textareaResizableValue = ref("");
+const textareaVerticalValue = ref("");
+const textareaHorizontalValue = ref("");
+const textareaRowsLargeValue = ref("");
 
 const sizeClass = computed(() =>
   size.value === "md" ? "input-md" : `input-${size.value}`
@@ -61,11 +68,11 @@ const tones: { label: string; tone: Tone }[] = [
           <!-- Tone -->
           <div class="flex items-center gap-2">
             <span class="text-sm opacity-80">State</span>
-            <div class="inline-flex overflow-hidden rounded-lg">
+            <div class="join">
               <button
                 v-for="t in tones"
                 :key="t.tone"
-                class="btn btn-sm rounded-none first:rounded-l-lg last:rounded-r-lg"
+                class="btn btn-sm join-item"
                 :class="{ 'btn-primary': tone === t.tone }"
                 @click="tone = t.tone"
               >
@@ -77,37 +84,37 @@ const tones: { label: string; tone: Tone }[] = [
           <!-- Size -->
           <div class="flex items-center gap-2">
             <span class="text-sm opacity-80">Size</span>
-            <div class="inline-flex overflow-hidden rounded-lg">
+            <div class="join">
               <button
-                class="btn btn-sm rounded-none first:rounded-l-lg last:rounded-r-lg"
+                class="btn btn-sm join-item"
                 :class="{ 'btn-primary': size === 'xs' }"
                 @click="size = 'xs'"
               >
                 xs
               </button>
               <button
-                class="btn btn-sm rounded-none first:rounded-l-lg last:rounded-r-lg"
+                class="btn btn-sm join-item"
                 :class="{ 'btn-primary': size === 'sm' }"
                 @click="size = 'sm'"
               >
                 sm
               </button>
               <button
-                class="btn btn-sm rounded-none first:rounded-l-lg last:rounded-r-lg"
+                class="btn btn-sm join-item"
                 :class="{ 'btn-primary': size === 'md' }"
                 @click="size = 'md'"
               >
                 md
               </button>
               <button
-                class="btn btn-sm rounded-none first:rounded-l-lg last:rounded-r-lg"
+                class="btn btn-sm join-item"
                 :class="{ 'btn-primary': size === 'lg' }"
                 @click="size = 'lg'"
               >
                 lg
               </button>
               <button
-                class="btn btn-sm rounded-none first:rounded-l-lg last:rounded-r-lg"
+                class="btn btn-sm join-item"
                 :class="{ 'btn-primary': size === 'xl' }"
                 @click="size = 'xl'"
               >
@@ -199,6 +206,102 @@ const tones: { label: string; tone: Tone }[] = [
                 <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7" />
               </svg>
             </div>
+          </label>
+
+        </div>
+      </section>
+
+      <section id="textarea" class="space-y-3 rounded-box border border-base-300 p-4 scroll-mt-20">
+        <h2 class="text-base font-semibold">Textarea</h2>
+        <p class="text-sm opacity-80">
+          Textarea mengikuti API Input (`size`, `color`, `disabled`, `readonly`) dan tambahan varian <code>resize</code>.
+        </p>
+
+        <div class="space-y-1">
+          <div class="text-xs opacity-70">Usage</div>
+          <pre class="bg-base-200 rounded-field p-3 overflow-x-auto text-xs"><code>{{ `<TextareaInput
+  v-model="message"
+  :rows="4"
+  size="md"
+  color="default"
+  resize="vertical"
+  :maxlength="200"
+  show-counter
+  placeholder="Type a longer message..."
+/>` }}</code></pre>
+        </div>
+
+        <div class="space-y-3">
+          <label class="space-y-1">
+            <span class="text-xs opacity-70">Rows awal (rows = 6)</span>
+            <TextareaInput
+              v-model="textareaRowsLargeValue"
+              :size="size"
+              :color="tone"
+              :disabled="disabled"
+              :readonly="readonly"
+              :rows="6"
+              resize="vertical"
+              placeholder="Default tinggi mengikuti rows..."
+            />
+          </label>
+
+          <label class="space-y-1">
+            <span class="text-xs opacity-70">Default (non-resizable)</span>
+            <TextareaInput
+              v-model="textareaValue"
+              :size="size"
+              :color="tone"
+              :disabled="disabled"
+              :readonly="readonly"
+              :maxlength="200"
+              :rows="4"
+              resize="none"
+              show-counter
+              placeholder="Type a longer message..."
+            />
+          </label>
+
+          <label class="space-y-1">
+            <span class="text-xs opacity-70">Resizable (both)</span>
+            <TextareaInput
+              v-model="textareaResizableValue"
+              :size="size"
+              :color="tone"
+              :disabled="disabled"
+              :readonly="readonly"
+              :rows="4"
+              resize="both"
+              placeholder="Drag from corner..."
+            />
+          </label>
+
+          <label class="space-y-1">
+            <span class="text-xs opacity-70">Resize vertical only</span>
+            <TextareaInput
+              v-model="textareaVerticalValue"
+              :size="size"
+              :color="tone"
+              :disabled="disabled"
+              :readonly="readonly"
+              :rows="4"
+              resize="vertical"
+              placeholder="Resize up/down only..."
+            />
+          </label>
+
+          <label class="space-y-1">
+            <span class="text-xs opacity-70">Resize horizontal only</span>
+            <TextareaInput
+              v-model="textareaHorizontalValue"
+              :size="size"
+              :color="tone"
+              :disabled="disabled"
+              :readonly="readonly"
+              :rows="4"
+              resize="horizontal"
+              placeholder="Resize left/right only..."
+            />
           </label>
         </div>
       </section>

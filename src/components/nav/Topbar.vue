@@ -4,7 +4,7 @@
   >
     <div class="flex items-center gap-2 sm:gap-3 z-10">
       <button
-        class="md:hidden! btn btn-ghost btn-sm p-2"
+        class="md:hidden! btn btn-ghost btn-sm p-2 topbar-trigger"
         @click="ui.sidebarOpen = !ui.sidebarOpen"
         aria-label="Toggle menu"
       >
@@ -20,15 +20,15 @@
         <span class="sr-only">Admin Starter</span>
       </RouterLink>
     </div>
-    <div class="flex items-center gap-1 sm:gap-2 z-10">
+    <div class="flex items-center gap-0.5 sm:gap-1 z-10">
       <input class="input input-sm w-48 lg:w-64 hidden md:block" placeholder="Search..." />
       <NotificationDropdown v-model:open="notificationMenuOpen" />
 
-      <button
-        class="btn btn-ghost btn-sm text-layout-topbar relative"
-        title="What's New"
-        @click="whatsNewOpen = true"
-      >
+        <button
+          class="btn btn-ghost btn-sm topbar-compact-btn sm:px-3 text-layout-topbar relative topbar-trigger"
+          title="What's New"
+          @click="whatsNewOpen = true"
+        >
         <Icon name="megaphone" class="w-5 h-5" />
         <span
           v-if="showWhatsNewDot"
@@ -38,7 +38,7 @@
 
       <div ref="themeMenuRef" class="relative">
         <button
-          class="btn btn-ghost btn-sm text-layout-topbar"
+          class="btn btn-ghost btn-sm topbar-compact-btn sm:px-3 text-layout-topbar topbar-trigger"
           title="Theme mode"
           @click.stop="toggleThemeMenu"
         >
@@ -118,7 +118,7 @@
 
       <div ref="appsMenuRef" class="relative">
         <button
-          class="btn btn-ghost btn-sm text-layout-topbar"
+          class="btn btn-ghost btn-sm topbar-compact-btn sm:px-3 text-layout-topbar topbar-trigger"
           title="Apps & account"
           @click.stop="toggleAppsMenu"
         >
@@ -200,8 +200,8 @@ const toast = useToast();
 
 const THEME_MODE_KEY = "ui-theme-mode-v1";
 const CODE_PRESET_KEY = "ui-code-theme-preset-v1";
-const RELEASE_VERSION = "2.2.23";
-const DEFAULT_STARTER_PACK_FILENAME = "mitreka-design-system-starter-pack-v2.2.22.zip";
+const RELEASE_VERSION = "2.2.24";
+const DEFAULT_STARTER_PACK_FILENAME = "mitreka-design-system-starter-pack-v2.2.24.zip";
 const TOTAL_COMPONENTS = 36;
 const WHATS_NEW_SEEN_KEY = `ui-whats-new-seen-${RELEASE_VERSION}`;
 type ThemeMode = "light" | "system" | "dark";
@@ -500,5 +500,12 @@ onUnmounted(() => {
   box-shadow:
     inset 0 1px 0 rgba(255, 255, 255, 0.28),
     0 1px 2px rgba(0, 0, 0, 0.2);
+}
+
+@media (max-width: 639px) {
+  .topbar-compact-btn {
+    padding-inline: 0.35rem !important;
+    min-width: 2rem;
+  }
 }
 </style>

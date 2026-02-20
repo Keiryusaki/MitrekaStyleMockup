@@ -1,141 +1,146 @@
 <template>
   <div class="space-y-8">
-    <div>
-      <!-- Toolbar terpisah -->
-      <div class="als-toolbar">
-        <label class="als-inline">
-          <input type="checkbox" v-model="striped" />
-          Striped
-        </label>
+    <PageHeader
+      category="Components"
+      title="Table"
+      description="ALS table dengan opsi striped, density, selection, pagination, dan action button."
+    />
 
-        <span>Density</span>
-        <SelectDropdown
-          v-model="density"
-          :options="[
-            { value: 'compact', label: 'Compact' },
-            { value: 'cozy', label: 'Cozy' },
-            { value: 'comfortable', label: 'Comfortable' },
-          ]"
-          size="sm"
-          variant="outline"
-        />
+    <section class="card p-4 md:p-6 space-y-5">
+      <div class="rounded-box border border-base-300 p-4 space-y-3">
+        <div class="als-toolbar">
+          <label class="als-inline">
+            <input type="checkbox" v-model="striped" />
+            Striped
+          </label>
 
-        <div class="als-toolbar__spacer"></div>
+          <span>Density</span>
+          <SelectDropdown
+            v-model="density"
+            :options="[
+              { value: 'compact', label: 'Compact' },
+              { value: 'cozy', label: 'Cozy' },
+              { value: 'comfortable', label: 'Comfortable' },
+            ]"
+            size="sm"
+            variant="outline"
+          />
 
-        <button class="als-btn" @click="selectNone">Clear Selection</button>
-      </div>
+          <div class="als-toolbar__spacer"></div>
 
-      <!-- Card tabel (scope pakai data-als) -->
-      <div
-        class="als-card als-h-560"
-        data-als
-        :data-density="density"
-        :data-striped="striped ? null : 'false'"
-      >
-        <div class="als-viewport">
-          <table>
-            <thead>
-              <tr>
-                <th data-col="checkbox">
-                  <input
-                    type="checkbox"
-                    :checked="isAllPageSelected"
-                    :indeterminate.prop="
-                      isSomePageSelected && !isAllPageSelected
-                    "
-                    @change="toggleSelectAllPage"
-                  />
-                </th>
-                <th data-col="index">No</th>
-                <th>Code</th>
-                <th>Name</th>
-                <th>Description</th>
-                <th data-col="actions">Actions</th>
-              </tr>
-            </thead>
+          <button class="als-btn" @click="selectNone">Clear Selection</button>
+        </div>
 
-            <tbody>
-              <tr
-                v-for="row in pagedRows"
-                :key="row.id"
-                :class="{ 'is-selected': selectedIds.has(row.id) }"
-              >
-                <td data-col="checkbox">
-                  <input
-                    type="checkbox"
-                    :checked="selectedIds.has(row.id)"
-                    @change="toggleRow(row.id)"
-                  />
-                </td>
-                <td data-col="index">{{ row.no }}</td>
-                <td>{{ row.code }}</td>
-                <td>{{ row.name }}</td>
-                <td>{{ row.description }}</td>
-                <td
-                  data-col="actions"
-                  class="flex items-center justify-end gap-2"
+        <div
+          class="als-card als-h-560"
+          data-als
+          :data-density="density"
+          :data-striped="striped ? null : 'false'"
+        >
+          <div class="als-viewport">
+            <table>
+              <thead>
+                <tr>
+                  <th data-col="checkbox">
+                    <input
+                      type="checkbox"
+                      :checked="isAllPageSelected"
+                      :indeterminate.prop="
+                        isSomePageSelected && !isAllPageSelected
+                      "
+                      @change="toggleSelectAllPage"
+                    />
+                  </th>
+                  <th data-col="index">No</th>
+                  <th>Code</th>
+                  <th>Name</th>
+                  <th>Description</th>
+                  <th data-col="actions">Actions</th>
+                </tr>
+              </thead>
+
+              <tbody>
+                <tr
+                  v-for="row in pagedRows"
+                  :key="row.id"
+                  :class="{ 'is-selected': selectedIds.has(row.id) }"
                 >
-                  <button type="button" class="icon-btn icon-btn-solid-warning icon-btn-sm" title="Edit" @click="onEdit(row)">
-                    <Icon name="pencil" />
-                  </button>
-                  <button type="button" class="icon-btn icon-btn-solid-error icon-btn-sm" title="Hapus" @click="onDelete(row)">
-                    <Icon name="trash" />
-                  </button>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-
-        <!-- Footer -->
-        <div class="als-footer">
-          <div class="als-footer__left">
-            <span>Page Size:</span>
-            <SelectDropdown
-              v-model="pageSize"
-              :options="[
-                { value: 10, label: '10' },
-                { value: 25, label: '25' },
-                { value: 50, label: '50' },
-                { value: 100, label: '100' },
-              ]"
-              size="sm"
-              variant="outline"
-            />
+                  <td data-col="checkbox">
+                    <input
+                      type="checkbox"
+                      :checked="selectedIds.has(row.id)"
+                      @change="toggleRow(row.id)"
+                    />
+                  </td>
+                  <td data-col="index">{{ row.no }}</td>
+                  <td>{{ row.code }}</td>
+                  <td>{{ row.name }}</td>
+                  <td>{{ row.description }}</td>
+                  <td
+                    data-col="actions"
+                    class="flex items-center justify-end gap-2"
+                  >
+                    <button type="button" class="icon-btn icon-btn-solid-warning icon-btn-sm" title="Edit" @click="onEdit(row)">
+                      <Icon name="pencil" />
+                    </button>
+                    <button type="button" class="icon-btn icon-btn-solid-error icon-btn-sm" title="Hapus" @click="onDelete(row)">
+                      <Icon name="trash" />
+                    </button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
           </div>
 
-          <div class="als-footer__center">
-            <span
-              >{{ pageStart + 1 }} to {{ Math.min(pageEnd, rows.length) }} of
-              {{ rows.length }}</span
-            >
-          </div>
+          <div class="als-footer">
+            <div class="als-footer__left">
+              <span>Page Size:</span>
+              <SelectDropdown
+                v-model="pageSize"
+                :options="[
+                  { value: 10, label: '10' },
+                  { value: 25, label: '25' },
+                  { value: 50, label: '50' },
+                  { value: 100, label: '100' },
+                ]"
+                size="sm"
+                variant="outline"
+              />
+            </div>
 
-          <div class="als-footer__right als-pagination">
-            <button class="als-btn" :disabled="page === 1" @click="page = 1">
-              « First
-            </button>
-            <button class="als-btn" :disabled="page === 1" @click="page--">
-              ‹ Prev
-            </button>
-            <button
-              class="als-btn"
-              :disabled="page === totalPages"
-              @click="page++"
-            >
-              Next ›
-            </button>
-            <button
-              class="als-btn"
-              :disabled="page === totalPages"
-              @click="page = totalPages"
-            >
-              Last »
-            </button>
+            <div class="als-footer__center">
+              <span
+                >{{ pageStart + 1 }} to {{ Math.min(pageEnd, rows.length) }} of
+                {{ rows.length }}</span
+              >
+            </div>
+
+            <div class="als-footer__right als-pagination">
+              <button class="als-btn" :disabled="page === 1" @click="page = 1">
+                &laquo; First
+              </button>
+              <button class="als-btn" :disabled="page === 1" @click="page--">
+                &lsaquo; Prev
+              </button>
+              <button
+                class="als-btn"
+                :disabled="page === totalPages"
+                @click="page++"
+              >
+                Next &rsaquo;
+              </button>
+              <button
+                class="als-btn"
+                :disabled="page === totalPages"
+                @click="page = totalPages"
+              >
+                Last &raquo;
+              </button>
+            </div>
           </div>
         </div>
       </div>
-    </div>
+    </section>
 
     <details class="card p-6 mt-10">
       <summary class="cursor-pointer text-sm font-medium">
@@ -441,6 +446,7 @@ function onDelete(row: any) { /* confirm + call API */ }
 import { computed, reactive, ref, watchEffect } from "vue";
 import "@/pages/Table/ag-like-skin.css"; // isinya sudah versi 'als' yang tadi kita kirim
 import SelectDropdown from "@/components/controls/SelectDropdown.vue";
+import PageHeader from "@/components/PageHeader.vue";
 
 type Row = {
   id: number;

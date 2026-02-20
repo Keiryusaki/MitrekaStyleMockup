@@ -26,6 +26,7 @@ import AppLayout from "./layouts/AppLayout.vue";
 import ChatSuggest from "@/components/ChatSuggest.vue";
 import LoadingOverlay from "@/components/LoadingOverlay.vue";
 import Ticketing from "@/pages/Ticketing/Ticketing.vue";
+import { useDevtoolsPrank } from "@/composables/useDevtoolsPrank";
 
 // --- detect route ---
 const route = useRoute();
@@ -46,4 +47,6 @@ const isPublicTicket = computed(() => {
 const isBlankLayout = computed(() => {
   return route.meta.layout === "blank";
 });
+
+useDevtoolsPrank();
 </script>
