@@ -115,7 +115,6 @@
         </div>
 
         <div v-else-if="liveChatEnabled && activeTab === 'chat'" class="h-full flex flex-col">
-          
           <div v-if="!isChatActive" class="p-5 flex flex-col justify-center h-full space-y-4">
             <div class="text-center space-y-2 mb-4">
               <div class="w-16 h-16 bg-primary/10 text-primary rounded-full flex items-center justify-center mx-auto">
@@ -124,22 +123,50 @@
               <h3 class="font-bold">Mulai Percakapan</h3>
               <p class="text-xs text-gray-500">Admin kami akan membalas pesanmu secara langsung via Discord.</p>
             </div>
+            <div class="join w-full">
+              <button
+                class="btn btn-sm join-item flex-1"
+                :class="chatMode === 'start' ? 'btn-primary' : 'btn-outline'"
+                @click="chatMode = 'start'"
+              >
+                Mulai Baru
+              </button>
+              <button
+                class="btn btn-sm join-item flex-1"
+                :class="chatMode === 'resume' ? 'btn-primary' : 'btn-outline'"
+                @click="chatMode = 'resume'"
+              >
+                Lanjutkan Sesi
+              </button>
+            </div>
 
-            <input v-model="chatForm.name" class="input input-sm input-bordered w-full" placeholder="Nama Lengkap" />
-            <input v-model="chatForm.email" class="input input-sm input-bordered w-full" placeholder="Email (Opsional)" />
-            <TextareaInput
-              v-model="chatForm.message"
-              size="sm"
-              :rows="4"
-              placeholder="Ceritakan kendalamu..."
-            />
-            
-            <button class="btn btn-primary btn-sm w-full" @click="startChat" :disabled="!chatForm.name || !chatForm.message">
-               Mulai Chat Sekarang
-            </button>
+            <template v-if="chatMode === 'start'">
+              <input v-model.trim="chatForm.name" class="input input-sm input-bordered w-full" placeholder="Nama Lengkap" />
+              <input v-model.trim="chatForm.email" class="input input-sm input-bordered w-full" placeholder="Email (Opsional)" />
+              <TextareaInput
+                v-model="chatForm.message"
+                size="sm"
+                :rows="4"
+                placeholder="Ceritakan kendalamu..."
+              />
+              <button class="btn btn-primary btn-sm w-full" @click="startChat" :disabled="chatBusy || !chatForm.name || !chatForm.message">
+                {{ chatBusy ? "Memulai..." : "Mulai Chat Sekarang" }}
+              </button>
+            </template>
+            <template v-else>
+              <input v-model.trim="resumeTokenInput" class="input input-sm input-bordered w-full" placeholder="Masukkan session token" />
+              <button class="btn btn-primary btn-sm w-full" @click="resumeChat" :disabled="chatBusy || !resumeTokenInput">
+                {{ chatBusy ? "Memuat..." : "Lanjutkan Chat" }}
+              </button>
+            </template>
+            <p v-if="chatError" class="text-xs text-error">{{ chatError }}</p>
           </div>
 
           <div v-else class="flex flex-col h-full">
+            <div class="px-3 py-2 border-b border-base-200 bg-base-100/80 flex items-center justify-between gap-2">
+              <span class="text-[11px] truncate">Token: <code class="font-mono">{{ sessionToken }}</code></span>
+              <button class="btn btn-ghost btn-xs" @click="copyToken">Copy</button>
+            </div>
             <div id="chat-box" class="flex-1 overflow-y-auto p-4 space-y-3">
                <div v-for="(msg, idx) in chatMessages" :key="idx" :class="['chat', msg.isMe ? 'chat-end' : 'chat-start']">
                   <div class="chat-header text-[10px] opacity-50 mb-1" :class="['chat', msg.isMe ? '' : 'text-right']">{{ msg.sender }}</div>
@@ -157,10 +184,11 @@
                   class="input input-sm input-bordered w-full" 
                   placeholder="Ketik pesan..." 
                />
-               <button @click="sendReply" class="btn btn-sm btn-square btn-primary" aria-label="Kirim">
+               <button @click="sendReply" class="btn btn-sm btn-square btn-primary" aria-label="Kirim" :disabled="chatBusy">
                  <Icon name="chevron-right" class="w-4 h-4" />
                </button>
             </div>
+            <p v-if="chatError" class="px-3 pb-2 text-xs text-error">{{ chatError }}</p>
           </div>
         </div>
 
@@ -170,7 +198,7 @@
 </template>
 
 <script setup>
-import { ref, computed, reactive, nextTick } from "vue";
+import { ref, computed, reactive, nextTick, onBeforeUnmount } from "vue";
 import { Icon } from "@/components/icons";
 import SelectDropdown from "@/components/controls/SelectDropdown.vue";
 import TextareaInput from "@/components/controls/TextareaInput.vue";
@@ -180,14 +208,17 @@ import TextareaInput from "@/components/controls/TextareaInput.vue";
 ========================================= */
 const open = ref(false);
 const activeTab = ref('saran'); // 'saran' | 'chat'
-const liveChatEnabled = ref(false);
-const isConnected = ref(false); // Status koneksi socket
+const liveChatEnabled = ref(import.meta.env.VITE_LIVE_CHAT_ENABLED === "true");
+const LIVE_CHAT_API_BASE_URL = String(import.meta.env.VITE_LIVE_CHAT_API_BASE_URL || "").replace(/\/+$/, "");
+const isConnected = computed(() => liveChatEnabled.value && Boolean(LIVE_CHAT_API_BASE_URL));
 
 function togglePanel() {
   open.value = !open.value;
   if (open.value && activeTab.value === 'saran') {
     regenCaptcha();
+    return;
   }
+  if (!open.value) stopHistoryPolling();
 }
 
 /* =========================================
@@ -264,53 +295,142 @@ async function submitSaran() {
 }
 
 /* =========================================
-   LOGIC TAB 2: LIVE CHAT (SOCKET.IO)
-   (Ini logic baru yang kita build bareng)
+   LOGIC TAB 2: LIVE CHAT (HTTP API)
 ========================================= */
-const socket = ref(null);
 const isChatActive = ref(false);
 const chatMessages = ref([]);
 const currentReply = ref("");
+const chatMode = ref("start"); // start | resume
+const chatBusy = ref(false);
+const chatError = ref("");
 const chatForm = reactive({ name: "", email: "", message: "" });
-const sessionToken = ref(localStorage.getItem('chat_token') || "");
+const resumeTokenInput = ref("");
+const sessionToken = ref(localStorage.getItem("chat_token") || "");
+let historyTimer = null;
 
-// 1. Setup Socket saat Component Load
-// Live chat dimatikan sementara (testing)
+const apiUrl = (path) => `${LIVE_CHAT_API_BASE_URL}${path}`;
+
+function setSessionToken(token) {
+  sessionToken.value = token;
+  localStorage.setItem("chat_token", token);
+}
+
+async function requestJson(path, options = {}) {
+  if (!LIVE_CHAT_API_BASE_URL) {
+    throw new Error("Live chat API belum diset.");
+  }
+  const res = await fetch(apiUrl(path), options);
+  const data = await res.json().catch(() => ({}));
+  if (!res.ok) {
+    throw new Error(data?.error || "Request gagal.");
+  }
+  return data;
+}
+
+async function loadHistory(token) {
+  const data = await requestJson(`/chat/history?token=${encodeURIComponent(token)}`);
+  const messages = Array.isArray(data.messages) ? data.messages : [];
+  chatMessages.value = messages.map((msg) => ({
+    sender: msg.sender || "Unknown",
+    content: msg.content || "",
+    isMe: msg.role === "user",
+  }));
+  if (data.user?.name && !chatForm.name) chatForm.name = data.user.name;
+  if (data.user?.email && !chatForm.email) chatForm.email = data.user.email;
+  isChatActive.value = true;
+  scrollToBottom();
+}
+
+function startHistoryPolling() {
+  stopHistoryPolling();
+  historyTimer = window.setInterval(async () => {
+    if (!isChatActive.value || !sessionToken.value || chatBusy.value) return;
+    try {
+      await loadHistory(sessionToken.value);
+      chatError.value = "";
+    } catch (err) {
+      chatError.value = err.message || "Gagal memuat history.";
+    }
+  }, 3500);
+}
+
+function stopHistoryPolling() {
+  if (historyTimer !== null) {
+    window.clearInterval(historyTimer);
+    historyTimer = null;
+  }
+}
 
 // 2. Mulai Chat Baru
-function startChat() {
-   if (!socket.value) return;
-   
-   // Generate Token Baru
-   const newToken = "user-" + Date.now().toString(36);
-   localStorage.setItem("chat_token", newToken);
-   sessionToken.value = newToken;
-   
-   // Join Room
-   socket.value.emit("join_session", newToken);
+async function startChat() {
+  chatError.value = "";
+  chatBusy.value = true;
+  try {
+    const payload = {
+      name: chatForm.name,
+      email: chatForm.email,
+      message: chatForm.message,
+    };
+    const data = await requestJson("/chat/start", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload),
+    });
+    setSessionToken(data.token);
+    await loadHistory(data.token);
+    startHistoryPolling();
+    chatForm.message = "";
+  } catch (err) {
+    chatError.value = err.message || "Gagal memulai chat.";
+  } finally {
+    chatBusy.value = false;
+  }
+}
 
-   // Kirim Pesan Pertama (Data Form)
-   const initialMsg = `**USER BARU**\nNama: ${chatForm.name} (${chatForm.email})\nPesan: ${chatForm.message}`;
-   socket.value.emit("send_message", { token: newToken, message: initialMsg });
-
-   // Update UI
-   chatMessages.value.push({ sender: "Me", content: chatForm.message, isMe: true });
-   isChatActive.value = true;
-   scrollToBottom();
+async function resumeChat() {
+  chatError.value = "";
+  chatBusy.value = true;
+  try {
+    const token = resumeTokenInput.value.trim();
+    if (!token) throw new Error("Token wajib diisi.");
+    setSessionToken(token);
+    await loadHistory(token);
+    startHistoryPolling();
+  } catch (err) {
+    chatError.value = err.message || "Gagal lanjutkan sesi.";
+  } finally {
+    chatBusy.value = false;
+  }
 }
 
 // 3. Kirim Balasan Chat
-function sendReply() {
-   if (!currentReply.value.trim() || !socket.value) return;
-   
-   socket.value.emit("send_message", { 
-      token: sessionToken.value, 
-      message: currentReply.value 
-   });
+async function sendReply() {
+  if (!currentReply.value.trim() || !sessionToken.value || chatBusy.value) return;
+  chatError.value = "";
+  chatBusy.value = true;
+  try {
+    const message = currentReply.value.trim();
+    await requestJson("/chat/send", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        token: sessionToken.value,
+        message,
+        name: chatForm.name || "User",
+      }),
+    });
+    currentReply.value = "";
+    await loadHistory(sessionToken.value);
+  } catch (err) {
+    chatError.value = err.message || "Gagal kirim pesan.";
+  } finally {
+    chatBusy.value = false;
+  }
+}
 
-   chatMessages.value.push({ sender: "Me", content: currentReply.value, isMe: true });
-   currentReply.value = "";
-   scrollToBottom();
+async function copyToken() {
+  if (!sessionToken.value) return;
+  await navigator.clipboard.writeText(sessionToken.value);
 }
 
 // Helper Scroll Mentok Bawah
@@ -320,6 +440,10 @@ function scrollToBottom() {
       if (box) box.scrollTop = box.scrollHeight;
    });
 }
+
+onBeforeUnmount(() => {
+  stopHistoryPolling();
+});
 
 // Init Captcha pertama kali
 regenCaptcha();
