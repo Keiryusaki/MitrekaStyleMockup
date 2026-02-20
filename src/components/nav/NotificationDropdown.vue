@@ -14,7 +14,7 @@ interface Notification {
 }
 
 const router = useRouter();
-const isOpen = ref(false);
+const isOpen = defineModel<boolean>("open", { default: false });
 const dropdownRef = ref<HTMLElement | null>(null);
 
 const notifications = ref<Notification[]>([

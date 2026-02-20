@@ -22,7 +22,7 @@
     </div>
     <div class="flex items-center gap-1 sm:gap-2 z-10">
       <input class="input input-sm w-48 lg:w-64 hidden md:block" placeholder="Search..." />
-      <NotificationDropdown />
+      <NotificationDropdown v-model:open="notificationMenuOpen" />
 
       <button
         class="btn btn-ghost btn-sm text-layout-topbar relative"
@@ -40,7 +40,7 @@
         <button
           class="btn btn-ghost btn-sm text-layout-topbar"
           title="Theme mode"
-          @click.stop="themeMenuOpen = !themeMenuOpen"
+          @click.stop="toggleThemeMenu"
         >
           <Icon :name="activeModeIcon" class="w-5 h-5" />
         </button>
@@ -116,10 +116,52 @@
         </Transition>
       </div>
 
-      <button class="btn btn-ghost btn-sm text-layout-topbar" @click="logout">
-        <Icon name="logout" class="w-5 h-5 text-layout-topbar" />
-        <span class="hidden sm:inline text-layout-topbar">Logout</span>
-      </button>
+      <div ref="appsMenuRef" class="relative">
+        <button
+          class="btn btn-ghost btn-sm text-layout-topbar"
+          title="Apps & account"
+          @click.stop="toggleAppsMenu"
+        >
+          <Icon name="layout" class="w-5 h-5" />
+          <Icon name="chevron-down" class="w-4 h-4 opacity-80" />
+        </button>
+
+        <Transition
+          enter-active-class="transition duration-150 ease-out"
+          enter-from-class="opacity-0 scale-95 -translate-y-1"
+          enter-to-class="opacity-100 scale-100 translate-y-0"
+          leave-active-class="transition duration-100 ease-in"
+          leave-from-class="opacity-100 scale-100 translate-y-0"
+          leave-to-class="opacity-0 scale-95 -translate-y-1"
+        >
+          <div
+            v-if="appsMenuOpen"
+            class="absolute right-0 top-full mt-2 w-56 bg-base-100 text-base-content rounded-lg shadow-xl border border-base-300 p-2 z-[var(--z-topbar-dropdown)]"
+            @click.stop
+          >
+            <button class="apps-menu-item" @click="openApp('finance')">
+              <span class="apps-menu-icon apps-menu-icon-finance">
+                <img :src="financeIconUrl" alt="" class="h-4 w-4 object-contain" />
+              </span>
+              <span>Finance App</span>
+            </button>
+
+            <button class="apps-menu-item" @click="openApp('sales')">
+              <span class="apps-menu-icon apps-menu-icon-sales">
+                <img :src="salesIconUrl" alt="" class="h-4 w-4 object-contain" />
+              </span>
+              <span>Sales App</span>
+            </button>
+
+            <div class="apps-menu-separator"></div>
+
+            <button class="apps-menu-item apps-menu-item-logout mt-1" @click="logout">
+              <Icon name="logout" class="w-4 h-4" />
+              <span>Logout</span>
+            </button>
+          </div>
+        </Transition>
+      </div>
     </div>
     <div
       class="absolute inset-0 bg-gradient-to-b from-black/30 via-black/30 via-40% to-black/50"
@@ -137,7 +179,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted, onUnmounted, ref } from "vue";
+import { computed, onMounted, onUnmounted, ref, watch } from "vue";
 import { useUi } from "@/stores/ui";
 import logoUrl from "@/assets/logo.png";
 import NotificationDropdown from "@/components/nav/NotificationDropdown.vue";
@@ -170,11 +212,16 @@ type StarterPackManifest = {
 
 const themeMenuOpen = ref(false);
 const themeMenuRef = ref<HTMLElement | null>(null);
+const appsMenuOpen = ref(false);
+const appsMenuRef = ref<HTMLElement | null>(null);
+const notificationMenuOpen = ref(false);
 const themeMode = ref<ThemeMode>("system");
 const selectedCodePresetId = ref("");
 const whatsNewOpen = ref(false);
 const showWhatsNewDot = ref(false);
 const starterPackFilename = ref(DEFAULT_STARTER_PACK_FILENAME);
+const financeIconUrl = `${import.meta.env.BASE_URL}images/finance.png`;
+const salesIconUrl = `${import.meta.env.BASE_URL}images/sales.png`;
 
 const codePresetThemes = computed(() => codeThemePresets);
 const starterPackVersion = computed(
@@ -231,6 +278,27 @@ function handleClickOutside(e: MouseEvent) {
   if (themeMenuRef.value && !themeMenuRef.value.contains(e.target as Node)) {
     themeMenuOpen.value = false;
   }
+  if (appsMenuRef.value && !appsMenuRef.value.contains(e.target as Node)) {
+    appsMenuOpen.value = false;
+  }
+}
+
+function toggleThemeMenu() {
+  const nextOpen = !themeMenuOpen.value;
+  if (nextOpen) {
+    appsMenuOpen.value = false;
+    notificationMenuOpen.value = false;
+  }
+  themeMenuOpen.value = nextOpen;
+}
+
+function toggleAppsMenu() {
+  const nextOpen = !appsMenuOpen.value;
+  if (nextOpen) {
+    themeMenuOpen.value = false;
+    notificationMenuOpen.value = false;
+  }
+  appsMenuOpen.value = nextOpen;
 }
 
 async function loadStarterPackManifest() {
@@ -251,8 +319,23 @@ async function loadStarterPackManifest() {
 }
 
 function logout() {
-  toast.notify({ type: "info", message: "Logging out..." });
+  appsMenuOpen.value = false;
+  toast.setToastPosition("top-center");
+  toast.notify({ type: "error", message: "Logging out..." });
 }
+
+function openApp(target: "finance" | "sales") {
+  appsMenuOpen.value = false;
+  const appLabel = target === "finance" ? "Finance App" : "Sales App";
+  toast.setToastPosition("top-center");
+  toast.notify({ type: "info", message: `Opening ${appLabel}...` });
+}
+
+watch(notificationMenuOpen, (isOpen) => {
+  if (!isOpen) return;
+  themeMenuOpen.value = false;
+  appsMenuOpen.value = false;
+});
 
 function markWhatsNewSeen() {
   showWhatsNewDot.value = false;
@@ -355,5 +438,67 @@ onUnmounted(() => {
   border-color: color-mix(in srgb, var(--color-primary) 45%, transparent);
   color: var(--color-primary);
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
+}
+
+.apps-menu-item {
+  display: inline-flex;
+  width: 100%;
+  align-items: center;
+  gap: 0.625rem;
+  border: 1px solid transparent;
+  border-radius: 0.5rem;
+  padding: 0.45rem 0.5rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  text-align: left;
+  transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+}
+
+.apps-menu-item:hover {
+  background: color-mix(in srgb, var(--color-base-200) 75%, transparent);
+  border-color: color-mix(in srgb, var(--color-base-300) 65%, transparent);
+}
+
+.apps-menu-separator {
+  height: 1px;
+  margin: 0.5rem 0 0.25rem;
+  background: color-mix(in srgb, var(--color-base-content) 14%, transparent);
+}
+
+.apps-menu-item-logout:hover {
+  color: var(--color-error);
+  border-color: color-mix(in srgb, var(--color-error) 28%, transparent);
+  background: color-mix(in srgb, var(--color-error) 8%, transparent);
+}
+
+.apps-menu-icon {
+  display: inline-flex;
+  width: 1.5rem;
+  height: 1.5rem;
+  border-radius: 0.375rem;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  flex-shrink: 0;
+}
+
+.apps-menu-icon img {
+  filter: drop-shadow(0 1px 1px rgba(0, 0, 0, 0.35));
+}
+
+.apps-menu-icon-finance {
+  background: linear-gradient(180deg, #0b68be 0%, #025097 55%, #013d73 100%);
+  border: 1px solid rgba(255, 255, 255, 0.32);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.28),
+    0 1px 2px rgba(0, 0, 0, 0.2);
+}
+
+.apps-menu-icon-sales {
+  background: linear-gradient(180deg, #ff8a2a 0%, #ff6b00 55%, #d95500 100%);
+  border: 1px solid rgba(255, 255, 255, 0.32);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.28),
+    0 1px 2px rgba(0, 0, 0, 0.2);
 }
 </style>
