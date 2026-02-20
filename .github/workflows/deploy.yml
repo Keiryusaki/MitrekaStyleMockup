@@ -41,6 +41,8 @@ jobs:
           VITE_DISCORD_WEBHOOK_URL: ${{ secrets.VITE_DISCORD_WEBHOOK_URL }}
           VITE_DEVTOOLS_PRANK: ${{ vars.VITE_DEVTOOLS_PRANK }}
           VITE_DEVTOOLS_PRANK_ALLOW_LOCAL: ${{ vars.VITE_DEVTOOLS_PRANK_ALLOW_LOCAL }}
+          VITE_LIVE_CHAT_ENABLED: ${{ vars.VITE_LIVE_CHAT_ENABLED }}
+          VITE_LIVE_CHAT_API_BASE_URL: ${{ vars.VITE_LIVE_CHAT_API_BASE_URL }}
       - uses: actions/upload-pages-artifact@v3
         with:
           path: dist
