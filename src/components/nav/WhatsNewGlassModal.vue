@@ -74,12 +74,16 @@
           <section class="glass-panel">
             <div class="panel-head">
               <h3>Latest Changelog</h3>
-              <RouterLink to="/ChangeLog" class="btn btn-ghost btn-sm btn-view-all">View All</RouterLink>
+              <RouterLink
+                to="/ChangeLog"
+                class="btn btn-ghost btn-sm btn-view-all"
+                @click="closeModal"
+              >
+                View All
+              </RouterLink>
             </div>
             <ul class="changelog-list">
-              <li>Mobile pagination jadi 2 baris dan center.</li>
-              <li>Page size selector tetap tampil di mobile view.</li>
-              <li>Paging summary/actions dipindah ke baris kedua.</li>
+              <li v-for="item in latestChangelogItems" :key="item">{{ item }}</li>
             </ul>
           </section>
 
@@ -111,6 +115,7 @@
 import { computed, onBeforeUnmount, onMounted, ref, watch } from "vue";
 import { RouterLink } from "vue-router";
 import { useToast } from "@keiryusaki/mitreka-ui/composables";
+import changelogData from "@/pages/Changelog/changelog.json";
 
 const props = defineProps<{
   modelValue: boolean;
@@ -130,6 +135,28 @@ const starterPackName = computed(() => props.starterPackName);
 const starterPackDownloadUrl = computed(
   () => `${import.meta.env.BASE_URL}downloads/${props.starterPackName}`
 );
+type ChangelogEntry = {
+  version: string;
+  items?: Array<{ text?: string }>;
+};
+
+const changelogEntries = changelogData as ChangelogEntry[];
+const latestChangelogItems = computed(() => {
+  const fallbackItems = [
+    "Release notes belum tersedia untuk versi ini.",
+  ];
+  const byRelease =
+    changelogEntries.find((entry) => entry.version === props.releaseVersion) ??
+    changelogEntries[0];
+
+  if (!byRelease?.items?.length) return fallbackItems;
+
+  return byRelease.items
+    .map((item) => item.text?.trim())
+    .filter((text): text is string => Boolean(text))
+    .slice(0, 3);
+});
+
 const isDarkTheme = ref(false);
 let htmlObserver: MutationObserver | null = null;
 
