@@ -36,6 +36,7 @@ export const NAV: NavItem[] = [
     icon: "layout",
     children: [
       { id: "ticket", label: "Ticketing", to: "/ticketing" },
+      { id: "live-attendance", label: "Live Attendance", to: "/live-attendance" },
       { id: "aggrid", label: "AG Grid", to: "/aggrid" },
       { id: "project-budgeting", label: "Project Budgeting", to: "/project-budgeting" },
       { id: "project-cashflow", label: "Project Cashflow", to: "/project-cashflow" },

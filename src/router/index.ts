@@ -76,6 +76,10 @@ const routes: RouteRecordRaw[] = [
     component: () => import("@/pages/OKRInitiatives/OKRInitiatives.vue"),
   },
   {
+    path: "/live-attendance",
+    component: () => import("@/pages/Mockup/LiveAttendance.vue"),
+  },
+  {
     path: "/table",
     component: () => import("@/pages/Table/Table.vue"),
   },
@@ -268,3 +272,4 @@ router.afterEach((to) => {
 });
 
 export default router;
+
