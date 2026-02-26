@@ -80,6 +80,11 @@ const routes: RouteRecordRaw[] = [
     component: () => import("@/pages/Mockup/LiveAttendance.vue"),
   },
   {
+    path: "/dashboard-finance",
+    component: () => import("@/pages/Mockup/DashboardFinance.vue"),
+    meta: { hideBreadcrumbs: true },
+  },
+  {
     path: "/table",
     component: () => import("@/pages/Table/Table.vue"),
   },
@@ -272,4 +277,6 @@ router.afterEach((to) => {
 });
 
 export default router;
+
+
 
