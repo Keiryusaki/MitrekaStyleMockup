@@ -67,6 +67,15 @@ const colorClass = (c: Color | undefined) =>
 const displayValue = computed(() =>
   open.value ? query.value : selected.value?.label ?? ""
 );
+
+function toggleMenu() {
+  if (props.disabled) return;
+  if (open.value) {
+    closeMenu();
+    return;
+  }
+  openMenu();
+}
 </script>
 
 <template>
@@ -84,6 +93,7 @@ const displayValue = computed(() =>
         :placeholder="placeholder || 'Search...'"
         :value="displayValue"
         @focus="openMenu"
+        @click="openMenu"
         @keydown="onKey"
         :readonly="!open"
         :class="[
@@ -111,7 +121,7 @@ const displayValue = computed(() =>
       <button
         type="button"
         class="absolute inset-y-0 right-0 pr-2 flex items-center opacity-70"
-        @click="open = !open"
+        @click="toggleMenu"
         :disabled="disabled"
       >
         <Icon :name="open ? 'chevron-up' : 'chevron-down'" class="w-4 h-4" />

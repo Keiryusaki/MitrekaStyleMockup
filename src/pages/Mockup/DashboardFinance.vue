@@ -1,11 +1,11 @@
 <template>
   <div>
-    <div class="relative overflow-hidden rounded-[2rem] bg-[#f4f7fa] p-4 md:p-6">
+    <div class="relative overflow-hidden rounded-[2rem] bg-[#f4f7fa] p-4 md:p-4">
       <div class="pointer-events-none absolute -right-20 -top-20 h-[420px] w-[420px] rounded-full bg-sky-300/20 blur-3xl"></div>
       <div class="pointer-events-none absolute -bottom-24 -left-24 h-[420px] w-[420px] rounded-full bg-emerald-300/20 blur-3xl"></div>
 
-      <div class="relative space-y-6">
-        <div class="finance-top-row grid grid-cols-1 gap-6 xl:grid-cols-3 xl:items-start">
+      <div class="relative space-y-4">
+        <div class="finance-top-row grid grid-cols-1 gap-4 xl:grid-cols-3 xl:items-start">
           <section class="finance-hero-card xl:col-span-2 overflow-hidden rounded-[2.2rem] bg-gradient-to-br from-[#004A99] to-[#002B59] p-6 text-white shadow-2xl md:p-8 xl:h-[430px]">
             <div class="flex h-full flex-col justify-between gap-5">
               <div class="inline-flex self-start items-center gap-2 rounded-full border border-white/20 bg-white/10 px-3 py-1.5 text-[11px] font-black uppercase tracking-wide">
@@ -49,16 +49,16 @@
             <div class="finance-card-head">
               <h3 class="finance-late-title">Bank Balance Late Check</h3>
             </div>
-            <p class="mb-3 text-xs font-bold text-slate-500">Akun bank yang belum diperbarui</p>
-            <p class="mb-3 text-sm text-slate-700">
+            <p class="finance-card-subtitle mb-1">Akun bank yang belum diperbarui</p>
+            <p class="mb-1 text-sm leading-snug text-slate-700">
               Terdapat <span class="font-black text-amber-500">{{ bankLateSummary.total }}</span> bank account yang belum diperbarui melewati
               <span class="font-black text-slate-800">{{ bankLateSummary.threshold }}</span> hari kerja
             </p>
-            <div class="finance-scrollpane finance-late-list min-h-0 flex-1 space-y-3 overflow-y-auto pr-1">
+            <div class="finance-scrollpane finance-late-list min-h-0 flex-1 space-y-1 overflow-y-auto pr-1">
               <div
                 v-for="bank in bankData"
                 :key="bank.id"
-                class="finance-late-bank-item flex items-center justify-between rounded-2xl border border-white/70 bg-white/65 p-3"
+                class="finance-late-bank-item flex items-center justify-between rounded-2xl border border-white/70 bg-white/65 p-2.5"
               >
                 <p class="text-sm font-semibold text-slate-700">
                   <span class="mr-2 inline-block h-2 w-2 rounded-full bg-amber-500 align-middle"></span>
@@ -75,21 +75,21 @@
           </article>
         </div>
 
-        <div class="grid grid-cols-1 gap-6 xl:grid-cols-3">
+        <div class="grid grid-cols-1 gap-4 xl:grid-cols-3">
           <article class="finance-glass-card finance-card-cyan">
             <div class="finance-card-head">
               <h3>Proyek Segera Berakhir Kontrak</h3>
             </div>
-            <p class="finance-card-subtitle mb-4">Kontrak yang akan segera habis</p>
-            <div class="finance-scrollpane max-h-[280px] space-y-4 overflow-y-auto pr-1">
+            <p class="finance-card-subtitle mb-1">Kontrak yang akan segera habis</p>
+            <div class="finance-scrollpane max-h-[280px] space-y-1 overflow-y-auto pr-1">
               <button
                 v-for="item in berakhirKontrak"
                 :key="item.id"
                 type="button"
-                class="finance-lift-item block w-full text-left"
+                class="finance-lift-item block w-full text-left px-1"
                 @click="openContractDetail(item)"
               >
-                <div class="mb-1.5 flex items-end justify-between gap-3">
+                <div class="mb-1 flex items-end justify-between gap-3">
                   <div>
                     <p class="truncate text-sm font-semibold text-slate-800">{{ item.name }}</p>
                     <p class="inline-flex items-center gap-1 text-[10px] font-semibold uppercase tracking-wide text-slate-400">
@@ -109,12 +109,12 @@
             <div class="finance-card-head">
               <h3>Proyek Segera Berakhir Support</h3>
             </div>
-            <p class="finance-card-subtitle mb-4">Support kontrak yang akan segera habis</p>
-            <div class="finance-scrollpane max-h-[280px] space-y-3 overflow-y-auto pr-1">
+            <p class="finance-card-subtitle mb-1">Support kontrak yang akan segera habis</p>
+            <div class="finance-scrollpane max-h-[280px] space-y-1 overflow-y-auto pr-1">
               <div
                 v-for="item in berakhirSupport"
                 :key="item.id"
-                class="finance-support-item flex items-center gap-3 rounded-2xl border border-rose-100 bg-rose-50/65 p-3"
+                class="finance-support-item flex items-center gap-3 rounded-2xl border border-rose-100 bg-rose-50/65 p-2.5"
               >
                 <span class="finance-support-bullet"></span>
                 <p class="min-w-0 flex-1 truncate text-left text-sm font-semibold text-slate-700">{{ item.name }}</p>
@@ -127,7 +127,7 @@
             <div class="finance-card-head">
               <h3>Proyek Belum Berkontrak</h3>
             </div>
-            <p class="finance-card-subtitle mb-4">Proyek aktif yang belum memiliki kontrak</p>
+            <p class="finance-card-subtitle mb-1">Proyek aktif yang belum memiliki kontrak</p>
             <div class="finance-filter-row mb-3 grid grid-cols-1 gap-2 sm:grid-cols-2">
               <label class="text-[10px] font-black uppercase tracking-wide text-slate-500">
                 Status
@@ -154,9 +154,9 @@
                 </div>
               </label>
             </div>
-            <div class="finance-scrollpane finance-contract-list max-h-[280px] space-y-3 overflow-y-auto pr-1">
-              <div v-for="item in belumBerkontrak" :key="item.id" class="finance-contract-item rounded-3xl border border-emerald-100 bg-emerald-50/45 p-4">
-                <div class="mb-2 flex items-start justify-between gap-3">
+            <div class="finance-scrollpane finance-contract-list max-h-[280px] space-y-1 overflow-y-auto pr-1">
+              <div v-for="item in belumBerkontrak" :key="item.id" class="finance-contract-item rounded-3xl border border-emerald-100 bg-emerald-50/45 p-3">
+                <div class="mb-1.5 flex items-start justify-between gap-3">
                   <p class="text-sm font-semibold text-slate-800">{{ item.name }}</p>
                   <span class="rounded-lg border border-emerald-100 bg-white/80 px-2 py-0.5 text-[10px] font-semibold text-emerald-600">{{ item.days }}h</span>
                 </div>
@@ -169,7 +169,7 @@
           </article>
         </div>
 
-        <div class="grid grid-cols-1 gap-6 xl:grid-cols-3">
+        <div class="grid grid-cols-1 gap-4 xl:grid-cols-3">
           <article class="finance-glass-card finance-card-indigo">
             <div class="finance-card-head">
               <h3>Utilitas SDM</h3>
@@ -478,7 +478,7 @@ function closeContractDetail(): void {
 }
 
 .finance-card-head {
-  margin-bottom: 1rem;
+  margin-bottom: 0.5rem;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -520,6 +520,7 @@ function closeContractDetail(): void {
 }
 
 .finance-lift-item {
+  cursor: pointer;
   transition: transform 180ms ease, box-shadow 180ms ease, border-color 180ms ease;
 }
 
