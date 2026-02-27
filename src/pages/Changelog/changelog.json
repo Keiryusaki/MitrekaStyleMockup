@@ -1,5 +1,25 @@
 [
   {
+    "version": "2.2.25",
+    "date": "2026-02-27",
+    "label": "Patch",
+    "items": [
+      {
+        "type": "Added",
+        "text": "Komponen SelectDropdown, SelectInput, dan MultiSelect resmi tersedia di package @keiryusaki/mitreka-ui/vue"
+      },
+      {
+        "type": "Fixed",
+        "text": "SelectInput: dropdown kini bisa langsung dibuka ulang saat input diklik tanpa perlu blur dulu"
+      },
+      {
+        "type": "Changed",
+        "text": "Sync package @keiryusaki/mitreka-ui v2.2.25 ke mockup vendor dist"
+      }
+    ],
+    "assets": []
+  },
+  {
     "version": "2.2.24",
     "date": "2026-02-20",
     "label": "Patch",
