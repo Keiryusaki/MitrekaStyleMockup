@@ -23,3 +23,6 @@ export { default as Sidebar } from './Sidebar.vue';
 export { default as Icon } from './Icon.vue';
 export { default as DateTimePicker } from './DateTimePicker.vue';
 export { default as AgGridSurface } from './AgGridSurface.vue';
+export { default as SelectDropdown } from './SelectDropdown.vue';
+export { default as SelectInput } from './SelectInput.vue';
+export { default as MultiSelect } from './MultiSelect.vue';
