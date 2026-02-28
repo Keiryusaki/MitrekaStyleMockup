@@ -15,9 +15,6 @@ const tocItems: TOCItem[] = [
   { id: 'dev-guide', label: 'Developer Guide' },
 ];
 import useSelectRaw from "@/composables/useSelect.ts?raw";
-import selectInputRaw from "@/components/controls/SelectInput.vue?raw";
-import multiSelectRaw from "@/components/controls/MultiSelect.vue?raw";
-import selectDropdownRaw from "@/components/controls/SelectDropdown.vue?raw";
 
 const _blobUrls: string[] = [];
 function makeDownloadUrl(code: string, mime = "text/plain") {
@@ -28,9 +25,6 @@ function makeDownloadUrl(code: string, mime = "text/plain") {
 
 // URL + filename
 const dlUseSelectUrl = makeDownloadUrl(useSelectRaw, "text/typescript");
-const dlSelectInputUrl = makeDownloadUrl(selectInputRaw, "text/plain");
-const dlMultiSelectUrl = makeDownloadUrl(multiSelectRaw, "text/plain");
-const dlSelectDropdownUrl = makeDownloadUrl(selectDropdownRaw, "text/plain");
 
 onBeforeUnmount(() => _blobUrls.forEach((u) => URL.revokeObjectURL(u)));
 
@@ -57,9 +51,7 @@ const options = [
 const selectedValues = ref<Record<string, string | number | null>>({});
 
 /* ====== Import Components ====== */
-import SelectDropdown from "@/components/controls/SelectDropdown.vue";
-import SelectInput from "@/components/controls/SelectInput.vue";
-import MultiSelect from "@/components/controls/MultiSelect.vue";
+import { SelectDropdown, SelectInput, MultiSelect } from "@keiryusaki/mitreka-ui/vue";
 
 const country = ref<string | number | null>(null);
 const countries = [
@@ -272,7 +264,7 @@ const exampleOutline = `<SelectDropdown
           </summary>
           <pre v-pre class="code mt-3">
             <code>&lt;script setup lang="ts">
-              import SelectInput from '@/components/controls/SelectInput.vue'
+              import { SelectInput } from '@keiryusaki/mitreka-ui/vue'
               const country = ref&lt;string|number|null&gt;(null)
               const countries = [{ value:'id', label:'Indonesia' }, ...]
               &lt;/script>
@@ -309,7 +301,7 @@ const exampleOutline = `<SelectDropdown
             Markup contoh (MultiSelect)
           </summary>
           <pre v-pre class="code mt-3"><code>&lt;script setup lang="ts">
-import MultiSelect from '@/components/controls/MultiSelect.vue'
+import { MultiSelect } from '@keiryusaki/mitreka-ui/vue'
 const roles = ref&lt;Array&lt;string|number&gt;&gt;([])
 const roleOptions = [
   { value:'admin', label:'Admin' },
@@ -326,15 +318,18 @@ const roleOptions = [
       <!-- Developer Guide -->
       <section id="dev-guide" class="space-y-3 rounded-box border border-base-300 p-4 scroll-mt-20">
         <h3 class="font-semibold">Developer Guide</h3>
-
         <!-- Download -->
         <details open>
           <summary class="font-medium">
-            Install · Select Components
+            Install - Select Components
           </summary>
           <div class="mt-3 p-4 rounded bg-base-200 border border-base-300 space-y-2">
-            <div class="text-sm font-medium">Download</div>
-            <ul class="list-disc ml-5 space-y-2">
+            <div class="text-sm font-medium">Package Install</div>
+            <pre class="code mt-2"><code>npm i @keiryusaki/mitreka-ui@2.2.27</code></pre>
+            <div class="text-sm font-medium mt-3">Vue Import</div>
+            <pre class="code mt-2"><code>import { SelectDropdown, SelectInput, MultiSelect } from "@keiryusaki/mitreka-ui/vue"</code></pre>
+            <div class="text-sm font-medium mt-3">Optional composable reference</div>
+            <ul class="list-disc ml-5 space-y-2 opacity-90">
               <li>
                 <a
                   :href="dlUseSelectUrl"
@@ -343,37 +338,7 @@ const roleOptions = [
                 >
                   useSelect.ts
                 </a>
-                <span class="ml-2 text-sm">→ <code>src/composables/useSelect.ts</code></span>
-              </li>
-              <li>
-                <a
-                  :href="dlSelectDropdownUrl"
-                  download="SelectDropdown.vue"
-                  class="btn btn-xs bg-accent text-white"
-                >
-                  SelectDropdown.vue
-                </a>
-                <span class="ml-2 text-sm">→ <code>src/components/controls/SelectDropdown.vue</code> (Solid/Outline)</span>
-              </li>
-              <li>
-                <a
-                  :href="dlSelectInputUrl"
-                  download="SelectInput.vue"
-                  class="btn btn-xs bg-accent text-white"
-                >
-                  SelectInput.vue
-                </a>
-                <span class="ml-2 text-sm">→ <code>src/components/controls/SelectInput.vue</code> (with Search)</span>
-              </li>
-              <li>
-                <a
-                  :href="dlMultiSelectUrl"
-                  download="MultiSelect.vue"
-                  class="btn btn-xs bg-accent text-white"
-                >
-                  MultiSelect.vue
-                </a>
-                <span class="ml-2 text-sm">→ <code>src/components/controls/MultiSelect.vue</code></span>
+                <span class="ml-2 text-sm">-> <code>src/composables/useSelect.ts</code></span>
               </li>
             </ul>
           </div>

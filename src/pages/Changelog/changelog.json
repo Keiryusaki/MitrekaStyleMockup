@@ -1,7 +1,7 @@
 [
   {
-    "version": "2.2.25",
-    "date": "2026-02-27",
+    "version": "2.2.27",
+    "date": "2026-02-28",
     "label": "Patch",
     "items": [
       {
@@ -14,7 +14,11 @@
       },
       {
         "type": "Changed",
-        "text": "Sync package @keiryusaki/mitreka-ui v2.2.25 ke mockup vendor dist"
+        "text": "Sinkronisasi penuh CSS DS ke package (base + mockup) dan publish @keiryusaki/mitreka-ui v2.2.26 -> v2.2.27"
+      },
+      {
+        "type": "Changed",
+        "text": "Starter pack flow diperjelas: source clean di staging-starter-pack, sandbox test di mitreka-consumer-test-ds"
       }
     ],
     "assets": []
