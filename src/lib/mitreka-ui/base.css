@@ -57,13 +57,29 @@
   --depth: 1;
   --noise: 0;
 
+  /* Additive layout/link tokens (safe default mapping) */
+  --color-layout-topbar-bg: var(--color-primary);
+  --color-layout-topbar-text: #ffffff;
+  --color-layout-sidebar-bg: var(--color-base-100);
+  --color-layout-sidebar-text: var(--color-base-content);
+  --color-sidebar-hover-bg: rgb(209 213 219 / 0.5);
+  --color-sidebar-active-bg: color-mix(in oklch, var(--color-primary), transparent 90%);
+  --color-sidebar-active-text: var(--color-primary);
+  --color-sidebar-active-border: var(--color-primary);
+  --color-sidebar-open-bg: color-mix(in oklch, var(--color-primary), transparent 90%);
+  --color-sidebar-open-text: var(--color-primary);
+  --color-sidebar-active-mark: var(--color-primary);
+  --color-link: var(--color-primary);
+  --color-link-hover: color-mix(in oklch, var(--color-primary), black 16%);
+  --color-link-visited: color-mix(in oklch, var(--color-primary), var(--color-accent) 28%);
+
   /* Layer scale */
   --layout-topbar-height: 0px;
   --layout-topbar-toast-gap: 0px;
   --z-sticky: 40;
   --z-topbar: 300;
   --z-topbar-dropdown: 350;
-  --z-toast: 700;
+  --z-toast: 950;
   --z-modal-backdrop: 800;
   --z-modal: 900;
   --z-loading: 9999;
@@ -102,6 +118,21 @@
   --color-error-content: oklch(100% 0 0);
 
   --depth: 1;
+
+  --color-layout-topbar-bg: var(--color-primary);
+  --color-layout-topbar-text: #ffffff;
+  --color-layout-sidebar-bg: var(--color-base-100);
+  --color-layout-sidebar-text: var(--color-base-content);
+  --color-sidebar-hover-bg: rgb(209 213 219 / 0.5);
+  --color-sidebar-active-bg: color-mix(in oklch, var(--color-primary), transparent 90%);
+  --color-sidebar-active-text: var(--color-primary);
+  --color-sidebar-active-border: var(--color-primary);
+  --color-sidebar-open-bg: color-mix(in oklch, var(--color-primary), transparent 90%);
+  --color-sidebar-open-text: var(--color-primary);
+  --color-sidebar-active-mark: var(--color-primary);
+  --color-link: var(--color-primary);
+  --color-link-hover: color-mix(in oklch, var(--color-primary), black 16%);
+  --color-link-visited: color-mix(in oklch, var(--color-primary), var(--color-accent) 28%);
 }
 
 /* ---------- DARK THEME (Mitreka) ---------- */
@@ -136,4 +167,19 @@
   --color-error-content: oklch(100% 0 0);
 
   --depth: 0;
+
+  --color-layout-topbar-bg: var(--color-primary);
+  --color-layout-topbar-text: #ffffff;
+  --color-layout-sidebar-bg: var(--color-base-100);
+  --color-layout-sidebar-text: var(--color-base-content);
+  --color-sidebar-hover-bg: rgb(229 231 235 / 0.2);
+  --color-sidebar-active-bg: color-mix(in oklch, var(--color-primary), transparent 90%);
+  --color-sidebar-active-text: var(--color-accent);
+  --color-sidebar-active-border: var(--color-accent);
+  --color-sidebar-open-bg: color-mix(in oklch, var(--color-accent), transparent 90%);
+  --color-sidebar-open-text: var(--color-accent);
+  --color-sidebar-active-mark: var(--color-accent);
+  --color-link: var(--color-accent);
+  --color-link-hover: color-mix(in oklch, var(--color-accent), white 24%);
+  --color-link-visited: color-mix(in oklch, var(--color-accent), #a78bfa 28%);
 }
