@@ -1,5 +1,21 @@
 [
   {
+    "version": "2.2.29",
+    "date": "2026-03-02",
+    "label": "Patch",
+    "items": [
+      {
+        "type": "Fixed",
+        "text": "Global Icon wrapper di package tidak lagi mewarisi class transform/size, sehingga icon chevron tidak double-rotate pada SidebarElegant"
+      },
+      {
+        "type": "Changed",
+        "text": "Sync package @keiryusaki/mitreka-ui v2.2.29 ke mockup vendor dist"
+      }
+    ],
+    "assets": []
+  },
+  {
     "version": "2.2.28",
     "date": "2026-03-02",
     "label": "Patch",
