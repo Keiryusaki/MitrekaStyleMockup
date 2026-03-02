@@ -1,5 +1,25 @@
 [
   {
+    "version": "2.2.28",
+    "date": "2026-03-02",
+    "label": "Patch",
+    "items": [
+      {
+        "type": "Fixed",
+        "text": "Toast layering: token --z-toast dinaikkan jadi 950 agar toast selalu tampil di atas modal/backdrop, termasuk modal fullscreen"
+      },
+      {
+        "type": "Changed",
+        "text": "Modal DS disinkronkan ke token layering (--z-modal-backdrop/--z-modal) dan tidak lagi hardcoded z-40/z-50"
+      },
+      {
+        "type": "Changed",
+        "text": "Sync package @keiryusaki/mitreka-ui v2.2.28 ke mockup vendor dist"
+      }
+    ],
+    "assets": []
+  },
+  {
     "version": "2.2.27",
     "date": "2026-02-28",
     "label": "Patch",
