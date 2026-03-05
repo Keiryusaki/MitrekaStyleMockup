@@ -29,7 +29,6 @@ const {
   menu,
   open,
   query,
-  hoverIdx,
   loading,
   filtered,
   selectedList,
@@ -56,21 +55,18 @@ const sizeClass = {
   <div ref="root" class="relative">
     <!-- shell -->
     <div
-      class="relative flex items-center gap-2 flex-wrap min-h-[var(--size-field-md)] rounded-field border border-base-300 bg-base-100 px-2"
-      :class="[
-        sizeClass[size || 'md'],
-        disabled ? 'opacity-60 pointer-events-none' : '',
-      ]"
+      class="relative flex flex-wrap items-start gap-2 min-h-[var(--size-field-md)] rounded-field border border-base-300 bg-base-100 px-2 py-1.5"
+      :class="[disabled ? 'opacity-60 pointer-events-none' : '']"
       @click="openMenu"
     >
       <!-- chips -->
-      <template v-if="selectedList.length">
+      <div v-if="selectedList.length" class="flex w-full flex-wrap items-center gap-1.5">
         <span
           v-for="o in selectedList"
           :key="o.value"
-          class="badge badge-soft-primary gap-1"
+          class="badge badge-soft-primary gap-1 max-w-full"
         >
-          {{ o.label }}
+          <span class="truncate">{{ o.label }}</span>
           <button
             type="button"
             class="icon-btn icon-btn-xs icon-btn-outline"
@@ -79,43 +75,48 @@ const sizeClass = {
             <Icon name="x" class="w-3 h-3" />
           </button>
         </span>
-      </template>
-      <span v-else class="opacity-60 text-sm">{{
-        placeholder || "Select options…"
+      </div>
+      <span v-else class="opacity-60 text-sm w-full">{{
+        placeholder || "Select options..."
       }}</span>
 
       <!-- search input -->
-      <span class="flex-1 min-w-[8ch]">
-        <input
-          ref="inputEl"
-          v-model="query"
-          class="input border-0 h-[unset] p-0 focus:shadow-none focus:outline-none"
-          placeholder="Search..."
-          @keydown="onKey"
-          @focus="open = true"
-        />
-      </span>
+      <div class="flex items-center gap-2 w-full">
+        <span class="flex-1 min-w-[8ch]">
+          <input
+            ref="inputEl"
+            v-model="query"
+            :class="[
+              'input border-0 h-[unset] p-0 focus:shadow-none focus:outline-none',
+              sizeClass[size || 'md'],
+            ]"
+            placeholder="Search..."
+            @keydown="onKey"
+            @focus="open = true"
+          />
+        </span>
 
-      <button
-        type="button"
-        class="icon-btn icon-btn-xs icon-btn-outline ml-auto"
-        @click.stop="open = !open"
-      >
-        <Icon :name="open ? 'chevron-up' : 'chevron-down'" class="w-4 h-4" />
-      </button>
-      <button
-        v-if="selectedList.length"
-        type="button"
-        class="icon-btn icon-btn-xs icon-btn-outline"
-        @click.stop="clearAll()"
-      >
-        <Icon name="x" class="w-4 h-4" />
-      </button>
+        <button
+          type="button"
+          class="icon-btn icon-btn-xs icon-btn-outline shrink-0"
+          @click.stop="open = !open"
+        >
+          <Icon :name="open ? 'chevron-up' : 'chevron-down'" class="w-4 h-4" />
+        </button>
+        <button
+          v-if="selectedList.length"
+          type="button"
+          class="icon-btn icon-btn-xs icon-btn-outline shrink-0"
+          @click.stop="clearAll()"
+        >
+          <Icon name="x" class="w-4 h-4" />
+        </button>
+      </div>
     </div>
 
     <!-- dropdown -->
     <div v-if="open" class="absolute z-20 mt-1 w-full card p-2">
-      <div v-if="loading" class="px-3 py-2 text-sm opacity-70">Loading…</div>
+      <div v-if="loading" class="px-3 py-2 text-sm opacity-70">Loading...</div>
       <ul v-else ref="menu" class="max-h-60 overflow-auto">
         <li
           v-for="(o, i) in filtered"

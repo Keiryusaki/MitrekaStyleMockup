@@ -1,13 +1,13 @@
 {
   "name": "mitreka-style-mockup",
   "private": true,
-  "version": "2.2.29",
+  "version": "2.2.30",
   "type": "module",
   "scripts": {
-    "dev": "vite",
+    "dev": "vite --host 0.0.0.0 --port 5173",
     "starter-pack:manifest": "node ./scripts/generate-starter-pack-manifest.mjs",
     "build": "npm run starter-pack:manifest && vite build",
-    "preview": "vite preview",
+    "preview": "vite preview --host 0.0.0.0 --port 4173",
     "type-check": "vue-tsc --noEmit -p tsconfig.json",
     "release:css": "powershell -ExecutionPolicy Bypass -File ./scripts/release-css.ps1"
   },

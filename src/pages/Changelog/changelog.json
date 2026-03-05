@@ -1,5 +1,21 @@
 [
   {
+    "version": "2.2.30",
+    "date": "2026-03-05",
+    "label": "Patch",
+    "items": [
+      {
+        "type": "Fixed",
+        "text": "MultiSelect tidak lagi overlap saat banyak chip dipilih, termasuk pada ukuran sm"
+      },
+      {
+        "type": "Changed",
+        "text": "Sync package @keiryusaki/mitreka-ui v2.2.30 ke mockup vendor dist"
+      }
+    ],
+    "assets": []
+  },
+  {
     "version": "2.2.29",
     "date": "2026-03-02",
     "label": "Patch",

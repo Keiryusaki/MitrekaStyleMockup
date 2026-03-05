@@ -45,6 +45,21 @@ Checklist ringkas (5 langkah):
 4) Update versi di `MitrekaStyleMockup/package.json`
 5) Jika sudah publish: ganti dependency `file:` ke semver + `npm install`
 
+Guardrail sinkron CSS (WAJIB sebelum publish):
+1) Jangan patch parsial saat ada perubahan DS style; default harus full-sync:
+   - Source: `MitrekaStyleMockup/src/assets/tailwind.css`
+   - Target package: `mitreka-ui/src/css/mockup.css`
+2) Setelah full-sync, verifikasi class kritikal tidak boleh hilang (contoh wajib cek):
+   - `.theme-topbar`, `.text-layout-topbar`, `.theme-sidebar`
+   - `.sidebar-active-mark`, `.sidebar-item-active-border`
+3) Verifikasi token layout/link di `mitreka-ui/src/css/base.css` tetap ada:
+   - `--color-layout-topbar-*`, `--color-layout-sidebar-*`
+   - `--color-sidebar-*`, `--color-link-*`
+4) Wajib jalankan `npm run build` dan cek output `dist/css/base.css` + `dist/css/mockup.css`.
+5) Sebelum `npm publish`, jalankan pemeriksaan cepat:
+   - `npm pack` (cek isi tarball)
+   - pastikan tidak ada class/token drift dibanding source DS.
+
 Catatan bantuan sistem (Codex):
 - Biasanya minta bantuan Codex untuk sync, push, dan publish package.
 - Minta bantuan Codex untuk menjalankan checklist di atas secara berurutan.
@@ -70,8 +85,9 @@ Catatan deploy GH Pages (biar gak gagal):
 
 Standar Starter Pack (wajib konsisten):
 - `MitrekaStyleMockup` = source of truth Design System.
-- `mitreka-consumer-test` = sandbox testing + validasi standarisasi starter pack.
-- Starter pack selalu diturunkan dari `mitreka-consumer-test` yang sudah lolos uji.
+- `staging-starter-pack` = source of truth starter pack (clean source yang akan di-zip).
+- `mitreka-consumer-test-ds` = sandbox test copy hasil staging (install/run/build check).
+- Starter pack final selalu di-zip dari `staging-starter-pack` setelah sandbox test lolos.
 
 Output starter pack:
 1) Folder mentah (tanpa install dependency, tanpa node_modules).
@@ -111,7 +127,7 @@ Checklist final sebelum commit/push rilis:
 
 Ritual awal sesi (biar konteks gak miss):
 1) Review file `MitrekaStyleMockup/catatan`.
-2) Pastikan alignment 3 repo: `mitreka-ui`, `MitrekaStyleMockup`, `mitreka-consumer-test`.
+2) Pastikan alignment 4 folder: `mitreka-ui`, `MitrekaStyleMockup`, `staging-starter-pack`, `mitreka-consumer-test-ds`.
 3) Cek apakah perlu regenerate starter pack berdasarkan compatibility versi terbaru.
 
 Guardrail command destruktif (WAJIB):

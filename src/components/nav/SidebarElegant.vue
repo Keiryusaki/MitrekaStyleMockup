@@ -1,5 +1,5 @@
 <script lang="ts">
-import { defineComponent, h } from "vue";
+import { Transition, defineComponent, h } from "vue";
 import { Icon } from "@/composables/Icon"; // Import icon
 import { useSidebar } from "@/composables/useSidebar"; // Import logic
 
@@ -14,6 +14,86 @@ export default defineComponent({
       isActive, isGroupOpen, toggleGroup, go, showTip, hideTip,
       searchQuery, filteredNav, setSearchQuery, clearSearch
     } = useSidebar();
+
+    const collapsedFx = (extra = "") =>
+      [
+        "transition-all duration-200 ease-out overflow-hidden whitespace-nowrap",
+        props.collapsed
+          ? "max-w-0 opacity-0 -translate-x-1 pointer-events-none"
+          : "max-w-[180px] opacity-100 translate-x-0",
+        extra,
+      ].join(" ");
+
+    const runTransition = (
+      target: HTMLElement,
+      done: () => void,
+      duration = 240
+    ) => {
+      let finished = false;
+      const finish = () => {
+        if (finished) return;
+        finished = true;
+        target.removeEventListener("transitionend", onEnd);
+        done();
+      };
+      const onEnd = (e: Event) => {
+        if (e.target === target) finish();
+      };
+      target.addEventListener("transitionend", onEnd);
+      window.setTimeout(finish, duration + 60);
+    };
+
+    const submenuTransition = {
+      onBeforeEnter(el: Element) {
+        const target = el as HTMLElement;
+        target.style.overflow = "hidden";
+        target.style.height = "0";
+        target.style.opacity = "0";
+        target.style.transform = "translateY(-4px)";
+      },
+      onEnter(el: Element, done: () => void) {
+        const target = el as HTMLElement;
+        target.style.transition =
+          "height 240ms ease-out, opacity 180ms ease-out, transform 220ms ease-out";
+        requestAnimationFrame(() => {
+          target.style.height = `${target.scrollHeight}px`;
+          target.style.opacity = "1";
+          target.style.transform = "translateY(0)";
+        });
+        runTransition(target, done, 240);
+      },
+      onAfterEnter(el: Element) {
+        const target = el as HTMLElement;
+        target.style.height = "auto";
+        target.style.overflow = "";
+        target.style.transition = "";
+      },
+      onBeforeLeave(el: Element) {
+        const target = el as HTMLElement;
+        target.style.overflow = "hidden";
+        target.style.height = `${target.scrollHeight}px`;
+        target.style.opacity = "1";
+        target.style.transform = "translateY(0)";
+      },
+      onLeave(el: Element, done: () => void) {
+        const target = el as HTMLElement;
+        // Force reflow so browsers (especially mobile) always register start state.
+        void target.offsetHeight;
+        target.style.transition =
+          "height 210ms ease-in, opacity 140ms ease-in, transform 200ms ease-in";
+        requestAnimationFrame(() => {
+          target.style.height = "0";
+          target.style.opacity = "0";
+          target.style.transform = "translateY(-4px)";
+        });
+        runTransition(target, done, 210);
+      },
+      onAfterLeave(el: Element) {
+        const target = el as HTMLElement;
+        target.style.overflow = "";
+        target.style.transition = "";
+      },
+    };
 
     // Ini adalah 'return' dari setup() lo yang lama
     return () =>
@@ -34,24 +114,31 @@ export default defineComponent({
                 src: "https://avatars.githubusercontent.com/u/9919?s=80&v=4",
                 alt: "avatar",
               }),
-              !props.collapsed &&
-                h("div", { class: "flex-1 min-w-0" }, [
-                  h("div", { class: "text-xs opacity-70" }, "Welcome,"),
-                  h("div", { class: "font-semibold truncate" }, "John Doe"),
-                ]),
+              h("div", { class: collapsedFx("flex-1 min-w-0") }, [
+                h("div", { class: "text-xs opacity-70" }, "Welcome,"),
+                h("div", { class: "font-semibold truncate" }, "John Doe"),
+              ]),
             ]
           ),
-          !props.collapsed &&
-            h(
-              "div",
-              { class: "mt-4 text-[11px] uppercase tracking-wide opacity-60" },
-              "General"
-            ),
+          h(
+            "div",
+            { class: collapsedFx("mt-4 text-[11px] uppercase tracking-wide opacity-60") },
+            "General"
+          ),
         ]),
 
         // Search Input
-        !props.collapsed &&
-          h("div", { class: "px-3 py-2 border-b border-base-300 flex-shrink-0" }, [
+        h(
+          "div",
+          {
+            class: [
+              "border-b border-base-300 flex-shrink-0 transition-all duration-200 ease-out overflow-hidden",
+              props.collapsed
+                ? "max-h-0 opacity-0 py-0 px-0 -translate-y-1 pointer-events-none border-b-0"
+                : "max-h-24 opacity-100 py-2 px-3 translate-y-0",
+            ],
+          },
+          [
             h("div", { class: "relative" }, [
               h("input", {
                 type: "text",
@@ -77,7 +164,8 @@ export default defineComponent({
                   [h(Icon, { name: "x", class: "w-3 h-3" })]
                 ),
             ]),
-          ]),
+          ]
+        ),
 
         // NAV (scrollable)
         h(
@@ -103,6 +191,7 @@ export default defineComponent({
                       class: [
                         "relative flex items-center gap-3 h-field rounded-field cursor-pointer",
                         "px-3 border border-transparent",
+                        props.collapsed ? "justify-center gap-0 px-2" : "",
                         active
                           ? "sidebar-item-active sidebar-item-active-border"
                           : "sidebar-hover",
@@ -117,8 +206,7 @@ export default defineComponent({
                         name: item.icon || "dot",
                         class: "w-5 h-5",
                       }),
-                      !props.collapsed &&
-                        h("span", { class: "font-medium" }, item.label),
+                      h("span", { class: collapsedFx("font-medium") }, item.label),
                     ]
                   ),
                 ]
@@ -135,6 +223,8 @@ export default defineComponent({
                   class: [
                     "relative w-full flex items-center gap-3 h-field rounded-field px-3 flex-shrink-0",
                     "border border-transparent",
+                    "transition-colors duration-200 ease-out",
+                    props.collapsed ? "justify-center gap-0 px-2" : "",
                     open
                       ? "sidebar-parent-open" // Style Grup Open (soft primary light, soft accent dark)
                       : "sidebar-hover", // Style Grup Closed (hover)
@@ -154,72 +244,83 @@ export default defineComponent({
                     name: item.icon || "dot",
                     class: "w-5 h-5",
                   }),
-                  !props.collapsed &&
-                    h(
-                      "span",
-                      { class: "font-medium flex-1 text-left" },
-                      item.label
-                    ),
-                  !props.collapsed &&
-                    h(Icon, {
-                      name: "chevron-right",
-                      class:
-                        "w-4 h-4 transition-transform " +
-                        (open ? "rotate-90" : ""),
-                    }),
+                  h(
+                    "span",
+                    { class: collapsedFx("font-medium flex-1 text-left") },
+                    item.label
+                  ),
+                  h(Icon, {
+                    name: "chevron-right",
+                    class: [
+                      "w-4 h-4 transition-all duration-200",
+                      open ? "rotate-90" : "",
+                      props.collapsed ? "max-w-0 opacity-0 -translate-x-1" : "max-w-4 opacity-100 translate-x-0",
+                    ],
+                  }),
                 ]
               ),
 
               // Dropdown children
-              open &&
-                h(
-                  "div",
-                  {
-                    class:
-                      "relative mt-1 " + (props.collapsed ? "pl-2" : "pl-5"),
-                  },
-                  [
-                    !props.collapsed &&
-                      h("div", {
-                        class:
-                          "absolute left-2 top-2 bottom-2 border-l-2 border-gray-200",
-                      }),
-                    h(
-                      "div",
-                      { class: "flex flex-col gap-1" },
-                      item.children!.map((child) => {
-                        const active = isActive(child);
-                        return h(
-                          "a",
+              h(
+                Transition,
+                submenuTransition,
+                {
+                  default: () =>
+                    open
+                      ? h(
+                          "div",
                           {
-                            key: child.id,
                             class: [
-                              "relative flex items-center gap-3 h-field rounded-field cursor-pointer flex-shrink-0",
-                              "border border-transparent",
-                              "pl-3 pr-[.75rem]",
-                              active
-                                ? "sidebar-item-active sidebar-item-active-border" // Style Child Active
-                                : "sidebar-hover", // Style Child Inactive (hover)
+                              "relative mt-1 overflow-hidden",
+                              props.collapsed ? "pl-2" : "pl-5",
                             ],
-                            "aria-current": active ? "page" : undefined,
-                            onClick: () => go(child),
-                            onMouseenter: (e: MouseEvent) =>
-                              showTip(e, child.label),
-                            onMouseleave: hideTip,
                           },
                           [
-                            h(Icon, {
-                              name: "dot",
-                              class: "w-5 h-5",
+                            h("div", {
+                              class: [
+                                "absolute left-2 top-2 bottom-2 border-l-2 border-gray-200 transition-opacity duration-200",
+                                props.collapsed ? "opacity-0" : "opacity-100",
+                              ],
                             }),
-                            !props.collapsed &&
-                              h("span", { class: "font-medium" }, child.label),
+                            h(
+                              "div",
+                              { class: "overflow-hidden flex flex-col gap-1" },
+                              item.children!.map((child) => {
+                                const active = isActive(child);
+                                return h(
+                                  "a",
+                                  {
+                                    key: child.id,
+                                    class: [
+                                      "relative flex items-center gap-3 h-field rounded-field cursor-pointer flex-shrink-0",
+                                      "border border-transparent",
+                                      "pl-3 pr-[.75rem]",
+                                      props.collapsed ? "justify-center gap-0 px-2" : "",
+                                      active
+                                        ? "sidebar-item-active sidebar-item-active-border" // Style Child Active
+                                        : "sidebar-hover", // Style Child Inactive (hover)
+                                    ],
+                                    "aria-current": active ? "page" : undefined,
+                                    onClick: () => go(child),
+                                    onMouseenter: (e: MouseEvent) =>
+                                      showTip(e, child.label),
+                                    onMouseleave: hideTip,
+                                  },
+                                  [
+                                    h(Icon, {
+                                      name: "dot",
+                                      class: "w-5 h-5",
+                                    }),
+                                    h("span", { class: collapsedFx("font-medium") }, child.label),
+                                  ]
+                                );
+                              })
+                            ),
                           ]
-                        );
-                      })
-                    ),
-                  ]
-                ),
+                        )
+                      : null,
+                }
+              ),
             ]);
           })
         ),

@@ -1,21 +1,41 @@
 <template>
   <div class="contents md:h-full">
     <!-- Mobile drawer -->
-    <div class="md:hidden" v-if="ui.sidebarOpen">
-      <div
-        class="fixed inset-0 bg-black/30 z-40"
-        @click="ui.sidebarOpen = false"
-      ></div>
-      <aside
-        class="fixed top-14 left-0 z-50 w-72 h-[calc(100dvh-56px)] theme-sidebar border-r border-base-300 overflow-y-auto overscroll-y-contain"
+    <div class="md:hidden">
+      <Transition
+        enter-active-class="transition-opacity duration-220 ease-out"
+        enter-from-class="opacity-0"
+        enter-to-class="opacity-100"
+        leave-active-class="transition-opacity duration-180 ease-in"
+        leave-from-class="opacity-100"
+        leave-to-class="opacity-0"
       >
-        <SidebarElegant />
-      </aside>
+        <div
+          v-if="ui.sidebarOpen"
+          class="fixed inset-0 bg-black/30 z-40"
+          @click="ui.sidebarOpen = false"
+        ></div>
+      </Transition>
+      <Transition
+        enter-active-class="transition-transform duration-260 ease-out"
+        enter-from-class="-translate-x-full"
+        enter-to-class="translate-x-0"
+        leave-active-class="transition-transform duration-220 ease-in"
+        leave-from-class="translate-x-0"
+        leave-to-class="-translate-x-full"
+      >
+        <aside
+          v-if="ui.sidebarOpen"
+          class="fixed top-14 left-0 z-50 w-72 h-[calc(100dvh-56px)] theme-sidebar border-r border-base-300 overflow-y-auto overscroll-y-contain transform-gpu will-change-transform"
+        >
+          <SidebarElegant />
+        </aside>
+      </Transition>
     </div>
 
     <!-- Desktop sidebar -->
     <aside
-      class="hidden md:flex flex-col h-full min-h-0 theme-sidebar border-r border-base-300 relative overflow-hidden"
+      class="hidden md:flex flex-col h-full min-h-0 theme-sidebar border-r border-base-300 relative overflow-hidden transition-[width] duration-200 ease-out"
       :class="ui.sidebarCollapsed ? 'w-20' : 'w-[264px]'"
     >
       <SidebarElegant :collapsed="ui.sidebarCollapsed" />
