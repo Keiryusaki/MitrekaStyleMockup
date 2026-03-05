@@ -3,6 +3,7 @@
 import { computed, onBeforeUnmount, onMounted, ref, nextTick } from "vue";
 import { AgGridSurface } from "@keiryusaki/mitreka-ui/vue";
 import SelectDropdown from "@/components/controls/SelectDropdown.vue";
+import MultiSelect from "@/components/controls/MultiSelect.vue";
 import PageHeader from "@/components/PageHeader.vue";
 import Tooltip from "@/components/Tooltip.vue";
 import { attachPinnedShadowsToElement } from "@/composables/useAgGridPinnedShadows";
@@ -126,7 +127,7 @@ const contractorOptions = [
 const selectedYear = ref("2026");
 const selectedMonth = ref("all");
 const selectedStatus = ref("all");
-const selectedCustomer = ref("all");
+const selectedCustomer = ref<Array<string | number>>([]);
 const selectedContractor = ref("all");
 
 const fmt = new Intl.NumberFormat("id-ID");
@@ -445,11 +446,12 @@ const reloadData = () => {
           size="sm"
           variant="outline"
         />
-        <SelectDropdown
+        <MultiSelect
           v-model="selectedCustomer"
           :options="customerOptions"
           size="sm"
-          variant="outline"
+          display-mode="inline-compact"
+          placeholder="Customer..."
         />
         <SelectDropdown
           v-model="selectedContractor"

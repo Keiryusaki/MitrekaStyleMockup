@@ -51,7 +51,9 @@ const options = [
 const selectedValues = ref<Record<string, string | number | null>>({});
 
 /* ====== Import Components ====== */
-import { SelectDropdown, SelectInput, MultiSelect } from "@keiryusaki/mitreka-ui/vue";
+import SelectDropdown from "@/components/controls/SelectDropdown.vue";
+import SelectInput from "@/components/controls/SelectInput.vue";
+import MultiSelect from "@/components/controls/MultiSelect.vue";
 
 const country = ref<string | number | null>(null);
 const countries = [
@@ -61,7 +63,8 @@ const countries = [
   { value: "th", label: "Thailand" },
 ];
 
-const roles = ref<Array<string | number>>([]);
+const rolesInline = ref<Array<string | number>>([]);
+const rolesStacked = ref<Array<string | number>>([]);
 const roleOptions = [
   { value: "admin", label: "Admin" },
   { value: "pm", label: "Project Manager" },
@@ -238,7 +241,7 @@ const exampleOutline = `<SelectDropdown
               :options="countries"
               placeholder="Choose country..."
               clearable
-              size="md"
+              :size="size"
               color="primary"
             />
             <div class="text-xs opacity-70 mt-2">
@@ -254,6 +257,7 @@ const exampleOutline = `<SelectDropdown
               :debounce-ms="300"
               placeholder="Search countries..."
               clearable
+              :size="size"
             />
           </div>
         </div>
@@ -286,14 +290,34 @@ const exampleOutline = `<SelectDropdown
 
       <!-- Multi Select -->
       <section id="multi-select" class="space-y-3 rounded-box border border-base-300 p-4 scroll-mt-20">
-        <h3 class="font-semibold opacity-90">Multi Select (chips + search)</h3>
-        <MultiSelect
-          v-model="roles"
-          :options="roleOptions"
-          placeholder="Choose roles..."
-        />
-        <div class="text-xs opacity-70 mt-2">
-          Values: <code>{{ roles }}</code>
+        <h3 class="font-semibold opacity-90">Multi Select (inline + stacked)</h3>
+        <div class="grid md:grid-cols-2 gap-6 items-start">
+          <div class="space-y-2">
+            <label class="text-xs opacity-70 block">Inline compact (single row)</label>
+            <MultiSelect
+              v-model="rolesInline"
+              :options="roleOptions"
+              placeholder="Choose roles..."
+              :size="size"
+              display-mode="inline-compact"
+            />
+            <div class="text-xs opacity-70">
+              Values: <code>{{ rolesInline }}</code>
+            </div>
+          </div>
+          <div class="space-y-2">
+            <label class="text-xs opacity-70 block">Stacked (2 rows)</label>
+            <MultiSelect
+              v-model="rolesStacked"
+              :options="roleOptions"
+              placeholder="Choose roles..."
+              :size="size"
+              display-mode="stacked"
+            />
+            <div class="text-xs opacity-70">
+              Values: <code>{{ rolesStacked }}</code>
+            </div>
+          </div>
         </div>
 
         <details class="mt-4">
@@ -302,7 +326,8 @@ const exampleOutline = `<SelectDropdown
           </summary>
           <pre v-pre class="code mt-3"><code>&lt;script setup lang="ts">
 import { MultiSelect } from '@keiryusaki/mitreka-ui/vue'
-const roles = ref&lt;Array&lt;string|number&gt;&gt;([])
+const rolesInline = ref&lt;Array&lt;string|number&gt;&gt;([])
+const rolesStacked = ref&lt;Array&lt;string|number&gt;&gt;([])
 const roleOptions = [
   { value:'admin', label:'Admin' },
   { value:'pm', label:'Project Manager' },
@@ -310,7 +335,21 @@ const roleOptions = [
 &lt;/script>
 
 &lt;template&gt;
-  &lt;MultiSelect v-model="roles" :options="roleOptions" placeholder="Choose roles..." /&gt;
+  &lt;MultiSelect
+    v-model="rolesInline"
+    :options="roleOptions"
+    size="sm"
+    display-mode="inline-compact"
+    placeholder="Choose roles..."
+  /&gt;
+
+  &lt;MultiSelect
+    v-model="rolesStacked"
+    :options="roleOptions"
+    size="sm"
+    display-mode="stacked"
+    placeholder="Choose roles..."
+  /&gt;
 &lt;/template&gt;</code></pre>
         </details>
       </section>
@@ -375,7 +414,8 @@ const roleOptions = [
               <ul class="list-disc ml-5 text-sm space-y-1 opacity-80">
                 <li><code>v-model</code> - Array of selected values</li>
                 <li><code>options</code> / <code>fetch-options</code></li>
-                <li><code>placeholder</code>, <code>size</code>, <code>disabled</code></li>
+                <li><code>display-mode</code> - <code>stacked</code> | <code>inline-compact</code></li>
+                <li><code>placeholder</code>, <code>size</code>, <code>disabled</code>, <code>debounce-ms</code></li>
               </ul>
             </div>
           </div>
