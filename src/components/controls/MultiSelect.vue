@@ -244,6 +244,10 @@ onBeforeUnmount(() => {
       @click="openMenu"
     >
       <template v-if="displayModeClass === 'inline-compact'">
+        <span :class="['opacity-60 min-w-0 shrink-0 max-w-[12ch] truncate', placeholderTextClass[size || 'md']]">{{
+          placeholder || "Select options..."
+        }}</span>
+
         <div v-if="selectedList.length" ref="chipViewport" class="flex min-w-0 flex-1 items-center gap-1.5 overflow-hidden whitespace-nowrap">
           <span
             v-for="o in selectedList.slice(0, visibleChipCount)"
@@ -270,9 +274,7 @@ onBeforeUnmount(() => {
           </span>
         </div>
 
-        <span :class="['opacity-60 min-w-0 flex-1 truncate', placeholderTextClass[size || 'md']]">{{
-          placeholder || "Select options..."
-        }}</span>
+        <span v-else class="flex-1 min-w-0"></span>
 
         <span
           :class="[
@@ -330,7 +332,7 @@ onBeforeUnmount(() => {
             </button>
           </span>
         </div>
-        <span :class="['opacity-60 w-full', placeholderTextClass[size || 'md']]">{{
+        <span v-else :class="['opacity-60 w-full', placeholderTextClass[size || 'md']]">{{
           placeholder || "Select options..."
         }}</span>
 

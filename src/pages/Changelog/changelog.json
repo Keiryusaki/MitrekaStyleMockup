@@ -1,12 +1,16 @@
 [
   {
-    "version": "2.2.31",
+    "version": "2.2.32",
     "date": "2026-03-05",
     "label": "Patch",
     "items": [
       {
         "type": "Fixed",
         "text": "MultiSelect: mode inline-compact kini stabil pada layout filter 1 baris dengan overflow chip +N, close chip lebih compact, dan dropdown hover kembali terlihat"
+      },
+      {
+        "type": "Fixed",
+        "text": "MultiSelect: label placeholder di mode inline-compact kembali tampil di sisi kiri, sementara chip tetap di area tengah dan mode stacked tetap chips di atas"
       },
       {
         "type": "Changed",
@@ -18,7 +22,7 @@
       },
       {
         "type": "Changed",
-        "text": "Sync package @keiryusaki/mitreka-ui v2.2.31 ke mockup vendor dist"
+        "text": "Sync package @keiryusaki/mitreka-ui v2.2.32 ke mockup vendor dist"
       }
     ],
     "assets": []
