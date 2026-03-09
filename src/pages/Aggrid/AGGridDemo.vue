@@ -52,6 +52,9 @@ onBeforeUnmount(() => htmlObs?.disconnect());
 const density = ref<"compact" | "cozy" | "spacious">("cozy");
 const striped = ref(true);
 const search = ref("");
+const exportState = ref("");
+const showExportMenu = ref(false);
+const exportMenuRef = ref<HTMLElement | null>(null);
 const themeClass = computed(() =>
   isDark.value ? "ag-theme-quartz-dark" : "ag-theme-quartz"
 );
@@ -273,6 +276,26 @@ function applyDensityToApi() {
 }
 const exportCsv = () => {
   api.value?.exportDataAsCsv({ fileName: "aggrid-export.csv" });
+  exportState.value = "CSV exported.";
+  showExportMenu.value = false;
+};
+const exportXls = () => {
+  api.value?.exportDataAsCsv({ fileName: "aggrid-export.xls" });
+  exportState.value = "XLS exported.";
+  showExportMenu.value = false;
+};
+const exportPdf = () => {
+  exportState.value = "PDF export belum di-hook, ini placeholder action.";
+  showExportMenu.value = false;
+};
+const toggleExportMenu = () => {
+  showExportMenu.value = !showExportMenu.value;
+};
+const onDocumentPointerDown = (event: PointerEvent) => {
+  const target = event.target as Node | null;
+  if (!target) return;
+  if (exportMenuRef.value?.contains(target)) return;
+  showExportMenu.value = false;
 };
 
 function onGridReady(params: any) {
@@ -444,9 +467,11 @@ onMounted(async () => {
       attachPinnedShadowsToElement(compareGridWrap.value)
     );
   }
+  document.addEventListener("pointerdown", onDocumentPointerDown, true);
 });
 
 onBeforeUnmount(() => {
+  document.removeEventListener("pointerdown", onDocumentPointerDown, true);
   pinnedShadowCleanups.splice(0).forEach((cleanup) => cleanup());
 });
 </script>
@@ -459,44 +484,80 @@ onBeforeUnmount(() => {
       description="Contoh implementasi AG Grid dengan theme dan density controls."
     />
 
-    <div class="flex flex-wrap items-center gap-3">
-      <div class="flex items-center gap-2 w-full sm:w-auto">
-        <input
-          v-model="search"
-          type="text"
-          placeholder="Search..."
-          class="input w-64 max-w-full"
-        />
-        <button
-          class="btn btn-ghost btn-sm"
-          type="button"
-          :disabled="!search"
-          @click="search = ''"
-        >
-          Clear
-        </button>
+    <section class="card p-3 space-y-2">
+      <div class="flex flex-wrap items-center gap-3 justify-between">
+        <div class="flex items-center gap-2 w-full lg:w-auto">
+          <input
+            v-model="search"
+            type="text"
+            placeholder="Search..."
+            class="input w-full lg:w-72 max-w-full"
+          />
+          <button
+            class="btn btn-ghost btn-sm"
+            type="button"
+            :disabled="!search"
+            @click="search = ''"
+          >
+            Clear
+          </button>
+        </div>
+
+        <div class="flex flex-wrap items-center gap-2">
+          <button class="btn btn-outline btn-sm" type="button" @click="exportPdf">
+            <Icon name="file-pdf" class="h-5 w-5" />
+            <span class="pl-2 border-l border-base-300 leading-none">Download PDF</span>
+          </button>
+          <button class="btn btn-outline btn-sm" type="button" @click="exportCsv">
+            <Icon name="file-csv" class="h-5 w-5" />
+            <span class="pl-2 border-l border-base-300 leading-none">Download CSV</span>
+          </button>
+          <div ref="exportMenuRef" class="relative">
+            <button class="btn btn-outline btn-sm" type="button" @click.stop="toggleExportMenu">
+              Export
+              <Icon :name="showExportMenu ? 'chevron-up' : 'chevron-down'" class="h-4 w-4" />
+            </button>
+            <div v-if="showExportMenu" class="absolute right-0 mt-1 w-48 card p-1 z-20">
+              <button class="btn btn-ghost btn-sm justify-start" type="button" @click="exportPdf">
+                <Icon name="file-pdf" class="h-5 w-5" />
+                <span class="pl-2 border-l border-base-300 leading-none">Download PDF</span>
+              </button>
+              <button class="btn btn-ghost btn-sm justify-start" type="button" @click="exportXls">
+                <Icon name="file-xls" class="h-5 w-5" />
+                <span class="pl-2 border-l border-base-300 leading-none">Download XLS</span>
+              </button>
+              <button class="btn btn-ghost btn-sm justify-start" type="button" @click="exportCsv">
+                <Icon name="file-csv" class="h-5 w-5" />
+                <span class="pl-2 border-l border-base-300 leading-none">Download CSV</span>
+              </button>
+            </div>
+          </div>
+        </div>
       </div>
-      <button class="btn btn-outline btn-sm" type="button" @click="exportCsv">
-        Export CSV
-      </button>
-      <div class="flex items-center gap-2">
-        <span class="text-sm opacity-70">Density</span>
-        <SelectDropdown
-          v-model="density"
-          :options="[
-            { value: 'compact', label: 'Compact' },
-            { value: 'cozy', label: 'Cozy' },
-            { value: 'spacious', label: 'Spacious' },
-          ]"
-          size="sm"
-          variant="outline"
-        />
+
+      <div class="flex flex-wrap items-center gap-3">
+        <div class="flex items-center gap-2">
+          <span class="text-sm opacity-70">Density</span>
+          <SelectDropdown
+            v-model="density"
+            :options="[
+              { value: 'compact', label: 'Compact' },
+              { value: 'cozy', label: 'Cozy' },
+              { value: 'spacious', label: 'Spacious' },
+            ]"
+            size="sm"
+            variant="outline"
+          />
+        </div>
+        <label class="flex items-center gap-2 text-sm cursor-pointer">
+          <input type="checkbox" v-model="striped" />
+          <span>Striped</span>
+        </label>
       </div>
-      <label class="flex items-center gap-2 text-sm cursor-pointer">
-        <input type="checkbox" v-model="striped" />
-        <span>Striped</span>
-      </label>
-    </div>
+      <div v-if="exportState" class="text-xs opacity-70">
+        {{ exportState }}
+      </div>
+    </section>
 
     <div
       ref="mainGridWrap"

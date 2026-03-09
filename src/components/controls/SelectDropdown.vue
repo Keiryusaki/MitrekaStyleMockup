@@ -3,7 +3,7 @@
  * SelectDropdown - Custom select dengan smooth dropdown animation
  * Pengganti native <select> untuk solid & outline style
  */
-import { ref, computed, watch, onMounted, onBeforeUnmount } from "vue";
+import { ref, computed, nextTick, onMounted, onBeforeUnmount, watch } from "vue";
 import { Icon } from "@/composables/Icon";
 
 type Size = "xs" | "sm" | "md" | "lg" | "xl";
@@ -41,8 +41,18 @@ const emit = defineEmits<{
 }>();
 
 const root = ref<HTMLElement | null>(null);
+const triggerRef = ref<HTMLButtonElement | null>(null);
+const menuRef = ref<HTMLDivElement | null>(null);
 const open = ref(false);
 const hoverIdx = ref(-1);
+const menuTop = ref(0);
+const menuLeft = ref(0);
+const menuWidth = ref(0);
+const menuMaxHeight = ref(240);
+const menuNaturalCap = ref<number | null>(null);
+const menuOpenUpward = ref(false);
+const MAX_MENU_HEIGHT = 320;
+const EDGE_PADDING = 12;
 
 // Find selected option
 const selected = computed(() =>
@@ -131,12 +141,6 @@ const dropdownBgStyle = computed(() => {
   };
 });
 
-// Get CSS variable for color
-const getColorVar = (color: Color) => {
-  if (color === "default") return "var(--color-base-content)";
-  return `var(--color-${color})`;
-};
-
 // Item style (text color + hover background)
 const getItemStyle = (isHovered: boolean) => {
   // Secondary uses secondary-content (dark) because dropdown bg is light
@@ -168,12 +172,64 @@ const checkIconStyle = computed(() => {
   return { color: `var(--color-${props.color})` };
 });
 
+const menuContainerStyle = computed(() => ({
+  top: `${menuTop.value}px`,
+  left: `${menuLeft.value}px`,
+  width: `${menuWidth.value}px`,
+}));
+
+const menuListStyle = computed(() => ({
+  maxHeight: `${menuMaxHeight.value}px`,
+}));
+
+const updateMenuPosition = () => {
+  if (!open.value || !triggerRef.value || !menuRef.value) return;
+
+  const trigger = triggerRef.value.getBoundingClientRect();
+  const viewportW = window.innerWidth;
+  const viewportH = window.innerHeight;
+  const gap = 6;
+  const edgePadding = EDGE_PADDING;
+
+  const measuredNaturalHeight =
+    menuRef.value.scrollHeight || menuRef.value.offsetHeight || 240;
+  if (menuNaturalCap.value == null) {
+    menuNaturalCap.value = measuredNaturalHeight;
+  }
+  const naturalHeight = menuNaturalCap.value;
+  const spaceBelow = viewportH - trigger.bottom - gap - edgePadding;
+  const spaceAbove = trigger.top - gap - edgePadding;
+
+  const shouldOpenUpward = spaceBelow < 180 && spaceAbove > spaceBelow;
+  menuOpenUpward.value = shouldOpenUpward;
+
+  const allowedHeight = shouldOpenUpward ? spaceAbove : spaceBelow;
+  const fittedHeight = Math.min(MAX_MENU_HEIGHT, naturalHeight, Math.max(0, allowedHeight));
+  menuMaxHeight.value = Math.max(64, fittedHeight);
+
+  menuWidth.value = Math.max(160, trigger.width);
+  menuLeft.value = Math.min(
+    Math.max(trigger.left, edgePadding),
+    viewportW - menuWidth.value - edgePadding
+  );
+
+  if (shouldOpenUpward) {
+    menuTop.value = Math.max(edgePadding, trigger.top - gap - menuMaxHeight.value);
+  } else {
+    menuTop.value = Math.min(
+      viewportH - edgePadding - menuMaxHeight.value,
+      trigger.bottom + gap
+    );
+  }
+};
+
 // Methods
 const toggle = () => {
   if (props.disabled) return;
   open.value = !open.value;
   if (open.value) {
     hoverIdx.value = props.options.findIndex((o) => o.value === props.modelValue);
+    nextTick(updateMenuPosition);
   }
 };
 
@@ -206,6 +262,7 @@ const onKey = (e: KeyboardEvent) => {
       if (!open.value) {
         open.value = true;
         hoverIdx.value = 0;
+        nextTick(updateMenuPosition);
       } else {
         hoverIdx.value = Math.min(hoverIdx.value + 1, props.options.length - 1);
       }
@@ -221,17 +278,43 @@ const onKey = (e: KeyboardEvent) => {
 
 // Click outside handler
 const onClickOutside = (e: MouseEvent) => {
-  if (root.value && !root.value.contains(e.target as Node)) {
+  const target = e.target as Node;
+  const clickedInsideRoot = !!root.value?.contains(target);
+  const clickedInsideMenu = !!menuRef.value?.contains(target);
+  if (!clickedInsideRoot && !clickedInsideMenu) {
     open.value = false;
   }
 };
 
+const onViewportChange = (evt?: Event) => {
+  if (!open.value) return;
+  const target = evt?.target as Node | null;
+  if (target && menuRef.value?.contains(target)) return;
+  updateMenuPosition();
+};
+
+watch(
+  () => [open.value, props.options.length],
+  async ([isOpen]) => {
+    if (!isOpen) {
+      menuNaturalCap.value = null;
+      return;
+    }
+    await nextTick();
+    updateMenuPosition();
+  }
+);
+
 onMounted(() => {
   document.addEventListener("click", onClickOutside);
+  window.addEventListener("resize", onViewportChange);
+  window.addEventListener("scroll", onViewportChange, true);
 });
 
 onBeforeUnmount(() => {
   document.removeEventListener("click", onClickOutside);
+  window.removeEventListener("resize", onViewportChange);
+  window.removeEventListener("scroll", onViewportChange, true);
 });
 </script>
 
@@ -239,6 +322,7 @@ onBeforeUnmount(() => {
   <div ref="root" class="relative">
     <!-- Trigger button -->
     <button
+      ref="triggerRef"
       type="button"
       :class="triggerClass"
       :disabled="disabled"
@@ -255,45 +339,48 @@ onBeforeUnmount(() => {
     </button>
 
     <!-- Dropdown -->
-    <Transition
-      enter-active-class="transition duration-150 ease-out"
-      enter-from-class="opacity-0 -translate-y-1 scale-[0.98]"
-      enter-to-class="opacity-100 translate-y-0 scale-100"
-      leave-active-class="transition duration-100 ease-in"
-      leave-from-class="opacity-100 translate-y-0 scale-100"
-      leave-to-class="opacity-0 -translate-y-1 scale-[0.98]"
-    >
-      <div
-        v-if="open"
-        class="absolute z-50 mt-1 w-full rounded-box border border-base-300 shadow-lg p-1"
-        :style="dropdownBgStyle"
+    <Teleport to="body">
+      <Transition
+        enter-active-class="transition duration-150 ease-out"
+        :enter-from-class="menuOpenUpward ? 'opacity-0 translate-y-1 scale-[0.98]' : 'opacity-0 -translate-y-1 scale-[0.98]'"
+        enter-to-class="opacity-100 translate-y-0 scale-100"
+        leave-active-class="transition duration-100 ease-in"
+        leave-from-class="opacity-100 translate-y-0 scale-100"
+        :leave-to-class="menuOpenUpward ? 'opacity-0 translate-y-1 scale-[0.98]' : 'opacity-0 -translate-y-1 scale-[0.98]'"
       >
-        <ul class="max-h-60 overflow-auto" role="listbox">
-          <li
-            v-for="(opt, i) in options"
-            :key="opt.value"
-            :class="[
-              itemSizeClasses[size],
-              'flex items-center justify-between cursor-pointer transition-colors duration-100 rounded-field',
-              opt.disabled ? 'opacity-50 cursor-not-allowed' : '',
-              selected?.value === opt.value ? 'font-medium' : '',
-            ]"
-            :style="getItemStyle(i === hoverIdx)"
-            @mouseenter="hoverIdx = i"
-            @click="opt.disabled ? null : choose(opt)"
-            role="option"
-            :aria-selected="selected?.value === opt.value"
-          >
-            <span>{{ opt.label }}</span>
-            <Icon
-              v-if="selected?.value === opt.value"
-              name="check"
-              class="w-4 h-4"
-              :style="checkIconStyle"
-            />
-          </li>
-        </ul>
-      </div>
-    </Transition>
+        <div
+          v-if="open"
+          ref="menuRef"
+          class="fixed z-[var(--z-modal)] rounded-box border border-base-300 shadow-lg p-1"
+          :style="[dropdownBgStyle, menuContainerStyle]"
+        >
+          <ul class="overflow-auto" :style="menuListStyle" role="listbox">
+            <li
+              v-for="(opt, i) in options"
+              :key="opt.value"
+              :class="[
+                itemSizeClasses[size],
+                'flex items-center justify-between cursor-pointer transition-colors duration-100 rounded-field',
+                opt.disabled ? 'opacity-50 cursor-not-allowed' : '',
+                selected?.value === opt.value ? 'font-medium' : '',
+              ]"
+              :style="getItemStyle(i === hoverIdx)"
+              @mouseenter="hoverIdx = i"
+              @click="opt.disabled ? null : choose(opt)"
+              role="option"
+              :aria-selected="selected?.value === opt.value"
+            >
+              <span>{{ opt.label }}</span>
+              <Icon
+                v-if="selected?.value === opt.value"
+                name="check"
+                class="w-4 h-4"
+                :style="checkIconStyle"
+              />
+            </li>
+          </ul>
+        </div>
+      </Transition>
+    </Teleport>
   </div>
 </template>

@@ -1,5 +1,5 @@
-<script setup lang="ts">
-import { computed, nextTick, onBeforeUnmount, ref, watch } from "vue";
+﻿<script setup lang="ts">
+import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from "vue";
 import { Icon } from "@/composables/Icon";
 import { useSelectMulti, type SelectOption } from "@/composables/useSelect";
 
@@ -48,6 +48,17 @@ const {
   fetchOptions: props.fetchOptions,
   debounceMs: props.debounceMs,
 });
+
+const triggerRef = ref<HTMLDivElement | null>(null);
+const dropdownRef = ref<HTMLDivElement | null>(null);
+const menuTop = ref(0);
+const menuLeft = ref(0);
+const menuWidth = ref(0);
+const menuMaxHeight = ref(240);
+const menuNaturalCap = ref<number | null>(null);
+const menuOpenUpward = ref(false);
+const MAX_MENU_HEIGHT = 320;
+const EDGE_PADDING = 12;
 
 const shellMinHeightClass = {
   xs: "min-h-[var(--size-field-xs)]",
@@ -132,11 +143,24 @@ const stackedSearchStyle = computed(
   () => stackedSearchInputStyleBySize[effectiveSearchSize.value]
 );
 
+const menuContainerStyle = computed(() => ({
+  top: `${menuTop.value}px`,
+  left: `${menuLeft.value}px`,
+  width: `${menuWidth.value}px`,
+}));
+
+const menuListStyle = computed(() => ({
+  maxHeight: `${menuMaxHeight.value}px`,
+}));
+
 const collator = new Intl.Collator(undefined, { sensitivity: "base", numeric: true });
+const isSelectedValue = (value: string | number) =>
+  model.value.some((v) => String(v) === String(value));
+
 const sortedFiltered = computed(() => {
   return [...filtered.value].sort((a, b) => {
-    const aSelected = model.value.includes(a.value as string | number);
-    const bSelected = model.value.includes(b.value as string | number);
+    const aSelected = isSelectedValue(a.value as string | number);
+    const bSelected = isSelectedValue(b.value as string | number);
     if (aSelected !== bSelected) return aSelected ? -1 : 1;
     return collator.compare(a.label, b.label);
   });
@@ -197,6 +221,52 @@ function recalcInlineVisibleChips() {
   visibleChipCount.value = visible;
 }
 
+const updateMenuPosition = () => {
+  if (!open.value || !triggerRef.value) return;
+  const trigger = triggerRef.value.getBoundingClientRect();
+  const viewportW = window.innerWidth;
+  const viewportH = window.innerHeight;
+  const gap = 6;
+  const edgePadding = EDGE_PADDING;
+
+  const measuredNaturalHeight =
+    (dropdownRef.value?.scrollHeight ?? 0) || (menu.value?.scrollHeight ?? 0) || 240;
+  if (menuNaturalCap.value == null) {
+    menuNaturalCap.value = measuredNaturalHeight;
+  }
+  const naturalHeight = menuNaturalCap.value;
+  const spaceBelow = viewportH - trigger.bottom - gap - edgePadding;
+  const spaceAbove = trigger.top - gap - edgePadding;
+  const shouldOpenUpward = spaceBelow < 180 && spaceAbove > spaceBelow;
+  menuOpenUpward.value = shouldOpenUpward;
+
+  const allowedHeight = shouldOpenUpward ? spaceAbove : spaceBelow;
+  const fittedHeight = Math.min(MAX_MENU_HEIGHT, naturalHeight, Math.max(0, allowedHeight));
+  menuMaxHeight.value = Math.max(64, fittedHeight);
+
+  menuWidth.value = Math.max(260, trigger.width);
+  menuLeft.value = Math.min(
+    Math.max(trigger.left, edgePadding),
+    viewportW - menuWidth.value - edgePadding
+  );
+
+  if (shouldOpenUpward) {
+    menuTop.value = Math.max(edgePadding, trigger.top - gap - menuMaxHeight.value);
+  } else {
+    menuTop.value = Math.min(
+      viewportH - edgePadding - menuMaxHeight.value,
+      trigger.bottom + gap
+    );
+  }
+};
+
+const onViewportChange = (evt?: Event) => {
+  if (!open.value) return;
+  const target = evt?.target as Node | null;
+  if (target && dropdownRef.value?.contains(target)) return;
+  updateMenuPosition();
+};
+
 async function scheduleInlineRecalc() {
   await nextTick();
   recalcInlineVisibleChips();
@@ -214,6 +284,18 @@ watch(sortedFiltered, () => {
   scheduleInlineRecalc();
 });
 
+watch(
+  () => [open.value, loading.value, sortedFiltered.value.length],
+  async ([isOpen]) => {
+    if (!isOpen) {
+      menuNaturalCap.value = null;
+      return;
+    }
+    await nextTick();
+    updateMenuPosition();
+  }
+);
+
 watch(chipViewport, (el) => {
   chipResizeObserver?.disconnect();
   chipResizeObserver = null;
@@ -225,8 +307,15 @@ watch(chipViewport, (el) => {
   chipResizeObserver.observe(el);
 });
 
+onMounted(() => {
+  window.addEventListener("resize", onViewportChange);
+  window.addEventListener("scroll", onViewportChange, true);
+});
+
 onBeforeUnmount(() => {
   chipResizeObserver?.disconnect();
+  window.removeEventListener("resize", onViewportChange);
+  window.removeEventListener("scroll", onViewportChange, true);
 });
 </script>
 
@@ -234,6 +323,7 @@ onBeforeUnmount(() => {
   <div ref="root" class="relative">
     <!-- shell -->
     <div
+      ref="triggerRef"
       :class="[
         displayModeClass === 'inline-compact'
           ? 'relative flex items-center gap-2 rounded-field border border-base-300 bg-base-100 px-2'
@@ -290,14 +380,14 @@ onBeforeUnmount(() => {
             :style="inlineSearchStyle"
             placeholder="Search..."
             @keydown="onKey"
-            @focus="open = true"
+            @focus="open = true; nextTick(updateMenuPosition)"
           />
         </span>
 
         <button
           type="button"
           :class="['icon-btn icon-btn-outline shrink-0', iconBtnSizeClass[size || 'md']]"
-          @click.stop="open = !open"
+          @click.stop="open = !open; nextTick(updateMenuPosition)"
         >
           <Icon :name="open ? 'chevron-up' : 'chevron-down'" class="w-4 h-4" />
         </button>
@@ -348,14 +438,14 @@ onBeforeUnmount(() => {
               :style="stackedSearchStyle"
               placeholder="Search..."
               @keydown="onKey"
-              @focus="open = true"
+              @focus="open = true; nextTick(updateMenuPosition)"
             />
           </span>
 
           <button
             type="button"
             :class="['icon-btn icon-btn-outline shrink-0', iconBtnSizeClass[size || 'md']]"
-            @click.stop="open = !open"
+            @click.stop="open = !open; nextTick(updateMenuPosition)"
           >
             <Icon :name="open ? 'chevron-up' : 'chevron-down'" class="w-4 h-4" />
           </button>
@@ -396,34 +486,50 @@ onBeforeUnmount(() => {
     </div>
 
     <!-- dropdown -->
-    <div v-if="open" class="absolute z-20 mt-1 w-full card p-2">
-      <div v-if="loading" class="px-3 py-2 text-sm opacity-70">Loading...</div>
-      <ul v-else ref="menu" class="max-h-60 overflow-auto">
-        <li
-          v-for="o in sortedFiltered"
-          :key="o.value"
-          :class="[
-            'rounded-field flex items-center gap-2 cursor-pointer transition-colors duration-100 hover:bg-primary/10',
-            dropdownItemClass[size || 'md'],
-            model.includes(o.value as any) ? 'bg-primary/15' : '',
-          ]"
-          @mousedown.prevent="toggle(o.value as any)"
+    <Teleport to="body">
+      <Transition
+        enter-active-class="transition duration-150 ease-out"
+        :enter-from-class="menuOpenUpward ? 'opacity-0 translate-y-1 scale-[0.98]' : 'opacity-0 -translate-y-1 scale-[0.98]'"
+        enter-to-class="opacity-100 translate-y-0 scale-100"
+        leave-active-class="transition duration-100 ease-in"
+        leave-from-class="opacity-100 translate-y-0 scale-100"
+        :leave-to-class="menuOpenUpward ? 'opacity-0 translate-y-1 scale-[0.98]' : 'opacity-0 -translate-y-1 scale-[0.98]'"
+      >
+        <div
+          v-if="open"
+          ref="dropdownRef"
+          class="fixed z-[var(--z-modal)] card p-2"
+          :style="menuContainerStyle"
         >
-          <input
-            type="checkbox"
-            :class="dropdownCheckboxClass[size || 'md']"
-            :checked="model.includes(o.value as any)"
-          />
-          <span>{{ o.label }}</span>
-        </li>
-        <li
-          v-if="!sortedFiltered.length && !loading"
-          class="px-2 py-2 text-sm opacity-70"
-        >
-          No results
-        </li>
-      </ul>
-    </div>
+          <div v-if="loading" class="px-3 py-2 text-sm opacity-70">Loading...</div>
+          <ul v-else ref="menu" class="overflow-auto" :style="menuListStyle">
+            <li
+              v-for="o in sortedFiltered"
+              :key="o.value"
+              :class="[
+                'rounded-field flex items-center gap-2 cursor-pointer transition-colors duration-100 hover:bg-primary/10',
+                dropdownItemClass[size || 'md'],
+                isSelectedValue(o.value as string | number) ? 'bg-primary/15' : '',
+              ]"
+              @mousedown.prevent="toggle(o.value as any)"
+            >
+              <input
+                type="checkbox"
+                :class="[dropdownCheckboxClass[size || 'md'], 'pointer-events-none']"
+                :checked="isSelectedValue(o.value as string | number)"
+              />
+              <span>{{ o.label }}</span>
+            </li>
+            <li
+              v-if="!sortedFiltered.length && !loading"
+              class="px-2 py-2 text-sm opacity-70"
+            >
+              No results
+            </li>
+          </ul>
+        </div>
+      </Transition>
+    </Teleport>
   </div>
 </template>
 

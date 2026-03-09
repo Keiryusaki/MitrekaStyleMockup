@@ -42,8 +42,13 @@ const selectedPresetId = ref("");
 const showSaveConfirm = ref(false);
 const showDeleteConfirm = ref(false);
 const showCopyModal = ref(false);
+const showImportModal = ref(false);
+const showPresetMenu = ref(false);
 const copySuccess = ref(false);
+const importPresetText = ref("");
+const importPresetError = ref("");
 const suppressDraftPreview = ref(false);
+const presetMenuRef = ref<HTMLElement | null>(null);
 
 const modeLabel = computed(() =>
   currentMode.value === "mitrekalight" ? "Light" : "Dark"
@@ -288,8 +293,14 @@ function closeColorPicker(): void {
 function handleDocumentPointerDown(event: PointerEvent): void {
   const target = event.target as HTMLElement | null;
   if (!target) return;
-  if (target.closest(".picker-host")) return;
-  closeColorPicker();
+
+  if (!target.closest(".picker-host")) {
+    closeColorPicker();
+  }
+
+  if (presetMenuRef.value && !presetMenuRef.value.contains(target)) {
+    showPresetMenu.value = false;
+  }
 }
 
 function handleColorTextCommit(
@@ -426,14 +437,214 @@ function confirmDeletePreset(): void {
 
 function openCopyPresetModal(): void {
   if (!selectedPreset.value) return;
+  showPresetMenu.value = false;
   copySuccess.value = false;
   showCopyModal.value = true;
 }
 
+function openImportPresetModal(): void {
+  showPresetMenu.value = false;
+  importPresetError.value = "";
+  importPresetText.value = "";
+  showImportModal.value = true;
+}
+
+function togglePresetMenu(): void {
+  showPresetMenu.value = !showPresetMenu.value;
+}
+
 async function copyPresetCss(): Promise<void> {
   if (!selectedPresetCss.value) return;
-  await navigator.clipboard.writeText(selectedPresetCss.value);
-  copySuccess.value = true;
+  try {
+    await navigator.clipboard.writeText(selectedPresetCss.value);
+    copySuccess.value = true;
+  } catch {
+    copySuccess.value = false;
+    applyState.value = "Clipboard access denied. Copy preset CSS manually.";
+  }
+}
+
+function readCssVarsFromModeBlock(
+  cssText: string,
+  mode: ThemeMode
+): Record<string, string> {
+  const modeMatcher = new RegExp(
+    `:root\\[data-theme=["']${mode}["']\\]\\s*\\{([\\s\\S]*?)\\}`,
+    "i"
+  );
+  const blockMatch = cssText.match(modeMatcher);
+  if (!blockMatch) return {};
+
+  const vars: Record<string, string> = {};
+  const declRegex = /(--[a-z0-9-]+)\s*:\s*([^;]+);/gi;
+  for (const match of blockMatch[1].matchAll(declRegex)) {
+    vars[match[1].trim()] = match[2].trim();
+  }
+  return vars;
+}
+
+function pickVar(
+  vars: Record<string, string>,
+  key: string,
+  fallback: string
+): string {
+  const val = vars[key];
+  return val ? val.trim() : fallback;
+}
+
+function normalizeColorCompare(value: string): string {
+  return value.replace(/\s+/g, " ").trim().toLowerCase();
+}
+
+function applyModeVarsToDraft(
+  target: ThemeBuilderDraft["light"],
+  vars: Record<string, string>
+): void {
+  target.colors.primary = pickVar(vars, "--color-primary", target.colors.primary);
+  target.colors.secondary = pickVar(vars, "--color-secondary", target.colors.secondary);
+  target.colors.accent = pickVar(vars, "--color-accent", target.colors.accent);
+  target.colors.info = pickVar(vars, "--color-info", target.colors.info);
+  target.colors.success = pickVar(vars, "--color-success", target.colors.success);
+  target.colors.warning = pickVar(vars, "--color-warning", target.colors.warning);
+  target.colors.error = pickVar(vars, "--color-error", target.colors.error);
+  target.colors.neutral = pickVar(vars, "--color-neutral", target.colors.neutral);
+
+  target.base.base100 = pickVar(vars, "--color-base-100", target.base.base100);
+  target.base.base200 = pickVar(vars, "--color-base-200", target.base.base200);
+  target.base.base300 = pickVar(vars, "--color-base-300", target.base.base300);
+  target.base.baseContent = pickVar(
+    vars,
+    "--color-base-content",
+    target.base.baseContent
+  );
+
+  target.layout.topbarBg = pickVar(
+    vars,
+    "--color-layout-topbar-bg",
+    target.layout.topbarBg
+  );
+  target.layout.topbarText = pickVar(
+    vars,
+    "--color-layout-topbar-text",
+    target.layout.topbarText
+  );
+  target.layout.sidebarBg = pickVar(
+    vars,
+    "--color-layout-sidebar-bg",
+    target.layout.sidebarBg
+  );
+  target.layout.sidebarText = pickVar(
+    vars,
+    "--color-layout-sidebar-text",
+    target.layout.sidebarText
+  );
+  target.layout.usePrimaryForLayout =
+    normalizeColorCompare(target.layout.topbarBg) ===
+    normalizeColorCompare(target.colors.primary);
+
+  target.sidebar.hoverBg = pickVar(
+    vars,
+    "--color-sidebar-hover-bg",
+    target.sidebar.hoverBg
+  );
+  target.sidebar.activeBg = pickVar(
+    vars,
+    "--color-sidebar-active-bg",
+    target.sidebar.activeBg
+  );
+  target.sidebar.activeText = pickVar(
+    vars,
+    "--color-sidebar-active-text",
+    target.sidebar.activeText
+  );
+  target.sidebar.activeBorder = pickVar(
+    vars,
+    "--color-sidebar-active-border",
+    target.sidebar.activeBorder
+  );
+  target.sidebar.openBg = pickVar(
+    vars,
+    "--color-sidebar-open-bg",
+    target.sidebar.openBg
+  );
+  target.sidebar.openText = pickVar(
+    vars,
+    "--color-sidebar-open-text",
+    target.sidebar.openText
+  );
+  target.sidebar.activeMark = pickVar(
+    vars,
+    "--color-sidebar-active-mark",
+    target.sidebar.activeMark
+  );
+
+  target.link.color = pickVar(vars, "--color-link", target.link.color);
+  target.link.hover = pickVar(vars, "--color-link-hover", target.link.hover);
+  target.link.visited = pickVar(vars, "--color-link-visited", target.link.visited);
+
+  target.radius.field = pickVar(vars, "--radius-field-md", target.radius.field);
+  target.radius.box = pickVar(vars, "--radius-box", target.radius.box);
+}
+
+function parsePresetNameFromCss(cssText: string): string {
+  const nameMatch = cssText.match(/\/\*\s*Preset:\s*([^\*]+)\*\//i);
+  return nameMatch ? nameMatch[1].trim() : "";
+}
+
+function applyImportedPreset(): void {
+  importPresetError.value = "";
+  const targetPreset = selectedPreset.value;
+  if (!targetPreset) {
+    importPresetError.value = "Pilih preset tujuan terlebih dahulu.";
+    return;
+  }
+
+  const raw = importPresetText.value.trim();
+  if (!raw) {
+    importPresetError.value = "Paste preset CSS terlebih dahulu.";
+    return;
+  }
+
+  const lightVars = readCssVarsFromModeBlock(raw, "mitrekalight");
+  const darkVars = readCssVarsFromModeBlock(raw, "mitrekadark");
+  if (!Object.keys(lightVars).length && !Object.keys(darkVars).length) {
+    importPresetError.value =
+      "Format preset CSS tidak dikenali. Gunakan hasil Copy preset CSS.";
+    return;
+  }
+
+  const parsedDraft = cloneDraft(defaultDraft);
+  if (Object.keys(lightVars).length) applyModeVarsToDraft(parsedDraft.light, lightVars);
+  if (Object.keys(darkVars).length) applyModeVarsToDraft(parsedDraft.dark, darkVars);
+
+  const normalized = normalizeThemeDraft(parsedDraft);
+  const importedName = parsePresetNameFromCss(raw);
+  const now = new Date().toISOString();
+
+  presetList.value = presetList.value.map((item) =>
+    item.id === targetPreset.id
+      ? {
+          ...item,
+          draft: normalized,
+          updatedAt: now,
+        }
+      : item
+  );
+  persistPresetList();
+
+  suppressDraftPreview.value = true;
+  applyDraftToEditor(normalized);
+  if (livePreview.value) {
+    applyThemeOverride(cloneDraft(normalized));
+  }
+  queueMicrotask(() => {
+    suppressDraftPreview.value = false;
+  });
+
+  showImportModal.value = false;
+  applyState.value = importedName
+    ? `Preset "${targetPreset.name}" replaced using imported CSS "${importedName}".`
+    : `Preset "${targetPreset.name}" replaced using imported CSS.`;
 }
 
 watch(
@@ -560,9 +771,19 @@ const boxRadius = computed({
           <button class="btn btn-sm btn-soft-error" :disabled="!canDeletePreset" @click="openDeleteConfirm">
             Delete Preset
           </button>
-          <button class="btn btn-sm btn-outline" :disabled="!canCopyPreset" @click="openCopyPresetModal">
-            Copy Preset
-          </button>
+          <div ref="presetMenuRef" class="preset-menu-host">
+            <button class="btn btn-sm btn-outline" @click.stop="togglePresetMenu">
+              Preset
+            </button>
+            <div v-if="showPresetMenu" class="preset-menu card p-1">
+              <button class="preset-menu-item" :disabled="!canCopyPreset" @click="openCopyPresetModal">
+                Copy preset CSS
+              </button>
+              <button class="preset-menu-item" @click="openImportPresetModal">
+                Paste/Import preset CSS
+              </button>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -912,11 +1133,42 @@ const boxRadius = computed({
           .
         </p>
         <pre class="css-preview"><code>{{ selectedPresetCss }}</code></pre>
-        <p v-if="copySuccess" class="text-sm text-success">CSS copied to clipboard.</p>
+        <p v-if="copySuccess" class="text-sm text-success">Preset CSS copied to clipboard.</p>
       </div>
       <template #footer>
         <button class="btn btn-sm btn-outline" @click="showCopyModal = false">Close</button>
         <button class="btn btn-sm btn-primary" @click="copyPresetCss">Copy CSS</button>
+      </template>
+    </Modal>
+
+    <Modal
+      :open="showImportModal"
+      title="Paste/Import Preset CSS"
+      size="lg"
+      @close="showImportModal = false"
+      @confirm="showImportModal = false"
+    >
+      <div class="space-y-3">
+        <p class="text-sm">
+          Paste CSS hasil
+          <strong>Copy preset CSS</strong>
+          , lalu apply untuk overwrite preset terpilih.
+        </p>
+        <p class="text-sm opacity-80">
+          Target preset:
+          <strong>{{ selectedPreset?.name || "Belum dipilih" }}</strong>
+        </p>
+        <textarea
+          v-model="importPresetText"
+          class="textarea textarea-bordered w-full"
+          rows="12"
+          placeholder='/* Preset: Nama */\n:root[data-theme="mitrekalight"] { ... }'
+        />
+        <p v-if="importPresetError" class="text-sm text-error">{{ importPresetError }}</p>
+      </div>
+      <template #footer>
+        <button class="btn btn-sm btn-outline" @click="showImportModal = false">Close</button>
+        <button class="btn btn-sm btn-primary" :disabled="!selectedPreset" @click="applyImportedPreset">Apply to Selected Preset</button>
       </template>
     </Modal>
   </div>
@@ -956,6 +1208,39 @@ const boxRadius = computed({
   align-items: center;
   gap: 0.5rem;
   flex-wrap: wrap;
+}
+
+.preset-menu-host {
+  position: relative;
+}
+
+.preset-menu {
+  position: absolute;
+  top: calc(100% + 0.35rem);
+  right: 0;
+  z-index: 90;
+  min-width: 13.5rem;
+  border: 1px solid var(--color-base-300);
+}
+
+.preset-menu-item {
+  width: 100%;
+  text-align: left;
+  border: 0;
+  background: transparent;
+  border-radius: 0.45rem;
+  padding: 0.45rem 0.6rem;
+  font-size: 0.8125rem;
+  cursor: pointer;
+}
+
+.preset-menu-item:hover {
+  background: var(--color-base-200);
+}
+
+.preset-menu-item:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
 }
 
 .preset-select {

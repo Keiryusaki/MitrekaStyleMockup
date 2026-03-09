@@ -80,6 +80,10 @@ const routes: RouteRecordRaw[] = [
     component: () => import("@/pages/Mockup/LiveAttendance.vue"),
   },
   {
+    path: "/select-playground",
+    component: () => import("@/pages/Mockup/SelectPlayground.vue"),
+  },
+  {
     path: "/dashboard-finance",
     component: () => import("@/pages/Mockup/DashboardFinance.vue"),
     meta: { hideBreadcrumbs: true },

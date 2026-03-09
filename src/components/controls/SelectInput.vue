@@ -1,5 +1,5 @@
-<script setup lang="ts">
-import { ref, computed, watch } from "vue";
+﻿<script setup lang="ts">
+import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from "vue";
 import { Icon } from "@/composables/Icon";
 import { useSelectSingle, type SelectOption } from "@/composables/useSelect";
 
@@ -55,6 +55,17 @@ const {
   debounceMs: props.debounceMs,
 });
 
+const triggerRef = ref<HTMLDivElement | null>(null);
+const dropdownRef = ref<HTMLDivElement | null>(null);
+const menuTop = ref(0);
+const menuLeft = ref(0);
+const menuWidth = ref(0);
+const menuMaxHeight = ref(240);
+const menuNaturalCap = ref<number | null>(null);
+const menuOpenUpward = ref(false);
+const MAX_MENU_HEIGHT = 320;
+const EDGE_PADDING = 12;
+
 const sizeClass = {
   xs: "input-xs",
   sm: "input-sm",
@@ -68,6 +79,62 @@ const displayValue = computed(() =>
   open.value ? query.value : selected.value?.label ?? ""
 );
 
+const menuContainerStyle = computed(() => ({
+  top: `${menuTop.value}px`,
+  left: `${menuLeft.value}px`,
+  width: `${menuWidth.value}px`,
+}));
+
+const menuListStyle = computed(() => ({
+  maxHeight: `${menuMaxHeight.value}px`,
+}));
+
+const updateMenuPosition = () => {
+  if (!open.value || !triggerRef.value) return;
+  const trigger = triggerRef.value.getBoundingClientRect();
+  const viewportW = window.innerWidth;
+  const viewportH = window.innerHeight;
+  const gap = 6;
+  const edgePadding = EDGE_PADDING;
+
+  const measuredNaturalHeight =
+    (dropdownRef.value?.scrollHeight ?? 0) || (menu.value?.scrollHeight ?? 0) || 240;
+  if (menuNaturalCap.value == null) {
+    menuNaturalCap.value = measuredNaturalHeight;
+  }
+  const naturalHeight = menuNaturalCap.value;
+  const spaceBelow = viewportH - trigger.bottom - gap - edgePadding;
+  const spaceAbove = trigger.top - gap - edgePadding;
+  const shouldOpenUpward = spaceBelow < 180 && spaceAbove > spaceBelow;
+  menuOpenUpward.value = shouldOpenUpward;
+
+  const allowedHeight = shouldOpenUpward ? spaceAbove : spaceBelow;
+  const fittedHeight = Math.min(MAX_MENU_HEIGHT, naturalHeight, Math.max(0, allowedHeight));
+  menuMaxHeight.value = Math.max(64, fittedHeight);
+
+  menuWidth.value = Math.max(220, trigger.width);
+  menuLeft.value = Math.min(
+    Math.max(trigger.left, edgePadding),
+    viewportW - menuWidth.value - edgePadding
+  );
+
+  if (shouldOpenUpward) {
+    menuTop.value = Math.max(edgePadding, trigger.top - gap - menuMaxHeight.value);
+  } else {
+    menuTop.value = Math.min(
+      viewportH - edgePadding - menuMaxHeight.value,
+      trigger.bottom + gap
+    );
+  }
+};
+
+const onViewportChange = (evt?: Event) => {
+  if (!open.value) return;
+  const target = evt?.target as Node | null;
+  if (target && dropdownRef.value?.contains(target)) return;
+  updateMenuPosition();
+};
+
 function toggleMenu() {
   if (props.disabled) return;
   if (open.value) {
@@ -75,12 +142,40 @@ function toggleMenu() {
     return;
   }
   openMenu();
+  nextTick(updateMenuPosition);
 }
+
+watch(
+  () => [open.value, loading.value, filtered.value.length],
+  async ([isOpen]) => {
+    if (!isOpen) return;
+    await nextTick();
+    updateMenuPosition();
+  }
+);
+
+watch(open, (isOpen) => {
+  if (!isOpen) {
+    menuNaturalCap.value = null;
+    return;
+  }
+  nextTick(updateMenuPosition);
+});
+
+onMounted(() => {
+  window.addEventListener("resize", onViewportChange);
+  window.addEventListener("scroll", onViewportChange, true);
+});
+
+onBeforeUnmount(() => {
+  window.removeEventListener("resize", onViewportChange);
+  window.removeEventListener("scroll", onViewportChange, true);
+});
 </script>
 
 <template>
   <div ref="root" class="relative">
-    <div class="relative">
+    <div ref="triggerRef" class="relative">
       <span
         class="absolute inset-y-0 left-0 pl-2 flex items-center opacity-70 pointer-events-none"
       >
@@ -128,37 +223,53 @@ function toggleMenu() {
       </button>
     </div>
 
-    <div v-if="open" class="absolute z-20 mt-1 w-full card p-1">
-      <div v-if="loading" class="px-3 py-2 text-sm opacity-70">Loading…</div>
-      <ul v-else ref="menu" class="max-h-60 overflow-auto" role="listbox">
-        <li
-          v-for="(o, i) in filtered"
-          :key="o.value"
-          :data-idx="i"
-          :class="[
-            'px-2 py-2 rounded-field text-sm flex items-center justify-between cursor-pointer',
-            i === hoverIdx ? 'bg-base-200' : '',
-            o.disabled ? 'opacity-50 cursor-not-allowed' : '',
-          ]"
-          @mouseenter="hoverIdx = i"
-          @mousedown.prevent="o.disabled ? null : choose(o)"
-          role="option"
-          :aria-selected="selected?.value === o.value"
+    <Teleport to="body">
+      <Transition
+        enter-active-class="transition duration-150 ease-out"
+        :enter-from-class="menuOpenUpward ? 'opacity-0 translate-y-1 scale-[0.98]' : 'opacity-0 -translate-y-1 scale-[0.98]'"
+        enter-to-class="opacity-100 translate-y-0 scale-100"
+        leave-active-class="transition duration-100 ease-in"
+        leave-from-class="opacity-100 translate-y-0 scale-100"
+        :leave-to-class="menuOpenUpward ? 'opacity-0 translate-y-1 scale-[0.98]' : 'opacity-0 -translate-y-1 scale-[0.98]'"
+      >
+        <div
+          v-if="open"
+          ref="dropdownRef"
+          class="fixed z-[var(--z-modal)] card p-1"
+          :style="menuContainerStyle"
         >
-          <span>{{ o.label }}</span>
-          <Icon
-            v-if="selected?.value === o.value"
-            name="check"
-            class="w-4 h-4 opacity-80"
-          />
-        </li>
-        <li
-          v-if="!filtered.length && !loading"
-          class="px-3 py-2 text-sm opacity-70"
-        >
-          No results
-        </li>
-      </ul>
-    </div>
+          <div v-if="loading" class="px-3 py-2 text-sm opacity-70">Loading...</div>
+          <ul v-else ref="menu" class="overflow-auto" :style="menuListStyle" role="listbox">
+            <li
+              v-for="(o, i) in filtered"
+              :key="o.value"
+              :data-idx="i"
+              :class="[
+                'px-2 py-2 rounded-field text-sm flex items-center justify-between cursor-pointer',
+                i === hoverIdx ? 'bg-base-200' : '',
+                o.disabled ? 'opacity-50 cursor-not-allowed' : '',
+              ]"
+              @mouseenter="hoverIdx = i"
+              @mousedown.prevent="o.disabled ? null : choose(o)"
+              role="option"
+              :aria-selected="selected?.value === o.value"
+            >
+              <span>{{ o.label }}</span>
+              <Icon
+                v-if="selected?.value === o.value"
+                name="check"
+                class="w-4 h-4 opacity-80"
+              />
+            </li>
+            <li
+              v-if="!filtered.length && !loading"
+              class="px-3 py-2 text-sm opacity-70"
+            >
+              No results
+            </li>
+          </ul>
+        </div>
+      </Transition>
+    </Teleport>
   </div>
 </template>

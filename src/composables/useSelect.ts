@@ -36,11 +36,20 @@ function useDebounce() {
   return run;
 }
 
-export function useClickOutside(root: Ref<HTMLElement | null>, cb: () => void) {
+export function useClickOutside(
+  root: Ref<HTMLElement | null>,
+  cb: () => void,
+  allowRefs: Array<Ref<HTMLElement | null>> = []
+) {
   const onClick = (e: MouseEvent) => {
+    const target = e.target as Node;
     const el = root.value;
     if (!el) return;
-    if (!el.contains(e.target as Node)) cb();
+    if (el.contains(target)) return;
+    for (const allowed of allowRefs) {
+      if (allowed.value?.contains(target)) return;
+    }
+    cb();
   };
   onMounted(() => document.addEventListener("click", onClick));
   onBeforeUnmount(() => document.removeEventListener("click", onClick));
@@ -176,7 +185,7 @@ export function useSelectSingle<V extends string | number>(
   watch(query, () => fetchOptions && debounce(loadOptions, debounceMs));
 
   // outside
-  useClickOutside(root, closeMenu);
+  useClickOutside(root, closeMenu, [menu]);
 
   return {
     // refs
@@ -208,15 +217,25 @@ export function useSelectMulti<V extends string | number>(
 ) {
   const single = useSelectSingle<V>(ref<V | null>(null), common);
   const { localOptions } = single;
+  const isSameValue = (a: string | number, b: string | number) =>
+    String(a) === String(b);
 
-  const selectedList = computed<SelectOption<V>[]>(() =>
-    (localOptions.value || []).filter((o) => model.value.includes(o.value))
-  );
+  const selectedList = computed<SelectOption<V>[]>(() => {
+    const currentModel = (model.value || []) as V[];
+    return ((localOptions.value || []) as SelectOption<V>[]).filter((o) =>
+      currentModel.some((v) => isSameValue(v, o.value))
+    );
+  });
 
   function toggle(v: V) {
-    const set = new Set(model.value);
-    set.has(v) ? set.delete(v) : set.add(v);
-    model.value = Array.from(set);
+    const currentModel = [...(model.value || [])];
+    const index = currentModel.findIndex((x) => isSameValue(x, v));
+    if (index > -1) {
+      currentModel.splice(index, 1);
+    } else {
+      currentModel.push(v);
+    }
+    model.value = currentModel;
   }
   function clearAll() {
     model.value = [];
