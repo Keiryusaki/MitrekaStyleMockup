@@ -1,5 +1,29 @@
 [
   {
+    "version": "2.2.33",
+    "date": "2026-03-09",
+    "label": "Patch",
+    "items": [
+      {
+        "type": "Fixed",
+        "text": "MultiSelect: stabilisasi checklist terpilih lintas environment/browser dengan normalisasi pembanding value string/number"
+      },
+      {
+        "type": "Changed",
+        "text": "Select overlay di dalam modal ditingkatkan agar positioning lebih konsisten untuk kasus field dekat batas viewport"
+      },
+      {
+        "type": "Added",
+        "text": "Ikon export file baru (PDF/XLS/CSV) dengan keterbacaan label lebih jelas pada ukuran tombol compact"
+      },
+      {
+        "type": "Changed",
+        "text": "Sync package @keiryusaki/mitreka-ui v2.2.33 ke mockup vendor dist"
+      }
+    ],
+    "assets": []
+  },
+  {
     "version": "2.2.32",
     "date": "2026-03-05",
     "label": "Patch",
