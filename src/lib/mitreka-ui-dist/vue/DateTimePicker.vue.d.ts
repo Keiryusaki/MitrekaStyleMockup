@@ -7,6 +7,7 @@ declare const _default: import('vue').DefineComponent<import('vue').ExtractPropT
     enableTime?: boolean;
     noCalendar?: boolean;
     dateFormat?: string;
+    displayFormat?: string;
     placeholder?: string;
     disabled?: boolean;
     readonly?: boolean;
@@ -31,6 +32,7 @@ declare const _default: import('vue').DefineComponent<import('vue').ExtractPropT
     enableTime?: boolean;
     noCalendar?: boolean;
     dateFormat?: string;
+    displayFormat?: string;
     placeholder?: string;
     disabled?: boolean;
     readonly?: boolean;

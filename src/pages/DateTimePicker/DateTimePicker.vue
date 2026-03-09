@@ -20,7 +20,9 @@ const timeValue = ref("09:00");
 
 const dateTimeRange = ref<string[]>([]);
 
-const monthValue = ref("");
+const monthNumberValue = ref("");
+const monthShortValue = ref("");
+const monthLongValue = ref("");
 const yearValue = ref(new Date().getFullYear().toString());
 
 const dateRangeDisplay = computed(() =>
@@ -145,19 +147,55 @@ const dateTimeRangeDisplay = computed(() =>
 
       <!-- Month / Year -->
       <section id="month-year" class="rounded-box border border-base-300 p-4 space-y-3 scroll-mt-20">
-        <h2 class="text-base font-semibold">Month / Year Picker</h2>
-        <div class="grid gap-4 md:grid-cols-[1fr_1fr_1fr] items-start">
+        <h2 class="text-base font-semibold">Month Picker / Year Picker</h2>
+        <div class="grid gap-4 md:grid-cols-2 xl:grid-cols-4 items-start">
           <label class="space-y-1">
-            <span class="text-xs opacity-70">Month</span>
+            <span class="text-xs opacity-70">Month (Number)</span>
             <div class="relative">
               <Icon
                 name="calendar-days"
                 class="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 opacity-60"
               />
               <MitrekaDateTimePicker
-                v-model="monthValue"
+                v-model="monthNumberValue"
                 picker="month"
-                placeholder="Select month"
+                dateFormat="m"
+                displayFormat="m"
+                placeholder="Select month (06)"
+                inputClass="pl-9"
+              />
+            </div>
+          </label>
+          <label class="space-y-1">
+            <span class="text-xs opacity-70">Month (Short Text)</span>
+            <div class="relative">
+              <Icon
+                name="calendar-days"
+                class="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 opacity-60"
+              />
+              <MitrekaDateTimePicker
+                v-model="monthShortValue"
+                picker="month"
+                dateFormat="M"
+                displayFormat="M"
+                placeholder="Select month (Jun)"
+                inputClass="pl-9"
+              />
+            </div>
+          </label>
+          <label class="space-y-1">
+            <span class="text-xs opacity-70">Month (Full Text)</span>
+            <div class="relative">
+              <Icon
+                name="calendar-days"
+                class="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 opacity-60"
+              />
+              <MitrekaDateTimePicker
+                v-model="monthLongValue"
+                picker="month"
+                dateFormat="F"
+                displayFormat="F"
+                placeholder="Select month (June)"
                 inputClass="pl-9"
               />
             </div>
@@ -179,7 +217,10 @@ const dateTimeRangeDisplay = computed(() =>
           </div>
           <div class="text-sm opacity-80">
             <div class="font-medium">Value</div>
-            <div>{{ monthValue || "-" }} / {{ yearValue }}</div>
+            <div>Month Number: {{ monthNumberValue || "-" }}</div>
+            <div>Month Short: {{ monthShortValue || "-" }}</div>
+            <div>Month Full: {{ monthLongValue || "-" }}</div>
+            <div>Year: {{ yearValue || "-" }}</div>
           </div>
         </div>
       </section>

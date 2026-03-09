@@ -1,5 +1,29 @@
 [
   {
+    "version": "2.2.34",
+    "date": "2026-03-09",
+    "label": "Patch",
+    "items": [
+      {
+        "type": "Fixed",
+        "text": "DateTimePicker month picker kini benar-benar month-only (tanpa konteks tahun di popup) untuk use case pemilihan bulan tunggal"
+      },
+      {
+        "type": "Added",
+        "text": "DateTimePicker menambah dukungan format bulan fleksibel melalui dateFormat/displayFormat: angka (m), singkatan (M), dan nama bulan penuh (F)"
+      },
+      {
+        "type": "Fixed",
+        "text": "DateTimePicker year-grid: nilai tahun terpilih kini tampil konsisten di trigger input"
+      },
+      {
+        "type": "Changed",
+        "text": "Sync package @keiryusaki/mitreka-ui v2.2.34 ke mockup vendor dist"
+      }
+    ],
+    "assets": []
+  },
+  {
     "version": "2.2.33",
     "date": "2026-03-09",
     "label": "Patch",
