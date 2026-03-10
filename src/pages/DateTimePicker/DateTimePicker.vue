@@ -58,6 +58,7 @@ const dateTimeRangeDisplay = computed(() =>
               />
               <MitrekaDateTimePicker
                 v-model="dateValue"
+                clearable
                 placeholder="Select date"
                 inputClass="pl-9"
               />
@@ -84,6 +85,7 @@ const dateTimeRangeDisplay = computed(() =>
               <MitrekaDateTimePicker
                 v-model="dateRange"
                 mode="range"
+                clearable
                 placeholder="Start -> End"
                 inputClass="pl-9"
               />
@@ -106,6 +108,7 @@ const dateTimeRangeDisplay = computed(() =>
               v-model="timeValue"
               noCalendar
               enableTime
+              clearable
               dateFormat="H:i"
               placeholder="Select time"
             />
@@ -132,6 +135,7 @@ const dateTimeRangeDisplay = computed(() =>
                 v-model="dateTimeRange"
                 mode="range"
                 enableTime
+                clearable
                 dateFormat="Y-m-d H:i"
                 placeholder="Start -> End"
                 inputClass="pl-9"
@@ -159,6 +163,7 @@ const dateTimeRangeDisplay = computed(() =>
               <MitrekaDateTimePicker
                 v-model="monthNumberValue"
                 picker="month"
+                clearable
                 dateFormat="m"
                 displayFormat="m"
                 placeholder="Select month (06)"
@@ -176,6 +181,7 @@ const dateTimeRangeDisplay = computed(() =>
               <MitrekaDateTimePicker
                 v-model="monthShortValue"
                 picker="month"
+                clearable
                 dateFormat="M"
                 displayFormat="M"
                 placeholder="Select month (Jun)"
@@ -193,6 +199,7 @@ const dateTimeRangeDisplay = computed(() =>
               <MitrekaDateTimePicker
                 v-model="monthLongValue"
                 picker="month"
+                clearable
                 dateFormat="F"
                 displayFormat="F"
                 placeholder="Select month (June)"
@@ -210,6 +217,7 @@ const dateTimeRangeDisplay = computed(() =>
               <MitrekaDateTimePicker
                 v-model="yearValue"
                 picker="year-grid"
+                clearable
                 placeholder="Select year"
                 inputClass="pl-9"
               />

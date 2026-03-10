@@ -15,6 +15,7 @@ declare const _default: import('vue').DefineComponent<import('vue').ExtractPropT
     maxDate?: string;
     time24hr?: boolean;
     inputClass?: string;
+    clearable?: boolean;
 }>, {
     mode: string;
     picker: string;
@@ -23,6 +24,7 @@ declare const _default: import('vue').DefineComponent<import('vue').ExtractPropT
     time24hr: boolean;
     inputClass: string;
     placeholder: string;
+    clearable: boolean;
 }>>, {}, {}, {}, {}, import('vue').ComponentOptionsMixin, import('vue').ComponentOptionsMixin, {
     "update:modelValue": (value: string | string[]) => void;
 }, string, import('vue').PublicProps, Readonly<import('vue').ExtractPropTypes<__VLS_WithDefaults<__VLS_TypePropsToRuntimeProps<{
@@ -40,6 +42,7 @@ declare const _default: import('vue').DefineComponent<import('vue').ExtractPropT
     maxDate?: string;
     time24hr?: boolean;
     inputClass?: string;
+    clearable?: boolean;
 }>, {
     mode: string;
     picker: string;
@@ -48,6 +51,7 @@ declare const _default: import('vue').DefineComponent<import('vue').ExtractPropT
     time24hr: boolean;
     inputClass: string;
     placeholder: string;
+    clearable: boolean;
 }>>> & Readonly<{
     "onUpdate:modelValue"?: ((value: string | string[]) => any) | undefined;
 }>, {
@@ -58,6 +62,7 @@ declare const _default: import('vue').DefineComponent<import('vue').ExtractPropT
     noCalendar: boolean;
     time24hr: boolean;
     inputClass: string;
+    clearable: boolean;
 }, {}, {}, {}, string, import('vue').ComponentProvideOptions, true, {}, any>;
 export default _default;
 type __VLS_NonUndefinedable<T> = T extends undefined ? never : T;
