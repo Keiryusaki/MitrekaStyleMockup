@@ -115,6 +115,7 @@ export const NAV: NavItem[] = [
     icon: "lock",
     children: [
       { id: "auth-signin", label: "Sign In", to: "/auth/signin" },
+      { id: "auth-signin-sso", label: "Sign In SSO", to: "/auth/signin-sso" },
       { id: "auth-register", label: "Register", to: "/auth/register" },
       { id: "auth-forgot", label: "Forgot Password", to: "/auth/forgot" },
       { id: "auth-reset", label: "Reset Password", to: "/auth/reset" },

@@ -186,6 +186,11 @@ const routes: RouteRecordRaw[] = [
     meta: { layout: "blank" },
   },
   {
+    path: "/auth/signin-sso",
+    component: () => import("@/pages/Auth/SignInSSO.vue"),
+    meta: { layout: "blank" },
+  },
+  {
     path: "/auth/forgot",
     component: () => import("@/pages/Auth/ForgotPassword.vue"),
     meta: { layout: "blank" },
