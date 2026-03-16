@@ -2,15 +2,16 @@
 import { ref, computed } from "vue";
 import FloatingTOC, { type TOCItem } from "@/components/FloatingTOC.vue";
 import PageHeader from "@/components/PageHeader.vue";
+import Input from "@/components/controls/Input.vue";
 import TextareaInput from "@/components/controls/TextareaInput.vue";
 
 const tocItems: TOCItem[] = [
-  { id: 'controls', label: 'Controls' },
-  { id: 'playground', label: 'Playground' },
-  { id: 'textarea', label: 'Textarea' },
-  { id: 'sizes', label: 'Sizes' },
-  { id: 'states', label: 'States' },
-  { id: 'notes', label: 'Notes' },
+  { id: "controls", label: "Controls" },
+  { id: "playground", label: "Playground" },
+  { id: "component-api", label: "Input API" },
+  { id: "textarea", label: "Textarea" },
+  { id: "sizes", label: "Sizes" },
+  { id: "states", label: "States" },
 ];
 
 type Size = "xs" | "sm" | "md" | "lg" | "xl";
@@ -28,6 +29,14 @@ const size = ref<Size>("md");
 const tone = ref<Tone>("default");
 const disabled = ref(false);
 const readonly = ref(false);
+
+const basicValue = ref("");
+const searchValue = ref("");
+const emailValue = ref("");
+const clearableValue = ref("Able to clear");
+const passwordValue = ref("secret123");
+const groupValue = ref("");
+
 const textareaValue = ref("");
 const textareaResizableValue = ref("");
 const textareaVerticalValue = ref("");
@@ -37,9 +46,7 @@ const textareaRowsLargeValue = ref("");
 const sizeClass = computed(() =>
   size.value === "md" ? "input-md" : `input-${size.value}`
 );
-const toneClass = computed(() =>
-  tone.value === "default" ? "" : `input-${tone.value}`
-);
+const toneClass = computed(() => (tone.value === "default" ? "" : `input-${tone.value}`));
 
 const tones: { label: string; tone: Tone }[] = [
   { label: "Default", tone: "default" },
@@ -55,17 +62,15 @@ const tones: { label: string; tone: Tone }[] = [
 
 <template>
   <div class="space-y-8">
-    <PageHeader 
+    <PageHeader
       category="Components"
-      title="Input" 
-      description="Base, 7 state warna, 5 ukuran. Border & focus ring mengikuti token warna."
+      title="Input"
+      description="Base input + icon, clearable, password toggle, dan input-group addon untuk form yang lebih konsisten."
     />
 
     <div class="card p-4 md:p-6 space-y-5">
-      <!-- Controls -->
       <section id="controls" class="rounded-box border border-base-300 p-4 scroll-mt-20">
         <div class="flex flex-wrap items-center gap-4">
-          <!-- Tone -->
           <div class="flex items-center gap-2">
             <span class="text-sm opacity-80">State</span>
             <div class="join">
@@ -81,49 +86,17 @@ const tones: { label: string; tone: Tone }[] = [
             </div>
           </div>
 
-          <!-- Size -->
           <div class="flex items-center gap-2">
             <span class="text-sm opacity-80">Size</span>
             <div class="join">
-              <button
-                class="btn btn-sm join-item"
-                :class="{ 'btn-primary': size === 'xs' }"
-                @click="size = 'xs'"
-              >
-                xs
-              </button>
-              <button
-                class="btn btn-sm join-item"
-                :class="{ 'btn-primary': size === 'sm' }"
-                @click="size = 'sm'"
-              >
-                sm
-              </button>
-              <button
-                class="btn btn-sm join-item"
-                :class="{ 'btn-primary': size === 'md' }"
-                @click="size = 'md'"
-              >
-                md
-              </button>
-              <button
-                class="btn btn-sm join-item"
-                :class="{ 'btn-primary': size === 'lg' }"
-                @click="size = 'lg'"
-              >
-                lg
-              </button>
-              <button
-                class="btn btn-sm join-item"
-                :class="{ 'btn-primary': size === 'xl' }"
-                @click="size = 'xl'"
-              >
-                xl
-              </button>
+              <button class="btn btn-sm join-item" :class="{ 'btn-primary': size === 'xs' }" @click="size = 'xs'">xs</button>
+              <button class="btn btn-sm join-item" :class="{ 'btn-primary': size === 'sm' }" @click="size = 'sm'">sm</button>
+              <button class="btn btn-sm join-item" :class="{ 'btn-primary': size === 'md' }" @click="size = 'md'">md</button>
+              <button class="btn btn-sm join-item" :class="{ 'btn-primary': size === 'lg' }" @click="size = 'lg'">lg</button>
+              <button class="btn btn-sm join-item" :class="{ 'btn-primary': size === 'xl' }" @click="size = 'xl'">xl</button>
             </div>
           </div>
 
-          <!-- Flags -->
           <label class="flex items-center gap-2">
             <input type="checkbox" class="switch" v-model="disabled" />
             <span class="text-sm">Disabled</span>
@@ -135,182 +108,85 @@ const tones: { label: string; tone: Tone }[] = [
         </div>
       </section>
 
-      <!-- Playground -->
       <section id="playground" class="space-y-3 rounded-box border border-base-300 p-4 scroll-mt-20">
         <h2 class="text-base font-semibold">Playground</h2>
         <div class="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
-          <!-- base -->
           <label class="space-y-1">
-            <span class="text-xs opacity-70">Label</span>
-            <input
-              :class="['input', sizeClass, toneClass]"
-              :disabled="disabled"
-              :readonly="readonly"
-              placeholder="Type something…"
-            />
-            <span
-              class="form-hint"
-              :class="tone === 'default' ? '' : `form-hint-${tone}`"
-            >
-              Helper text goes here
-            </span>
+            <span class="text-xs opacity-70">Basic</span>
+            <Input v-model="basicValue" :size="size" :color="tone" :disabled="disabled" :readonly="readonly" placeholder="Type something..." />
           </label>
 
-          <!-- with leading icon -->
           <label class="space-y-1">
             <span class="text-xs opacity-70">With leading icon</span>
-            <div class="relative">
-              <svg
-                class="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 opacity-70"
-                width="16"
-                height="16"
-                viewBox="0 0 24 24"
-                fill="currentColor"
-              >
-                <path
-                  d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5Zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14Z"
-                />
-              </svg>
-              <input
-                :class="['input', sizeClass, toneClass]"
-                :disabled="disabled"
-                :readonly="readonly"
-                placeholder="Search…"
-                style="padding-left: 2rem;"
-              />
-            </div>
+            <Input v-model="searchValue" :size="size" :color="tone" :disabled="disabled" :readonly="readonly" prefix-icon="search" placeholder="Search..." />
           </label>
 
-          <!-- with trailing icon -->
           <label class="space-y-1">
             <span class="text-xs opacity-70">With trailing icon</span>
-            <div class="relative">
-              <input
-                :class="['input pr-10', sizeClass, toneClass]"
-                :disabled="disabled"
-                :readonly="readonly"
-                placeholder="Email"
-              />
-              <svg
-                class="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 opacity-70"
-                width="16"
-                height="16"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-              >
-                <rect x="2" y="4" width="20" height="16" rx="2" />
-                <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7" />
-              </svg>
-            </div>
+            <Input v-model="emailValue" :size="size" :color="tone" :disabled="disabled" :readonly="readonly" suffix-icon="mail" placeholder="Email" />
           </label>
 
+          <label class="space-y-1">
+            <span class="text-xs opacity-70">Clearable</span>
+            <Input v-model="clearableValue" :size="size" :color="tone" :disabled="disabled" :readonly="readonly" clearable placeholder="Type to show clear" />
+          </label>
+
+          <label class="space-y-1">
+            <span class="text-xs opacity-70">Password toggle</span>
+            <Input v-model="passwordValue" :size="size" :color="tone" :disabled="disabled" :readonly="readonly" type="password" password-toggle placeholder="Password" />
+          </label>
+
+          <label class="space-y-1">
+            <span class="text-xs opacity-70">Input group / addon</span>
+            <Input v-model="groupValue" :size="size" :color="tone" :disabled="disabled" :readonly="readonly" addon-left="https://" addon-right=".com" placeholder="your-domain" />
+          </label>
         </div>
+      </section>
+
+      <section id="component-api" class="space-y-3 rounded-box border border-base-300 p-4 scroll-mt-20">
+        <h2 class="text-base font-semibold">Input API</h2>
+        <pre class="bg-base-200 rounded-field p-3 overflow-x-auto text-xs"><code>{{ `<Input
+  v-model="value"
+  size="md"
+  color="default"
+  prefix-icon="search"
+  suffix-icon="mail"
+  clearable
+  type="password"
+  password-toggle
+  addon-left="https://"
+  addon-right=".com"
+/>` }}</code></pre>
       </section>
 
       <section id="textarea" class="space-y-3 rounded-box border border-base-300 p-4 scroll-mt-20">
         <h2 class="text-base font-semibold">Textarea</h2>
-        <p class="text-sm opacity-80">
-          Textarea mengikuti API Input (`size`, `color`, `disabled`, `readonly`) dan tambahan varian <code>resize</code>.
-        </p>
-
-        <div class="space-y-1">
-          <div class="text-xs opacity-70">Usage</div>
-          <pre class="bg-base-200 rounded-field p-3 overflow-x-auto text-xs"><code>{{ `<TextareaInput
-  v-model="message"
-  :rows="4"
-  size="md"
-  color="default"
-  resize="vertical"
-  :maxlength="200"
-  show-counter
-  placeholder="Type a longer message..."
-/>` }}</code></pre>
-        </div>
-
         <div class="space-y-3">
           <label class="space-y-1">
             <span class="text-xs opacity-70">Rows awal (rows = 6)</span>
-            <TextareaInput
-              v-model="textareaRowsLargeValue"
-              :size="size"
-              :color="tone"
-              :disabled="disabled"
-              :readonly="readonly"
-              :rows="6"
-              resize="vertical"
-              placeholder="Default tinggi mengikuti rows..."
-            />
+            <TextareaInput v-model="textareaRowsLargeValue" :size="size" :color="tone" :disabled="disabled" :readonly="readonly" :rows="6" resize="vertical" placeholder="Default tinggi mengikuti rows..." />
           </label>
-
           <label class="space-y-1">
             <span class="text-xs opacity-70">Default (non-resizable)</span>
-            <TextareaInput
-              v-model="textareaValue"
-              :size="size"
-              :color="tone"
-              :disabled="disabled"
-              :readonly="readonly"
-              :maxlength="200"
-              :rows="4"
-              resize="none"
-              show-counter
-              placeholder="Type a longer message..."
-            />
+            <TextareaInput v-model="textareaValue" :size="size" :color="tone" :disabled="disabled" :readonly="readonly" :maxlength="200" :rows="4" resize="none" show-counter placeholder="Type a longer message..." />
           </label>
-
           <label class="space-y-1">
             <span class="text-xs opacity-70">Resizable (both)</span>
-            <TextareaInput
-              v-model="textareaResizableValue"
-              :size="size"
-              :color="tone"
-              :disabled="disabled"
-              :readonly="readonly"
-              :rows="4"
-              resize="both"
-              placeholder="Drag from corner..."
-            />
+            <TextareaInput v-model="textareaResizableValue" :size="size" :color="tone" :disabled="disabled" :readonly="readonly" :rows="4" resize="both" placeholder="Drag from corner..." />
           </label>
-
           <label class="space-y-1">
             <span class="text-xs opacity-70">Resize vertical only</span>
-            <TextareaInput
-              v-model="textareaVerticalValue"
-              :size="size"
-              :color="tone"
-              :disabled="disabled"
-              :readonly="readonly"
-              :rows="4"
-              resize="vertical"
-              placeholder="Resize up/down only..."
-            />
+            <TextareaInput v-model="textareaVerticalValue" :size="size" :color="tone" :disabled="disabled" :readonly="readonly" :rows="4" resize="vertical" placeholder="Resize up/down only..." />
           </label>
-
           <label class="space-y-1">
             <span class="text-xs opacity-70">Resize horizontal only</span>
-            <TextareaInput
-              v-model="textareaHorizontalValue"
-              :size="size"
-              :color="tone"
-              :disabled="disabled"
-              :readonly="readonly"
-              :rows="4"
-              resize="horizontal"
-              placeholder="Resize left/right only..."
-            />
+            <TextareaInput v-model="textareaHorizontalValue" :size="size" :color="tone" :disabled="disabled" :readonly="readonly" :rows="4" resize="horizontal" placeholder="Resize left/right only..." />
           </label>
         </div>
       </section>
 
-      <!-- Reference: Sizes -->
       <section id="sizes" class="space-y-3 rounded-box border border-base-300 p-4 scroll-mt-20">
-        <h3 class="text-sm font-semibold uppercase tracking-wide opacity-70">
-          Sizes
-        </h3>
+        <h3 class="text-sm font-semibold uppercase tracking-wide opacity-70">Sizes</h3>
         <div class="flex flex-wrap items-end gap-3">
           <input class="input input-xs" placeholder="input-xs" />
           <input class="input input-sm" placeholder="input-sm" />
@@ -318,17 +194,10 @@ const tones: { label: string; tone: Tone }[] = [
           <input class="input input-lg" placeholder="input-lg" />
           <input class="input input-xl" placeholder="input-xl" />
         </div>
-        <p class="text-xs opacity-70">
-          Ukuran mengikuti token tinggi & radius: <code>--size-field-*</code>,
-          <code>--radius-field-*</code>. :contentReference[oaicite:2]{index=2}
-        </p>
       </section>
 
-      <!-- Reference: States -->
       <section id="states" class="space-y-3 rounded-box border border-base-300 p-4 scroll-mt-20">
-        <h3 class="text-sm font-semibold uppercase tracking-wide opacity-70">
-          States
-        </h3>
+        <h3 class="text-sm font-semibold uppercase tracking-wide opacity-70">States</h3>
         <div class="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
           <input class="input" placeholder="Default" />
           <input class="input input-primary" placeholder="Primary" />
@@ -339,45 +208,6 @@ const tones: { label: string; tone: Tone }[] = [
           <input class="input input-warning" placeholder="Warning" />
           <input class="input input-error" placeholder="Error" />
         </div>
-        <p class="text-xs opacity-70">
-          Warna state mengubah <em>border</em> & <em>focus ring</em> (mis.
-          <code>.input-primary:focus</code> pakai ring campuran ke white 78%).
-          :contentReference[oaicite:3]{index=3}
-          :contentReference[oaicite:4]{index=4}
-        </p>
-      </section>
-
-      <!-- Notes -->
-      <section id="notes" class="rounded-box border border-base-300 p-4 text-sm scroll-mt-20">
-        <ul class="list-disc space-y-1 pl-5">
-          <li>
-            <strong>Base:</strong> <code>.input</code> mengatur tinggi, radius,
-            padding, warna, hover, dan focus ring default.
-            :contentReference[oaicite:5]{index=5}
-          </li>
-          <li>
-            <strong>Ukuran:</strong>
-            <code>.input-{xs|sm|md|lg|xl}</code> (default md).
-            :contentReference[oaicite:6]{index=6}
-          </li>
-          <li>
-            <strong>State:</strong>
-            <code
-              >.input-{primary|secondary|accent|info|success|warning|error}</code
-            >
-            + ring khusus saat focus. :contentReference[oaicite:7]{index=7}
-          </li>
-          <li>
-            <strong>Helper:</strong> gunakan <code>.form-hint</code> +
-            <code>.form-hint-{tone}</code> untuk teks bantuan di bawah field.
-            :contentReference[oaicite:8]{index=8}
-          </li>
-          <li>
-            <strong>Disabled/Read-only:</strong> atur via atribut
-            <code>disabled</code>/<code>readonly</code> (CSS sudah handle
-            tampilan). :contentReference[oaicite:9]{index=9}
-          </li>
-        </ul>
       </section>
     </div>
 
