@@ -184,7 +184,7 @@ import { useUi } from "@/stores/ui";
 import logoUrl from "@/assets/logo.png";
 import NotificationDropdown from "@/components/nav/NotificationDropdown.vue";
 import WhatsNewGlassModal from "@/components/nav/WhatsNewGlassModal.vue";
-import { useToast } from "@keiryusaki/mitreka-ui/composables";
+import { useToast } from "@/lib/mitreka-ui-dist/composables";
 import {
   applyThemeOverride,
   clearThemeOverride,
@@ -200,7 +200,7 @@ const toast = useToast();
 
 const THEME_MODE_KEY = "ui-theme-mode-v1";
 const CODE_PRESET_KEY = "ui-code-theme-preset-v1";
-const RELEASE_VERSION = "2.2.35";
+const RELEASE_VERSION = "2.2.36";
 const DEFAULT_STARTER_PACK_FILENAME = "mitreka-design-system-starter-pack-v2.2.25.zip";
 const TOTAL_COMPONENTS = 36;
 const WHATS_NEW_SEEN_KEY = `ui-whats-new-seen-${RELEASE_VERSION}`;
@@ -509,3 +509,4 @@ onUnmounted(() => {
   }
 }
 </style>
+
