@@ -1,4 +1,4 @@
-// src/router/index.ts
+﻿// src/router/index.ts
 import {
   createRouter,
   createWebHashHistory,
@@ -86,6 +86,11 @@ const routes: RouteRecordRaw[] = [
   {
     path: "/dashboard-finance",
     component: () => import("@/pages/Mockup/DashboardFinance.vue"),
+    meta: { hideBreadcrumbs: true },
+  },
+  {
+    path: "/taskflow-workspace",
+    component: () => import("@/pages/Mockup/TaskFlowWorkspace.vue"),
     meta: { hideBreadcrumbs: true },
   },
   {
@@ -276,7 +281,7 @@ router.beforeEach((to, from, next) => {
 });
 
 router.afterEach((to) => {
-  document.title = to.meta.title ? `${to.meta.title} � Mitreka Design System` : "Mitreka Design System";
+  document.title = to.meta.title ? `${to.meta.title} · Mitreka Design System` : "Mitreka Design System";
   
   // Delay 1.5 detik setelah navigasi selesai baru hide block UI
   setTimeout(() => {

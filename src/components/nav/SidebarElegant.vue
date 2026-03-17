@@ -189,9 +189,9 @@ export default defineComponent({
                     "a",
                     {
                       class: [
-                        "relative flex items-center gap-3 h-field rounded-field cursor-pointer",
+                        "relative flex items-center h-field rounded-field cursor-pointer",
                         "px-3 border border-transparent",
-                        props.collapsed ? "justify-center gap-0 px-2" : "",
+                        props.collapsed ? "justify-center gap-0 px-2" : "gap-3",
                         active
                           ? "sidebar-item-active sidebar-item-active-border"
                           : "sidebar-hover",
@@ -221,10 +221,10 @@ export default defineComponent({
                 "button",
                 {
                   class: [
-                    "relative w-full flex items-center gap-3 h-field rounded-field px-3 flex-shrink-0",
+                    "relative w-full flex items-center h-field rounded-field px-3 flex-shrink-0",
                     "border border-transparent",
                     "transition-colors duration-200 ease-out",
-                    props.collapsed ? "justify-center gap-0 px-2" : "",
+                    props.collapsed ? "justify-center gap-0 px-2" : "gap-3",
                     open
                       ? "sidebar-parent-open" // Style Grup Open (soft primary light, soft accent dark)
                       : "sidebar-hover", // Style Grup Closed (hover)
@@ -292,10 +292,10 @@ export default defineComponent({
                                   {
                                     key: child.id,
                                     class: [
-                                      "relative flex items-center gap-3 h-field rounded-field cursor-pointer flex-shrink-0",
+                                      "relative flex items-center h-field rounded-field cursor-pointer flex-shrink-0",
                                       "border border-transparent",
                                       "pl-3 pr-[.75rem]",
-                                      props.collapsed ? "justify-center gap-0 px-2" : "",
+                                      props.collapsed ? "justify-center gap-0 px-2" : "gap-3",
                                       active
                                         ? "sidebar-item-active sidebar-item-active-border" // Style Child Active
                                         : "sidebar-hover", // Style Child Inactive (hover)

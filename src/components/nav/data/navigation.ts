@@ -39,6 +39,7 @@ export const NAV: NavItem[] = [
       { id: "live-attendance", label: "Live Attendance", to: "/live-attendance" },
       { id: "select-playground", label: "Select Playground", to: "/select-playground" },
       { id: "dashboard-finance", label: "Dashboard Finance", to: "/dashboard-finance" },
+      { id: "taskflow-workspace", label: "TaskFlow WorkSPace", to: "/taskflow-workspace" },
       { id: "aggrid", label: "AG Grid", to: "/aggrid" },
       { id: "project-budgeting", label: "Project Budgeting", to: "/project-budgeting" },
       { id: "project-cashflow", label: "Project Cashflow", to: "/project-cashflow" },
