@@ -375,6 +375,98 @@ export const codeThemePresets: CodeThemePreset[] = [
       },
     }),
   },
+  {
+    id: "tenderapps-2",
+    name: "TenderApps-2",
+    draft: normalizeThemeDraft({
+      light: {
+        colors: {
+          primary: "#8e2de2",
+          secondary: "oklch(96% 0.01 270)",
+          accent: "#ffb800",
+          info: "#0ea5e9",
+          success: "#10b981",
+          warning: "#f97316",
+          error: "#ef4444",
+          neutral: "#1f2937",
+        },
+        base: {
+          base100: "#ffffff",
+          base200: "#f8fafc",
+          base300: "#f1f5f9",
+          baseContent: "#1e293b",
+        },
+        layout: {
+          usePrimaryForLayout: false,
+          topbarBg: "#9d2eda",
+          topbarText: "#ffffff",
+          sidebarBg: "#ffffff",
+          sidebarText: "#4a244f",
+        },
+        sidebar: {
+          hoverBg: "rgba(155, 5, 255, 0.16)",
+          activeBg: "#4a1a6a",
+          activeText: "#f0e1fa",
+          activeBorder: "#9d2eda",
+          openBg: "#8e2de2",
+          openText: "#f0e1fa",
+          activeMark: "#8e2de2",
+        },
+        link: {
+          color: "#ea580c",
+          hover: "#c2410c",
+          visited: "#9a3412",
+        },
+        radius: {
+          field: "0.5rem",
+          box: "0.5rem",
+        },
+      },
+      dark: {
+        colors: {
+          primary: "#8e2de2",
+          secondary: "oklch(96% 0.001 286.375)",
+          accent: "#fbbf24",
+          info: "oklch(68% 0.169 237.323)",
+          success: "oklch(69% 0.17 162.48)",
+          warning: "#fb923c",
+          error: "#ee3032",
+          neutral: "oklch(0.335 0.008 275)",
+        },
+        base: {
+          base100: "#0f172a",
+          base200: "#1e293b",
+          base300: "oklch(0.345 0.063 256.8)",
+          baseContent: "#f8fafc",
+        },
+        layout: {
+          usePrimaryForLayout: false,
+          topbarBg: "#9d2eda",
+          topbarText: "#ffffff",
+          sidebarBg: "#0f172a",
+          sidebarText: "oklch(96% 0.003 264.542)",
+        },
+        sidebar: {
+          hoverBg: "rgba(155, 5, 255, 0.32)",
+          activeBg: "rgba(74, 26, 106, 0.15)",
+          activeText: "#f0e1fa",
+          activeBorder: "#9d2eda",
+          openBg: "rgba(142, 45, 226, 0.32)",
+          openText: "#f0e1fa",
+          activeMark: "#8e2de2",
+        },
+        link: {
+          color: "#fb923c",
+          hover: "#fdba74",
+          visited: "#a78bfa",
+        },
+        radius: {
+          field: "0.5rem",
+          box: "0.5rem",
+        },
+      },
+    }),
+  },
 ];
 
 export function getCodeThemePresetById(id: string): CodeThemePreset | null {
