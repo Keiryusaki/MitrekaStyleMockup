@@ -9,6 +9,7 @@ declare const _default: import('vue').DefineComponent<import('vue').ExtractPropT
     dropzoneText?: string;
     browseText?: string;
     helperText?: string;
+    maxSizeText?: string;
     emptyText?: string;
 }>, {
     modelValue: () => never[];
@@ -21,6 +22,7 @@ declare const _default: import('vue').DefineComponent<import('vue').ExtractPropT
     dropzoneText: string;
     browseText: string;
     helperText: string;
+    maxSizeText: string;
     emptyText: string;
 }>>, {}, {}, {}, {}, import('vue').ComponentOptionsMixin, import('vue').ComponentOptionsMixin, {
     "update:modelValue": (files: File[]) => void;
@@ -36,6 +38,7 @@ declare const _default: import('vue').DefineComponent<import('vue').ExtractPropT
     dropzoneText?: string;
     browseText?: string;
     helperText?: string;
+    maxSizeText?: string;
     emptyText?: string;
 }>, {
     modelValue: () => never[];
@@ -48,6 +51,7 @@ declare const _default: import('vue').DefineComponent<import('vue').ExtractPropT
     dropzoneText: string;
     browseText: string;
     helperText: string;
+    maxSizeText: string;
     emptyText: string;
 }>>> & Readonly<{
     "onUpdate:modelValue"?: ((files: File[]) => any) | undefined;
@@ -63,6 +67,7 @@ declare const _default: import('vue').DefineComponent<import('vue').ExtractPropT
     dropzoneText: string;
     browseText: string;
     helperText: string;
+    maxSizeText: string;
     emptyText: string;
 }, {}, {}, {}, string, import('vue').ComponentProvideOptions, true, {}, any>;
 export default _default;

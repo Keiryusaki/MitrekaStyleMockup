@@ -40,6 +40,7 @@ const files = ref<File[]>([]);
   :max-files="4"
   preview
   helper-text="Maximum 4 images"
+  max-size-text="Max size: 5MB per file"
 />`,
   dropzone: `<FileUpload v-model="files" />`,
 };
@@ -79,6 +80,7 @@ const files = ref<File[]>([]);
               <tr><td class="px-4 py-2"><code>dropzoneText</code></td><td class="px-4 py-2"><code>string</code></td><td class="px-4 py-2"><code>"Drag &amp; drop files here"</code></td><td class="px-4 py-2">Teks utama pada dropzone.</td></tr>
               <tr><td class="px-4 py-2"><code>browseText</code></td><td class="px-4 py-2"><code>string</code></td><td class="px-4 py-2"><code>"or click to browse"</code></td><td class="px-4 py-2">Teks bantuan di bawah judul.</td></tr>
               <tr><td class="px-4 py-2"><code>helperText</code></td><td class="px-4 py-2"><code>string</code></td><td class="px-4 py-2"><code>""</code></td><td class="px-4 py-2">Catatan tambahan di area dropzone.</td></tr>
+              <tr><td class="px-4 py-2"><code>maxSizeText</code></td><td class="px-4 py-2"><code>string</code></td><td class="px-4 py-2"><code>""</code></td><td class="px-4 py-2">Info batas ukuran file yang ditampilkan di dropzone.</td></tr>
               <tr><td class="px-4 py-2"><code>emptyText</code></td><td class="px-4 py-2"><code>string</code></td><td class="px-4 py-2"><code>"No files selected"</code></td><td class="px-4 py-2">Teks saat belum ada file dipilih.</td></tr>
             </tbody>
           </table>
@@ -113,6 +115,7 @@ const files = ref<File[]>([]);
           v-model="dropzoneFiles"
           multiple
           helper-text="Accepted: all file types"
+          max-size-text="Max size: 10MB per file"
           empty-text="No files selected yet"
         />
       </div>
@@ -158,8 +161,9 @@ const files = ref<File[]>([]);
           multiple
           accept="image/*"
           :max-files="4"
-          preview
+          :preview="false"
           helper-text="Maximum 4 images"
+          max-size-text="Max size: 5MB per file"
           empty-text="No images selected"
         />
       </div>

@@ -1,20 +1,20 @@
 [
   {
-    "version": "2.2.37",
-    "date": "2026-03-16",
+    "version": "2.2.38",
+    "date": "2026-03-25",
     "label": "Patch",
     "items": [
       {
         "type": "Added",
-        "text": "Komponen Vue Input kini tersedia di package mitreka-ui dengan dukungan prefix/suffix icon, clearable action, password toggle, dan addon group"
+        "text": "FileUpload menambahkan dukungan maxSizeText pada dropzone untuk menampilkan info batas ukuran file."
       },
       {
         "type": "Fixed",
-        "text": "Input password toggle: icon hide (eye-off) kini muncul dengan benar di state show password"
+        "text": "Mapping icon file di FileUpload diperbarui: PDF/XLS/CSV/DOC terdeteksi otomatis, image memakai icon image, dan fallback ke icon file."
       },
       {
         "type": "Changed",
-        "text": "Sync package @keiryusaki/mitreka-ui v2.2.37 ke mockup vendor dist"
+        "text": "Sync package @keiryusaki/mitreka-ui v2.2.38 ke mockup vendor dist."
       }
     ],
     "assets": []
