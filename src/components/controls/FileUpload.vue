@@ -105,6 +105,30 @@ const getFileIconName = (file: File) => {
   ) {
     return "file-doc";
   }
+  if (
+    extension === "ppt" ||
+    extension === "pptx" ||
+    mimeType === "application/vnd.ms-powerpoint" ||
+    mimeType === "application/vnd.openxmlformats-officedocument.presentationml.presentation"
+  ) {
+    return "file-ppt";
+  }
+  if (extension === "txt" || mimeType === "text/plain") return "file-txt";
+  if (
+    extension === "zip" ||
+    extension === "rar" ||
+    extension === "7z" ||
+    extension === "tar" ||
+    extension === "gz" ||
+    mimeType === "application/zip" ||
+    mimeType === "application/x-zip-compressed" ||
+    mimeType === "application/x-rar-compressed" ||
+    mimeType === "application/x-7z-compressed" ||
+    mimeType === "application/gzip" ||
+    mimeType === "application/x-tar"
+  ) {
+    return "file-archive";
+  }
   return "file";
 };
 

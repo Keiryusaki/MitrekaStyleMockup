@@ -1,20 +1,20 @@
 [
   {
-    "version": "2.2.38",
+    "version": "2.2.39",
     "date": "2026-03-25",
     "label": "Patch",
     "items": [
       {
         "type": "Added",
-        "text": "FileUpload menambahkan dukungan maxSizeText pada dropzone untuk menampilkan info batas ukuran file."
+        "text": "Penambahan ikon file/action/navigation yang sering dipakai: ppt, txt, archive, circle-arrow, arrow directions, redo/undo variants, dan lainnya."
       },
       {
         "type": "Fixed",
-        "text": "Mapping icon file di FileUpload diperbarui: PDF/XLS/CSV/DOC terdeteksi otomatis, image memakai icon image, dan fallback ke icon file."
+        "text": "Mapping FileUpload diperluas untuk deteksi icon file: PDF, XLS/XLSX, CSV, DOC/DOCX, PPT/PPTX, TXT, serta archive (zip/rar/7z/tar/gz)."
       },
       {
         "type": "Changed",
-        "text": "Sync package @keiryusaki/mitreka-ui v2.2.38 ke mockup vendor dist."
+        "text": "Sync package @keiryusaki/mitreka-ui v2.2.39 ke mockup vendor dist."
       }
     ],
     "assets": []
