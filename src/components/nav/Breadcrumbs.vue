@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed } from "vue";
 import { useRoute } from "vue-router";
-import { Breadcrumbs as BaseBreadcrumbs } from "@keiryusaki/mitreka-ui/vue";
+import { Breadcrumbs as BaseBreadcrumbs } from "@/lib/mitreka-ui-dist/vue";
 
 const route = useRoute();
 
@@ -22,3 +22,4 @@ const items = computed(() => {
 <template>
   <BaseBreadcrumbs v-if="!isHome" :items="items" />
 </template>
+

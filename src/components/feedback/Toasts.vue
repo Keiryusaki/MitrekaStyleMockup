@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Toasts as BaseToasts } from "@keiryusaki/mitreka-ui/vue";
+import { Toasts as BaseToasts } from "@/lib/mitreka-ui-dist/vue";
 </script>
 
 <template>
@@ -17,3 +17,4 @@ import { Toasts as BaseToasts } from "@keiryusaki/mitreka-ui/vue";
   top: calc(var(--layout-topbar-height) + 0.75rem) !important;
 }
 </style>
+

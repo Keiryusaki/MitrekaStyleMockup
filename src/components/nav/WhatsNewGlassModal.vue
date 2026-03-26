@@ -114,7 +114,7 @@
 <script setup lang="ts">
 import { computed, onBeforeUnmount, onMounted, ref, watch } from "vue";
 import { RouterLink } from "vue-router";
-import { useToast } from "@keiryusaki/mitreka-ui/composables";
+import { useToast } from "@/lib/mitreka-ui-dist/composables";
 import changelogData from "@/pages/Changelog/changelog.json";
 
 const props = defineProps<{
@@ -479,3 +479,4 @@ onMounted(() => {
   }
 }
 </style>
+

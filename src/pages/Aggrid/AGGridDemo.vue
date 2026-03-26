@@ -1,7 +1,7 @@
 <!-- AGGridDemo.vue (v2.6) - Fixed header height; density applies to body rows only -->
 <script setup lang="ts">
 import { ref, computed, watch, onMounted, onBeforeUnmount, nextTick } from "vue";
-import { AgGridSurface } from "@keiryusaki/mitreka-ui/vue";
+import { AgGridSurface } from "@/lib/mitreka-ui-dist/vue";
 import SelectDropdown from "@/components/controls/SelectDropdown.vue";
 import PageHeader from "@/components/PageHeader.vue";
 import "ag-grid-community/styles/ag-grid.css";
@@ -630,5 +630,6 @@ onBeforeUnmount(() => {
   </div>
   <DevGuide />
 </template>
+
 
 

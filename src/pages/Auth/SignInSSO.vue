@@ -5,6 +5,7 @@ import coreFlowImg from "@/assets/icon-product/CoreFlow.png";
 import pmToolsImg from "@/assets/icon-product/PMTools.png";
 import financeImg from "@/assets/icon-product/Finance.png";
 import salesImg from "@/assets/icon-product/Sales.png";
+import tenderImg from "@/assets/icon-product/Tender.png";
 
 const form = ref({
   email: "",
@@ -31,6 +32,7 @@ const apps = [
       "Cocok untuk PMO, tim delivery, engineering, dan unit bisnis yang mengelola banyak proyek berjalan sekaligus.",
     iconImage: pmToolsImg,
     icon: "clipboardClock",
+    brandColor: "#166534",
   },
   {
     id: "task-flow",
@@ -79,6 +81,7 @@ const apps = [
       "Sangat tepat untuk tim finance, accounting, project controller, dan leader yang fokus pada efisiensi biaya.",
     iconImage: financeImg,
     icon: "credit-card",
+    brandColor: "#025097",
   },
   {
     id: "sales",
@@ -95,6 +98,7 @@ const apps = [
       "Cocok untuk sales team, account manager, dan business development yang menargetkan pertumbuhan revenue berkelanjutan.",
     iconImage: salesImg,
     icon: "trendingUp",
+    brandColor: "#fa6407",
   },
   {
     id: "admin-tender",
@@ -109,8 +113,9 @@ const apps = [
     ],
     bestFor:
       "Sangat relevan untuk procurement, legal, admin project, dan tim governance.",
-    iconImage: "",
+    iconImage: tenderImg,
     icon: "settings",
+    brandColor: "#8e2de2",
   },
   {
     id: "knowledge-doc",
@@ -143,6 +148,7 @@ const apps = [
       "Direkomendasikan untuk manajemen, PMO strategis, dan people leader yang mengawal performa lintas fungsi.",
     iconImage: "",
     icon: "trendingUp",
+    brandColor: "#b42318",
   },
   {
     id: "helpdesk",
@@ -186,6 +192,31 @@ const openAppModal = (app: (typeof apps)[number]) => {
 
 const closeAppModal = () => {
   selectedApp.value = null;
+};
+
+const hexToRgb = (hex: string) => {
+  const raw = hex.replace("#", "");
+  const normalized = raw.length === 3
+    ? raw.split("").map((char) => char + char).join("")
+    : raw;
+
+  if (!/^[0-9a-fA-F]{6}$/.test(normalized)) return null;
+
+  const r = parseInt(normalized.slice(0, 2), 16);
+  const g = parseInt(normalized.slice(2, 4), 16);
+  const b = parseInt(normalized.slice(4, 6), 16);
+
+  return `${r} ${g} ${b}`;
+};
+
+const getAppBrandVars = (color?: string) => {
+  if (!color) return undefined;
+  const rgb = hexToRgb(color);
+  if (!rgb) return undefined;
+
+  return {
+    "--app-brand-rgb": rgb,
+  } as Record<string, string>;
 };
 </script>
 
@@ -298,21 +329,23 @@ const closeAppModal = () => {
       />
       <div class="absolute inset-0 right-overlay"></div>
 
-      <div class="relative z-10 w-full p-10 xl:p-12 text-white flex items-center justify-center">
-        <div class="w-full max-w-2xl space-y-6">
+      <div class="relative z-10 w-full p-6 xl:p-8 text-white flex items-center justify-center">
+        <div class="w-full max-w-2xl space-y-4">
           <div class="text-center">
             <div class="core-logo-shell mx-auto">
               <img :src="coreFlowImg" alt="Core Flow ERP" class="core-logo" />
             </div>
-            <h2 class="text-4xl font-semibold tracking-tight">Core Flow ERP</h2>
-            <p class="mt-2 text-white/90">A Collaborative Flow of Efficient Corporate ERP</p>
+            <h2 class="text-3xl xl:text-[2rem] font-semibold tracking-tight">Core Flow ERP</h2>
+            <p class="mt-1 text-sm text-white/90">A Collaborative Flow of Efficient Corporate ERP</p>
           </div>
 
-          <div class="grid grid-cols-1 xl:grid-cols-2 gap-3 app-list">
+          <div class="grid grid-cols-1 xl:grid-cols-2 gap-2.5 app-list">
             <article
               v-for="app in apps"
               :key="app.id"
-              class="app-card rounded-xl p-4"
+              class="app-card rounded-xl p-3"
+              :class="{ 'app-card--default': !app.brandColor }"
+              :style="getAppBrandVars(app.brandColor)"
               role="button"
               tabindex="0"
               @click="openAppModal(app)"
@@ -320,14 +353,18 @@ const closeAppModal = () => {
               @keydown.space.prevent="openAppModal(app)"
             >
               <span class="app-hover-chip">Detail</span>
-              <div class="flex items-start gap-3">
-                <div class="app-icon-shell">
-                  <img v-if="app.iconImage" :src="app.iconImage" :alt="app.name" class="app-icon-img" />
+              <div class="flex items-start gap-2.5">
+                <div
+                  class="app-icon-shell app-icon-shell--list"
+                  :class="{ 'app-icon-shell--default': !app.brandColor }"
+                  :style="getAppBrandVars(app.brandColor)"
+                >
+                  <img v-if="app.iconImage" :src="app.iconImage" :alt="app.name" class="app-icon-img app-icon-img--list" />
                   <Icon v-else :name="app.icon" class="w-5 h-5" />
                 </div>
                 <div class="min-w-0">
                   <p class="font-semibold leading-tight">{{ app.name }}</p>
-                  <p class="text-sm text-white/85 mt-1">{{ app.tagline }}</p>
+                  <p class="text-sm text-white/85 mt-0.5 app-tagline">{{ app.tagline }}</p>
                 </div>
               </div>
             </article>
@@ -361,7 +398,11 @@ const closeAppModal = () => {
 
           <div class="app-detail-body">
             <div class="app-detail-hero">
-              <div class="app-icon-shell modal-icon">
+              <div
+                class="app-icon-shell modal-icon"
+                :class="{ 'app-icon-shell--default': selectedApp && !selectedApp.brandColor }"
+                :style="selectedApp ? getAppBrandVars(selectedApp.brandColor) : undefined"
+              >
                 <img
                   v-if="selectedApp.iconImage"
                   :src="selectedApp.iconImage"
@@ -415,8 +456,8 @@ const closeAppModal = () => {
 
 .core-logo-shell {
   position: relative;
-  width: 194px;
-  height: 124px;
+  width: 168px;
+  height: 106px;
   overflow: visible;
   border-radius: 30px 34px 26px 30px;
   background:
@@ -447,43 +488,56 @@ const closeAppModal = () => {
 .core-logo {
   position: relative;
   z-index: 1;
-  width: 172px;
-  max-height: 124px;
+  width: 146px;
+  max-height: 102px;
   object-fit: contain;
-  transform: translateY(-16px) scale(1.08);
+  transform: translateY(-12px) scale(1.03);
   filter: drop-shadow(0 8px 12px rgba(0, 0, 0, 0.18));
 }
 
 .app-list {
-  max-height: min(56vh, 560px);
-  overflow: auto;
-  padding-top: 0.6rem;
-  padding-left: 0.35rem;
-  padding-right: 0.45rem;
-}
-
-.app-list::-webkit-scrollbar {
-  width: 0.5rem;
-}
-
-.app-list::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.32);
-  border-radius: 999px;
+  max-height: none;
+  overflow: visible;
+  padding-top: 0.3rem;
+  padding-left: 0.2rem;
+  padding-right: 0.2rem;
 }
 
 .app-card {
   position: relative;
   overflow: hidden;
   cursor: pointer;
+  border: 1px solid rgba(var(--app-brand-rgb, 255 255 255) / 0.34);
+  background: linear-gradient(
+    145deg,
+    rgba(var(--app-brand-rgb, 255 255 255) / 0.24),
+    rgba(var(--app-brand-rgb, 255 255 255) / 0.09)
+  );
+  backdrop-filter: blur(14px) saturate(130%);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.22),
+    0 10px 26px rgba(0, 0, 0, 0.18),
+    0 0 0 1px rgba(var(--app-brand-rgb, 255 255 255) / 0.08);
+  transition: transform 220ms ease, box-shadow 220ms ease, border-color 220ms ease;
+}
+
+.app-card--default {
   border: 1px solid rgba(255, 255, 255, 0.26);
   background: linear-gradient(145deg, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.08));
-  backdrop-filter: blur(14px) saturate(130%);
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.22), 0 10px 26px rgba(0, 0, 0, 0.18);
-  transition: transform 220ms ease, box-shadow 220ms ease, border-color 220ms ease;
 }
 
 .app-card:hover {
   transform: translateY(-6px) scale(1.015);
+  border-color: rgba(var(--app-brand-rgb, 255 255 255) / 0.58);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.3),
+    0 18px 36px rgba(0, 0, 0, 0.28),
+    0 0 0 1px rgba(var(--app-brand-rgb, 255 255 255) / 0.26),
+    0 0 28px rgba(var(--app-brand-rgb, 255 255 255) / 0.18);
+}
+
+.app-card--default:hover {
   border-color: rgba(255, 255, 255, 0.42);
   box-shadow:
     inset 0 1px 0 rgba(255, 255, 255, 0.3),
@@ -516,12 +570,22 @@ const closeAppModal = () => {
 }
 
 .app-icon-shell {
-  width: 2.5rem;
-  height: 2.5rem;
+  width: 2.25rem;
+  height: 2.25rem;
   border-radius: 0.8rem;
   flex-shrink: 0;
   display: grid;
   place-items: center;
+  border: 1px solid rgba(var(--app-brand-rgb, 255 255 255) / 0.72);
+  background:
+    radial-gradient(circle at 28% 24%, rgba(255, 255, 255, 0.26), rgba(255, 255, 255, 0.02) 52%),
+    linear-gradient(165deg, rgba(var(--app-brand-rgb, 255 255 255) / 0.78), rgba(var(--app-brand-rgb, 255 255 255) / 0.62));
+  box-shadow:
+    0 8px 20px rgba(0, 0, 0, 0.24),
+    0 0 14px rgba(var(--app-brand-rgb, 255 255 255) / 0.28);
+}
+
+.app-icon-shell--default {
   border: 1px solid rgba(255, 255, 255, 0.4);
   background:
     radial-gradient(circle at 30% 25%, rgba(255, 255, 255, 0.55), rgba(255, 255, 255, 0.08));
@@ -529,9 +593,28 @@ const closeAppModal = () => {
 }
 
 .app-icon-img {
-  width: 1.4rem;
-  height: 1.4rem;
+  width: 1.25rem;
+  height: 1.25rem;
   object-fit: contain;
+}
+
+.app-icon-shell--list {
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 0.9rem;
+}
+
+.app-icon-img--list {
+  width: 1.45rem;
+  height: 1.45rem;
+}
+
+.app-tagline {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  line-height: 1.2;
+  overflow: hidden;
 }
 
 .app-detail-overlay {

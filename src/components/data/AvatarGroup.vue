@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { AvatarGroup as BaseAvatarGroup } from "@keiryusaki/mitreka-ui/vue";
+import { AvatarGroup as BaseAvatarGroup } from "@/lib/mitreka-ui-dist/vue";
 
 type Size = "xs" | "sm" | "md" | "lg" | "xl";
 
@@ -19,3 +19,4 @@ withDefaults(defineProps<Props>(), {
     <slot />
   </BaseAvatarGroup>
 </template>
+

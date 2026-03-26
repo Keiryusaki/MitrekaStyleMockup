@@ -284,6 +284,98 @@ export const codeThemePresets: CodeThemePreset[] = [
     }),
   },
   {
+    id: "kpiapps-1",
+    name: "KPIApps-1",
+    draft: normalizeThemeDraft({
+      light: {
+        colors: {
+          primary: "#b42318",
+          secondary: "#fff2f2",
+          accent: "#eb5c28",
+          info: "#2563eb",
+          success: "#16a34a",
+          warning: "#eba000",
+          error: "#ef4444",
+          neutral: "#1f2937",
+        },
+        base: {
+          base100: "#ffffff",
+          base200: "#f8fafc",
+          base300: "#eef2f7",
+          baseContent: "#111827",
+        },
+        layout: {
+          usePrimaryForLayout: false,
+          topbarBg: "#b42318",
+          topbarText: "#ffffff",
+          sidebarBg: "#ffffff",
+          sidebarText: "#111827",
+        },
+        sidebar: {
+          hoverBg: "#f9ecea",
+          activeBg: "#7d1818",
+          activeText: "#ffffff",
+          activeBorder: "#b42318",
+          openBg: "#b42318",
+          openText: "#ffffff",
+          activeMark: "#b42318",
+        },
+        link: {
+          color: "#b42318",
+          hover: "#7f1d1d",
+          visited: "#7c3aed",
+        },
+        radius: {
+          field: "0.5rem",
+          box: "0.5rem",
+        },
+      },
+      dark: {
+        colors: {
+          primary: "#d92d20",
+          secondary: "#2a2323",
+          accent: "#f28b74",
+          info: "#60a5fa",
+          success: "#4ade80",
+          warning: "#fbbf24",
+          error: "#f87171",
+          neutral: "#3f3f46",
+        },
+        base: {
+          base100: "#111315",
+          base200: "#181c20",
+          base300: "#232830",
+          baseContent: "#f3f4f6",
+        },
+        layout: {
+          usePrimaryForLayout: false,
+          topbarBg: "#7d1818",
+          topbarText: "#ffffff",
+          sidebarBg: "#111315",
+          sidebarText: "#f3f4f6",
+        },
+        sidebar: {
+          hoverBg: "rgba(255, 180, 173, 0.2)",
+          activeBg: "#4a1d1a",
+          activeText: "#ffb4ad",
+          activeBorder: "#d92d20",
+          openBg: "#351816",
+          openText: "#ffb4ad",
+          activeMark: "#d92d20",
+        },
+        link: {
+          color: "#fda29b",
+          hover: "#fecaca",
+          visited: "#c4b5fd",
+        },
+        radius: {
+          field: "0.5rem",
+          box: "0.5rem",
+        },
+      },
+    }),
+  },
+  {
     id: "tenderapps-1",
     name: "TenderApps-1",
     draft: normalizeThemeDraft({

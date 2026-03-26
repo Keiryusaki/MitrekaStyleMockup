@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { PageHeader as BasePageHeader } from "@keiryusaki/mitreka-ui/vue";
+import { PageHeader as BasePageHeader } from "@/lib/mitreka-ui-dist/vue";
 
 defineProps<{
   title: string;
@@ -11,3 +11,4 @@ defineProps<{
 <template>
   <BasePageHeader :title="title" :description="description" :category="category" />
 </template>
+

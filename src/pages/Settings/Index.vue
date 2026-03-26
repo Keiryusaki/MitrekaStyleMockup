@@ -95,8 +95,9 @@
 <script setup lang="ts">
 import { ref } from "vue";
 import { useUi } from "@/stores/ui";
-import { useToast } from "@keiryusaki/mitreka-ui/composables";
+import { useToast } from "@/lib/mitreka-ui-dist/composables";
 const ui = useUi();
 const toast = useToast();
 const tab = ref<"general" | "appearance" | "email">("general");
 </script>
+

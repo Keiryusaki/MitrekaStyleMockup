@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Avatar as BaseAvatar } from "@keiryusaki/mitreka-ui/vue";
+import { Avatar as BaseAvatar } from "@/lib/mitreka-ui-dist/vue";
 
 type Size = "xs" | "sm" | "md" | "lg" | "xl";
 type Status = "online" | "offline" | "busy" | "away";
@@ -42,3 +42,4 @@ withDefaults(defineProps<Props>(), {
     :square="square"
   />
 </template>
+

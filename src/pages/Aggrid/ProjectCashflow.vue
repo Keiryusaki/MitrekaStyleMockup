@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed, onBeforeUnmount, onMounted, ref, nextTick } from "vue";
-import { AgGridSurface } from "@keiryusaki/mitreka-ui/vue";
+import { AgGridSurface } from "@/lib/mitreka-ui-dist/vue";
 import PageHeader from "@/components/PageHeader.vue";
 import { attachPinnedShadowsToElement } from "@/composables/useAgGridPinnedShadows";
 import {
@@ -779,4 +779,5 @@ const cashflowRowClassRules = {
   margin-left: 0.25rem;
 }
 </style>
+
 

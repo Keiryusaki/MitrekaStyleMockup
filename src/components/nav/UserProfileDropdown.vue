@@ -2,7 +2,7 @@
 import { ref, onMounted, onUnmounted } from "vue";
 import { useRouter } from "vue-router";
 import { Icon } from "@/composables/Icon";
-import { useToast } from "@keiryusaki/mitreka-ui/composables";
+import { useToast } from "@/lib/mitreka-ui-dist/composables";
 
 const router = useRouter();
 const toast = useToast();
@@ -139,3 +139,4 @@ onUnmounted(() => document.removeEventListener("click", handleClickOutside));
     </Transition>
   </div>
 </template>
+

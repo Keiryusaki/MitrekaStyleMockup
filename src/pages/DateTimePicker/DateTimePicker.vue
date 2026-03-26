@@ -2,7 +2,7 @@
 import { computed, ref } from "vue";
 import PageHeader from "@/components/PageHeader.vue";
 import FloatingTOC, { type TOCItem } from "@/components/FloatingTOC.vue";
-import { DateTimePicker as MitrekaDateTimePicker } from "@keiryusaki/mitreka-ui/vue";
+import { DateTimePicker as MitrekaDateTimePicker } from "@/lib/mitreka-ui-dist/vue";
 
 const tocItems: TOCItem[] = [
   { id: "date", label: "Date Picker" },
@@ -256,3 +256,4 @@ const dateTimeRangeDisplay = computed(() =>
     <FloatingTOC :items="tocItems" />
   </div>
 </template>
+

@@ -1,7 +1,7 @@
 <!-- ProjectBudgeting.vue -->
 <script setup lang="ts">
 import { computed, onBeforeUnmount, onMounted, ref, nextTick } from "vue";
-import { AgGridSurface } from "@keiryusaki/mitreka-ui/vue";
+import { AgGridSurface } from "@/lib/mitreka-ui-dist/vue";
 import SelectDropdown from "@/components/controls/SelectDropdown.vue";
 import MultiSelect from "@/components/controls/MultiSelect.vue";
 import PageHeader from "@/components/PageHeader.vue";
@@ -784,4 +784,5 @@ const reloadData = () => {
   }
 }
 </style>
+
 

@@ -139,6 +139,13 @@
             class="absolute right-0 top-full mt-2 w-56 bg-base-100 text-base-content rounded-lg shadow-xl border border-base-300 p-2 z-[var(--z-topbar-dropdown)]"
             @click.stop
           >
+            <button class="apps-menu-item" @click="openApp('pm-tools')">
+              <span class="apps-menu-icon apps-menu-icon-pm-tools">
+                <img :src="pmToolsIconUrl" alt="" class="h-4 w-4 object-contain" />
+              </span>
+              <span>PM Tools</span>
+            </button>
+
             <button class="apps-menu-item" @click="openApp('finance')">
               <span class="apps-menu-icon apps-menu-icon-finance">
                 <img :src="financeIconUrl" alt="" class="h-4 w-4 object-contain" />
@@ -151,6 +158,13 @@
                 <img :src="salesIconUrl" alt="" class="h-4 w-4 object-contain" />
               </span>
               <span>Sales App</span>
+            </button>
+
+            <button class="apps-menu-item" @click="openApp('tender')">
+              <span class="apps-menu-icon apps-menu-icon-tender">
+                <img :src="tenderIconUrl" alt="" class="h-4 w-4 object-contain" />
+              </span>
+              <span>Tender Apps</span>
             </button>
 
             <div class="apps-menu-separator"></div>
@@ -182,6 +196,10 @@
 import { computed, onMounted, onUnmounted, ref, watch } from "vue";
 import { useUi } from "@/stores/ui";
 import logoUrl from "@/assets/logo.png";
+import pmToolsIconUrl from "@/assets/icon-product/PMTools.png";
+import financeIconUrl from "@/assets/icon-product/Finance.png";
+import salesIconUrl from "@/assets/icon-product/Sales.png";
+import tenderIconUrl from "@/assets/icon-product/Tender.png";
 import NotificationDropdown from "@/components/nav/NotificationDropdown.vue";
 import WhatsNewGlassModal from "@/components/nav/WhatsNewGlassModal.vue";
 import { useToast } from "@/lib/mitreka-ui-dist/composables";
@@ -220,8 +238,7 @@ const selectedCodePresetId = ref("");
 const whatsNewOpen = ref(false);
 const showWhatsNewDot = ref(false);
 const starterPackFilename = ref(DEFAULT_STARTER_PACK_FILENAME);
-const financeIconUrl = `${import.meta.env.BASE_URL}images/finance.png`;
-const salesIconUrl = `${import.meta.env.BASE_URL}images/sales.png`;
+type AppTarget = "pm-tools" | "finance" | "sales" | "tender";
 
 const codePresetThemes = computed(() => codeThemePresets);
 const starterPackVersion = computed(
@@ -324,9 +341,15 @@ function logout() {
   toast.notify({ type: "error", message: "Logging out..." });
 }
 
-function openApp(target: "finance" | "sales") {
+function openApp(target: AppTarget) {
   appsMenuOpen.value = false;
-  const appLabel = target === "finance" ? "Finance App" : "Sales App";
+  const appLabelMap: Record<AppTarget, string> = {
+    "pm-tools": "PM Tools",
+    finance: "Finance App",
+    sales: "Sales App",
+    tender: "Tender Apps",
+  };
+  const appLabel = appLabelMap[target];
   toast.setToastPosition("top-center");
   toast.notify({ type: "info", message: `Opening ${appLabel}...` });
 }
@@ -494,8 +517,24 @@ onUnmounted(() => {
     0 1px 2px rgba(0, 0, 0, 0.2);
 }
 
+.apps-menu-icon-pm-tools {
+  background: linear-gradient(180deg, #1f7a41 0%, #166534 55%, #124d29 100%);
+  border: 1px solid rgba(255, 255, 255, 0.32);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.28),
+    0 1px 2px rgba(0, 0, 0, 0.2);
+}
+
 .apps-menu-icon-sales {
   background: linear-gradient(180deg, #ff8a2a 0%, #ff6b00 55%, #d95500 100%);
+  border: 1px solid rgba(255, 255, 255, 0.32);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.28),
+    0 1px 2px rgba(0, 0, 0, 0.2);
+}
+
+.apps-menu-icon-tender {
+  background: linear-gradient(180deg, #a148f1 0%, #8e2de2 55%, #6f1eb8 100%);
   border: 1px solid rgba(255, 255, 255, 0.32);
   box-shadow:
     inset 0 1px 0 rgba(255, 255, 255, 0.28),

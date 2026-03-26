@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref } from "vue";
-import { useToast } from "@keiryusaki/mitreka-ui/composables";
+import { useToast } from "@/lib/mitreka-ui-dist/composables";
 import FloatingTOC, { type TOCItem } from "@/components/FloatingTOC.vue";
 import PageHeader from "@/components/PageHeader.vue";
 
@@ -528,4 +528,5 @@ const downloadFile = async () => {
   font-family: ui-monospace, monospace;
 }
 </style>
+
 

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Pagination as BasePagination } from "@keiryusaki/mitreka-ui/vue";
+import { Pagination as BasePagination } from "@/lib/mitreka-ui-dist/vue";
 
 defineProps<{ page: number; pages: number }>();
 const emit = defineEmits<{
@@ -10,3 +10,4 @@ const emit = defineEmits<{
 <template>
   <BasePagination :page="page" :pages="pages" @change="emit('change', $event)" />
 </template>
+

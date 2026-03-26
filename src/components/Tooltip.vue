@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Tooltip as BaseTooltip } from "@keiryusaki/mitreka-ui/vue";
+import { Tooltip as BaseTooltip } from "@/lib/mitreka-ui-dist/vue";
 
 type Position = "top" | "bottom" | "left" | "right";
 type Variant = "auto" | "light" | "dark";
@@ -24,3 +24,4 @@ withDefaults(
     <slot />
   </BaseTooltip>
 </template>
+
