@@ -51,18 +51,11 @@ const dateTimeRangeDisplay = computed(() =>
         <div class="grid gap-4 md:grid-cols-[240px_1fr] items-start">
           <label class="space-y-1">
             <span class="text-xs opacity-70">Select date</span>
-            <div class="relative">
-              <Icon
-                name="calendar-days"
-                class="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 opacity-60"
-              />
-              <MitrekaDateTimePicker
-                v-model="dateValue"
-                clearable
-                placeholder="Select date"
-                inputClass="pl-9"
-              />
-            </div>
+            <MitrekaDateTimePicker
+              v-model="dateValue"
+              clearable
+              placeholder="Select date"
+            />
           </label>
           <div class="text-sm opacity-80">
             <div class="font-medium">Value</div>
@@ -77,19 +70,12 @@ const dateTimeRangeDisplay = computed(() =>
         <div class="grid gap-4 md:grid-cols-[1fr_1fr] items-start">
           <div class="space-y-1">
             <span class="text-xs opacity-70">Range</span>
-            <div class="relative">
-              <Icon
-                name="calendar-days"
-                class="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 opacity-60"
-              />
-              <MitrekaDateTimePicker
-                v-model="dateRange"
-                mode="range"
-                clearable
-                placeholder="Start -> End"
-                inputClass="pl-9"
-              />
-            </div>
+            <MitrekaDateTimePicker
+              v-model="dateRange"
+              mode="range"
+              clearable
+              placeholder="Start -> End"
+            />
           </div>
           <div class="text-sm opacity-80">
             <div class="font-medium">Value</div>
@@ -126,21 +112,14 @@ const dateTimeRangeDisplay = computed(() =>
         <div class="grid gap-4 md:grid-cols-[1fr_1fr] items-start">
           <label class="space-y-1">
             <span class="text-xs opacity-70">Range</span>
-            <div class="relative">
-              <Icon
-                name="calendar-days"
-                class="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 opacity-60"
-              />
-              <MitrekaDateTimePicker
-                v-model="dateTimeRange"
-                mode="range"
-                enableTime
-                clearable
-                dateFormat="Y-m-d H:i"
-                placeholder="Start -> End"
-                inputClass="pl-9"
-              />
-            </div>
+            <MitrekaDateTimePicker
+              v-model="dateTimeRange"
+              mode="range"
+              enableTime
+              clearable
+              dateFormat="Y-m-d H:i"
+              placeholder="Start -> End"
+            />
           </label>
           <div class="text-sm opacity-80">
             <div class="font-medium">Value</div>
@@ -155,73 +134,45 @@ const dateTimeRangeDisplay = computed(() =>
         <div class="grid gap-4 md:grid-cols-2 xl:grid-cols-4 items-start">
           <label class="space-y-1">
             <span class="text-xs opacity-70">Month (Number)</span>
-            <div class="relative">
-              <Icon
-                name="calendar-days"
-                class="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 opacity-60"
-              />
-              <MitrekaDateTimePicker
-                v-model="monthNumberValue"
-                picker="month"
-                clearable
-                dateFormat="m"
-                displayFormat="m"
-                placeholder="Select month (06)"
-                inputClass="pl-9"
-              />
-            </div>
+            <MitrekaDateTimePicker
+              v-model="monthNumberValue"
+              picker="month"
+              clearable
+              dateFormat="m"
+              displayFormat="m"
+              placeholder="Select month (06)"
+            />
           </label>
           <label class="space-y-1">
             <span class="text-xs opacity-70">Month (Short Text)</span>
-            <div class="relative">
-              <Icon
-                name="calendar-days"
-                class="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 opacity-60"
-              />
-              <MitrekaDateTimePicker
-                v-model="monthShortValue"
-                picker="month"
-                clearable
-                dateFormat="M"
-                displayFormat="M"
-                placeholder="Select month (Jun)"
-                inputClass="pl-9"
-              />
-            </div>
+            <MitrekaDateTimePicker
+              v-model="monthShortValue"
+              picker="month"
+              clearable
+              dateFormat="M"
+              displayFormat="M"
+              placeholder="Select month (Jun)"
+            />
           </label>
           <label class="space-y-1">
             <span class="text-xs opacity-70">Month (Full Text)</span>
-            <div class="relative">
-              <Icon
-                name="calendar-days"
-                class="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 opacity-60"
-              />
-              <MitrekaDateTimePicker
-                v-model="monthLongValue"
-                picker="month"
-                clearable
-                dateFormat="F"
-                displayFormat="F"
-                placeholder="Select month (June)"
-                inputClass="pl-9"
-              />
-            </div>
+            <MitrekaDateTimePicker
+              v-model="monthLongValue"
+              picker="month"
+              clearable
+              dateFormat="F"
+              displayFormat="F"
+              placeholder="Select month (June)"
+            />
           </label>
           <div class="space-y-1">
             <span class="text-xs opacity-70">Year</span>
-            <div class="relative">
-              <Icon
-                name="calendar-days"
-                class="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 opacity-60"
-              />
-              <MitrekaDateTimePicker
-                v-model="yearValue"
-                picker="year-grid"
-                clearable
-                placeholder="Select year"
-                inputClass="pl-9"
-              />
-            </div>
+            <MitrekaDateTimePicker
+              v-model="yearValue"
+              picker="year-grid"
+              clearable
+              placeholder="Select year"
+            />
           </div>
           <div class="text-sm opacity-80">
             <div class="font-medium">Value</div>

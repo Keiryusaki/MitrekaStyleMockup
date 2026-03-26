@@ -26,7 +26,7 @@ const copyCode = async (code: string, id: string) => {
 
 const codes = {
   cssBasic: `<!-- Basic Collapse dengan CSS -->
-<div class="collapse is-open">
+<div class="collapse-card is-open">
   <div class="collapse-header">
     <div class="collapse-title">Collapse Title</div>
     <svg class="collapse-icon" viewBox="0 0 20 20" fill="currentColor">
@@ -42,13 +42,13 @@ const codes = {
   </div>
 </div>`,
   cssVariants: `<!-- Default -->
-<div class="collapse">...</div>
+<div class="collapse-card">...</div>
 
 <!-- Borderless -->
-<div class="collapse collapse-borderless">...</div>
+<div class="collapse-card collapse-card-borderless">...</div>
 
 <!-- Ghost (transparent background) -->
-<div class="collapse collapse-ghost">...</div>`,
+<div class="collapse-card collapse-card-ghost">...</div>`,
   componentImport: `import { Collapse } from "@keiryusaki/mitreka-ui/vue";`,
   componentBasic: `<Collapse default-open>
   <template #title>Collapse Title</template>
@@ -78,7 +78,7 @@ const isOpen = ref(false);
 <!-- Ghost variant -->
 <Collapse variant="ghost">...</Collapse>`,
   jsToggle: `// Toggle collapse dengan JavaScript
-const collapse = document.querySelector('.collapse');
+const collapse = document.querySelector('.collapse-card');
 collapse.classList.toggle('is-open');`,
 };
 </script>
@@ -97,13 +97,17 @@ collapse.classList.toggle('is-open');`,
         Basic Collapse (CSS)
       </h2>
       <p class="text-sm opacity-80">
-        Gunakan class <code class="code-inline">.collapse</code> dengan 
+        Gunakan class <code class="code-inline">.collapse-card</code> dengan 
         <code class="code-inline">.is-open</code> untuk mengontrol state.
+      </p>
+      <p class="text-xs opacity-70">
+        Root class memakai <code class="code-inline">.collapse-card</code> agar tidak bentrok dengan utility Tailwind
+        <code class="code-inline">.collapse</code>.
       </p>
 
       <div class="max-w-md space-y-3">
         <!-- Open by default -->
-        <div class="collapse is-open">
+        <div class="collapse-card is-open">
           <div class="collapse-header" onclick="this.parentElement.classList.toggle('is-open')">
             <div class="collapse-title font-medium">Click to Collapse</div>
             <svg class="collapse-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
@@ -122,7 +126,7 @@ collapse.classList.toggle('is-open');`,
         </div>
 
         <!-- Closed by default -->
-        <div class="collapse">
+        <div class="collapse-card">
           <div class="collapse-header" onclick="this.parentElement.classList.toggle('is-open')">
             <div class="collapse-title font-medium">Click to Expand</div>
             <svg class="collapse-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
@@ -159,7 +163,7 @@ collapse.classList.toggle('is-open');`,
         <!-- Default -->
         <div>
           <span class="text-xs font-medium opacity-60 mb-2 block">Default</span>
-          <div class="collapse is-open">
+          <div class="collapse-card is-open">
             <div class="collapse-header" onclick="this.parentElement.classList.toggle('is-open')">
               <div class="collapse-title font-medium">Default Variant</div>
               <svg class="collapse-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
@@ -179,7 +183,7 @@ collapse.classList.toggle('is-open');`,
         <!-- Borderless -->
         <div>
           <span class="text-xs font-medium opacity-60 mb-2 block">Borderless</span>
-          <div class="collapse collapse-borderless is-open">
+          <div class="collapse-card collapse-card-borderless is-open">
             <div class="collapse-header" onclick="this.parentElement.classList.toggle('is-open')">
               <div class="collapse-title font-medium">Borderless Variant</div>
               <svg class="collapse-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
@@ -199,7 +203,7 @@ collapse.classList.toggle('is-open');`,
         <!-- Ghost -->
         <div>
           <span class="text-xs font-medium opacity-60 mb-2 block">Ghost</span>
-          <div class="collapse collapse-ghost is-open">
+          <div class="collapse-card collapse-card-ghost is-open">
             <div class="collapse-header" onclick="this.parentElement.classList.toggle('is-open')">
               <div class="collapse-title font-medium">Ghost Variant</div>
               <svg class="collapse-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
@@ -243,7 +247,7 @@ collapse.classList.toggle('is-open');`,
       </div>
 
       <div class="max-w-md space-y-3">
-        <div :class="['collapse', { 'is-open': isOpen1 }]">
+        <div :class="['collapse-card', { 'is-open': isOpen1 }]">
           <div class="collapse-header" @click="isOpen1 = !isOpen1">
             <div class="collapse-title font-medium">Vue Collapse (Open)</div>
             <svg :class="['collapse-icon', { 'is-open': isOpen1 }]" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
@@ -261,7 +265,7 @@ collapse.classList.toggle('is-open');`,
           </div>
         </div>
 
-        <div :class="['collapse', { 'is-open': isOpen2 }]">
+        <div :class="['collapse-card', { 'is-open': isOpen2 }]">
           <div class="collapse-header" @click="isOpen2 = !isOpen2">
             <div class="collapse-title font-medium">Vue Collapse (Closed)</div>
             <svg :class="['collapse-icon', { 'is-open': isOpen2 }]" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
@@ -446,11 +450,11 @@ collapse.classList.toggle('is-open');`,
           </thead>
           <tbody class="divide-y divide-base-200">
             <tr>
-              <td class="px-4 py-2"><code class="code-inline">.collapse</code></td>
+              <td class="px-4 py-2"><code class="code-inline">.collapse-card</code></td>
               <td class="px-4 py-2">Container utama</td>
             </tr>
             <tr>
-              <td class="px-4 py-2"><code class="code-inline">.collapse.is-open</code></td>
+              <td class="px-4 py-2"><code class="code-inline">.collapse-card.is-open</code></td>
               <td class="px-4 py-2">State terbuka</td>
             </tr>
             <tr>
@@ -470,11 +474,11 @@ collapse.classList.toggle('is-open');`,
               <td class="px-4 py-2">Content dengan padding</td>
             </tr>
             <tr>
-              <td class="px-4 py-2"><code class="code-inline">.collapse-borderless</code></td>
+              <td class="px-4 py-2"><code class="code-inline">.collapse-card-borderless</code></td>
               <td class="px-4 py-2">Variant tanpa border</td>
             </tr>
             <tr>
-              <td class="px-4 py-2"><code class="code-inline">.collapse-ghost</code></td>
+              <td class="px-4 py-2"><code class="code-inline">.collapse-card-ghost</code></td>
               <td class="px-4 py-2">Variant transparent</td>
             </tr>
           </tbody>
@@ -528,85 +532,5 @@ collapse.classList.toggle('is-open');`,
   border-radius: 4px;
   font-size: 0.875em;
   font-family: ui-monospace, monospace;
-}
-</style>
-
-<style>
-/* Collapse Component CSS - Non-scoped untuk override */
-.collapse {
-  visibility: visible !important;
-  border-radius: 0.5rem;
-  overflow: hidden;
-}
-
-.collapse-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  cursor: pointer;
-  user-select: none;
-  padding: 0.75rem 1rem;
-   background-color: var(--color-base-100);
-   border: 1px solid var(--color-base-300);
-  border-radius: 0.5rem;
-  transition: background-color 0.15s ease;
-}
-
-.collapse-header:hover {
-   background-color: var(--color-base-200);
-}
-
-.collapse-icon {
-  width: 1.25rem;
-  height: 1.25rem;
-  transition: transform 0.2s ease;
-  flex-shrink: 0;
-}
-
-.collapse.is-open .collapse-icon {
-  transform: rotate(180deg);
-}
-
-.collapse-content {
-  display: grid;
-  grid-template-rows: 0fr;
-  transition: grid-template-rows 0.2s ease;
-}
-
-.collapse.is-open .collapse-content {
-  grid-template-rows: 1fr;
-}
-
-.collapse-content-inner {
-  overflow: hidden;
-}
-
-.collapse-body {
-  padding: 1rem;
-   border: 1px solid var(--color-base-300);
-  border-top: none;
-  border-radius: 0 0 0.5rem 0.5rem;
-   background-color: var(--color-base-100);
-}
-
-/* Borderless variant */
-.collapse.collapse-borderless .collapse-header,
-.collapse.collapse-borderless .collapse-body {
-  border: none;
-}
-
-/* Ghost variant */
-.collapse.collapse-ghost .collapse-header {
-  background-color: transparent;
-  border: none;
-}
-
-.collapse.collapse-ghost .collapse-header:hover {
-   background-color: var(--color-base-200);
-}
-
-.collapse.collapse-ghost .collapse-body {
-  border: none;
-  background-color: transparent;
 }
 </style>

@@ -1,5 +1,29 @@
 [
   {
+    "version": "2.2.40",
+    "date": "2026-03-26",
+    "label": "Patch",
+    "items": [
+      {
+        "type": "Fixed",
+        "text": "Komponen Collapse diubah ke root class .collapse-card (beserta varian .collapse-card-borderless/.collapse-card-ghost) untuk menghindari bentrok utility Tailwind .collapse."
+      },
+      {
+        "type": "Changed",
+        "text": "Dokumentasi halaman Collapse diselaraskan ke class baru .collapse-card dan override lokal sementara dihapus."
+      },
+      {
+        "type": "Added",
+        "text": "DateTimePicker menambahkan trailing icon bawaan di sisi kanan input (kalender/jam) agar affordance field picker lebih jelas."
+      },
+      {
+        "type": "Changed",
+        "text": "Sync package @keiryusaki/mitreka-ui v2.2.40 ke mockup vendor dist."
+      }
+    ],
+    "assets": []
+  },
+  {
     "version": "2.2.39",
     "date": "2026-03-25",
     "label": "Patch",
