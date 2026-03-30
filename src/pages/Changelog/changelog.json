@@ -1,5 +1,27 @@
 [
     {
+        "version":  "2.2.44",
+        "date":  "2026-03-30",
+        "label":  "Patch",
+        "items":  [
+                      {
+                          "type":  "Added",
+                          "text":  "TreeList menambahkan mode kode yang fleksibel: `codeMode` (`order` | `field` | `none`) dan `codeField` (default `code`)."
+                      },
+                      {
+                          "type":  "Changed",
+                          "text":  "Flow Proses Tender kini memakai `TreeList` dengan `codeMode=field` agar tidak terjadi persepsi double code di panel kiri."
+                      },
+                      {
+                          "type":  "Changed",
+                          "text":  "Sinkronisasi package @keiryusaki/mitreka-ui v2.2.44 ke mockup vendor dist."
+                      }
+                  ],
+        "assets":  [
+
+                   ]
+    },
+    {
         "version":  "2.2.43",
         "date":  "2026-03-30",
         "label":  "Patch",

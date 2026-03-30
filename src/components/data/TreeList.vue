@@ -15,6 +15,7 @@ type FlatRow = {
   numberLabel: string;
   ancestors: Array<string | number>;
 };
+type CodeMode = "order" | "field" | "none";
 
 const props = withDefaults(
   defineProps<{
@@ -24,12 +25,16 @@ const props = withDefaults(
     emptyText?: string;
     baseIndent?: number;
     indentStep?: number;
+    codeMode?: CodeMode;
+    codeField?: string;
   }>(),
   {
     searchQuery: "",
     emptyText: "No data found.",
     baseIndent: 12,
     indentStep: 24,
+    codeMode: "order",
+    codeField: "code",
   }
 );
 
@@ -93,7 +98,7 @@ const rows = computed<FlatRow[]>(() => {
 
   const includeIds = new Set<string | number>();
   flatAllRows.value.forEach((row) => {
-    const text = `${row.numberLabel} ${row.node.name}`.toLowerCase();
+    const text = `${getCodeText(row)} ${row.node.name}`.toLowerCase();
     if (!text.includes(keyword)) return;
     includeIds.add(row.node.id);
     row.ancestors.forEach((ancestor) => includeIds.add(ancestor));
@@ -109,6 +114,15 @@ function onToggle(id: string | number) {
 
 function onRowClick(node: TreeListNode) {
   emit("row-click", node);
+}
+
+function getCodeText(row: FlatRow): string {
+  if (props.codeMode === "none") return "";
+  if (props.codeMode === "field") {
+    const raw = row.node[props.codeField];
+    return raw == null ? "" : String(raw);
+  }
+  return `${row.numberLabel}.`;
 }
 </script>
 
@@ -138,7 +152,7 @@ function onRowClick(node: TreeListNode) {
           />
         </button>
         <span v-else class="tree-list__toggle-space"></span>
-        <span class="tree-list__code">{{ row.numberLabel }}.</span>
+        <span v-if="codeMode !== 'none'" class="tree-list__code">{{ getCodeText(row) }}</span>
         <span class="tree-list__name" :class="row.depth === 0 ? 'font-semibold' : ''">
           {{ row.node.name }}
         </span>

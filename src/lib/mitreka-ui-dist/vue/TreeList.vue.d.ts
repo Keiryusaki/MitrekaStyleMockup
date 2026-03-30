@@ -10,6 +10,7 @@ type FlatRow = {
     numberLabel: string;
     ancestors: Array<string | number>;
 };
+type CodeMode = "order" | "field" | "none";
 declare function __VLS_template(): {
     meta?(_: {
         row: FlatRow;
@@ -27,11 +28,15 @@ declare const __VLS_component: import('vue').DefineComponent<import('vue').Extra
     emptyText?: string;
     baseIndent?: number;
     indentStep?: number;
+    codeMode?: CodeMode;
+    codeField?: string;
 }>, {
     searchQuery: string;
     emptyText: string;
     baseIndent: number;
     indentStep: number;
+    codeMode: string;
+    codeField: string;
 }>>, {}, {}, {}, {}, import('vue').ComponentOptionsMixin, import('vue').ComponentOptionsMixin, {
     toggle: (id: string | number) => void;
     "row-click": (node: TreeListNode) => void;
@@ -42,11 +47,15 @@ declare const __VLS_component: import('vue').DefineComponent<import('vue').Extra
     emptyText?: string;
     baseIndent?: number;
     indentStep?: number;
+    codeMode?: CodeMode;
+    codeField?: string;
 }>, {
     searchQuery: string;
     emptyText: string;
     baseIndent: number;
     indentStep: number;
+    codeMode: string;
+    codeField: string;
 }>>> & Readonly<{
     onToggle?: ((id: string | number) => any) | undefined;
     "onRow-click"?: ((node: TreeListNode) => any) | undefined;
@@ -55,6 +64,8 @@ declare const __VLS_component: import('vue').DefineComponent<import('vue').Extra
     searchQuery: string;
     baseIndent: number;
     indentStep: number;
+    codeMode: CodeMode;
+    codeField: string;
 }, {}, {}, {}, string, import('vue').ComponentProvideOptions, true, {}, any>;
 declare const _default: __VLS_WithTemplateSlots<typeof __VLS_component, ReturnType<typeof __VLS_template>>;
 export default _default;

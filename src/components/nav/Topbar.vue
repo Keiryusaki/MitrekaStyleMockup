@@ -218,7 +218,7 @@ const toast = useToast();
 
 const THEME_MODE_KEY = "ui-theme-mode-v1";
 const CODE_PRESET_KEY = "ui-code-theme-preset-v1";
-const RELEASE_VERSION = "2.2.43";
+const RELEASE_VERSION = "2.2.44";
 const DEFAULT_STARTER_PACK_FILENAME = "mitreka-design-system-starter-pack-v2.2.25.zip";
 const TOTAL_COMPONENTS = 37;
 const WHATS_NEW_SEEN_KEY = `ui-whats-new-seen-${RELEASE_VERSION}`;
