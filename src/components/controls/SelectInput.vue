@@ -38,6 +38,7 @@ const {
   root,
   inputEl,
   menu,
+  floating,
   open,
   query,
   hoverIdx,
@@ -135,6 +136,18 @@ const onViewportChange = (evt?: Event) => {
   updateMenuPosition();
 };
 
+function setDropdownRef(el: unknown) {
+  const htmlEl = el instanceof HTMLElement ? (el as HTMLDivElement) : null;
+  dropdownRef.value = htmlEl;
+  floating.value = htmlEl;
+}
+
+function openDropdown() {
+  if (props.disabled) return;
+  openMenu();
+  nextTick(updateMenuPosition);
+}
+
 function toggleMenu() {
   if (props.disabled) return;
   if (open.value) {
@@ -143,6 +156,10 @@ function toggleMenu() {
   }
   openMenu();
   nextTick(updateMenuPosition);
+}
+
+function swallowClick() {
+  // prevent click bubbling side-effects after mousedown toggle
 }
 
 watch(
@@ -187,8 +204,8 @@ onBeforeUnmount(() => {
         :disabled="disabled"
         :placeholder="placeholder || 'Search...'"
         :value="displayValue"
-        @focus="openMenu"
-        @click="openMenu"
+        @focus="openDropdown"
+        @click="openDropdown"
         @keydown="onKey"
         :readonly="!open"
         :class="[
@@ -208,7 +225,8 @@ onBeforeUnmount(() => {
         v-if="clearable && selected && !disabled"
         type="button"
         class="absolute inset-y-0 right-7 pr-2 flex items-center opacity-70 hover:opacity-100"
-        @click="clear"
+        @mousedown.prevent.stop="clear"
+        @click.stop="swallowClick"
       >
         <Icon name="x" class="w-4 h-4" />
       </button>
@@ -216,7 +234,8 @@ onBeforeUnmount(() => {
       <button
         type="button"
         class="absolute inset-y-0 right-0 pr-2 flex items-center opacity-70"
-        @click="toggleMenu"
+        @mousedown.prevent.stop="toggleMenu"
+        @click.stop="swallowClick"
         :disabled="disabled"
       >
         <Icon :name="open ? 'chevron-up' : 'chevron-down'" class="w-4 h-4" />
@@ -234,9 +253,11 @@ onBeforeUnmount(() => {
       >
         <div
           v-if="open"
-          ref="dropdownRef"
+          :ref="setDropdownRef"
           class="fixed z-[var(--z-modal)] card p-1"
           :style="menuContainerStyle"
+          @mousedown.stop
+          @click.stop
         >
           <div v-if="loading" class="px-3 py-2 text-sm opacity-70">Loading...</div>
           <ul v-else ref="menu" class="overflow-auto" :style="menuListStyle" role="listbox">

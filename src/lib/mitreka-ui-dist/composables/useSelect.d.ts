@@ -11,7 +11,7 @@ export type UseSelectCommon = {
     debounceMs?: number;
     filterFn?: (opt: SelectOption, query: string) => boolean;
 };
-export declare function useClickOutside(root: Ref<HTMLElement | null>, cb: () => void): void;
+export declare function useClickOutside(root: Ref<HTMLElement | null>, cb: () => void, allowRefs?: Array<Ref<HTMLElement | null>>): void;
 /**
  * Single select with search
  */
@@ -19,6 +19,7 @@ export declare function useSelectSingle(model: Ref<string | number | null>, comm
     root: Ref<HTMLElement | null, HTMLElement | null>;
     inputEl: Ref<HTMLInputElement | null, HTMLInputElement | null>;
     menu: Ref<HTMLElement | null, HTMLElement | null>;
+    floating: Ref<HTMLElement | null, HTMLElement | null>;
     open: Ref<boolean, boolean>;
     query: Ref<string, string>;
     hoverIdx: Ref<number, number>;
@@ -50,6 +51,7 @@ export declare function useSelectMulti(model: Ref<Array<string | number>>, commo
     root: Ref<HTMLElement | null, HTMLElement | null>;
     inputEl: Ref<HTMLInputElement | null, HTMLInputElement | null>;
     menu: Ref<HTMLElement | null, HTMLElement | null>;
+    floating: Ref<HTMLElement | null, HTMLElement | null>;
     open: Ref<boolean, boolean>;
     query: Ref<string, string>;
     hoverIdx: Ref<number, number>;

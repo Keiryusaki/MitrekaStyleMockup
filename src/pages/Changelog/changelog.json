@@ -1,608 +1,741 @@
 [
-  {
-    "version": "2.2.40",
-    "date": "2026-03-26",
-    "label": "Patch",
-    "items": [
-      {
-        "type": "Fixed",
-        "text": "Komponen Collapse diubah ke root class .collapse-card (beserta varian .collapse-card-borderless/.collapse-card-ghost) untuk menghindari bentrok utility Tailwind .collapse."
-      },
-      {
-        "type": "Changed",
-        "text": "Dokumentasi halaman Collapse diselaraskan ke class baru .collapse-card dan override lokal sementara dihapus."
-      },
-      {
-        "type": "Added",
-        "text": "DateTimePicker menambahkan trailing icon bawaan di sisi kanan input (kalender/jam) agar affordance field picker lebih jelas."
-      },
-      {
-        "type": "Changed",
-        "text": "Sync package @keiryusaki/mitreka-ui v2.2.40 ke mockup vendor dist."
-      }
-    ],
-    "assets": []
-  },
-  {
-    "version": "2.2.39",
-    "date": "2026-03-25",
-    "label": "Patch",
-    "items": [
-      {
-        "type": "Added",
-        "text": "Penambahan ikon file/action/navigation yang sering dipakai: ppt, txt, archive, circle-arrow, arrow directions, redo/undo variants, dan lainnya."
-      },
-      {
-        "type": "Fixed",
-        "text": "Mapping FileUpload diperluas untuk deteksi icon file: PDF, XLS/XLSX, CSV, DOC/DOCX, PPT/PPTX, TXT, serta archive (zip/rar/7z/tar/gz)."
-      },
-      {
-        "type": "Changed",
-        "text": "Sync package @keiryusaki/mitreka-ui v2.2.39 ke mockup vendor dist."
-      }
-    ],
-    "assets": []
-  },
-  {
-    "version": "2.2.36",
-    "date": "2026-03-16",
-    "label": "Patch",
-    "items": [
-      {
-        "type": "Added",
-        "text": "Komponen Vue FileUpload kini tersedia di package mitreka-ui dengan dukungan drag-and-drop, v-model File[], image preview, remove action, dan batas maxFiles"
-      },
-      {
-        "type": "Added",
-        "text": "Dokumentasi File Upload diperbarui dengan usage snippet serta tabel API props/events pada halaman komponen"
-      },
-      {
-        "type": "Changed",
-        "text": "Sync package @keiryusaki/mitreka-ui v2.2.36 ke mockup vendor dist"
-      }
-    ],
-    "assets": []
-  },
-  {
-    "version": "2.2.35",
-    "date": "2026-03-10",
-    "label": "Patch",
-    "items": [
-      {
-        "type": "Fixed",
-        "text": "DateTimePicker: nilai tanggal terpilih kini tampil konsisten di trigger input untuk mode single date dan date range"
-      },
-      {
-        "type": "Added",
-        "text": "DateTimePicker menambah prop clearable untuk menghapus value langsung dari trigger (single, range, dan year-grid)"
-      },
-      {
-        "type": "Changed",
-        "text": "Sync package @keiryusaki/mitreka-ui v2.2.35 ke mockup vendor dist"
-      }
-    ],
-    "assets": []
-  },
-  {
-    "version": "2.2.34",
-    "date": "2026-03-09",
-    "label": "Patch",
-    "items": [
-      {
-        "type": "Fixed",
-        "text": "DateTimePicker month picker kini benar-benar month-only (tanpa konteks tahun di popup) untuk use case pemilihan bulan tunggal"
-      },
-      {
-        "type": "Added",
-        "text": "DateTimePicker menambah dukungan format bulan fleksibel melalui dateFormat/displayFormat: angka (m), singkatan (M), dan nama bulan penuh (F)"
-      },
-      {
-        "type": "Fixed",
-        "text": "DateTimePicker year-grid: nilai tahun terpilih kini tampil konsisten di trigger input"
-      },
-      {
-        "type": "Changed",
-        "text": "Sync package @keiryusaki/mitreka-ui v2.2.34 ke mockup vendor dist"
-      }
-    ],
-    "assets": []
-  },
-  {
-    "version": "2.2.33",
-    "date": "2026-03-09",
-    "label": "Patch",
-    "items": [
-      {
-        "type": "Fixed",
-        "text": "MultiSelect: stabilisasi checklist terpilih lintas environment/browser dengan normalisasi pembanding value string/number"
-      },
-      {
-        "type": "Changed",
-        "text": "Select overlay di dalam modal ditingkatkan agar positioning lebih konsisten untuk kasus field dekat batas viewport"
-      },
-      {
-        "type": "Added",
-        "text": "Ikon export file baru (PDF/XLS/CSV) dengan keterbacaan label lebih jelas pada ukuran tombol compact"
-      },
-      {
-        "type": "Changed",
-        "text": "Sync package @keiryusaki/mitreka-ui v2.2.33 ke mockup vendor dist"
-      }
-    ],
-    "assets": []
-  },
-  {
-    "version": "2.2.32",
-    "date": "2026-03-05",
-    "label": "Patch",
-    "items": [
-      {
-        "type": "Fixed",
-        "text": "MultiSelect: mode inline-compact kini stabil pada layout filter 1 baris dengan overflow chip +N, close chip lebih compact, dan dropdown hover kembali terlihat"
-      },
-      {
-        "type": "Fixed",
-        "text": "MultiSelect: label placeholder di mode inline-compact kembali tampil di sisi kiri, sementara chip tetap di area tengah dan mode stacked tetap chips di atas"
-      },
-      {
-        "type": "Changed",
-        "text": "MultiSelect sizing diselaraskan untuk semua size (xs-xl), termasuk mapping tinggi search input per size dan tipografi/checkbox item dropdown"
-      },
-      {
-        "type": "Changed",
-        "text": "Dokumentasi SelectOption diperbarui dengan 2 contoh MultiSelect (inline-compact dan stacked) serta props reference display-mode"
-      },
-      {
-        "type": "Changed",
-        "text": "Sync package @keiryusaki/mitreka-ui v2.2.32 ke mockup vendor dist"
-      }
-    ],
-    "assets": []
-  },
-  {
-    "version": "2.2.30",
-    "date": "2026-03-05",
-    "label": "Patch",
-    "items": [
-      {
-        "type": "Fixed",
-        "text": "MultiSelect tidak lagi overlap saat banyak chip dipilih, termasuk pada ukuran sm"
-      },
-      {
-        "type": "Changed",
-        "text": "Sync package @keiryusaki/mitreka-ui v2.2.30 ke mockup vendor dist"
-      }
-    ],
-    "assets": []
-  },
-  {
-    "version": "2.2.29",
-    "date": "2026-03-02",
-    "label": "Patch",
-    "items": [
-      {
-        "type": "Fixed",
-        "text": "Global Icon wrapper di package tidak lagi mewarisi class transform/size, sehingga icon chevron tidak double-rotate pada SidebarElegant"
-      },
-      {
-        "type": "Changed",
-        "text": "Sync package @keiryusaki/mitreka-ui v2.2.29 ke mockup vendor dist"
-      }
-    ],
-    "assets": []
-  },
-  {
-    "version": "2.2.28",
-    "date": "2026-03-02",
-    "label": "Patch",
-    "items": [
-      {
-        "type": "Fixed",
-        "text": "Toast layering: token --z-toast dinaikkan jadi 950 agar toast selalu tampil di atas modal/backdrop, termasuk modal fullscreen"
-      },
-      {
-        "type": "Changed",
-        "text": "Modal DS disinkronkan ke token layering (--z-modal-backdrop/--z-modal) dan tidak lagi hardcoded z-40/z-50"
-      },
-      {
-        "type": "Changed",
-        "text": "Sync package @keiryusaki/mitreka-ui v2.2.28 ke mockup vendor dist"
-      }
-    ],
-    "assets": []
-  },
-  {
-    "version": "2.2.27",
-    "date": "2026-02-28",
-    "label": "Patch",
-    "items": [
-      {
-        "type": "Added",
-        "text": "Komponen SelectDropdown, SelectInput, dan MultiSelect resmi tersedia di package @keiryusaki/mitreka-ui/vue"
-      },
-      {
-        "type": "Fixed",
-        "text": "SelectInput: dropdown kini bisa langsung dibuka ulang saat input diklik tanpa perlu blur dulu"
-      },
-      {
-        "type": "Changed",
-        "text": "Sinkronisasi penuh CSS DS ke package (base + mockup) dan publish @keiryusaki/mitreka-ui v2.2.26 -> v2.2.27"
-      },
-      {
-        "type": "Changed",
-        "text": "Starter pack flow diperjelas: source clean di staging-starter-pack, sandbox test di mitreka-consumer-test-ds"
-      }
-    ],
-    "assets": []
-  },
-  {
-    "version": "2.2.24",
-    "date": "2026-02-20",
-    "label": "Patch",
-    "items": [
-      {
-        "type": "Added",
-        "text": "Textarea input component untuk kebutuhan field pesan multi-baris + dokumentasi varian resize (default, both, vertical, horizontal)"
-      },
-      {
-        "type": "Changed",
-        "text": "Topbar apps/account dropdown: quick access Finance App & Sales App + logout action"
-      },
-      {
-        "type": "Changed",
-        "text": "Sync package @keiryusaki/mitreka-ui v2.2.24 ke mockup vendor dist"
-      }
-    ],
-    "assets": []
-  },
-  {
-    "version": "2.2.23",
-    "date": "2026-02-19",
-    "label": "Patch",
-    "items": [
-      {
-        "type": "Fixed",
-        "text": "Layering UI: topbar/dropdown/modal/toast kini memakai skala z-index token agar tidak saling menutup"
-      },
-      {
-        "type": "Changed",
-        "text": "Release Update (What's New) disinkronkan ke versi 2.2.23"
-      },
-      {
-        "type": "Changed",
-        "text": "Sync package @keiryusaki/mitreka-ui v2.2.23 ke mockup vendor dist"
-      }
-    ],
-    "assets": []
-  },
-  {
-    "version": "2.2.21",
-    "date": "2026-02-18",
-    "label": "Patch",
-    "items": [
-      {
-        "type": "Added",
-        "text": "Utility global .join + .join-item di CSS komponen untuk segmented controls reusable (button/select/input dan kombinasi mixed controls)"
-      },
-      {
-        "type": "Changed",
-        "text": "Starter pack: refactor kontrol segmented agar pakai utility join global (hapus style scoped lokal)"
-      },
-      {
-        "type": "Changed",
-        "text": "Sync package @keiryusaki/mitreka-ui v2.2.21 ke mockup vendor dist"
-      }
-    ],
-    "assets": []
-  },
-  {
-    "version": "2.2.20",
-    "date": "2026-02-18",
-    "label": "Patch",
-    "items": [
-      {
-        "type": "Fixed",
-        "text": "CSS Select caret SVG data URI di mockup.css di-escape/encode untuk kompatibilitas parser Tailwind v4 (menghindari error 'Unterminated string')"
-      },
-      {
-        "type": "Changed",
-        "text": "Sync package @keiryusaki/mitreka-ui v2.2.20 ke mockup vendor dist"
-      }
-    ],
-    "assets": []
-  },
-  {
-    "version": "2.2.19",
-    "date": "2026-02-18",
-    "label": "Patch",
-    "items": [
-      {
-        "type": "Fixed",
-        "text": "AG Grid (AgGridSurface): auto-height vs normal-height kini dihitung ulang setelah first data render agar threshold row selalu akurat"
-      },
-      {
-        "type": "Added",
-        "text": "AG Grid Dev Guide: dokumentasi parameter autoHeightWhenFewRows, autoHeightThreshold, normalLayoutHeight, dan pola pemisah kolom per bulan"
-      },
-      {
-        "type": "Changed",
-        "text": "Sync package @keiryusaki/mitreka-ui v2.2.19 ke mockup vendor dist"
-      }
-    ],
-    "assets": []
-  },
-  {
-    "version": "2.2.18",
-    "date": "2026-02-16",
-    "label": "Patch",
-    "items": [
-      {
-        "type": "Added",
-        "text": "Theme Builder documentation page untuk panduan implementasi tema di aplikasi consumer",
-        "href": "/theme-builder-docs"
-      },
-      {
-        "type": "Changed",
-        "text": "Theme Builder: perbaikan alur preset/live preview, mode selector topbar, dan sinkronisasi token (layout/sidebar/link/radius)"
-      },
-      {
-        "type": "Fixed",
-        "text": "Sidebar navigation active-state matcher kini berbasis path segment (menghindari double active pada /theme-builder-docs dan /button-usage)"
-      },
-      {
-        "type": "Changed",
-        "text": "Sync package @keiryusaki/mitreka-ui v2.2.18 ke mockup vendor dist"
-      },
-      {
-        "type": "Added",
-        "text": "AG Grid Dev Guide: dokumentasi parameter auto height threshold/normal layout height + pola pemisah kolom per bulan"
-      }
-    ],
-    "assets": []
-  },
-  {
-    "version": "2.2.17",
-    "date": "2026-02-13",
-    "label": "Patch",
-    "items": [
-      {
-        "type": "Changed",
-        "text": "AG Grid: density header/global row height disatukan di AgGridSurface (compact/cozy/spacious)"
-      },
-      {
-        "type": "Added",
-        "text": "AG Grid: auto height global saat row sedikit (default threshold < 15) dengan opsi override manual per page"
-      },
-      {
-        "type": "Fixed",
-        "text": "Project Cashflow & Budget Plan: perbaikan ruang kosong internal/eksternal tabel saat auto height aktif"
-      },
-      {
-        "type": "Changed",
-        "text": "Sync package @keiryusaki/mitreka-ui v2.2.17 ke mockup vendor dist"
-      }
-    ],
-    "assets": []
-  },
-  {
-    "version": "2.2.14",
-    "date": "2026-02-09",
-    "label": "Patch",
-    "items": [
-      {
-        "type": "Added",
-        "text": "Badge size baru: .badge-xxs untuk use case tabel/space ketat"
-      },
-      {
-        "type": "Added",
-        "text": "Utility .badge-inline untuk alignment badge di inline text"
-      },
-      {
-        "type": "Changed",
-        "text": "AG Grid demo: status badge pakai size xxs + inline alignment"
-      }
-    ],
-    "assets": []
-  },
-  {
-    "version": "2.2.13",
-    "date": "2026-02-06",
-    "label": "Patch",
-    "items": [
-      {
-        "type": "Added",
-        "text": "AG Grid helper: auto row height by font size (useAgGridRowHeight)"
-      },
-      {
-        "type": "Changed",
-        "text": "AG Grid demo: density + auto height tuned, status badge column example"
-      },
-      {
-        "type": "Changed",
-        "text": "Publish mitreka-ui v2.2.13"
-      }
-    ],
-    "assets": []
-  },
-  {
-    "version": "2.2.4",
-    "date": "2026-02-04",
-    "label": "Patch",
-    "items": [
-      {
-        "type": "Changed",
-        "text": "Sync CSS mitreka-ui v2.2.4 (base, components, plugins)"
-      },
-      {
-        "type": "Added",
-        "text": "AG Grid compare rows helper + theme overlay via mitreka-ui"
-      }
-    ],
-    "assets": []
-  },
-  {
-    "version": "2.2.2",
-    "date": "2026-01-27",
-    "label": "Patch",
-    "items": [
-      {
-        "type": "Fixed",
-        "text": "Tooltip arrow kembali segitiga (perbaikan styling variant pada tooltip content)"
-      },
-      {
-        "type": "Changed",
-        "text": "Sync tooltip CSS dengan mitreka-ui v2.2.2"
-      }
-    ],
-    "assets": []
-  },
-  {
-    "version": "2.2.1",
-    "date": "2026-01-27",
-    "label": "Patch",
-    "items": [
-      {
-        "type": "Fixed",
-        "text": "LoadingLogo/LoadingOverlay animasi kembali normal setelah CSS komponen diimport di library"
-      },
-      {
-        "type": "Changed",
-        "text": "Loading styles dipindah ke CSS components agar konsisten antara mockup dan mitreka-ui"
-      }
-    ],
-    "assets": []
-  },
-   {
-     "version": "2.2.0",
-     "date": "2026-01-02",
-     "label": "Feature",
-     "items": [
-       { "type": "Added", "text": "Tabs Component - variants: basic, pills, bordered, vertical", "href": "/tabs" },
-       { "type": "Added", "text": "Progress & Steps Component - vertical/horizontal steps, progress bars", "href": "/progress" },
-       { "type": "Added", "text": "Timeline Component - activity feed, compact timeline", "href": "/timeline" },
-       { "type": "Added", "text": "FileUpload Component - dropzone, image preview, multiple selection", "href": "/file-upload" },
-       { "type": "Added", "text": "Skeleton Component - loading placeholders", "href": "/skeleton" },
-       { "type": "Added", "text": "Alert & Banner Component - update styles, color variables integration", "href": "/alert" },
-       { "type": "Added", "text": "Library components synced to mitreka-ui: LoadingLogo, Toasts, Tooltip, Pagination, Avatar, Breadcrumbs, StatCard, PageHeader, ThemeSwitcher, Sidebar" },
-       { "type": "Added", "text": "Icon registry centralized in mitreka-ui for consistent usage" },
-       { "type": "Fixed", "text": "Vertical Steps styling issue (connecting line)" },
-       { "type": "Changed", "text": "Alert colors updated to use global theme variables (color-mix)" },
-       { "type": "Changed", "text": "File Input styling improvement (vertical align, consistent button)" },
-       { "type": "Added", "text": "New Icons: truck, upload, file, image, x-circle, megaphone, chat" }
-     ],
-     "assets": []
-   },
-  {
-    "version": "2.1.0",
-    "date": "2025-12-30",
-    "label": "Feature",
-    "items": [
-      {
-        "type": "Added",
-        "text": "LoadingLogo Component - animasi dots morph ke logo dengan text support",
-        "href": "/loading"
-      },
-      {
-        "type": "Added",
-        "text": "Icon Button System - variants: solid, soft, ghost dengan sizes xs/sm/md/lg",
-        "href": "/buttons"
-      },
-      {
-        "type": "Added",
-        "text": "Icons baru: info, alert-triangle"
-      },
-      {
-        "type": "Changed",
-        "text": "Sidebar Navigation - hover states, Discord-style active indicator, custom scrollbar"
-      },
-      {
-        "type": "Changed",
-        "text": "LoadingOverlay - glass effect dengan backdrop blur, hold 1.5 detik"
-      },
-      {
-        "type": "Changed",
-        "text": "Icon rename: edit → pencil, delete → trash"
-      },
-      {
-        "type": "Fixed",
-        "text": "CSS specificity issues pada button variants di dark mode"
-      }
-    ],
-    "assets": [
-      { "name": "tailwind.css (2.1)", "href": "/releases/tailwind/tailwind.v2.1.css" }
-    ]
-  },
-  {
-    "version": "2.0.0",
-    "date": "2025-12-18",
-    "label": "Major",
-    "items": [
-      {
-        "type": "Breaking",
-        "text": "Migrasi ke @keiryusaki/mitreka-ui package (GitHub Packages)"
-      },
-      {
-        "type": "Added",
-        "text": "DevGuide lengkap dengan code snippets dan copy button",
-        "href": "/dev-guide"
-      },
-      {
-        "type": "Added",
-        "text": "Vue Components: Button, Badge, Card, Modal"
-      },
-      {
-        "type": "Added",
-        "text": "Composables: useTheme, useSelectSingle"
-      },
-      {
-        "type": "Added",
-        "text": "AG Grid theme integration"
-      },
-      {
-        "type": "Changed",
-        "text": "CSS sekarang diimport via npm package, bukan download manual"
-      },
-      {
-        "type": "Docs",
-        "text": "Update README dengan installation guide GitHub Packages"
-      }
-    ],
-    "assets": []
-  },
-  {
-    "version": "1.1.0",
-    "date": "2025-11-05",
-    "label": "Stable",
-    "items": [
-      {
-        "type": "Changed",
-        "text": "Update tailwind.css ke v1.1 (token + tweaks warna)"
-      },
-      { "type": "Added", "text": "Komponen Icon", "href": "/icon" },
-      {
-        "type": "Added",
-        "text": "Komponen Select Option",
-        "href": "/SelectOption"
-      }
-    ],
-    "assets": [
-      { "name": "latest.css", "href": "/releases/tailwind/latest.css" }
-    ]
-  },
-  {
-    "version": "1.0.0",
-    "date": "2025-11-03",
-    "label": "Stable",
-    "items": [
-      { "type": "Docs", "text": "Rilis awal style base + tailwind.css v1.0" },
-      { "type": "Added", "text": "CSS Components: Button, Input, Badge, Card, Alert, Select, Switch, Table" },
-      { "type": "Added", "text": "Theme support: mitrekalight, mitrekadark" }
-    ],
-    "assets": [
-      {
-        "name": "tailwind.css (1.0)",
-        "href": "/releases/tailwind/tailwind.v1.0.css"
-      }
-    ]
-  }
+    {
+        "version":  "2.2.41",
+        "date":  "2026-03-30",
+        "label":  "Patch",
+        "items":  [
+                      {
+                          "type":  "Fixed",
+                          "text":  "SelectInput (search + chevron) kini stabil saat dipakai di dalam modal/teleport."
+                      },
+                      {
+                          "type":  "Fixed",
+                          "text":  "MultiSelect di modal kini langsung menampilkan status selected pada dropdown tanpa perlu dismiss/reopen."
+                      },
+                      {
+                          "type":  "Changed",
+                          "text":  "Sinkronisasi package @keiryusaki/mitreka-ui v2.2.41 dan update mockup Methodology Processes (RACI UX + aksi clear internal MultiSelect)."
+                      }
+                  ],
+        "assets":  [
+
+                   ]
+    },
+    {
+        "version":  "2.2.40",
+        "date":  "2026-03-26",
+        "label":  "Patch",
+        "items":  [
+                      {
+                          "type":  "Fixed",
+                          "text":  "Komponen Collapse diubah ke root class .collapse-card (beserta varian .collapse-card-borderless/.collapse-card-ghost) untuk menghindari bentrok utility Tailwind .collapse."
+                      },
+                      {
+                          "type":  "Changed",
+                          "text":  "Dokumentasi halaman Collapse diselaraskan ke class baru .collapse-card dan override lokal sementara dihapus."
+                      },
+                      {
+                          "type":  "Added",
+                          "text":  "DateTimePicker menambahkan trailing icon bawaan di sisi kanan input (kalender/jam) agar affordance field picker lebih jelas."
+                      },
+                      {
+                          "type":  "Changed",
+                          "text":  "Sync package @keiryusaki/mitreka-ui v2.2.40 ke mockup vendor dist."
+                      }
+                  ],
+        "assets":  [
+
+                   ]
+    },
+    {
+        "version":  "2.2.39",
+        "date":  "2026-03-25",
+        "label":  "Patch",
+        "items":  [
+                      {
+                          "type":  "Added",
+                          "text":  "Penambahan ikon file/action/navigation yang sering dipakai: ppt, txt, archive, circle-arrow, arrow directions, redo/undo variants, dan lainnya."
+                      },
+                      {
+                          "type":  "Fixed",
+                          "text":  "Mapping FileUpload diperluas untuk deteksi icon file: PDF, XLS/XLSX, CSV, DOC/DOCX, PPT/PPTX, TXT, serta archive (zip/rar/7z/tar/gz)."
+                      },
+                      {
+                          "type":  "Changed",
+                          "text":  "Sync package @keiryusaki/mitreka-ui v2.2.39 ke mockup vendor dist."
+                      }
+                  ],
+        "assets":  [
+
+                   ]
+    },
+    {
+        "version":  "2.2.36",
+        "date":  "2026-03-16",
+        "label":  "Patch",
+        "items":  [
+                      {
+                          "type":  "Added",
+                          "text":  "Komponen Vue FileUpload kini tersedia di package mitreka-ui dengan dukungan drag-and-drop, v-model File[], image preview, remove action, dan batas maxFiles"
+                      },
+                      {
+                          "type":  "Added",
+                          "text":  "Dokumentasi File Upload diperbarui dengan usage snippet serta tabel API props/events pada halaman komponen"
+                      },
+                      {
+                          "type":  "Changed",
+                          "text":  "Sync package @keiryusaki/mitreka-ui v2.2.36 ke mockup vendor dist"
+                      }
+                  ],
+        "assets":  [
+
+                   ]
+    },
+    {
+        "version":  "2.2.35",
+        "date":  "2026-03-10",
+        "label":  "Patch",
+        "items":  [
+                      {
+                          "type":  "Fixed",
+                          "text":  "DateTimePicker: nilai tanggal terpilih kini tampil konsisten di trigger input untuk mode single date dan date range"
+                      },
+                      {
+                          "type":  "Added",
+                          "text":  "DateTimePicker menambah prop clearable untuk menghapus value langsung dari trigger (single, range, dan year-grid)"
+                      },
+                      {
+                          "type":  "Changed",
+                          "text":  "Sync package @keiryusaki/mitreka-ui v2.2.35 ke mockup vendor dist"
+                      }
+                  ],
+        "assets":  [
+
+                   ]
+    },
+    {
+        "version":  "2.2.34",
+        "date":  "2026-03-09",
+        "label":  "Patch",
+        "items":  [
+                      {
+                          "type":  "Fixed",
+                          "text":  "DateTimePicker month picker kini benar-benar month-only (tanpa konteks tahun di popup) untuk use case pemilihan bulan tunggal"
+                      },
+                      {
+                          "type":  "Added",
+                          "text":  "DateTimePicker menambah dukungan format bulan fleksibel melalui dateFormat/displayFormat: angka (m), singkatan (M), dan nama bulan penuh (F)"
+                      },
+                      {
+                          "type":  "Fixed",
+                          "text":  "DateTimePicker year-grid: nilai tahun terpilih kini tampil konsisten di trigger input"
+                      },
+                      {
+                          "type":  "Changed",
+                          "text":  "Sync package @keiryusaki/mitreka-ui v2.2.34 ke mockup vendor dist"
+                      }
+                  ],
+        "assets":  [
+
+                   ]
+    },
+    {
+        "version":  "2.2.33",
+        "date":  "2026-03-09",
+        "label":  "Patch",
+        "items":  [
+                      {
+                          "type":  "Fixed",
+                          "text":  "MultiSelect: stabilisasi checklist terpilih lintas environment/browser dengan normalisasi pembanding value string/number"
+                      },
+                      {
+                          "type":  "Changed",
+                          "text":  "Select overlay di dalam modal ditingkatkan agar positioning lebih konsisten untuk kasus field dekat batas viewport"
+                      },
+                      {
+                          "type":  "Added",
+                          "text":  "Ikon export file baru (PDF/XLS/CSV) dengan keterbacaan label lebih jelas pada ukuran tombol compact"
+                      },
+                      {
+                          "type":  "Changed",
+                          "text":  "Sync package @keiryusaki/mitreka-ui v2.2.33 ke mockup vendor dist"
+                      }
+                  ],
+        "assets":  [
+
+                   ]
+    },
+    {
+        "version":  "2.2.32",
+        "date":  "2026-03-05",
+        "label":  "Patch",
+        "items":  [
+                      {
+                          "type":  "Fixed",
+                          "text":  "MultiSelect: mode inline-compact kini stabil pada layout filter 1 baris dengan overflow chip +N, close chip lebih compact, dan dropdown hover kembali terlihat"
+                      },
+                      {
+                          "type":  "Fixed",
+                          "text":  "MultiSelect: label placeholder di mode inline-compact kembali tampil di sisi kiri, sementara chip tetap di area tengah dan mode stacked tetap chips di atas"
+                      },
+                      {
+                          "type":  "Changed",
+                          "text":  "MultiSelect sizing diselaraskan untuk semua size (xs-xl), termasuk mapping tinggi search input per size dan tipografi/checkbox item dropdown"
+                      },
+                      {
+                          "type":  "Changed",
+                          "text":  "Dokumentasi SelectOption diperbarui dengan 2 contoh MultiSelect (inline-compact dan stacked) serta props reference display-mode"
+                      },
+                      {
+                          "type":  "Changed",
+                          "text":  "Sync package @keiryusaki/mitreka-ui v2.2.32 ke mockup vendor dist"
+                      }
+                  ],
+        "assets":  [
+
+                   ]
+    },
+    {
+        "version":  "2.2.30",
+        "date":  "2026-03-05",
+        "label":  "Patch",
+        "items":  [
+                      {
+                          "type":  "Fixed",
+                          "text":  "MultiSelect tidak lagi overlap saat banyak chip dipilih, termasuk pada ukuran sm"
+                      },
+                      {
+                          "type":  "Changed",
+                          "text":  "Sync package @keiryusaki/mitreka-ui v2.2.30 ke mockup vendor dist"
+                      }
+                  ],
+        "assets":  [
+
+                   ]
+    },
+    {
+        "version":  "2.2.29",
+        "date":  "2026-03-02",
+        "label":  "Patch",
+        "items":  [
+                      {
+                          "type":  "Fixed",
+                          "text":  "Global Icon wrapper di package tidak lagi mewarisi class transform/size, sehingga icon chevron tidak double-rotate pada SidebarElegant"
+                      },
+                      {
+                          "type":  "Changed",
+                          "text":  "Sync package @keiryusaki/mitreka-ui v2.2.29 ke mockup vendor dist"
+                      }
+                  ],
+        "assets":  [
+
+                   ]
+    },
+    {
+        "version":  "2.2.28",
+        "date":  "2026-03-02",
+        "label":  "Patch",
+        "items":  [
+                      {
+                          "type":  "Fixed",
+                          "text":  "Toast layering: token --z-toast dinaikkan jadi 950 agar toast selalu tampil di atas modal/backdrop, termasuk modal fullscreen"
+                      },
+                      {
+                          "type":  "Changed",
+                          "text":  "Modal DS disinkronkan ke token layering (--z-modal-backdrop/--z-modal) dan tidak lagi hardcoded z-40/z-50"
+                      },
+                      {
+                          "type":  "Changed",
+                          "text":  "Sync package @keiryusaki/mitreka-ui v2.2.28 ke mockup vendor dist"
+                      }
+                  ],
+        "assets":  [
+
+                   ]
+    },
+    {
+        "version":  "2.2.27",
+        "date":  "2026-02-28",
+        "label":  "Patch",
+        "items":  [
+                      {
+                          "type":  "Added",
+                          "text":  "Komponen SelectDropdown, SelectInput, dan MultiSelect resmi tersedia di package @keiryusaki/mitreka-ui/vue"
+                      },
+                      {
+                          "type":  "Fixed",
+                          "text":  "SelectInput: dropdown kini bisa langsung dibuka ulang saat input diklik tanpa perlu blur dulu"
+                      },
+                      {
+                          "type":  "Changed",
+                          "text":  "Sinkronisasi penuh CSS DS ke package (base + mockup) dan publish @keiryusaki/mitreka-ui v2.2.26 -\u003e v2.2.27"
+                      },
+                      {
+                          "type":  "Changed",
+                          "text":  "Starter pack flow diperjelas: source clean di staging-starter-pack, sandbox test di mitreka-consumer-test-ds"
+                      }
+                  ],
+        "assets":  [
+
+                   ]
+    },
+    {
+        "version":  "2.2.24",
+        "date":  "2026-02-20",
+        "label":  "Patch",
+        "items":  [
+                      {
+                          "type":  "Added",
+                          "text":  "Textarea input component untuk kebutuhan field pesan multi-baris + dokumentasi varian resize (default, both, vertical, horizontal)"
+                      },
+                      {
+                          "type":  "Changed",
+                          "text":  "Topbar apps/account dropdown: quick access Finance App \u0026 Sales App + logout action"
+                      },
+                      {
+                          "type":  "Changed",
+                          "text":  "Sync package @keiryusaki/mitreka-ui v2.2.24 ke mockup vendor dist"
+                      }
+                  ],
+        "assets":  [
+
+                   ]
+    },
+    {
+        "version":  "2.2.23",
+        "date":  "2026-02-19",
+        "label":  "Patch",
+        "items":  [
+                      {
+                          "type":  "Fixed",
+                          "text":  "Layering UI: topbar/dropdown/modal/toast kini memakai skala z-index token agar tidak saling menutup"
+                      },
+                      {
+                          "type":  "Changed",
+                          "text":  "Release Update (What\u0027s New) disinkronkan ke versi 2.2.23"
+                      },
+                      {
+                          "type":  "Changed",
+                          "text":  "Sync package @keiryusaki/mitreka-ui v2.2.23 ke mockup vendor dist"
+                      }
+                  ],
+        "assets":  [
+
+                   ]
+    },
+    {
+        "version":  "2.2.21",
+        "date":  "2026-02-18",
+        "label":  "Patch",
+        "items":  [
+                      {
+                          "type":  "Added",
+                          "text":  "Utility global .join + .join-item di CSS komponen untuk segmented controls reusable (button/select/input dan kombinasi mixed controls)"
+                      },
+                      {
+                          "type":  "Changed",
+                          "text":  "Starter pack: refactor kontrol segmented agar pakai utility join global (hapus style scoped lokal)"
+                      },
+                      {
+                          "type":  "Changed",
+                          "text":  "Sync package @keiryusaki/mitreka-ui v2.2.21 ke mockup vendor dist"
+                      }
+                  ],
+        "assets":  [
+
+                   ]
+    },
+    {
+        "version":  "2.2.20",
+        "date":  "2026-02-18",
+        "label":  "Patch",
+        "items":  [
+                      {
+                          "type":  "Fixed",
+                          "text":  "CSS Select caret SVG data URI di mockup.css di-escape/encode untuk kompatibilitas parser Tailwind v4 (menghindari error \u0027Unterminated string\u0027)"
+                      },
+                      {
+                          "type":  "Changed",
+                          "text":  "Sync package @keiryusaki/mitreka-ui v2.2.20 ke mockup vendor dist"
+                      }
+                  ],
+        "assets":  [
+
+                   ]
+    },
+    {
+        "version":  "2.2.19",
+        "date":  "2026-02-18",
+        "label":  "Patch",
+        "items":  [
+                      {
+                          "type":  "Fixed",
+                          "text":  "AG Grid (AgGridSurface): auto-height vs normal-height kini dihitung ulang setelah first data render agar threshold row selalu akurat"
+                      },
+                      {
+                          "type":  "Added",
+                          "text":  "AG Grid Dev Guide: dokumentasi parameter autoHeightWhenFewRows, autoHeightThreshold, normalLayoutHeight, dan pola pemisah kolom per bulan"
+                      },
+                      {
+                          "type":  "Changed",
+                          "text":  "Sync package @keiryusaki/mitreka-ui v2.2.19 ke mockup vendor dist"
+                      }
+                  ],
+        "assets":  [
+
+                   ]
+    },
+    {
+        "version":  "2.2.18",
+        "date":  "2026-02-16",
+        "label":  "Patch",
+        "items":  [
+                      {
+                          "type":  "Added",
+                          "text":  "Theme Builder documentation page untuk panduan implementasi tema di aplikasi consumer",
+                          "href":  "/theme-builder-docs"
+                      },
+                      {
+                          "type":  "Changed",
+                          "text":  "Theme Builder: perbaikan alur preset/live preview, mode selector topbar, dan sinkronisasi token (layout/sidebar/link/radius)"
+                      },
+                      {
+                          "type":  "Fixed",
+                          "text":  "Sidebar navigation active-state matcher kini berbasis path segment (menghindari double active pada /theme-builder-docs dan /button-usage)"
+                      },
+                      {
+                          "type":  "Changed",
+                          "text":  "Sync package @keiryusaki/mitreka-ui v2.2.18 ke mockup vendor dist"
+                      },
+                      {
+                          "type":  "Added",
+                          "text":  "AG Grid Dev Guide: dokumentasi parameter auto height threshold/normal layout height + pola pemisah kolom per bulan"
+                      }
+                  ],
+        "assets":  [
+
+                   ]
+    },
+    {
+        "version":  "2.2.17",
+        "date":  "2026-02-13",
+        "label":  "Patch",
+        "items":  [
+                      {
+                          "type":  "Changed",
+                          "text":  "AG Grid: density header/global row height disatukan di AgGridSurface (compact/cozy/spacious)"
+                      },
+                      {
+                          "type":  "Added",
+                          "text":  "AG Grid: auto height global saat row sedikit (default threshold \u003c 15) dengan opsi override manual per page"
+                      },
+                      {
+                          "type":  "Fixed",
+                          "text":  "Project Cashflow \u0026 Budget Plan: perbaikan ruang kosong internal/eksternal tabel saat auto height aktif"
+                      },
+                      {
+                          "type":  "Changed",
+                          "text":  "Sync package @keiryusaki/mitreka-ui v2.2.17 ke mockup vendor dist"
+                      }
+                  ],
+        "assets":  [
+
+                   ]
+    },
+    {
+        "version":  "2.2.14",
+        "date":  "2026-02-09",
+        "label":  "Patch",
+        "items":  [
+                      {
+                          "type":  "Added",
+                          "text":  "Badge size baru: .badge-xxs untuk use case tabel/space ketat"
+                      },
+                      {
+                          "type":  "Added",
+                          "text":  "Utility .badge-inline untuk alignment badge di inline text"
+                      },
+                      {
+                          "type":  "Changed",
+                          "text":  "AG Grid demo: status badge pakai size xxs + inline alignment"
+                      }
+                  ],
+        "assets":  [
+
+                   ]
+    },
+    {
+        "version":  "2.2.13",
+        "date":  "2026-02-06",
+        "label":  "Patch",
+        "items":  [
+                      {
+                          "type":  "Added",
+                          "text":  "AG Grid helper: auto row height by font size (useAgGridRowHeight)"
+                      },
+                      {
+                          "type":  "Changed",
+                          "text":  "AG Grid demo: density + auto height tuned, status badge column example"
+                      },
+                      {
+                          "type":  "Changed",
+                          "text":  "Publish mitreka-ui v2.2.13"
+                      }
+                  ],
+        "assets":  [
+
+                   ]
+    },
+    {
+        "version":  "2.2.4",
+        "date":  "2026-02-04",
+        "label":  "Patch",
+        "items":  [
+                      {
+                          "type":  "Changed",
+                          "text":  "Sync CSS mitreka-ui v2.2.4 (base, components, plugins)"
+                      },
+                      {
+                          "type":  "Added",
+                          "text":  "AG Grid compare rows helper + theme overlay via mitreka-ui"
+                      }
+                  ],
+        "assets":  [
+
+                   ]
+    },
+    {
+        "version":  "2.2.2",
+        "date":  "2026-01-27",
+        "label":  "Patch",
+        "items":  [
+                      {
+                          "type":  "Fixed",
+                          "text":  "Tooltip arrow kembali segitiga (perbaikan styling variant pada tooltip content)"
+                      },
+                      {
+                          "type":  "Changed",
+                          "text":  "Sync tooltip CSS dengan mitreka-ui v2.2.2"
+                      }
+                  ],
+        "assets":  [
+
+                   ]
+    },
+    {
+        "version":  "2.2.1",
+        "date":  "2026-01-27",
+        "label":  "Patch",
+        "items":  [
+                      {
+                          "type":  "Fixed",
+                          "text":  "LoadingLogo/LoadingOverlay animasi kembali normal setelah CSS komponen diimport di library"
+                      },
+                      {
+                          "type":  "Changed",
+                          "text":  "Loading styles dipindah ke CSS components agar konsisten antara mockup dan mitreka-ui"
+                      }
+                  ],
+        "assets":  [
+
+                   ]
+    },
+    {
+        "version":  "2.2.0",
+        "date":  "2026-01-02",
+        "label":  "Feature",
+        "items":  [
+                      {
+                          "type":  "Added",
+                          "text":  "Tabs Component - variants: basic, pills, bordered, vertical",
+                          "href":  "/tabs"
+                      },
+                      {
+                          "type":  "Added",
+                          "text":  "Progress \u0026 Steps Component - vertical/horizontal steps, progress bars",
+                          "href":  "/progress"
+                      },
+                      {
+                          "type":  "Added",
+                          "text":  "Timeline Component - activity feed, compact timeline",
+                          "href":  "/timeline"
+                      },
+                      {
+                          "type":  "Added",
+                          "text":  "FileUpload Component - dropzone, image preview, multiple selection",
+                          "href":  "/file-upload"
+                      },
+                      {
+                          "type":  "Added",
+                          "text":  "Skeleton Component - loading placeholders",
+                          "href":  "/skeleton"
+                      },
+                      {
+                          "type":  "Added",
+                          "text":  "Alert \u0026 Banner Component - update styles, color variables integration",
+                          "href":  "/alert"
+                      },
+                      {
+                          "type":  "Added",
+                          "text":  "Library components synced to mitreka-ui: LoadingLogo, Toasts, Tooltip, Pagination, Avatar, Breadcrumbs, StatCard, PageHeader, ThemeSwitcher, Sidebar"
+                      },
+                      {
+                          "type":  "Added",
+                          "text":  "Icon registry centralized in mitreka-ui for consistent usage"
+                      },
+                      {
+                          "type":  "Fixed",
+                          "text":  "Vertical Steps styling issue (connecting line)"
+                      },
+                      {
+                          "type":  "Changed",
+                          "text":  "Alert colors updated to use global theme variables (color-mix)"
+                      },
+                      {
+                          "type":  "Changed",
+                          "text":  "File Input styling improvement (vertical align, consistent button)"
+                      },
+                      {
+                          "type":  "Added",
+                          "text":  "New Icons: truck, upload, file, image, x-circle, megaphone, chat"
+                      }
+                  ],
+        "assets":  [
+
+                   ]
+    },
+    {
+        "version":  "2.1.0",
+        "date":  "2025-12-30",
+        "label":  "Feature",
+        "items":  [
+                      {
+                          "type":  "Added",
+                          "text":  "LoadingLogo Component - animasi dots morph ke logo dengan text support",
+                          "href":  "/loading"
+                      },
+                      {
+                          "type":  "Added",
+                          "text":  "Icon Button System - variants: solid, soft, ghost dengan sizes xs/sm/md/lg",
+                          "href":  "/buttons"
+                      },
+                      {
+                          "type":  "Added",
+                          "text":  "Icons baru: info, alert-triangle"
+                      },
+                      {
+                          "type":  "Changed",
+                          "text":  "Sidebar Navigation - hover states, Discord-style active indicator, custom scrollbar"
+                      },
+                      {
+                          "type":  "Changed",
+                          "text":  "LoadingOverlay - glass effect dengan backdrop blur, hold 1.5 detik"
+                      },
+                      {
+                          "type":  "Changed",
+                          "text":  "Icon rename: edit → pencil, delete → trash"
+                      },
+                      {
+                          "type":  "Fixed",
+                          "text":  "CSS specificity issues pada button variants di dark mode"
+                      }
+                  ],
+        "assets":  [
+                       {
+                           "name":  "tailwind.css (2.1)",
+                           "href":  "/releases/tailwind/tailwind.v2.1.css"
+                       }
+                   ]
+    },
+    {
+        "version":  "2.0.0",
+        "date":  "2025-12-18",
+        "label":  "Major",
+        "items":  [
+                      {
+                          "type":  "Breaking",
+                          "text":  "Migrasi ke @keiryusaki/mitreka-ui package (GitHub Packages)"
+                      },
+                      {
+                          "type":  "Added",
+                          "text":  "DevGuide lengkap dengan code snippets dan copy button",
+                          "href":  "/dev-guide"
+                      },
+                      {
+                          "type":  "Added",
+                          "text":  "Vue Components: Button, Badge, Card, Modal"
+                      },
+                      {
+                          "type":  "Added",
+                          "text":  "Composables: useTheme, useSelectSingle"
+                      },
+                      {
+                          "type":  "Added",
+                          "text":  "AG Grid theme integration"
+                      },
+                      {
+                          "type":  "Changed",
+                          "text":  "CSS sekarang diimport via npm package, bukan download manual"
+                      },
+                      {
+                          "type":  "Docs",
+                          "text":  "Update README dengan installation guide GitHub Packages"
+                      }
+                  ],
+        "assets":  [
+
+                   ]
+    },
+    {
+        "version":  "1.1.0",
+        "date":  "2025-11-05",
+        "label":  "Stable",
+        "items":  [
+                      {
+                          "type":  "Changed",
+                          "text":  "Update tailwind.css ke v1.1 (token + tweaks warna)"
+                      },
+                      {
+                          "type":  "Added",
+                          "text":  "Komponen Icon",
+                          "href":  "/icon"
+                      },
+                      {
+                          "type":  "Added",
+                          "text":  "Komponen Select Option",
+                          "href":  "/SelectOption"
+                      }
+                  ],
+        "assets":  [
+                       {
+                           "name":  "latest.css",
+                           "href":  "/releases/tailwind/latest.css"
+                       }
+                   ]
+    },
+    {
+        "version":  "1.0.0",
+        "date":  "2025-11-03",
+        "label":  "Stable",
+        "items":  [
+                      {
+                          "type":  "Docs",
+                          "text":  "Rilis awal style base + tailwind.css v1.0"
+                      },
+                      {
+                          "type":  "Added",
+                          "text":  "CSS Components: Button, Input, Badge, Card, Alert, Select, Switch, Table"
+                      },
+                      {
+                          "type":  "Added",
+                          "text":  "Theme support: mitrekalight, mitrekadark"
+                      }
+                  ],
+        "assets":  [
+                       {
+                           "name":  "tailwind.css (1.0)",
+                           "href":  "/releases/tailwind/tailwind.v1.0.css"
+                       }
+                   ]
+    }
 ]

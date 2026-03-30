@@ -23,23 +23,23 @@ const props = withDefaults(
 );
 const emit = defineEmits(["update:modelValue", "change"]);
 
-const model = ref<Array<string | number>>(props.modelValue ?? []);
-watch(
-  () => props.modelValue,
-  (v) => (model.value = v ?? [])
-);
-watch(model, (v) => emit("update:modelValue", v));
+const model = computed<Array<string | number>>({
+  get: () => props.modelValue ?? [],
+  set: (v) => emit("update:modelValue", v ?? []),
+});
 
 const {
   root,
   inputEl,
   menu,
+  floating,
   open,
   query,
   loading,
   filtered,
   selectedList,
   openMenu,
+  closeMenu,
   toggle,
   clearAll,
   onKey,
@@ -165,6 +165,9 @@ const sortedFiltered = computed(() => {
     return collator.compare(a.label, b.label);
   });
 });
+const selectionRenderKey = computed(() =>
+  model.value.map((v) => String(v)).sort().join("|")
+);
 
 const chipViewport = ref<HTMLElement | null>(null);
 const measureCounterEl = ref<HTMLElement | null>(null);
@@ -267,6 +270,43 @@ const onViewportChange = (evt?: Event) => {
   updateMenuPosition();
 };
 
+function setDropdownRef(el: unknown) {
+  const htmlEl = el instanceof HTMLElement ? (el as HTMLDivElement) : null;
+  dropdownRef.value = htmlEl;
+  floating.value = htmlEl;
+}
+
+function openDropdown() {
+  if (props.disabled) return;
+  openMenu();
+  nextTick(updateMenuPosition);
+}
+
+function onSearchFocus() {
+  if (props.disabled) return;
+  open.value = true;
+  nextTick(updateMenuPosition);
+}
+
+function toggleDropdown() {
+  if (props.disabled) return;
+  if (open.value) {
+    closeMenu();
+    return;
+  }
+  openMenu();
+  nextTick(updateMenuPosition);
+}
+
+function clearAllAndKeepOpen() {
+  clearAll();
+  openDropdown();
+}
+
+function swallowClick() {
+  // Keep click from bubbling to shell trigger after mousedown handlers run.
+}
+
 async function scheduleInlineRecalc() {
   await nextTick();
   recalcInlineVisibleChips();
@@ -331,7 +371,7 @@ onBeforeUnmount(() => {
         shellMinHeightClass[size || 'md'],
         disabled ? 'opacity-60 pointer-events-none' : '',
       ]"
-      @click="openMenu"
+      @click="openDropdown"
     >
       <template v-if="displayModeClass === 'inline-compact'">
         <span :class="['opacity-60 min-w-0 shrink-0 max-w-[12ch] truncate', placeholderTextClass[size || 'md']]">{{
@@ -380,14 +420,15 @@ onBeforeUnmount(() => {
             :style="inlineSearchStyle"
             placeholder="Search..."
             @keydown="onKey"
-            @focus="open = true; nextTick(updateMenuPosition)"
+            @focus="onSearchFocus"
           />
         </span>
 
         <button
           type="button"
           :class="['icon-btn icon-btn-outline shrink-0', iconBtnSizeClass[size || 'md']]"
-          @click.stop="open = !open; nextTick(updateMenuPosition)"
+          @mousedown.prevent.stop="toggleDropdown"
+          @click.stop="swallowClick"
         >
           <Icon :name="open ? 'chevron-up' : 'chevron-down'" class="w-4 h-4" />
         </button>
@@ -395,7 +436,8 @@ onBeforeUnmount(() => {
           v-if="selectedList.length"
           type="button"
           :class="['icon-btn icon-btn-outline shrink-0', iconBtnSizeClass[size || 'md']]"
-          @click.stop="clearAll()"
+          @mousedown.prevent.stop="clearAllAndKeepOpen"
+          @click.stop="swallowClick"
         >
           <Icon name="x" class="w-4 h-4" />
         </button>
@@ -438,14 +480,15 @@ onBeforeUnmount(() => {
               :style="stackedSearchStyle"
               placeholder="Search..."
               @keydown="onKey"
-              @focus="open = true; nextTick(updateMenuPosition)"
+              @focus="onSearchFocus"
             />
           </span>
 
           <button
             type="button"
             :class="['icon-btn icon-btn-outline shrink-0', iconBtnSizeClass[size || 'md']]"
-            @click.stop="open = !open; nextTick(updateMenuPosition)"
+            @mousedown.prevent.stop="toggleDropdown"
+            @click.stop="swallowClick"
           >
             <Icon :name="open ? 'chevron-up' : 'chevron-down'" class="w-4 h-4" />
           </button>
@@ -453,7 +496,8 @@ onBeforeUnmount(() => {
             v-if="selectedList.length"
             type="button"
             :class="['icon-btn icon-btn-outline shrink-0', iconBtnSizeClass[size || 'md']]"
-            @click.stop="clearAll()"
+            @mousedown.prevent.stop="clearAllAndKeepOpen"
+            @click.stop="swallowClick"
           >
             <Icon name="x" class="w-4 h-4" />
           </button>
@@ -497,26 +541,29 @@ onBeforeUnmount(() => {
       >
         <div
           v-if="open"
-          ref="dropdownRef"
+          :ref="setDropdownRef"
           class="fixed z-[var(--z-modal)] card p-2"
           :style="menuContainerStyle"
+          @mousedown.stop
+          @click.stop
         >
           <div v-if="loading" class="px-3 py-2 text-sm opacity-70">Loading...</div>
           <ul v-else ref="menu" class="overflow-auto" :style="menuListStyle">
             <li
               v-for="o in sortedFiltered"
-              :key="o.value"
+              :key="`${selectionRenderKey}:${String(o.value)}`"
               :class="[
                 'rounded-field flex items-center gap-2 cursor-pointer transition-colors duration-100 hover:bg-primary/10',
                 dropdownItemClass[size || 'md'],
                 isSelectedValue(o.value as string | number) ? 'bg-primary/15' : '',
               ]"
-              @mousedown.prevent="toggle(o.value as any)"
+              @click.stop.prevent="toggle(o.value as any)"
             >
               <input
                 type="checkbox"
-                :class="[dropdownCheckboxClass[size || 'md'], 'pointer-events-none']"
+                :class="[dropdownCheckboxClass[size || 'md']]"
                 :checked="isSelectedValue(o.value as string | number)"
+                @click.stop.prevent="toggle(o.value as any)"
               />
               <span>{{ o.label }}</span>
             </li>

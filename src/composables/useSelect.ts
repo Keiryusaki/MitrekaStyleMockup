@@ -67,6 +67,7 @@ export function useSelectSingle<V extends string | number>(
   const root = ref<HTMLElement | null>(null);
   const inputEl = ref<HTMLInputElement | null>(null);
   const menu = ref<HTMLElement | null>(null);
+  const floating = ref<HTMLElement | null>(null);
 
   const open = ref(false);
   const query = ref("");
@@ -185,13 +186,14 @@ export function useSelectSingle<V extends string | number>(
   watch(query, () => fetchOptions && debounce(loadOptions, debounceMs));
 
   // outside
-  useClickOutside(root, closeMenu, [menu]);
+  useClickOutside(root, closeMenu, [menu, floating]);
 
   return {
     // refs
     root,
     inputEl,
     menu,
+    floating,
     open,
     query,
     hoverIdx,

@@ -1,7 +1,7 @@
 {
   "name": "mitreka-style-mockup",
   "private": true,
-  "version": "2.2.40",
+  "version": "2.2.41",
   "type": "module",
   "scripts": {
     "dev": "vite --host 0.0.0.0 --port 5173",
@@ -34,3 +34,4 @@
     "vue-tsc": "^2.0.29"
   }
 }
+
