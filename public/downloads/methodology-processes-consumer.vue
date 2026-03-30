@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed, reactive, ref } from "vue";
-import { Icon, Input, Modal, MultiSelect, PageHeader, SelectInput } from "@keiryusaki/mitreka-ui/vue";
+import { Icon, Input, Modal, MultiSelect, PageHeader, SelectInput, TreeList } from "@keiryusaki/mitreka-ui/vue";
 
 type RaciType = "Responsible" | "Accountable" | "Consulted" | "Informed";
 type DocumentKind = "input" | "output";
@@ -23,7 +23,6 @@ type ProcessNode = {
 };
 
 type ProcessTree = ProcessNode & { children: ProcessTree[] };
-type FlatNode = { node: ProcessTree; depth: number; numberLabel: string };
 type EditMode = "create" | "edit";
 
 const RACI_TYPES: RaciType[] = ["Responsible", "Accountable", "Consulted", "Informed"];
@@ -135,56 +134,6 @@ const parentSelectOptions = computed(() => {
   };
   walk(treeItems.value);
   return out.filter((x) => x.value !== formData.value.id);
-});
-
-const flatVisibleNodes = computed<FlatNode[]>(() => {
-  const out: FlatNode[] = [];
-  const walk = (nodes: ProcessTree[], depth: number, path: number[]) => {
-    nodes.forEach((node, idx) => {
-      const p = [...path, idx + 1];
-      out.push({ node, depth, numberLabel: p.join(".") });
-      if (node.children.length && expandedIds.has(node.id)) walk(node.children, depth + 1, p);
-    });
-  };
-  walk(treeItems.value, 0, []);
-  return out;
-});
-
-const flatAllNodes = computed<FlatNode[]>(() => {
-  const out: FlatNode[] = [];
-  const walk = (nodes: ProcessTree[], depth: number, path: number[]) => {
-    nodes.forEach((node, idx) => {
-      const p = [...path, idx + 1];
-      out.push({ node, depth, numberLabel: p.join(".") });
-      if (node.children.length) walk(node.children, depth + 1, p);
-    });
-  };
-  walk(treeItems.value, 0, []);
-  return out;
-});
-
-const filteredFlatNodes = computed<FlatNode[]>(() => {
-  const keyword = treeSearch.value.trim().toLowerCase();
-  if (!keyword) return flatVisibleNodes.value;
-
-  const byId = new Map<number, ProcessNode>(rows.value.map((x) => [x.id, x]));
-  const matchedIds = new Set<number>();
-
-  flatAllNodes.value.forEach((x) => {
-    const text = `${x.numberLabel} ${x.node.name}`.toLowerCase();
-    if (text.includes(keyword)) matchedIds.add(x.node.id);
-  });
-
-  const includeIds = new Set<number>(matchedIds);
-  matchedIds.forEach((id) => {
-    let cursor = byId.get(id);
-    while (cursor?.parentId !== null) {
-      includeIds.add(cursor.parentId);
-      cursor = byId.get(cursor.parentId);
-    }
-  });
-
-  return flatAllNodes.value.filter((x) => includeIds.has(x.node.id));
 });
 
 const docInputRows = computed(() => formData.value.documents.filter((x) => x.kind === "input"));
@@ -339,14 +288,13 @@ function cancelTodoEdit() {
 }
 
 function setRaciRoles(type: RaciType, roles: Array<string | number>) {
-  const idx = formData.value.raci.findIndex((x) => x.type === type);
-  if (idx >= 0) formData.value.raci[idx].roles = roles.map(String);
+  const mapped = roles.map(String);
+  formData.value.raci = formData.value.raci.map((entry) =>
+    entry.type === type ? { ...entry, roles: mapped } : entry
+  );
 }
 function getRaciRoles(type: RaciType): string[] {
   return formData.value.raci.find((x) => x.type === type)?.roles ?? [];
-}
-function clearRaci(type: RaciType) {
-  setRaciRoles(type, []);
 }
 
 function addDocDraft() {
@@ -374,83 +322,82 @@ function requirementBadgeClass(type: RequirementType): string {
 
 <template>
   <div class="space-y-4 min-w-0">
-    <PageHeader category="Mockup" title="Methodology Processes" description="Tree expand/collapse + modal add/edit yang mengikuti blueprint proses." />
-
-    <section class="card p-0 layout-shell">
-      <div class="layout-tree">
-        <div class="panel-head">
-          <h2 class="panel-title">Methodology Processes</h2>
-          <div class="panel-tools">
-            <Input v-model="treeSearch" size="sm" placeholder="Search process..." class="panel-search" />
-            <div class="panel-buttons">
-              <button class="btn btn-primary btn-xs" type="button" @click="openCreate"><Icon name="plus" class="w-3.5 h-3.5" />Add Process</button>
-              <button class="btn btn-outline btn-xs" type="button" @click="expandAll">Expand All</button>
-              <button class="btn btn-outline btn-xs" type="button" @click="collapseAll">Collapse All</button>
+    <PageHeader category="Mockup" title="Methodology Processes" description="Tree expand/collapse + modal add/edit yang mengikuti blueprint proses atasan." />
+    <section class="card p-0 overflow-hidden">
+      <div class="overflow-hidden max-h-[calc(100dvh-220px)] flex flex-col">
+        <div class="flex items-center justify-between gap-2 m-0 p-4 border-b border-base-300 sticky top-0 z-[2] bg-base-100">
+          <h2 class="text-sm font-semibold text-base-content m-0">Methodology Processes</h2>
+          <div class="inline-flex items-center gap-2 flex-nowrap justify-end">
+            <Input v-model="treeSearch" size="sm" placeholder="Search process..." class="w-[21rem] min-w-[16rem]" />
+            <div class="inline-flex items-center gap-1 flex-nowrap">
+              <button class="btn btn-primary btn-xs whitespace-nowrap shrink-0" type="button" @click="openCreate"><Icon name="plus" class="w-3.5 h-3.5" />Add Process</button>
+              <button class="btn btn-outline btn-xs whitespace-nowrap shrink-0" type="button" @click="expandAll">Expand All</button>
+              <button class="btn btn-outline btn-xs whitespace-nowrap shrink-0" type="button" @click="collapseAll">Collapse All</button>
             </div>
           </div>
         </div>
 
-        <div class="tree-scroll">
-          <div v-if="!filteredFlatNodes.length" class="py-8 text-center text-base-content/60 text-sm">No process found.</div>
-          <div v-for="row in filteredFlatNodes" :key="row.node.id" class="tree-row-wrap">
-            <div
-              class="tree-row"
-              :class="{ 'tree-row--with-guides': row.depth > 0 }"
-              :style="{ paddingLeft: `${12 + row.depth * 24}px`, '--guide-width': `${row.depth * 24}px` }"
-              @click="onRowClick(row.node)"
-            >
-              <button v-if="row.node.children.length" class="tree-toggle" type="button" @click.stop="toggleExpand(row.node.id)">
-                <Icon name="chevron-right" class="w-4 h-4 text-base-content/50 transition-transform duration-150" :class="{ 'rotate-90': expandedIds.has(row.node.id) }" />
+        <div class="p-3 pt-2.5 pb-4 overflow-y-auto flex-1 min-h-0">
+          <TreeList
+            :nodes="treeItems"
+            :expanded-ids="expandedIds"
+            :search-query="treeSearch"
+            empty-text="No process found."
+            @toggle="toggleExpand"
+            @row-click="onRowClick"
+          >
+            <template #meta="{ node }">
+              <span v-if="node.locked" class="badge badge-xs badge-soft-info">Phase</span>
+            </template>
+            <template #actions="{ node }">
+              <button class="icon-btn icon-btn-soft-success icon-btn-xs" type="button" title="Tambah child" @click="openCreateChild(node.id)">
+                <Icon name="plus" class="w-3.5 h-3.5" />
               </button>
-              <span v-else class="tree-toggle-space"></span>
-              <span class="tree-code">{{ row.numberLabel }}.</span>
-              <span class="tree-name" :class="row.depth === 0 ? 'font-semibold' : ''">{{ row.node.name }}</span>
-              <span v-if="row.node.locked" class="badge badge-xs badge-soft-info">Phase</span>
-              <span class="flex-1"></span>
-              <div class="tree-actions" @click.stop>
-                <button class="icon-btn icon-btn-soft-success icon-btn-xs" type="button" title="Tambah child" @click="openCreateChild(row.node.id)"><Icon name="plus" class="w-3.5 h-3.5" /></button>
-                <button v-if="!row.node.locked" class="icon-btn icon-btn-soft-warning icon-btn-xs" type="button" title="Edit" @click="openEdit(row.node)"><Icon name="pencil" class="w-3.5 h-3.5" /></button>
-                <button v-if="!row.node.locked" class="icon-btn icon-btn-soft-error icon-btn-xs" type="button" title="Hapus" @click="deleteItem(row.node.id)"><Icon name="trash" class="w-3.5 h-3.5" /></button>
-              </div>
-            </div>
-          </div>
+              <button v-if="!node.locked" class="icon-btn icon-btn-soft-warning icon-btn-xs" type="button" title="Edit" @click="openEdit(node)">
+                <Icon name="pencil" class="w-3.5 h-3.5" />
+              </button>
+              <button v-if="!node.locked" class="icon-btn icon-btn-soft-error icon-btn-xs" type="button" title="Hapus" @click="deleteItem(node.id)">
+                <Icon name="trash" class="w-3.5 h-3.5" />
+              </button>
+            </template>
+          </TreeList>
         </div>
       </div>
     </section>
 
-    <Modal :open="editorOpen" :title="modalTitle" size="xl" @close="editorOpen = false">
+    <Modal :open="editorOpen" :title="modalTitle" size="xl" @close="editorOpen = false" @confirm="saveMainForm">
       <div class="space-y-5">
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-          <div class="form-field">
-            <label class="form-label">Delivery Phase</label>
+          <div>
+            <label class="block text-[0.8rem] font-semibold mb-1">Delivery Phase</label>
             <SelectInput v-model="formData.deliveryPhaseId" :options="rootPhaseOptions" size="sm" />
           </div>
-          <div class="form-field">
-            <label class="form-label">Parent</label>
+          <div>
+            <label class="block text-[0.8rem] font-semibold mb-1">Parent</label>
             <SelectInput v-model="formData.parentId" :options="parentSelectOptions" placeholder="[root]" size="sm" clearable />
           </div>
         </div>
 
         <div class="grid grid-cols-1 sm:grid-cols-[120px_1fr] gap-3">
-          <div class="form-field">
-            <label class="form-label">Urutan</label>
+          <div>
+            <label class="block text-[0.8rem] font-semibold mb-1">Urutan</label>
             <Input v-model="formData.order" type="number" size="sm" />
-            <p class="form-note">Cukup angka (tanpa titik).</p>
+            <p class="mt-1 text-[0.72rem] text-base-content/60">Cukup angka (tanpa titik).</p>
           </div>
-          <div class="form-field">
-            <label class="form-label">Nama</label>
+          <div>
+            <label class="block text-[0.8rem] font-semibold mb-1">Nama</label>
             <Input v-model="formData.name" size="sm" />
           </div>
         </div>
 
-        <div class="form-field">
-          <label class="form-label">Description</label>
+        <div>
+          <label class="block text-[0.8rem] font-semibold mb-1">Description</label>
           <textarea v-model="formData.description" rows="3" class="input w-full min-h-24 py-2 resize-y" placeholder="Detail process" />
         </div>
 
-        <section class="section-card">
-          <div class="section-head">
-            <h3>To do List</h3>
+        <section class="border border-base-300 rounded-xl p-3 bg-base-100">
+          <div class="flex items-center justify-between gap-2 mb-2">
+            <h3 class="m-0 text-[0.86rem] font-bold">To do List</h3>
           </div>
           <div class="grid grid-cols-[110px_1fr_auto] gap-2 mb-2">
             <Input v-model="todoDraft.order" type="number" size="sm" placeholder="Urutan" />
@@ -460,7 +407,7 @@ function requirementBadgeClass(type: RequirementType): string {
               <button v-if="editingTodoId !== null" class="btn btn-outline btn-sm" type="button" @click="cancelTodoEdit">Batal</button>
             </div>
           </div>
-          <div class="als-card als-compact-header" data-als data-density="compact" data-striped="true">
+          <div class="als-card" data-als data-density="compact">
             <div class="als-viewport" style="max-height: 170px;">
               <table>
                 <thead>
@@ -494,19 +441,18 @@ function requirementBadgeClass(type: RequirementType): string {
           </div>
         </section>
 
-        <section class="section-card">
-          <div class="section-head"><h3>RACI Matrix</h3><span class="form-note">Kolom RACI fixed.</span></div>
+        <section class="border border-base-300 rounded-xl p-3 bg-base-100">
+          <div class="flex items-center justify-between gap-2 mb-2"><h3 class="m-0 text-[0.86rem] font-bold">RACI Matrix</h3><span class="text-[0.72rem] text-base-content/60">Kolom RACI fixed.</span></div>
           <div class="space-y-2">
-            <div v-for="type in RACI_TYPES" :key="type" class="raci-row">
-              <div class="raci-label">{{ type }}</div>
-              <div class="raci-control"><MultiSelect :model-value="getRaciRoles(type)" :options="masterRoles" size="sm" display-mode="inline-compact" @update:model-value="setRaciRoles(type, $event)" /></div>
-              <button class="btn btn-ghost btn-xs text-error" type="button" @click="clearRaci(type)">Clear</button>
+            <div v-for="type in RACI_TYPES" :key="type" class="grid grid-cols-[130px_1fr] items-center gap-2">
+              <div class="text-[0.8rem] font-semibold">{{ type }}</div>
+              <div><MultiSelect :model-value="getRaciRoles(type)" :options="masterRoles" size="sm" display-mode="inline-compact" @update:model-value="setRaciRoles(type, $event)" /></div>
             </div>
           </div>
         </section>
 
-        <section class="section-card">
-          <div class="section-head"><h3>Project Documents</h3><span class="form-note">Master document + mandatory/optional.</span></div>
+        <section class="border border-base-300 rounded-xl p-3 bg-base-100">
+          <div class="flex items-center justify-between gap-2 mb-2"><h3 class="m-0 text-[0.86rem] font-bold">Project Documents</h3><span class="text-[0.72rem] text-base-content/60">Master document + mandatory/optional.</span></div>
           <div class="grid grid-cols-1 sm:grid-cols-[170px_1fr_220px_auto] gap-2 mb-2">
             <SelectInput v-model="docDraft.kind" :options="[{ value: 'input', label: 'Input' }, { value: 'output', label: 'Output' }]" size="sm" />
             <SelectInput v-model="docDraft.name" :options="masterProjectDocuments" size="sm" placeholder="Document" />
@@ -514,9 +460,9 @@ function requirementBadgeClass(type: RequirementType): string {
             <button class="btn btn-success btn-sm" type="button" @click="addDocDraft">Tambah</button>
           </div>
           <div class="grid grid-cols-1 lg:grid-cols-2 gap-3">
-            <div class="table-shell">
-              <div class="subhead"><span>Input</span></div>
-              <div class="als-card als-compact-header" data-als data-density="compact" data-striped="true">
+            <div class="border border-base-300 rounded-[0.6rem] overflow-hidden bg-base-100">
+              <div class="flex items-center justify-between px-2 py-1 pb-[0.1rem] text-[0.78rem] font-bold"><span>Input</span></div>
+              <div class="als-card" data-als data-density="compact">
                 <div class="als-viewport" style="max-height: 170px;">
                   <table>
                     <thead>
@@ -546,9 +492,9 @@ function requirementBadgeClass(type: RequirementType): string {
                 </div>
               </div>
             </div>
-            <div class="table-shell">
-              <div class="subhead"><span>Output</span></div>
-              <div class="als-card als-compact-header" data-als data-density="compact" data-striped="true">
+            <div class="border border-base-300 rounded-[0.6rem] overflow-hidden bg-base-100">
+              <div class="flex items-center justify-between px-2 py-1 pb-[0.1rem] text-[0.78rem] font-bold"><span>Output</span></div>
+              <div class="als-card" data-als data-density="compact">
                 <div class="als-viewport" style="max-height: 170px;">
                   <table>
                     <thead>
@@ -588,46 +534,3 @@ function requirementBadgeClass(type: RequirementType): string {
     </Modal>
   </div>
 </template>
-
-<style scoped>
-.layout-shell { display: grid; grid-template-columns: 1fr; overflow: hidden; }
-.layout-tree { overflow: hidden; max-height: calc(100dvh - 220px); display: flex; flex-direction: column; }
-.panel-title { font-size: 0.875rem; font-weight: 600; color: var(--color-base-content); margin: 0; }
-.panel-head { display: flex; align-items: center; justify-content: space-between; gap: 0.5rem; margin: 0; padding: 1rem; border-bottom: 1px solid var(--color-base-300); position: sticky; top: 0; z-index: 2; background: var(--color-base-100); }
-.panel-tools { display: inline-flex; align-items: center; gap: 0.5rem; flex-wrap: nowrap; justify-content: flex-end; }
-.panel-search { width: 21rem; min-width: 16rem; }
-.panel-buttons { display: inline-flex; align-items: center; gap: 0.25rem; flex-wrap: nowrap; }
-.tree-scroll { padding: 0.75rem 1rem 1rem; overflow-y: auto; flex: 1; min-height: 0; }
-.tree-row { position: relative; display: flex; align-items: center; gap: 0.5rem; padding: 0.15rem 0.75rem; border-radius: 0.5rem; cursor: pointer; transition: background 0.12s ease; user-select: none; }
-.tree-row > * { position: relative; z-index: 1; }
-.tree-row--with-guides::before { content: ""; position: absolute; left: 12px; top: 6px; bottom: 6px; width: var(--guide-width); background-image: repeating-linear-gradient(to right, transparent 0, transparent 23px, color-mix(in oklch, var(--color-base-content), transparent 84%) 23px, color-mix(in oklch, var(--color-base-content), transparent 84%) 24px); pointer-events: none; }
-.tree-row:hover { background: var(--color-base-200); }
-.tree-toggle { display: inline-flex; align-items: center; justify-content: center; width: 20px; height: 20px; border-radius: 4px; }
-.tree-toggle:hover { background: var(--color-base-300); }
-.tree-toggle-space { width: 20px; flex-shrink: 0; }
-.tree-code { font-size: 0.78rem; font-weight: 700; opacity: 0.7; min-width: 44px; flex-shrink: 0; }
-.tree-name { font-size: 0.875rem; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.tree-actions { display: flex; gap: 0.25rem; opacity: 0; transition: opacity 0.15s; }
-.tree-row:hover .tree-actions { opacity: 1; }
-.form-label { display: block; font-size: 0.8rem; font-weight: 600; margin-bottom: 0.25rem; }
-.form-note { margin-top: 0.25rem; font-size: 0.72rem; color: color-mix(in oklch, var(--color-base-content), transparent 38%); }
-.section-card { border: 1px solid var(--color-base-300); border-radius: 0.75rem; padding: 0.75rem; background: var(--color-base-100); }
-.section-head { display: flex; align-items: center; justify-content: space-between; gap: 0.5rem; margin-bottom: 0.5rem; }
-.section-head h3 { margin: 0; font-size: 0.86rem; font-weight: 700; }
-.subhead { display: flex; align-items: center; justify-content: space-between; padding: 0.4rem 0.4rem 0.1rem; font-size: 0.78rem; font-weight: 700; }
-.table-shell { border: 1px solid var(--color-base-300); border-radius: 0.6rem; overflow: hidden; background: var(--color-base-100); }
-.raci-row { display: grid; grid-template-columns: 130px 1fr auto; align-items: center; gap: 0.5rem; }
-.raci-label { font-size: 0.8rem; font-weight: 600; }
-
-.als-card { border: 1px solid var(--color-base-300); border-radius: 0.6rem; overflow: hidden; background: var(--color-base-100); }
-.als-viewport { overflow: auto; }
-.als-viewport table { width: 100%; border-collapse: collapse; }
-.als-viewport th,
-.als-viewport td { border: 1px solid var(--color-base-300); text-align: left; }
-.als-viewport [data-col="index"] { width: 82px; }
-.als-viewport [data-col="actions"] { width: 130px; text-align: right; }
-[data-striped="true"] .als-viewport tbody tr:nth-child(even) { background: color-mix(in oklch, var(--color-base-content), transparent 96%); }
-
-.als-compact-header th { padding: 0.4rem 0.6rem !important; font-weight: 700; color: color-mix(in oklch, var(--color-base-content), transparent 18%); }
-.als-compact-header td { padding: 0.2rem 0.6rem !important; }
-</style>

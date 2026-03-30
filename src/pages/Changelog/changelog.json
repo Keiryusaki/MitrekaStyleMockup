@@ -1,5 +1,23 @@
 [
     {
+        "version":  "2.2.43",
+        "date":  "2026-03-30",
+        "label":  "Patch",
+        "items":  [
+                      {
+                          "type":  "Fixed",
+                          "text":  "TreeList CSS kini ikut dalam bundle `@keiryusaki/mitreka-ui/css`, jadi consumer tidak perlu import manual `dist/style.css`."
+                      },
+                      {
+                          "type":  "Fixed",
+                          "text":  "File download `methodology-processes-consumer.vue` dibersihkan dari karakter nyasar (`\\`n\\`n`) di area template."
+                      }
+                  ],
+        "assets":  [
+
+                   ]
+    },
+    {
         "version":  "2.2.42",
         "date":  "2026-03-30",
         "label":  "Patch",
