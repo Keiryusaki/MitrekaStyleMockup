@@ -1,5 +1,27 @@
 [
     {
+        "version":  "2.2.42",
+        "date":  "2026-03-30",
+        "label":  "Patch",
+        "items":  [
+                      {
+                          "type":  "Added",
+                          "text":  "Komponen baru TreeList untuk struktur hierarki reusable (expand/collapse + search + slot meta/actions)."
+                      },
+                      {
+                          "type":  "Changed",
+                          "text":  "Methodology Processes dirapikan agar lebih DS-native: hapus scoped styling lokal dan pakai utility/class komponen bawaan."
+                      },
+                      {
+                          "type":  "Changed",
+                          "text":  "Sinkronisasi package @keiryusaki/mitreka-ui v2.2.42 ke mockup vendor dist."
+                      }
+                  ],
+        "assets":  [
+
+                   ]
+    },
+    {
         "version":  "2.2.41",
         "date":  "2026-03-30",
         "label":  "Patch",

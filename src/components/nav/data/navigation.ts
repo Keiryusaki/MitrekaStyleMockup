@@ -73,6 +73,7 @@ export const NAV: NavItem[] = [
       { id: "accordion", label: "Accordion", to: "/accordion" },
       { id: "avatar", label: "Avatar", to: "/avatar" },
       { id: "table", label: "Table", to: "/table" },
+      { id: "tree-list", label: "TreeList", to: "/tree-list" },
       { id: "datatable", label: "DataTable", to: "/datatable" },
       { id: "modal", label: "Modal", to: "/modal" },
       { id: "toasts", label: "Toasts", to: "/toasts" },

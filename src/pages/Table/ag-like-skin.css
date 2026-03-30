@@ -14,6 +14,7 @@
   --als-font-size: 0.875rem; /* 14px */
   --als-cell-py: 0.25rem; /* y padding */
   --als-cell-px: 0.75rem; /* x padding */
+  --als-head-py: 1rem;
 }
 
 /* density override via data-attribute di parent/table */
@@ -21,11 +22,13 @@
   /*--als-font-size: 0.8125rem;*/
   --als-cell-py: 0;
   --als-cell-px: 0.5rem;
+  --als-head-py: 0.4rem;
 }
 [data-als][data-density="comfortable"] {
   --als-font-size: 0.875rem;
   --als-cell-py: 0.5rem;
   --als-cell-px: 1rem;
+  --als-head-py: 1rem;
 }
 
 /* ==================  SCOPE: PARENT ATAU TABLE  ================== */
@@ -64,7 +67,7 @@ table[data-als] thead th {
   font-weight: 600;
   text-align: left;
   white-space: nowrap;
-  padding: 1rem var(--als-cell-px);
+  padding: var(--als-head-py) var(--als-cell-px);
   border-bottom: 1px solid var(--als-border-strong);
 }
 

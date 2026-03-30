@@ -102,6 +102,10 @@ const routes: RouteRecordRaw[] = [
     component: () => import("@/pages/Table/Table.vue"),
   },
   {
+    path: "/tree-list",
+    component: () => import("@/pages/TreeList/TreeList.vue"),
+  },
+  {
     path: "/modal",
     component: () => import("@/pages/Modal/Modal.vue"),
   },

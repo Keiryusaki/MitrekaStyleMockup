@@ -28,3 +28,4 @@ export { default as SelectInput } from './SelectInput.vue';
 export { default as MultiSelect } from './MultiSelect.vue';
 export { default as FileUpload } from './FileUpload.vue';
 export { default as Input } from './Input.vue';
+export { default as TreeList } from './TreeList.vue';
