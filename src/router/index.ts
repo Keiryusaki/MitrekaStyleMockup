@@ -94,6 +94,10 @@ const routes: RouteRecordRaw[] = [
     meta: { hideBreadcrumbs: true },
   },
   {
+    path: "/methodology-processes",
+    component: () => import("@/pages/Mockup/MethodologyProcesses.vue"),
+  },
+  {
     path: "/table",
     component: () => import("@/pages/Table/Table.vue"),
   },
