@@ -1,5 +1,6 @@
 type Size = "xs" | "sm" | "md" | "lg" | "xl";
 type Color = "default" | "primary" | "secondary" | "accent" | "info" | "success" | "warning" | "error";
+type Mask = "none" | "digits" | "phone-id" | "nik" | "npwp" | "currency-idr";
 declare const _default: import('vue').DefineComponent<import('vue').ExtractPropTypes<__VLS_WithDefaults<__VLS_TypePropsToRuntimeProps<{
     modelValue?: string | number;
     type?: string;
@@ -8,6 +9,8 @@ declare const _default: import('vue').DefineComponent<import('vue').ExtractPropT
     color?: Color;
     disabled?: boolean;
     readonly?: boolean;
+    mask?: Mask;
+    maxDigits?: number;
     clearable?: boolean;
     passwordToggle?: boolean;
     prefixIcon?: string;
@@ -22,6 +25,8 @@ declare const _default: import('vue').DefineComponent<import('vue').ExtractPropT
     color: string;
     disabled: boolean;
     readonly: boolean;
+    mask: string;
+    maxDigits: undefined;
     clearable: boolean;
     passwordToggle: boolean;
     prefixIcon: string;
@@ -42,6 +47,8 @@ declare const _default: import('vue').DefineComponent<import('vue').ExtractPropT
     color?: Color;
     disabled?: boolean;
     readonly?: boolean;
+    mask?: Mask;
+    maxDigits?: number;
     clearable?: boolean;
     passwordToggle?: boolean;
     prefixIcon?: string;
@@ -56,6 +63,8 @@ declare const _default: import('vue').DefineComponent<import('vue').ExtractPropT
     color: string;
     disabled: boolean;
     readonly: boolean;
+    mask: string;
+    maxDigits: undefined;
     clearable: boolean;
     passwordToggle: boolean;
     prefixIcon: string;
@@ -72,11 +81,13 @@ declare const _default: import('vue').DefineComponent<import('vue').ExtractPropT
     modelValue: string | number;
     size: Size;
     type: string;
+    mask: Mask;
     disabled: boolean;
     placeholder: string;
     color: Color;
     readonly: boolean;
     clearable: boolean;
+    maxDigits: number;
     passwordToggle: boolean;
     prefixIcon: string;
     suffixIcon: string;

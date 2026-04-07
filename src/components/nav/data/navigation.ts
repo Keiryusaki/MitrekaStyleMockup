@@ -41,6 +41,7 @@ export const NAV: NavItem[] = [
       { id: "dashboard-finance", label: "Dashboard Finance", to: "/dashboard-finance" },
       { id: "taskflow-workspace", label: "TaskFlow WorkSPace", to: "/taskflow-workspace" },
       { id: "methodology-processes", label: "Methodology Processes", to: "/methodology-processes" },
+      { id: "gantt-wbs-planner", label: "Gantt WBS Planner", to: "/gantt-wbs-planner" },
       { id: "aggrid", label: "AG Grid", to: "/aggrid" },
       { id: "project-budgeting", label: "Project Budgeting", to: "/project-budgeting" },
       { id: "project-cashflow", label: "Project Cashflow", to: "/project-cashflow" },

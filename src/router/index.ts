@@ -98,6 +98,10 @@ const routes: RouteRecordRaw[] = [
     component: () => import("@/pages/Mockup/MethodologyProcesses.vue"),
   },
   {
+    path: "/gantt-wbs-planner",
+    component: () => import("@/pages/Mockup/GanttWbsPlanner.vue"),
+  },
+  {
     path: "/table",
     component: () => import("@/pages/Table/Table.vue"),
   },

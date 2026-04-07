@@ -1160,7 +1160,7 @@ const boxRadius = computed({
         </p>
         <textarea
           v-model="importPresetText"
-          class="textarea textarea-bordered w-full"
+          class="input w-full min-h-64 resize-y font-mono text-sm leading-6"
           rows="12"
           placeholder='/* Preset: Nama */\n:root[data-theme="mitrekalight"] { ... }'
         />

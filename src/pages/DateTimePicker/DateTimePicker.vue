@@ -10,6 +10,7 @@ const tocItems: TOCItem[] = [
   { id: "time", label: "Time Picker" },
   { id: "datetime-range", label: "DateTime Range" },
   { id: "month-year", label: "Month / Year" },
+  { id: "usage", label: "Usage Guide" },
   { id: "notes", label: "Notes" },
 ];
 
@@ -23,6 +24,7 @@ const dateTimeRange = ref<string[]>([]);
 const monthNumberValue = ref("");
 const monthShortValue = ref("");
 const monthLongValue = ref("");
+const monthYearGridValue = ref("");
 const yearValue = ref(new Date().getFullYear().toString());
 
 const dateRangeDisplay = computed(() =>
@@ -131,7 +133,11 @@ const dateTimeRangeDisplay = computed(() =>
       <!-- Month / Year -->
       <section id="month-year" class="rounded-box border border-base-300 p-4 space-y-3 scroll-mt-20">
         <h2 class="text-base font-semibold">Month Picker / Year Picker</h2>
-        <div class="grid gap-4 md:grid-cols-2 xl:grid-cols-4 items-start">
+        <p class="text-sm opacity-70">
+          Gunakan <code>picker="month"</code> untuk pilih bulan saja, <code>picker="year-grid"</code> untuk tahun saja,
+          dan <code>picker="month-year-grid"</code> untuk kombinasi bulan+tahun dengan panel grid yang lebih nyaman.
+        </p>
+        <div class="grid gap-4 md:grid-cols-2 xl:grid-cols-5 items-start">
           <label class="space-y-1">
             <span class="text-xs opacity-70">Month (Number)</span>
             <MitrekaDateTimePicker
@@ -165,6 +171,15 @@ const dateTimeRangeDisplay = computed(() =>
               placeholder="Select month (June)"
             />
           </label>
+          <label class="space-y-1">
+            <span class="text-xs opacity-70">Month + Year Grid</span>
+            <MitrekaDateTimePicker
+              v-model="monthYearGridValue"
+              picker="month-year-grid"
+              clearable
+              placeholder="Select month and year"
+            />
+          </label>
           <div class="space-y-1">
             <span class="text-xs opacity-70">Year</span>
             <MitrekaDateTimePicker
@@ -179,8 +194,42 @@ const dateTimeRangeDisplay = computed(() =>
             <div>Month Number: {{ monthNumberValue || "-" }}</div>
             <div>Month Short: {{ monthShortValue || "-" }}</div>
             <div>Month Full: {{ monthLongValue || "-" }}</div>
+            <div>Month + Year: {{ monthYearGridValue || "-" }}</div>
             <div>Year: {{ yearValue || "-" }}</div>
           </div>
+        </div>
+      </section>
+
+      <!-- Usage Guide -->
+      <section id="usage" class="rounded-box border border-base-300 p-4 space-y-4 scroll-mt-20">
+        <h2 class="text-base font-semibold">Usage Guide</h2>
+        <div class="grid gap-4 lg:grid-cols-2">
+          <div class="rounded-box bg-base-200 p-4 text-sm space-y-2">
+            <div class="font-medium">Picker Types</div>
+            <ul class="list-disc space-y-1 pl-5 opacity-80">
+              <li><code>picker="date"</code>: tanggal biasa, header bulan dibuat statis agar tidak terasa kaku.</li>
+              <li><code>picker="month"</code>: pilih bulan saja dari month select.</li>
+              <li><code>picker="year-grid"</code>: pilih tahun dari grid 12 tahun.</li>
+              <li><code>picker="month-year-grid"</code>: pilih bulan dan tahun dari panel grid custom.</li>
+            </ul>
+          </div>
+          <div class="rounded-box bg-base-200 p-4 text-sm space-y-2">
+            <div class="font-medium">Props Yang Paling Sering Dipakai</div>
+            <ul class="list-disc space-y-1 pl-5 opacity-80">
+              <li><code>clearable</code> untuk tombol hapus value.</li>
+              <li><code>mode="range"</code> untuk date range atau datetime range.</li>
+              <li><code>enableTime</code> dan <code>dateFormat</code> untuk datetime / time.</li>
+              <li><code>minDate</code> dan <code>maxDate</code> untuk validasi rentang tanggal.</li>
+            </ul>
+          </div>
+        </div>
+        <div class="mockup-code-wrapper">
+          <pre class="mockup-code"><code>&lt;MitrekaDateTimePicker
+  v-model="monthYearGridValue"
+  picker="month-year-grid"
+  clearable
+  placeholder="Select month and year"
+/&gt;</code></pre>
         </div>
       </section>
 
@@ -189,6 +238,9 @@ const dateTimeRangeDisplay = computed(() =>
         <ul class="list-disc space-y-1 pl-5">
           <li>
             Flatpickr memberi UI konsisten di semua browser.
+          </li>
+          <li>
+            Date picker default sekarang memakai header bulan statis, jadi tidak lagi mengandalkan dropdown bulan bawaan yang terasa kaku.
           </li>
           <li>
             Untuk batasan tanggal, gunakan <code>minDate</code>/<code>maxDate</code> di komponen.

@@ -1,0 +1,56 @@
+/* =========================================
+   @mitreka/ui - Card Component
+   ========================================= */
+
+.card {
+  background-color: var(--color-base-100);
+  color: var(--color-base-content);
+  border: var(--border) solid var(--color-base-300);
+  border-radius: var(--radius-box);
+  box-shadow: 0 1px calc(1px * var(--depth, 1)) rgb(0 0 0 / 0.06);
+}
+
+/* Collapsible Card */
+.card-collapsible .card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.card-header-collapsible {
+  cursor: pointer;
+  user-select: none;
+  margin: -1rem -1rem 0 -1rem;
+  padding: 1rem;
+  border-radius: var(--radius-box) var(--radius-box) 0 0;
+  transition: background-color 0.15s ease;
+}
+
+.card-header-collapsible:hover {
+  background-color: var(--color-base-200);
+}
+
+.card-collapse-icon {
+  width: 1.25rem;
+  height: 1.25rem;
+  transition: transform 0.2s ease;
+  flex-shrink: 0;
+}
+
+.card-collapse-icon.is-open {
+  transform: rotate(180deg);
+}
+
+.card-body-wrapper {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 0.2s ease;
+}
+
+.card-body-wrapper.is-open {
+  grid-template-rows: 1fr;
+}
+
+.card-body-inner {
+  overflow: hidden;
+}

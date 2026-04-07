@@ -1,5 +1,5 @@
 type Mode = "single" | "range";
-type Picker = "date" | "month" | "year" | "year-grid";
+type Picker = "date" | "month" | "year" | "year-grid" | "month-year-grid";
 declare const _default: import('vue').DefineComponent<import('vue').ExtractPropTypes<__VLS_WithDefaults<__VLS_TypePropsToRuntimeProps<{
     modelValue?: string | string[];
     mode?: Mode;

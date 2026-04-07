@@ -1,0 +1,45 @@
+/* =========================================
+    @mitreka/ui - Progress & Steps Component
+    ========================================= */
+ 
+ .progress { width: 100%; height: 8px; background: var(--color-base-300); border-radius: 9999px; overflow: hidden; }
+ .progress-bar { height: 100%; background: var(--color-primary); transition: width 0.3s ease; border-radius: 9999px; }
+ 
+ .progress-bar.bg-primary { background: var(--color-primary); }
+ .progress-bar.bg-secondary { background: var(--color-secondary); }
+ .progress-bar.bg-success { background: var(--color-success); }
+ .progress-bar.bg-warning { background: var(--color-warning); }
+ .progress-bar.bg-error { background: var(--color-error); }
+ .progress-bar.bg-info { background: var(--color-info); }
+ 
+ .progress-xs { height: 2px; }
+ .progress-sm { height: 4px; }
+ .progress-lg { height: 16px; }
+ 
+ /* Horizontal Steps */
+ .steps { display: flex; gap: 0; counter-reset: step; }
+ .step { display: flex; flex-direction: column; align-items: center; flex: 1; position: relative; padding-top: 2.5rem; text-align: center; font-size: 0.875rem; }
+ .step::before { content: counter(step); counter-increment: step; position: absolute; top: 0; width: 2rem; height: 2rem; border-radius: 9999px; background: var(--color-base-300); color: var(--color-base-content); display: flex; align-items: center; justify-content: center; font-weight: 600; z-index: 1; }
+ .step::after { content: ''; position: absolute; top: 1rem; left: calc(-50% + 1rem); right: calc(50% + 1rem); height: 2px; background: var(--color-base-300); transform: translateY(-50%); }
+ .step:first-child::after { display: none; }
+ .step-primary::before { background: var(--color-primary); color: white; }
+ .step-primary::after { background: var(--color-primary); }
+ 
+ /* Vertical Steps */
+ .steps-vertical { flex-direction: column; gap: 0; }
+ .steps-vertical .step { flex-direction: row; align-items: flex-start; padding-top: 0; padding-left: 3rem; min-height: 4rem; text-align: left; }
+ .steps-vertical .step::before { left: 0; top: 0; }
+ .steps-vertical .step::after { 
+   content: ''; 
+   position: absolute; 
+   left: 0.9375rem; 
+   top: 2rem; 
+   width: 2px; 
+   height: 100%;
+   background: var(--color-base-300); 
+   z-index: 0;
+   display: block;
+ }
+ .steps-vertical .step:last-child::after { display: none; }
+ .steps-vertical .step-connected::after { background: var(--color-primary); }
+ 

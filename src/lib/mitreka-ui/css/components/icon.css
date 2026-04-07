@@ -1,0 +1,19 @@
+/* =========================================
+   @mitreka/ui - Icon Component
+   ========================================= */
+
+.mitreka-icon {
+  display: inline-block;
+  vertical-align: middle;
+  flex-shrink: 0;
+}
+
+.mitreka-icon-fallback {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1em;
+  height: 1em;
+  font-size: inherit;
+  opacity: 0.5;
+}

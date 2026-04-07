@@ -38,5 +38,9 @@ Thumbs.db
 .cache/
 *.local
 
+# Local backup artifacts
+src/lib/mitreka-ui*_backup_*/
+src/lib/mitreka-ui-dist*_backup_*/
+
 # TypeScript cache
 *.tsbuildinfo
