@@ -1,5 +1,31 @@
 [
     {
+        "version":  "2.2.47",
+        "date":  "2026-04-08",
+        "label":  "Patch",
+        "items":  [
+                      {
+                          "type":  "Changed",
+                          "text":  "`AgGridSurface` kini mengelola pinned shadow AG Grid secara otomatis saat grid redraw atau remount, jadi halaman consumer standar tidak perlu lagi memasang attach shadow manual."
+                      },
+                      {
+                          "type":  "Fixed",
+                          "text":  "Shadow pinned AG Grid kini tetap stabil saat filter card diklik, tab grid berpindah, atau tampilan data berubah di modul HRIS."
+                      },
+                      {
+                          "type":  "Added",
+                          "text":  "Helper manual `attachPinnedShadowsToElement` tetap tersedia sebagai fallback untuk implementasi AG Grid yang non-standar."
+                      },
+                      {
+                          "type":  "Changed",
+                          "text":  "Sinkronisasi package @keiryusaki/mitreka-ui v2.2.47 ke mockup vendor dist."
+                      }
+                  ],
+        "assets":  [
+
+                   ]
+    },
+    {
         "version":  "2.2.46",
         "date":  "2026-04-08",
         "label":  "Patch",
