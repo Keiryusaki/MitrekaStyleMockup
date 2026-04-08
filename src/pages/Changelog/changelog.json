@@ -1,5 +1,27 @@
 [
     {
+        "version":  "2.2.46",
+        "date":  "2026-04-08",
+        "label":  "Patch",
+        "items":  [
+                      {
+                          "type":  "Added",
+                          "text":  "Icon registry bertambah dengan utilitas baru seperti `table`, `table-2`, `monitor`, `eraser`, `clock`, `ellipsis`, `circle-minus`, `circle-plus`, `circle-slash-2`, `circle-ellipsis`, dan beberapa varian `layout-*`."
+                      },
+                      {
+                          "type":  "Added",
+                          "text":  "Alias icon `log-out` dan `minus` ditambahkan agar pemakaian icon di consumer dan mockup tetap kompatibel."
+                      },
+                      {
+                          "type":  "Changed",
+                          "text":  "Sinkronisasi package @keiryusaki/mitreka-ui v2.2.46 ke mockup vendor dist."
+                      }
+                  ],
+        "assets":  [
+
+                   ]
+    },
+    {
         "version":  "2.2.45",
         "date":  "2026-04-06",
         "label":  "Patch",
