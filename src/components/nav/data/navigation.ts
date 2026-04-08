@@ -36,13 +36,23 @@ export const NAV: NavItem[] = [
     icon: "layout",
     children: [
       { id: "ticket", label: "Ticketing", to: "/ticketing" },
-      { id: "live-attendance", label: "Live Attendance", to: "/live-attendance" },
       { id: "select-playground", label: "Select Playground", to: "/select-playground" },
       { id: "dashboard-finance", label: "Dashboard Finance", to: "/dashboard-finance" },
       { id: "taskflow-workspace", label: "TaskFlow WorkSPace", to: "/taskflow-workspace" },
       { id: "methodology-processes", label: "Methodology Processes", to: "/methodology-processes" },
       { id: "gantt-wbs-planner", label: "Gantt WBS Planner", to: "/gantt-wbs-planner" },
       { id: "OKRInitiatives", label: "OKR Initiatives", to: "/OKRInitiatives" },
+    ],
+  },
+  {
+    id: "mockup-hris-admin",
+    label: "Mockup HRIS Admin",
+    icon: "users",
+    children: [
+      { id: "live-attendance", label: "Live Attendance", to: "/live-attendance" },
+      { id: "hris-attendance", label: "Kehadiran", to: "/mockup-hris-admin/attendance" },
+      { id: "hris-employee", label: "Karyawan", to: "/mockup-hris-admin/employees" },
+      { id: "hris-time-off", label: "Cuti/Izin", to: "/mockup-hris-admin/time-off" },
     ],
   },
   {

@@ -80,6 +80,22 @@ const routes: RouteRecordRaw[] = [
     component: () => import("@/pages/Mockup/LiveAttendance.vue"),
   },
   {
+    path: "/mockup-hris-admin/attendance",
+    component: () => import("@/pages/HRISAdmin/Attendance.vue"),
+  },
+  {
+    path: "/mockup-hris-admin/attendance/:employeeId",
+    component: () => import("@/pages/HRISAdmin/AttendanceEmployeeLog.vue"),
+  },
+  {
+    path: "/mockup-hris-admin/employees",
+    component: () => import("@/pages/HRISAdmin/Employee.vue"),
+  },
+  {
+    path: "/mockup-hris-admin/time-off",
+    component: () => import("@/pages/HRISAdmin/TimeOff.vue"),
+  },
+  {
     path: "/select-playground",
     component: () => import("@/pages/Mockup/SelectPlayground.vue"),
   },
