@@ -6,7 +6,6 @@ import SelectDropdown from "@/components/controls/SelectDropdown.vue";
 import MultiSelect from "@/components/controls/MultiSelect.vue";
 import PageHeader from "@/components/PageHeader.vue";
 import Tooltip from "@/components/Tooltip.vue";
-import { attachPinnedShadowsToElement } from "@/composables/useAgGridPinnedShadows";
 import {
   calcAgHeaderHeight,
   calcAgRowHeight,
@@ -42,7 +41,6 @@ type TimelineRow = {
 
 const isDark = ref(false);
 let htmlObs: MutationObserver | null = null;
-const pinnedShadowCleanups: Array<() => void> = [];
 const valueGridWrap = ref<HTMLElement | null>(null);
 const timelineGridWrap = ref<HTMLElement | null>(null);
 
@@ -64,7 +62,6 @@ onMounted(() => {
 });
 onBeforeUnmount(() => {
   htmlObs?.disconnect();
-  pinnedShadowCleanups.splice(0).forEach((cleanup) => cleanup());
 });
 
 const density = ref<"compact" | "cozy" | "spacious">("compact");
@@ -384,16 +381,6 @@ onMounted(async () => {
     api.value.setGridOption("rowHeight", rowHeightOf());
     api.value.resetRowHeights();
   }
-  if (valueGridWrap.value) {
-    pinnedShadowCleanups.push(
-      attachPinnedShadowsToElement(valueGridWrap.value)
-    );
-  }
-  if (timelineGridWrap.value) {
-    pinnedShadowCleanups.push(
-      attachPinnedShadowsToElement(timelineGridWrap.value)
-    );
-  }
 });
 
 const reloadData = () => {
@@ -410,7 +397,7 @@ const reloadData = () => {
         </li>
         <li class="breadcrumbs-item">
           <span class="breadcrumbs-sep">/</span>
-          <span class="breadcrumbs-current">Mockup Pages</span>
+          <span class="breadcrumbs-current">AG Grid</span>
         </li>
         <li class="breadcrumbs-item">
           <span class="breadcrumbs-sep">/</span>
@@ -586,7 +573,7 @@ const reloadData = () => {
         class="w-full project-grid-wrap"
         :style="{ minHeight: `${minGridHeight}px` }"
       >
-        <AgGridSurface :auto-row-height="false" :pinned-shadows="false" normal-layout-height="100%"
+        <AgGridSurface :auto-row-height="false" normal-layout-height="100%"
           :density="density"
           :key="gridKey"
           :class="['agx', themeClass, 'w-full', 'h-full', 'min-h-0']"
@@ -670,7 +657,7 @@ const reloadData = () => {
         class="w-full project-grid-wrap"
         :style="{ minHeight: `${minGridHeight}px` }"
       >
-        <AgGridSurface :auto-row-height="false" :pinned-shadows="false" normal-layout-height="100%"
+        <AgGridSurface :auto-row-height="false" normal-layout-height="100%"
           :density="density"
           :key="gridKey + '-timeline'"
           :class="['agx', themeClass, 'w-full', 'h-full', 'min-h-0']"

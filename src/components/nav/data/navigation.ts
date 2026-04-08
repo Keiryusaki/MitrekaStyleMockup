@@ -42,10 +42,17 @@ export const NAV: NavItem[] = [
       { id: "taskflow-workspace", label: "TaskFlow WorkSPace", to: "/taskflow-workspace" },
       { id: "methodology-processes", label: "Methodology Processes", to: "/methodology-processes" },
       { id: "gantt-wbs-planner", label: "Gantt WBS Planner", to: "/gantt-wbs-planner" },
-      { id: "aggrid", label: "AG Grid", to: "/aggrid" },
+      { id: "OKRInitiatives", label: "OKR Initiatives", to: "/OKRInitiatives" },
+    ],
+  },
+  {
+    id: "ag-grid",
+    label: "AG Grid",
+    icon: "table",
+    children: [
+      { id: "aggrid", label: "AG Grid Demo", to: "/aggrid" },
       { id: "project-budgeting", label: "Project Budgeting", to: "/project-budgeting" },
       { id: "project-cashflow", label: "Project Cashflow", to: "/project-cashflow" },
-      { id: "OKRInitiatives", label: "OKR Initiatives", to: "/OKRInitiatives" },
     ],
   },
   {

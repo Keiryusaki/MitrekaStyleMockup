@@ -481,8 +481,33 @@ onBeforeUnmount(() => {
     <PageHeader 
       category="Mockup"
       title="AG Grid" 
-      description="Contoh implementasi AG Grid dengan theme dan density controls."
+      description="Playground AG Grid untuk theme, density, pinned columns, export, dan pola integrasi shared helper di Mitreka UI."
     />
+
+    <section class="grid gap-3 md:grid-cols-2">
+      <div class="card p-4 space-y-2">
+        <div class="flex items-center gap-2 text-sm font-semibold">
+          <Icon name="check-circle" class="h-4 w-4 text-success" />
+          <span>Default package behavior</span>
+        </div>
+        <p class="text-sm opacity-75">
+          Mulai <code>@keiryusaki/mitreka-ui</code> v2.2.47, <code>AgGridSurface</code>
+          menangani pinned shadow otomatis. Untuk implementasi standar, consumer tidak
+          perlu lagi attach shadow manual per halaman.
+        </p>
+      </div>
+      <div class="card p-4 space-y-2">
+        <div class="flex items-center gap-2 text-sm font-semibold">
+          <Icon name="info" class="h-4 w-4 text-info" />
+          <span>Fallback manual</span>
+        </div>
+        <p class="text-sm opacity-75">
+          Helper manual <code>attachPinnedShadowsToElement()</code> tetap tersedia untuk
+          kebutuhan non-standar, misalnya wrapper grid custom, eksperimen DOM AG Grid,
+          atau halaman lama yang belum dimigrasikan penuh.
+        </p>
+      </div>
+    </section>
 
     <section class="card p-3 space-y-2">
       <div class="flex flex-wrap items-center gap-3 justify-between">
@@ -594,10 +619,14 @@ onBeforeUnmount(() => {
         row dengan <code>createSpacerRowHeight()</code>.
       </div>
       <div class="text-xs opacity-70">
-        Garis tebal di header dikontrol di <code>@/lib/mitreka-ui/plugins/aggrid.css</code> (header
-        separator 3px). Garis di atas <code>Total</code> pakai selector
-        <code>.pcf-row-total</code> atau <code>.cmp-role-total</code> dengan
-        warna lebih terang.
+        Styling AG Grid base tetap mengikuti <code>@/lib/mitreka-ui/plugins/aggrid.css</code>.
+        Kalau butuh garis subtotal/total khusus, pakai class row seperti
+        <code>.pcf-row-total</code> atau <code>.cmp-role-total</code> agar layer visualnya
+        tetap terpisah dari theme default package.
+      </div>
+      <div class="rounded-xl border border-base-300 bg-base-50 px-3 py-2 text-xs opacity-75">
+        Halaman demo ini masih menyimpan contoh jalur manual supaya ada referensi migrasi,
+        tapi untuk page baru sebaiknya prioritaskan behavior bawaan <code>AgGridSurface</code>.
       </div>
       <div class="w-full" ref="compareGridWrap">
         <AgGridSurface :auto-row-height="false" :pinned-shadows="false"

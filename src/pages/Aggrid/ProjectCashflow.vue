@@ -2,7 +2,6 @@
 import { computed, onBeforeUnmount, onMounted, ref, nextTick } from "vue";
 import { AgGridSurface } from "@/lib/mitreka-ui-dist/vue";
 import PageHeader from "@/components/PageHeader.vue";
-import { attachPinnedShadowsToElement } from "@/composables/useAgGridPinnedShadows";
 import {
   createCompareRowClassRules,
   createSpacerRow,
@@ -430,7 +429,6 @@ const cashflowGridOptions = {
 
 const isDark = ref(false);
 let htmlObs: MutationObserver | null = null;
-const pinnedShadowCleanups: Array<() => void> = [];
 const revenueGridWrap = ref<HTMLElement | null>(null);
 const budgetGridWrap = ref<HTMLElement | null>(null);
 const cashflowGridWrap = ref<HTMLElement | null>(null);
@@ -457,26 +455,10 @@ onMounted(async () => {
   agFontPx.value = resolveAgFontPx(
     revenueGridWrap.value || budgetGridWrap.value || cashflowGridWrap.value
   );
-  if (revenueGridWrap.value) {
-    pinnedShadowCleanups.push(
-      attachPinnedShadowsToElement(revenueGridWrap.value)
-    );
-  }
-  if (budgetGridWrap.value) {
-    pinnedShadowCleanups.push(
-      attachPinnedShadowsToElement(budgetGridWrap.value)
-    );
-  }
-  if (cashflowGridWrap.value) {
-    pinnedShadowCleanups.push(
-      attachPinnedShadowsToElement(cashflowGridWrap.value)
-    );
-  }
 });
 
 onBeforeUnmount(() => {
   htmlObs?.disconnect();
-  pinnedShadowCleanups.splice(0).forEach((cleanup) => cleanup());
 });
 
 const themeClass = computed(() =>
@@ -511,7 +493,7 @@ const cashflowRowClassRules = {
         </li>
         <li class="breadcrumbs-item">
           <span class="breadcrumbs-sep">/</span>
-          <span class="breadcrumbs-current">Mockup Pages</span>
+          <span class="breadcrumbs-current">AG Grid</span>
         </li>
         <li class="breadcrumbs-item">
           <span class="breadcrumbs-sep">/</span>
@@ -598,7 +580,7 @@ const cashflowRowClassRules = {
       <section class="card p-4 space-y-3">
         <div class="pcf-section-title">Revenue</div>
         <div class="pcf-grid" ref="revenueGridWrap">
-          <AgGridSurface :auto-row-height="false" :pinned-shadows="false"
+          <AgGridSurface :auto-row-height="false"
             :auto-height-threshold="16"
             density="compact"
             :class="['agx', 'agx-compact', themeClass, 'w-full', 'h-full']"
@@ -618,7 +600,7 @@ const cashflowRowClassRules = {
       <section class="card p-4 space-y-3">
         <div class="pcf-section-title">Budget Plan</div>
         <div class="pcf-grid pcf-grid-auto" ref="budgetGridWrap">
-          <AgGridSurface :auto-row-height="false" :pinned-shadows="false"
+          <AgGridSurface :auto-row-height="false"
             :auto-height-threshold="15"
             normal-layout-height="80vh"
             density="compact"
@@ -639,7 +621,7 @@ const cashflowRowClassRules = {
       <section class="card p-4 space-y-3">
         <div class="pcf-section-title">Cashflow</div>
         <div class="pcf-grid pcf-grid-auto" ref="cashflowGridWrap">
-          <AgGridSurface :auto-row-height="false" :pinned-shadows="false"
+          <AgGridSurface :auto-row-height="false"
             density="compact"
             :class="['agx', 'agx-compact', themeClass, 'w-full']"
             theme="legacy"

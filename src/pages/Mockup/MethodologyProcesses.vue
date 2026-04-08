@@ -386,7 +386,7 @@ function requirementBadgeClass(type: RequirementType): string {
       </div>
     </section>
 
-    <Modal :open="editorOpen" :title="modalTitle" size="xl" @close="editorOpen = false" @confirm="saveMainForm">
+    <Modal :open="editorOpen" :title="modalTitle" size="lg" @close="editorOpen = false" @confirm="saveMainForm">
       <div class="space-y-5">
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
           <div>

@@ -40,8 +40,7 @@ export const useUi = defineStore("ui", {
     sidebarOpen: false,
     sidebarCollapsed: loadPref({ sidebarCollapsed: false })
       .sidebarCollapsed as boolean,
-    openGroups: loadPref({ openGroups: {} as Record<string, boolean> })
-      .openGroups as Record<string, boolean>,
+    openGroups: {} as Record<string, boolean>,
     toasts: [] as ToastItem[],
     toastPosition: "bottom-right" as ToastPosition,
     lastId: 0,

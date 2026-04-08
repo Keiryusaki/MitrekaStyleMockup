@@ -37,11 +37,8 @@ export function useSidebar() {
   const isGroupOpen = (item: NavItem) => {
     // Auto-expand all groups when searching
     if (searchQuery.value.trim()) return true;
-    
-    const current = ui.openGroups[item.id];
-    const auto = item.children?.some(isActive) ?? false;
-    if (current === undefined && auto) ui.setGroupOpen(item.id, true);
-    return ui.openGroups[item.id] ?? auto;
+
+    return ui.openGroups[item.id] ?? false;
   };
   const toggleGroup = (item: NavItem) => ui.toggleGroup(item.id);
   const go = (item: NavItem) => {
