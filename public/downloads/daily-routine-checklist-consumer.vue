@@ -168,7 +168,7 @@ const monthGroups = computed(() => {
   return groups;
 });
 
-const sourceRows = ref<SourceRow[]>([
+const seedRows: SourceRow[] = [
   { id: 1, no: 1, item: "Cek Stok ATK (ajuan pengadaan)", periode: "Daily", schedule: "Afternoon", pic: "Fiqih Dewi Lestari", category: "RUMAH TANGGA", statuses: { 1: "realization", 2: "planned", 3: "planned", 6: "planned", 7: "planned", 8: "planned", 9: "planned", 10: "planned", 13: "planned", 14: "planned", 15: "planned", 16: "planned", 17: "planned", 20: "planned", 21: "planned", 22: "planned", 23: "planned", 24: "planned", 27: "planned", 28: "planned", 29: "planned", 30: "planned" } },
   { id: 2, no: 2, item: "Cek Stok Pantry (ajuan pengadaan)", periode: "Weekly", schedule: "Wednesday", pic: "Fiqih Dewi Lestari", category: "RUMAH TANGGA", statuses: { 8: "planned", 15: "planned", 22: "planned", 29: "planned" } },
   { id: 3, no: 3, item: "Cek Kelengkapan Ruang2 Meeting", periode: "Daily", schedule: "Morning", pic: "Fiqih Dewi Lestari", category: "RUMAH TANGGA", statuses: { 1: "planned", 2: "planned", 3: "planned", 6: "planned", 7: "planned", 8: "planned", 9: "planned", 10: "planned", 13: "planned", 14: "planned", 15: "planned", 16: "planned", 17: "planned", 20: "planned", 21: "planned", 22: "planned", 23: "planned", 24: "planned", 27: "planned", 28: "planned", 29: "planned", 30: "planned" } },
@@ -205,7 +205,39 @@ const sourceRows = ref<SourceRow[]>([
   { id: 34, no: 2, item: "Rekonsiliasi petty cash", periode: "Weekly", schedule: "Wednesday", pic: "Bambang Irawan", category: "KEUANGAN OPERASIONAL", statuses: { 8: "planned", 15: "planned", 22: "planned", 29: "planned" } },
   { id: 35, no: 3, item: "Approval reimbursement", periode: "Daily", schedule: "Afternoon", pic: "Ayu Wulandari", category: "KEUANGAN OPERASIONAL", statuses: { 4: "planned", 5: "planned", 11: "planned", 12: "planned", 18: "planned", 19: "planned", 25: "planned", 26: "planned" } },
   { id: 36, no: 4, item: "Review aging payable", periode: "Monthly", schedule: "Date 20", pic: "Etin Sutinah / Bambang Irawan", category: "KEUANGAN OPERASIONAL", statuses: { 20: "planned" } },
-]);
+];
+
+function normalizePastStatuses(
+  statuses: Partial<Record<number, DayStatus>>,
+  rowIdx: number
+): Partial<Record<number, DayStatus>> {
+  const normalized: Partial<Record<number, DayStatus>> = {};
+  const todayDay = todayDate.getDate();
+
+  Object.entries(statuses).forEach(([dayKey, status]) => {
+    const day = Number(dayKey);
+    if (!status || !Number.isFinite(day)) return;
+
+    if (day <= todayDay) {
+      const pattern = (day + rowIdx) % 8;
+      if (pattern === 0) normalized[day] = "cancel";
+      else if (pattern === 3 || pattern === 6) normalized[day] = "planned";
+      else normalized[day] = "realization";
+      return;
+    }
+
+    normalized[day] = status;
+  });
+
+  return normalized;
+}
+
+const sourceRows = ref<SourceRow[]>(
+  seedRows.map((row, rowIdx) => ({
+    ...row,
+    statuses: normalizePastStatuses(row.statuses, rowIdx),
+  }))
+);
 
 function applyFilters() {
   filters.value = { ...filterDraft.value };
@@ -472,9 +504,9 @@ const totalRowTint = (kind?: GridRow["totalKind"]) => {
   return isDark.value ? "#0f172a" : "#ffffff";
 };
 const totalRowTextColor = (kind?: GridRow["totalKind"]) => {
-  if (kind === "planned") return "color-mix(in oklch, var(--color-warning), var(--color-base-content) 35%)";
-  if (kind === "cancel") return "color-mix(in oklch, var(--color-error), var(--color-base-content) 35%)";
-  if (kind === "realization") return "color-mix(in oklch, var(--color-info), var(--color-base-content) 35%)";
+  if (kind === "planned") return "var(--color-warning)";
+  if (kind === "cancel") return "var(--color-error)";
+  if (kind === "realization") return "var(--color-info)";
   return "var(--color-base-content)";
 };
 
@@ -975,24 +1007,69 @@ watch(rowHeightVal, (value) => {
 </template>
 
 <style>
+.drc-grid .ag-cell.drc-status-cell.drc-status-planned {
+  background: var(--color-warning) !important;
+  color: var(--color-warning-content) !important;
+}
+
+.drc-grid .ag-cell.drc-status-cell.drc-status-cancel {
+  background: var(--color-error) !important;
+  color: var(--color-error-content) !important;
+}
+
+.drc-grid .ag-cell.drc-status-cell.drc-status-realization {
+  background: var(--color-info) !important;
+  color: var(--color-info-content) !important;
+}
+
+.drc-grid .ag-floating-bottom .ag-row.drc-total-planned .ag-cell {
+  background: color-mix(in oklch, var(--color-warning), white 84%) !important;
+  color: var(--color-warning) !important;
+}
+
+.drc-grid .ag-floating-bottom .ag-row.drc-total-cancel .ag-cell {
+  background: color-mix(in oklch, var(--color-error), white 84%) !important;
+  color: var(--color-error) !important;
+}
+
+.drc-grid .ag-floating-bottom .ag-row.drc-total-realization .ag-cell {
+  background: color-mix(in oklch, var(--color-info), white 84%) !important;
+  color: var(--color-info) !important;
+}
+
 .drc-grid .ag-floating-bottom .ag-pinned-left-cols-container .ag-row.drc-total-planned .ag-cell,
 .drc-grid .ag-pinned-left-cols-container .ag-row.drc-total-planned .ag-cell,
 .drc-grid .ag-pinned-left-cols-container .ag-cell.drc-total-left-planned {
   background: color-mix(in oklch, var(--color-warning), white 84%) !important;
-  color: color-mix(in oklch, var(--color-warning), var(--color-base-content) 35%) !important;
+  color: var(--color-warning) !important;
 }
 
 .drc-grid .ag-floating-bottom .ag-pinned-left-cols-container .ag-row.drc-total-cancel .ag-cell,
 .drc-grid .ag-pinned-left-cols-container .ag-row.drc-total-cancel .ag-cell,
 .drc-grid .ag-pinned-left-cols-container .ag-cell.drc-total-left-cancel {
   background: color-mix(in oklch, var(--color-error), white 84%) !important;
-  color: color-mix(in oklch, var(--color-error), var(--color-base-content) 35%) !important;
+  color: var(--color-error) !important;
 }
 
 .drc-grid .ag-floating-bottom .ag-pinned-left-cols-container .ag-row.drc-total-realization .ag-cell,
 .drc-grid .ag-pinned-left-cols-container .ag-row.drc-total-realization .ag-cell,
 .drc-grid .ag-pinned-left-cols-container .ag-cell.drc-total-left-realization {
   background: color-mix(in oklch, var(--color-info), white 84%) !important;
-  color: color-mix(in oklch, var(--color-info), var(--color-base-content) 35%) !important;
+  color: var(--color-info) !important;
+}
+
+.drc-grid .ag-floating-bottom .ag-center-cols-container .ag-row.drc-total-planned .ag-cell {
+  background: color-mix(in oklch, var(--color-warning), white 84%) !important;
+  color: var(--color-warning) !important;
+}
+
+.drc-grid .ag-floating-bottom .ag-center-cols-container .ag-row.drc-total-cancel .ag-cell {
+  background: color-mix(in oklch, var(--color-error), white 84%) !important;
+  color: var(--color-error) !important;
+}
+
+.drc-grid .ag-floating-bottom .ag-center-cols-container .ag-row.drc-total-realization .ag-cell {
+  background: color-mix(in oklch, var(--color-info), white 84%) !important;
+  color: var(--color-info) !important;
 }
 </style>
