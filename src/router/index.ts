@@ -114,6 +114,10 @@ const routes: RouteRecordRaw[] = [
     component: () => import("@/pages/Mockup/MethodologyProcesses.vue"),
   },
   {
+    path: "/daily-routine-checklist",
+    component: () => import("@/pages/Mockup/DailyRoutineChecklist.vue"),
+  },
+  {
     path: "/gantt-wbs-planner",
     component: () => import("@/pages/Mockup/GanttWbsPlanner.vue"),
   },
