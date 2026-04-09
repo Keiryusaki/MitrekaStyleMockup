@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed, onBeforeUnmount, onMounted, ref, watch } from "vue";
-import { AgGridSurface, Button, Card, DateTimePicker, Input, Modal, PageHeader, SelectDropdown } from "@/lib/mitreka-ui-dist/vue";
+import { AgGridSurface, Button, Card, DateTimePicker, Modal, MultiSelect, PageHeader, SelectDropdown } from "@/lib/mitreka-ui-dist/vue";
 import { calcAgRowHeight, resolveAgFontPx } from "@/composables/useAgGridRowHeight";
 import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-quartz.css";
@@ -40,6 +40,7 @@ const picOptions = [
   { value: "ayu", label: "Ayu Wulandari" },
   { value: "alice", label: "Alice Norin Fitded" },
 ];
+const picFilterOptions = picOptions.filter((option) => option.value !== "all");
 const statusOptions = [
   { value: "planned", label: "Planned" },
   { value: "cancel", label: "Cancel / Reschedule" },
@@ -49,8 +50,7 @@ const statusOptions = [
 const filterDraft = ref({
   month: "4",
   year: "2026",
-  picSearch: "",
-  pic: "all",
+  pic: [] as string[],
   planned: true,
   cancel: true,
   realization: true,
@@ -228,16 +228,18 @@ const activeStatusSet = computed(() => {
 });
 
 const filteredSourceRows = computed(() => {
-  const q = filters.value.picSearch.trim().toLowerCase();
-  const selectedLabel = picOptions.find((option) => option.value === filters.value.pic)?.label.toLowerCase() ?? "";
+  const selectedPicLabels = (filters.value.pic || [])
+    .map((value) => picFilterOptions.find((option) => option.value === value)?.label.toLowerCase())
+    .filter((label): label is string => !!label);
 
   return sourceRows.value.filter((row) => {
-    const matchesPic = filters.value.pic === "all" || row.pic.toLowerCase().includes(selectedLabel);
-    const matchesSearch = !q || row.pic.toLowerCase().includes(q);
+    const matchesPic =
+      selectedPicLabels.length === 0 ||
+      selectedPicLabels.some((label) => row.pic.toLowerCase().includes(label));
     const matchesStatus =
       activeStatusSet.value.size === 0 ||
       Object.values(row.statuses).some((status) => status && activeStatusSet.value.has(status));
-    return matchesPic && matchesSearch && matchesStatus;
+    return matchesPic && matchesStatus;
   });
 });
 
@@ -889,10 +891,13 @@ watch(rowHeightVal, (value) => {
         </div>
         <div class="space-y-3">
           <label class="text-xs font-semibold uppercase tracking-[0.16em] text-base-content/55">PIC</label>
-          <div class="grid gap-2 lg:grid-cols-[minmax(0,1fr)_220px]">
-            <Input v-model="filterDraft.picSearch" size="sm" placeholder="Search and select PIC..." />
-            <SelectDropdown v-model="filterDraft.pic" size="sm" :options="picOptions" />
-          </div>
+          <MultiSelect
+            v-model="filterDraft.pic"
+            :options="picFilterOptions"
+            size="sm"
+            display-mode="inline-compact"
+            placeholder="Choose PIC..."
+          />
         </div>
         <div>
           <Button class="w-full" color="primary" @click="applyFilters">Apply Filters</Button>
