@@ -46,10 +46,13 @@ const statusOptions = [
   { value: "cancel", label: "Cancel / Reschedule" },
   { value: "realization", label: "Realization" },
 ];
+const todayDate = new Date();
+const defaultMonth = String(todayDate.getMonth() + 1);
+const defaultYear = String(todayDate.getFullYear());
 
 const filterDraft = ref({
-  month: "4",
-  year: "2026",
+  month: defaultMonth,
+  year: defaultYear,
   pic: [] as string[],
   planned: true,
   cancel: true,
@@ -114,7 +117,6 @@ const statusPalette = computed(() => {
     },
   };
 });
-const todayDate = new Date(2026, 3, 9);
 
 const computeDark = () => {
   const html = document.documentElement;
