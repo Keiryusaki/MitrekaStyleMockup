@@ -296,20 +296,60 @@ watch(indeterminate, (v) => {
         </div>
       </section>
 
-      <!-- Notes -->
-      <section class="rounded-box border border-base-300 p-4 text-sm">
+      <!-- Developer Guide -->
+      <section class="rounded-box border border-base-300 p-4 text-sm space-y-4">
+        <div>
+          <h3 class="text-sm font-semibold uppercase tracking-wide opacity-70">
+            Developer Guide (Toggle)
+          </h3>
+          <p class="mt-1 text-base-content/75">
+            Toggle di DS ini berbasis <code>&lt;input type="checkbox"&gt;</code> dengan class
+            utama <code>.switch</code>.
+          </p>
+        </div>
+
         <ul class="list-disc space-y-1 pl-5">
           <li>
-            <strong>Toggle:</strong> base <code>.toggle</code> + warna
-            <code>.toggle-{tone}</code> + ukuran
-            <code>.toggle-{xs|sm|md|lg|xl}</code>.
+            <strong>Base class:</strong> <code>.switch</code>
           </li>
+          <li>
+            <strong>Color tone:</strong>
+            <code>.switch-{primary|secondary|accent|info|success|warning|error}</code>
+          </li>
+          <li>
+            <strong>Size:</strong> <code>.switch-{xs|sm|lg|xl}</code> (default = <code>md</code>)
+          </li>
+          <li>
+            <strong>State control:</strong> pakai <code>v-model</code> untuk nilai boolean,
+            <code>:disabled</code> untuk lock input.
+          </li>
+        </ul>
+
+        <div class="space-y-2">
+          <p class="font-medium">Contoh paling umum (Vue):</p>
+          <pre class="bg-base-200/70 rounded-box p-3 overflow-x-auto text-xs leading-relaxed"><code>&lt;script setup lang="ts"&gt;
+import { ref } from "vue";
+
+const autoApprove = ref(false);
+&lt;/script&gt;
+
+&lt;template&gt;
+  &lt;label class="flex items-center gap-2"&gt;
+    &lt;input
+      v-model="autoApprove"
+      type="checkbox"
+      class="switch switch-primary switch-sm"
+    /&gt;
+    &lt;span&gt;Auto approve tender&lt;/span&gt;
+  &lt;/label&gt;
+&lt;/template&gt;</code></pre>
+        </div>
+
+        <ul class="list-disc space-y-1 pl-5">
           <li>
             <strong>Checkbox:</strong> base <code>.checkbox</code> + warna
             <code>.checkbox-{tone}</code> + ukuran
-            <code>.checkbox-{xs|sm|md|lg|xl}</code>. State
-            <em>indeterminate</em> diatur via JS:
-            <code>el.indeterminate = true</code>.
+            <code>.checkbox-{xs|sm|md|lg|xl}</code>.
           </li>
           <li>
             <strong>Radio:</strong> base <code>.radio</code> + warna
@@ -317,9 +357,8 @@ watch(indeterminate, (v) => {
             <code>.radio-{xs|sm|md|lg|xl}</code>.
           </li>
           <li>
-            <strong>Accessibility:</strong> selalu pasangkan dengan label yang
-            bisa diklik (di contoh ini pakai
-            <code>&lt;label&gt;</code> wrapper).
+            <strong>Accessibility:</strong> selalu bungkus dengan
+            <code>&lt;label&gt;</code> agar area klik lebih besar.
           </li>
         </ul>
       </section>
