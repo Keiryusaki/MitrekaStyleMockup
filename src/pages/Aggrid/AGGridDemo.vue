@@ -592,7 +592,17 @@ onBeforeUnmount(() => {
       <AgGridSurface :auto-row-height="false" :pinned-shadows="false"
         :density="density"
         :key="gridKey"
-        :class="['agx', themeClass, 'w-full', 'h-full', 'min-h-0']"
+        :class="[
+          'agx',
+          themeClass,
+          'w-full',
+          'h-full',
+          'min-h-0',
+          '[&_.ag-layout-auto-height_.ag-center-cols-viewport]:!min-h-[25px]',
+          '[&_.ag-layout-auto-height_.ag-center-cols-container]:!min-h-[25px]',
+          '[&_.ag-overlay]:!bg-transparent',
+          '[&_.ag-overlay]:!pointer-events-none',
+        ]"
         theme="legacy"
         :style="{
           '--ag-odd-row-background-color': striped
@@ -631,7 +641,15 @@ onBeforeUnmount(() => {
       <div class="w-full" ref="compareGridWrap">
         <AgGridSurface :auto-row-height="false" :pinned-shadows="false"
           :density="density"
-          :class="['agx', themeClass, 'w-full']"
+          :class="[
+            'agx',
+            themeClass,
+            'w-full',
+            '[&_.ag-layout-auto-height_.ag-center-cols-viewport]:!min-h-[25px]',
+            '[&_.ag-layout-auto-height_.ag-center-cols-container]:!min-h-[25px]',
+            '[&_.ag-overlay]:!bg-transparent',
+            '[&_.ag-overlay]:!pointer-events-none',
+          ]"
           theme="legacy"
           :style="{
             '--ag-odd-row-background-color': striped

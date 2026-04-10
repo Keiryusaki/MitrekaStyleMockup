@@ -139,6 +139,28 @@ ModuleRegistry.registerModules([AllCommunityModule])
             <li><code>autoHeightThreshold</code>: batas jumlah row (default 15).</li>
             <li><code>normalLayoutHeight</code>: tinggi mode normal (default <code>80vh</code>).</li>
           </ul>
+          <p class="text-sm opacity-80 mt-3">
+            Jika pakai mode <code>autoHeight</code> dan ingin empty-state lebih ringkas
+            tanpa menutupi header, tambahkan utility class berikut di
+            <code>AgGridSurface</code>.
+          </p>
+          <pre v-pre class="code"><code>&lt;AgGridSurface
+  :class="[
+    'agx',
+    themeClass,
+    '[&amp;_.ag-layout-auto-height_.ag-center-cols-viewport]:!min-h-[25px]',
+    '[&amp;_.ag-layout-auto-height_.ag-center-cols-container]:!min-h-[25px]',
+    '[&amp;_.ag-overlay]:!bg-transparent',
+    '[&amp;_.ag-overlay]:!pointer-events-none',
+  ]"
+  :rowData="rows"
+  :columnDefs="cols"
+/&gt;</code></pre>
+          <ul class="text-sm list-disc ml-4">
+            <li><code>!min-h-[25px]</code>: bikin body autoHeight lebih compact.</li>
+            <li><code>ag-overlay !bg-transparent</code>: cegah overlay menutup header saat data kosong.</li>
+            <li><code>ag-overlay !pointer-events-none</code>: overlay tidak mengganggu interaksi.</li>
+          </ul>
         </li>
 
         <li>
