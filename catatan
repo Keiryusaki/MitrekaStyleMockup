@@ -1,34 +1,54 @@
 SOP Sync mitreka-ui <-> MitrekaStyleMockup (lokal saja)
 
 Tujuan:
-- Update komponen/CSS di mitreka-ui dan memastikan mockup ikut sinkron.
+- MitrekaStyleMockup adalah source of truth (DS core) untuk pengembangan komponen/CSS.
+- Perubahan dikerjakan dan divalidasi dulu di MitrekaStyleMockup (source lokal), baru disinkronkan ke mitreka-ui lalu publish.
 - Catatan ini untuk internal, bukan untuk developer.
 
 Lokasi repo (lokal):
 - mitreka-ui: D:\Mitreka\Office\Product\MitrekaStyleGuide\mitreka-ui
 - MitrekaStyleMockup: D:\Mitreka\Office\Product\MitrekaStyleGuide\MitrekaStyleMockup
 
-Checklist:
-1) Update mitreka-ui
-   - Edit di: mitreka-ui/src
-   - Bump versi (mitreka-ui/package.json)
-   - Build: npm run build (di repo mitreka-ui)
-   - Jika pakai Vue component, update tipe props di src/vue/*.vue
-   - Catatan: build menghasilkan dist + d.ts (dist/vue/*.d.ts)
-   - Catatan baru: CSS tambahan dari MitrekaStyleMockup sudah digabung ke mitreka-ui
-     lewat `mitreka-ui/src/css/mockup.css` dan diimport di `mitreka-ui/src/css/index.css`.
-     Jadi consumer cukup pakai `@keiryusaki/mitreka-ui/css` untuk full style.
+Keputusan arsitektur package (update SOP):
+- Gunakan monorepo dengan 2 package:
+  - `@keiryusaki/mitreka-ui` = komponen umum Design System.
+  - `@keiryusaki/auth-shell` = login right panel / auth UI shared.
+- Tujuan pemisahan: menghindari penumpukan komponen yang tidak dipakai di package utama.
+- Rule update:
+  - Jika perubahan komponen umum -> update `@keiryusaki/mitreka-ui`.
+  - Jika perubahan auth right panel/login shell -> update `@keiryusaki/auth-shell`.
+  - Jika keduanya berubah -> rilis keduanya.
 
-2) Sync ke Mockup
-   - Copy mitreka-ui/dist/css -> MitrekaStyleMockup/src/lib/mitreka-ui
-   - Copy mitreka-ui/dist -> MitrekaStyleMockup/src/lib/mitreka-ui-dist
-   - Update versi app: MitrekaStyleMockup/package.json
+Implementasi `@keiryusaki/auth-shell` (catatan penting):
+- Stable install: `npm i @keiryusaki/auth-shell`
+- Beta install (uji internal): `npm i @keiryusaki/auth-shell@beta`
+- Untuk penggunaan di consumer, wajib import style:
+  - `import "@keiryusaki/auth-shell/style.css";`
+
+Checklist (alur utama - WAJIB):
+1) Kerjakan dulu di MitrekaStyleMockup (DS core, source lokal)
+   - Edit komponen/page/style di `MitrekaStyleMockup/src`
+   - Validasi hasil di mockup sampai fix (visual + behavior)
+   - Untuk runtime mockup, gunakan source lokal/vendor dist (bukan registry package)
+
+2) Sync dari DS ke package mitreka-ui
+   - Port perubahan yang sudah fix ke `mitreka-ui/src` (komponen/CSS/token)
+   - Jika pakai Vue component, update tipe props di `mitreka-ui/src/vue/*.vue`
+   - Untuk sinkron CSS DS, ikuti guardrail full-sync di bawah (jangan patch parsial)
+
+3) Rilis package mitreka-ui
+   - Bump versi (`mitreka-ui/package.json`)
+   - Build: `npm run build` (hasil: `dist` + `dist/vue/*.d.ts`)
+   - Publish bila siap rilis (`npm publish`)
+
+4) Sync balik artifact package ke Mockup
+   - Copy `mitreka-ui/dist/css` -> `MitrekaStyleMockup/src/lib/mitreka-ui`
+   - Copy `mitreka-ui/dist` -> `MitrekaStyleMockup/src/lib/mitreka-ui-dist`
+   - Update versi app `MitrekaStyleMockup/package.json` jika perlu
    - Update changelog halaman jika rilisnya memang mau diumumkan
-   - Pastikan versi sinkron: package mitreka-ui, versi app mockup, dan entry terbaru di changelog
 
-3) Dependency mode
-   - Belum publish: gunakan "file:../mitreka-ui" di MitrekaStyleMockup/package.json
-   - Sudah publish: ganti ke versi semver dan npm install
+5) Final consistency check sebelum push
+   - Pastikan versi sinkron: package mitreka-ui, versi app mockup, what's new/footer, dan changelog
 
 Catatan:
 - Untuk pengingat internal, cukup baca halaman Changelog jika butuh konteks rilis.
@@ -39,11 +59,11 @@ Catatan:
   package version, release label di dashboard/what's new, footer/app version, dan halaman changelog.
 
 Checklist ringkas (5 langkah):
-1) Update `mitreka-ui/src` + bump version
-2) `npm run build` di repo mitreka-ui
-3) Copy `dist/css` -> `MitrekaStyleMockup/src/lib/mitreka-ui`
-4) Update versi di `MitrekaStyleMockup/package.json`
-5) Jika sudah publish: ganti dependency `file:` ke semver + `npm install`
+1) Update & validasi dulu di `MitrekaStyleMockup/src` (DS lokal)
+2) Sync perubahan fix ke `mitreka-ui/src`
+3) Bump version + `npm run build` (+ `npm publish` jika rilis)
+4) Copy `mitreka-ui/dist/css` + `mitreka-ui/dist` ke folder vendor mockup
+5) Cek konsistensi versi lintas area sebelum commit/push
 
 Guardrail sinkron CSS (WAJIB sebelum publish):
 1) Jangan patch parsial saat ada perubahan DS style; default harus full-sync:
@@ -69,9 +89,22 @@ Opsional (backup tanpa Codex):
 - Tambah script `release:local` untuk `npm run build && npm run sync:mockup`.
 
 Publish (pakai GitHub Packages):
-1) Pastikan sudah commit perubahan di mitreka-ui
-2) `npm publish` (prepublishOnly akan jalan build otomatis)
-3) Push repo mitreka-ui setelah publish
+1) Pastikan sudah commit perubahan package target (`mitreka-ui` atau `auth-shell`)
+2) Publish channel test dulu (WAJIB):
+   - contoh: `npm publish --tag beta`
+3) Validasi di consumer/test project pakai versi beta.
+4) Jika sudah fix, publish stabil tanpa tag (latest).
+5) Push repo setelah publish.
+
+SOP release channel (WAJIB):
+1) Jangan publish `latest` langsung untuk perubahan baru.
+2) Selalu mulai dari pre-release:
+   - contoh versi: `x.y.z-beta.0`, `x.y.z-beta.1`, dst.
+3) Consumer test install dengan:
+   - `npm i <package>@beta` atau `npm i <package>@x.y.z-beta.n`
+4) Setelah QA/internal check lolos, baru promote ke stabil:
+   - publish versi final tanpa tag beta (masuk `latest`).
+5) Jika beta belum fix, lanjut bump beta berikutnya; jangan paksa `latest`.
 
 Catatan publish:
 - `npm publish` bisa auto-normalize `repository.url` (warning). Opsional: `npm pkg fix`.
@@ -82,6 +115,12 @@ Catatan deploy GH Pages (biar gak gagal):
 2) Gunakan vendor dist: `src/lib/mitreka-ui-dist` dan alias Vite ke sana.
 3) CSS pakai lokal: `src/lib/mitreka-ui/index.css` (bukan `@keiryusaki/mitreka-ui/css`).
 4) Setiap update mitreka-ui: re-copy `mitreka-ui/dist` -> `mitreka-ui-dist` sebelum push.
+
+Guardrail import Mockup (WAJIB):
+1) Runtime import di `MitrekaStyleMockup/src` harus ke lokal:
+   - `@/lib/mitreka-ui-dist/vue`
+   - `@/lib/mitreka-ui-dist/composables`
+2) String `@keiryusaki/mitreka-ui/*` di mockup hanya boleh untuk konten dokumentasi/snippet consumer, bukan runtime import.
 
 Standar Starter Pack (wajib konsisten):
 - `MitrekaStyleMockup` = source of truth Design System.

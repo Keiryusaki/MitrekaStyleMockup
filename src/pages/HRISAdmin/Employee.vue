@@ -1,4 +1,4 @@
-<script setup lang="ts">
+﻿<script setup lang="ts">
 import { computed, h, onBeforeUnmount, onMounted, ref, render, watch } from "vue";
 import { useRouter } from "vue-router";
 import { AgGridSurface, Avatar, Button, Card, DateTimePicker, Icon, Input, Modal, PageHeader, SelectDropdown } from "@/lib/mitreka-ui-dist/vue";
@@ -750,44 +750,48 @@ const closeEditConfirmModal = () => {
 const saveEditDisabled = computed(() => !editForm.value.changeReason.trim());
 
 const createSteps = [
-  { number: 1, title: "Personal data", description: "Basic identity and contact" },
-  { number: 2, title: "Employment data", description: "Job and contract setup" },
-  { number: 3, title: "Payroll", description: "Salary and bank account" },
-  { number: 4, title: "Invite employee", description: "Send account activation" },
+  { number: 1, title: "Personal data", description: "Basic identity and contact", icon: "user" as const },
+  { number: 2, title: "Employment data", description: "Job and contract setup", icon: "clipboard" as const },
+  { number: 3, title: "Payroll", description: "Salary and bank account", icon: "landmark" as const },
+  { number: 4, title: "Invite employee", description: "Send account activation", icon: "send" as const },
 ];
 const createPrimaryLabel = computed(() => (createStep.value === 4 ? "Send Invite" : "Next"));
 const createBackDisabled = computed(() => createStep.value === 1);
-const activeCreateStepMeta = computed(() => createSteps[createStep.value - 1]);
 const editPrimaryLabel = computed(() => (editStep.value === 4 ? "Save Changes" : "Next"));
 const editBackDisabled = computed(() => editStep.value === 1);
 const activeEditStepMeta = computed(() => createSteps[editStep.value - 1]);
 const createStepValid = computed(() => {
+  const isStepOneValid = !!(
+    createForm.value.firstName.trim() &&
+    createForm.value.email.trim() &&
+    createForm.value.birthDate &&
+    createForm.value.maritalStatus &&
+    createForm.value.religion
+  );
+  const isStepTwoValid = !!(
+    createForm.value.employeeCode.trim() &&
+    createForm.value.title.trim() &&
+    createForm.value.department.trim() &&
+    createForm.value.joinDate
+  );
+  const isStepThreeValid = !!(
+    createForm.value.bankName.trim() &&
+    createForm.value.bankAccountName.trim() &&
+    createForm.value.bankAccountNumber.trim() &&
+    createForm.value.baseSalary.trim()
+  );
+  const isStepFourValid = !!(createForm.value.inviteEmail.trim() || createForm.value.email.trim());
+
   if (createStep.value === 1) {
-    return !!(
-      createForm.value.firstName.trim() &&
-      createForm.value.email.trim() &&
-      createForm.value.birthDate &&
-      createForm.value.maritalStatus &&
-      createForm.value.religion
-    );
+    return isStepOneValid;
   }
   if (createStep.value === 2) {
-    return !!(
-      createForm.value.employeeCode.trim() &&
-      createForm.value.title.trim() &&
-      createForm.value.department.trim() &&
-      createForm.value.joinDate
-    );
+    return isStepTwoValid;
   }
   if (createStep.value === 3) {
-    return !!(
-      createForm.value.bankName.trim() &&
-      createForm.value.bankAccountName.trim() &&
-      createForm.value.bankAccountNumber.trim() &&
-      createForm.value.baseSalary.trim()
-    );
+    return isStepThreeValid;
   }
-  return !!(createForm.value.inviteEmail.trim() || createForm.value.email.trim());
+  return isStepOneValid && isStepTwoValid && isStepThreeValid && isStepFourValid;
 });
 const editStepValid = computed(() => {
   if (editStep.value === 1) {
@@ -1183,7 +1187,7 @@ const onCellClicked = (event: any) => {
           ]"
           @click="setStatusFilter(item.key)"
         >
-          {{ item.label }} · {{ item.value }}
+          {{ item.label }} Â· {{ item.value }}
         </button>
         <button
           v-for="item in workModelSummary"
@@ -1197,7 +1201,7 @@ const onCellClicked = (event: any) => {
           ]"
           @click="setWorkTypeFilter(item.key)"
         >
-          {{ item.label }} · {{ item.value }}
+          {{ item.label }} Â· {{ item.value }}
         </button>
       </div>
     </Card>
@@ -1285,39 +1289,24 @@ const onCellClicked = (event: any) => {
 
     <Modal :open="createModalOpen" title="Add Employee" size="lg" @close="closeCreateModal">
       <div class="space-y-5">
-        <div class="rounded-2xl border border-base-300 bg-base-50 p-4">
-          <div class="flex flex-col items-center gap-4">
-            <div class="flex items-center justify-center gap-2 overflow-x-auto pb-1">
-              <template v-for="(step, index) in createSteps" :key="step.number">
-                <button
-                  type="button"
-                  :disabled="step.number > createStep + 1"
-                  @click="step.number <= createStep + 1 ? (createStep = step.number) : null"
-                  :class="[
-                    'flex h-10 w-10 items-center justify-center rounded-full font-semibold transition-all',
-                    createStep === step.number
-                      ? 'bg-primary text-primary-content ring-4 ring-primary/20'
-                      : createStep > step.number
-                        ? 'bg-success text-success-content cursor-pointer hover:ring-2 hover:ring-success/30'
-                        : 'bg-base-300 text-base-content/50 cursor-not-allowed',
-                  ]"
-                >
-                  <Icon v-if="createStep > step.number" name="check" class="h-4 w-4" />
-                  <span v-else>{{ step.number }}</span>
-                </button>
-                <div
-                  v-if="index < createSteps.length - 1"
-                  :class="[
-                    'h-1 w-10 rounded transition-all md:w-16',
-                    createStep > step.number ? 'bg-success' : 'bg-base-300',
-                  ]"
-                />
-              </template>
-            </div>
-            <div class="text-center">
-              <div class="font-semibold">{{ activeCreateStepMeta.title }}</div>
-              <div class="text-sm text-base-content/60">{{ activeCreateStepMeta.description }}</div>
-            </div>
+        <div class="rounded-2xl border border-base-300 bg-base-50 p-3">
+          <div class="tabs tabs-pills w-full" style="width: 100%;">
+            <button
+              v-for="step in createSteps"
+              :key="step.number"
+              type="button"
+              class="tab h-auto min-h-[unset] flex-1 justify-start px-4 py-3 text-left"
+              :class="{ 'tab-active': createStep === step.number }"
+              @click="createStep = step.number"
+            >
+              <div class="min-w-0">
+                <div class="flex items-center gap-2 font-semibold">
+                  <Icon :name="step.icon" class="h-4 w-4 shrink-0" />
+                  <span>{{ step.title }}</span>
+                </div>
+                <div class="mt-1 text-xs text-base-content/65">{{ step.description }}</div>
+              </div>
+            </button>
           </div>
         </div>
 
@@ -1328,7 +1317,7 @@ const onCellClicked = (event: any) => {
           </div>
           <div class="grid gap-4 md:grid-cols-2">
             <div class="space-y-1">
-              <label class="text-sm font-medium">Name*</label>
+              <label class="text-sm font-medium">Name <span class="text-error">*</span></label>
               <Input v-model="createForm.firstName" size="sm" placeholder="First name" class="w-full" />
             </div>
             <div class="space-y-1">
@@ -1336,7 +1325,7 @@ const onCellClicked = (event: any) => {
               <Input v-model="createForm.lastName" size="sm" placeholder="Last name" class="w-full" />
             </div>
             <div class="space-y-1 md:col-span-2">
-              <label class="text-sm font-medium">Email*</label>
+              <label class="text-sm font-medium">Email <span class="text-error">*</span></label>
               <Input v-model="createForm.email" type="email" size="sm" placeholder="name@company.com" class="w-full" />
               <p class="text-xs text-base-content/60">This email is use for log in</p>
             </div>
@@ -1353,7 +1342,7 @@ const onCellClicked = (event: any) => {
               <Input v-model="createForm.placeOfBirth" size="sm" class="w-full" />
             </div>
             <div class="space-y-1">
-              <label class="text-sm font-medium">Birthdate*</label>
+              <label class="text-sm font-medium">Birthdate <span class="text-error">*</span></label>
               <DateTimePicker v-model="createForm.birthDate" picker="date" size="sm" class="w-full" />
             </div>
             <div class="space-y-2">
@@ -1366,7 +1355,7 @@ const onCellClicked = (event: any) => {
               </div>
             </div>
             <div class="space-y-1">
-              <label class="text-sm font-medium">Marital status*</label>
+              <label class="text-sm font-medium">Marital status <span class="text-error">*</span></label>
               <SelectDropdown v-model="createForm.maritalStatus" :options="maritalStatusOptions" size="sm" variant="outline" color="default" />
             </div>
             <div class="space-y-1">
@@ -1374,7 +1363,7 @@ const onCellClicked = (event: any) => {
               <SelectDropdown v-model="createForm.bloodType" :options="bloodTypeOptions" size="sm" variant="outline" color="default" />
             </div>
             <div class="space-y-1">
-              <label class="text-sm font-medium">Religion*</label>
+              <label class="text-sm font-medium">Religion <span class="text-error">*</span></label>
               <SelectDropdown v-model="createForm.religion" :options="religionOptions" size="sm" variant="outline" color="default" />
             </div>
           </div>
@@ -1422,15 +1411,15 @@ const onCellClicked = (event: any) => {
           </div>
           <div class="grid gap-4 md:grid-cols-2">
             <div class="space-y-1">
-              <label class="text-sm font-medium">Employee code*</label>
+              <label class="text-sm font-medium">Employee code <span class="text-error">*</span></label>
               <Input v-model="createForm.employeeCode" size="sm" class="w-full" />
             </div>
             <div class="space-y-1">
-              <label class="text-sm font-medium">Job position*</label>
+              <label class="text-sm font-medium">Job position <span class="text-error">*</span></label>
               <SelectDropdown v-model="createForm.title" :options="jobPositionOptions" size="sm" variant="outline" color="default" />
             </div>
             <div class="space-y-1">
-              <label class="text-sm font-medium">Department*</label>
+              <label class="text-sm font-medium">Department <span class="text-error">*</span></label>
               <Input v-model="createForm.department" size="sm" class="w-full" />
             </div>
             <div class="space-y-1">
@@ -1454,7 +1443,7 @@ const onCellClicked = (event: any) => {
               <SelectDropdown v-model="createForm.workType" :options="workTypeOptions.slice(1)" size="sm" variant="outline" color="default" />
             </div>
             <div class="space-y-1">
-              <label class="text-sm font-medium">Join date*</label>
+              <label class="text-sm font-medium">Join date <span class="text-error">*</span></label>
               <DateTimePicker v-model="createForm.joinDate" picker="date" size="sm" class="w-full" />
             </div>
             <div class="space-y-1">
@@ -1479,15 +1468,15 @@ const onCellClicked = (event: any) => {
           </div>
           <div class="grid gap-4 md:grid-cols-2">
             <div class="space-y-1">
-              <label class="text-sm font-medium">Bank name*</label>
+              <label class="text-sm font-medium">Bank name <span class="text-error">*</span></label>
               <Input v-model="createForm.bankName" size="sm" placeholder="BCA / Mandiri / BNI" class="w-full" />
             </div>
             <div class="space-y-1">
-              <label class="text-sm font-medium">Bank account name*</label>
+              <label class="text-sm font-medium">Bank account name <span class="text-error">*</span></label>
               <Input v-model="createForm.bankAccountName" size="sm" class="w-full" />
             </div>
             <div class="space-y-1">
-              <label class="text-sm font-medium">Bank account number*</label>
+              <label class="text-sm font-medium">Bank account number <span class="text-error">*</span></label>
               <Input v-model="createForm.bankAccountNumber" size="sm" class="w-full" />
             </div>
             <div class="space-y-1">
@@ -1503,7 +1492,7 @@ const onCellClicked = (event: any) => {
               <Input v-model="createForm.bpjsKetenagakerjaan" size="sm" class="w-full" />
             </div>
             <div class="space-y-1">
-              <label class="text-sm font-medium">Base salary*</label>
+              <label class="text-sm font-medium">Base salary <span class="text-error">*</span></label>
               <Input v-model="createForm.baseSalary" size="sm" mask="currency-idr" placeholder="15.000.000" class="w-full" />
             </div>
             <div class="space-y-1">
@@ -1529,7 +1518,7 @@ const onCellClicked = (event: any) => {
               </div>
             </div>
             <div class="space-y-1">
-              <label class="text-sm font-medium">Invite email*</label>
+              <label class="text-sm font-medium">Invite email <span class="text-error">*</span></label>
               <Input v-model="createForm.inviteEmail" type="email" size="sm" :placeholder="createForm.email || 'employee@company.com'" class="w-full" />
             </div>
             <div class="space-y-1">
@@ -1600,7 +1589,7 @@ const onCellClicked = (event: any) => {
           </div>
           <div class="grid gap-4 md:grid-cols-2">
             <div class="space-y-1">
-              <label class="text-sm font-medium">Name*</label>
+              <label class="text-sm font-medium">Name <span class="text-error">*</span></label>
               <Input v-model="editForm.firstName" size="sm" placeholder="First name" class="w-full" />
             </div>
             <div class="space-y-1">
@@ -1608,7 +1597,7 @@ const onCellClicked = (event: any) => {
               <Input v-model="editForm.lastName" size="sm" placeholder="Last name" class="w-full" />
             </div>
             <div class="space-y-1 md:col-span-2">
-              <label class="text-sm font-medium">Email*</label>
+              <label class="text-sm font-medium">Email <span class="text-error">*</span></label>
               <Input v-model="editForm.email" type="email" size="sm" placeholder="name@company.com" class="w-full" />
               <p class="text-xs text-base-content/60">This email is use for log in</p>
             </div>
@@ -1625,7 +1614,7 @@ const onCellClicked = (event: any) => {
               <Input v-model="editForm.placeOfBirth" size="sm" class="w-full" />
             </div>
             <div class="space-y-1">
-              <label class="text-sm font-medium">Birthdate*</label>
+              <label class="text-sm font-medium">Birthdate <span class="text-error">*</span></label>
               <DateTimePicker v-model="editForm.birthDate" picker="date" size="sm" class="w-full" />
             </div>
             <div class="space-y-2">
@@ -1638,7 +1627,7 @@ const onCellClicked = (event: any) => {
               </div>
             </div>
             <div class="space-y-1">
-              <label class="text-sm font-medium">Marital status*</label>
+              <label class="text-sm font-medium">Marital status <span class="text-error">*</span></label>
               <SelectDropdown v-model="editForm.maritalStatus" :options="maritalStatusOptions" size="sm" variant="outline" color="default" />
             </div>
             <div class="space-y-1">
@@ -1646,7 +1635,7 @@ const onCellClicked = (event: any) => {
               <SelectDropdown v-model="editForm.bloodType" :options="bloodTypeOptions" size="sm" variant="outline" color="default" />
             </div>
             <div class="space-y-1">
-              <label class="text-sm font-medium">Religion*</label>
+              <label class="text-sm font-medium">Religion <span class="text-error">*</span></label>
               <SelectDropdown v-model="editForm.religion" :options="religionOptions" size="sm" variant="outline" color="default" />
             </div>
           </div>
@@ -1694,15 +1683,15 @@ const onCellClicked = (event: any) => {
           </div>
           <div class="grid gap-4 md:grid-cols-2">
             <div class="space-y-1">
-              <label class="text-sm font-medium">Employee code*</label>
+              <label class="text-sm font-medium">Employee code <span class="text-error">*</span></label>
               <Input v-model="editForm.employeeCode" size="sm" class="w-full" />
             </div>
             <div class="space-y-1">
-              <label class="text-sm font-medium">Job position*</label>
+              <label class="text-sm font-medium">Job position <span class="text-error">*</span></label>
               <SelectDropdown v-model="editForm.title" :options="jobPositionOptions" size="sm" variant="outline" color="default" />
             </div>
             <div class="space-y-1">
-              <label class="text-sm font-medium">Department*</label>
+              <label class="text-sm font-medium">Department <span class="text-error">*</span></label>
               <Input v-model="editForm.department" size="sm" class="w-full" />
             </div>
             <div class="space-y-1">
@@ -1726,7 +1715,7 @@ const onCellClicked = (event: any) => {
               <SelectDropdown v-model="editForm.workType" :options="workTypeOptions.slice(1)" size="sm" variant="outline" color="default" />
             </div>
             <div class="space-y-1">
-              <label class="text-sm font-medium">Join date*</label>
+              <label class="text-sm font-medium">Join date <span class="text-error">*</span></label>
               <DateTimePicker v-model="editForm.joinDate" picker="date" size="sm" class="w-full" />
             </div>
             <div class="space-y-1">
@@ -1751,15 +1740,15 @@ const onCellClicked = (event: any) => {
           </div>
           <div class="grid gap-4 md:grid-cols-2">
             <div class="space-y-1">
-              <label class="text-sm font-medium">Bank name*</label>
+              <label class="text-sm font-medium">Bank name <span class="text-error">*</span></label>
               <Input v-model="editForm.bankName" size="sm" placeholder="BCA / Mandiri / BNI" class="w-full" />
             </div>
             <div class="space-y-1">
-              <label class="text-sm font-medium">Bank account name*</label>
+              <label class="text-sm font-medium">Bank account name <span class="text-error">*</span></label>
               <Input v-model="editForm.bankAccountName" size="sm" class="w-full" />
             </div>
             <div class="space-y-1">
-              <label class="text-sm font-medium">Bank account number*</label>
+              <label class="text-sm font-medium">Bank account number <span class="text-error">*</span></label>
               <Input v-model="editForm.bankAccountNumber" size="sm" class="w-full" />
             </div>
             <div class="space-y-1">
@@ -1775,7 +1764,7 @@ const onCellClicked = (event: any) => {
               <Input v-model="editForm.bpjsKetenagakerjaan" size="sm" class="w-full" />
             </div>
             <div class="space-y-1">
-              <label class="text-sm font-medium">Base salary*</label>
+              <label class="text-sm font-medium">Base salary <span class="text-error">*</span></label>
               <Input v-model="editForm.baseSalary" size="sm" mask="currency-idr" placeholder="15.000.000" class="w-full" />
             </div>
             <div class="space-y-1">
@@ -1807,7 +1796,7 @@ const onCellClicked = (event: any) => {
               </p>
             </div>
             <div class="space-y-1">
-              <label class="text-sm font-medium">Change reason*</label>
+              <label class="text-sm font-medium">Change reason <span class="text-error">*</span></label>
               <textarea
                 v-model="editForm.changeReason"
                 class="input min-h-28 w-full py-2"
@@ -1918,3 +1907,4 @@ const onCellClicked = (event: any) => {
     </Modal>
   </div>
 </template>
+
