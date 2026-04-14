@@ -53,6 +53,7 @@ const menuNaturalCap = ref<number | null>(null);
 const menuOpenUpward = ref(false);
 const MAX_MENU_HEIGHT = 320;
 const EDGE_PADDING = 12;
+const MIN_TRIGGER_VISIBLE_PX = 8;
 
 // Find selected option
 const selected = computed(() =>
@@ -182,6 +183,42 @@ const menuListStyle = computed(() => ({
   maxHeight: `${menuMaxHeight.value}px`,
 }));
 
+const isScrollableOverflow = (value: string) =>
+  value === "auto" || value === "scroll" || value === "overlay";
+
+const getNearestScrollContainer = (el: HTMLElement | null): HTMLElement | null => {
+  let parent = el?.parentElement ?? null;
+  while (parent) {
+    const styles = window.getComputedStyle(parent);
+    if (
+      isScrollableOverflow(styles.overflowY) &&
+      parent.scrollHeight > parent.clientHeight
+    ) {
+      return parent;
+    }
+    parent = parent.parentElement;
+  }
+  return null;
+};
+
+const isTriggerVisible = () => {
+  if (!triggerRef.value) return false;
+  const triggerRect = triggerRef.value.getBoundingClientRect();
+  const visibleInViewport =
+    triggerRect.bottom > EDGE_PADDING &&
+    triggerRect.top < window.innerHeight - EDGE_PADDING;
+  if (!visibleInViewport) return false;
+
+  const scrollContainer = getNearestScrollContainer(triggerRef.value);
+  if (!scrollContainer) return true;
+
+  const containerRect = scrollContainer.getBoundingClientRect();
+  return (
+    triggerRect.bottom > containerRect.top + MIN_TRIGGER_VISIBLE_PX &&
+    triggerRect.top < containerRect.bottom - MIN_TRIGGER_VISIBLE_PX
+  );
+};
+
 const updateMenuPosition = () => {
   if (!open.value || !triggerRef.value || !menuRef.value) return;
 
@@ -290,6 +327,10 @@ const onViewportChange = (evt?: Event) => {
   if (!open.value) return;
   const target = evt?.target as Node | null;
   if (target && menuRef.value?.contains(target)) return;
+  if (!isTriggerVisible()) {
+    open.value = false;
+    return;
+  }
   updateMenuPosition();
 };
 

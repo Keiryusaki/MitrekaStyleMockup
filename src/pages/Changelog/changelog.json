@@ -1,5 +1,23 @@
 [
     {
+        "version":  "2.2.48",
+        "date":  "2026-04-14",
+        "label":  "Patch",
+        "items":  [
+                      {
+                          "type":  "Fixed",
+                          "text":  "SelectDropdown, SelectInput, dan MultiSelect kini auto-close saat trigger keluar area visible ketika modal/container di-scroll, sehingga dropdown tidak lagi terlihat melayang di luar viewport modal."
+                      },
+                      {
+                          "type":  "Changed",
+                          "text":  "Sinkronisasi package @keiryusaki/mitreka-ui v2.2.48 ke mockup vendor dist."
+                      }
+                  ],
+        "assets":  [
+
+                   ]
+    },
+    {
         "version":  "2.2.47",
         "date":  "2026-04-08",
         "label":  "Patch",

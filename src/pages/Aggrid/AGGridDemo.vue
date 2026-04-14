@@ -491,7 +491,7 @@ onBeforeUnmount(() => {
           <span>Default package behavior</span>
         </div>
         <p class="text-sm opacity-75">
-          Mulai <code>@keiryusaki/mitreka-ui</code> v2.2.47, <code>AgGridSurface</code>
+          Mulai <code>@keiryusaki/mitreka-ui</code> v2.2.48, <code>AgGridSurface</code>
           menangani pinned shadow otomatis. Untuk implementasi standar, consumer tidak
           perlu lagi attach shadow manual per halaman.
         </p>
