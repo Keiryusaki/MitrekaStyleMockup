@@ -1,11 +1,11 @@
-﻿<script setup lang="ts">
+<script setup lang="ts">
 import { computed, h, onBeforeUnmount, onMounted, ref, render, watch } from "vue";
-import { useRouter } from "vue-router";
+import { useRoute, useRouter } from "vue-router";
 import { AgGridSurface, Avatar, Button, Card, DateTimePicker, Icon, Input, Modal, PageHeader, SelectDropdown } from "@/lib/mitreka-ui-dist/vue";
 import type { EmployeeProfile, EmployeeStatus } from "@/data/hrisAdmin/employeeDirectory";
 import { employeeDirectory } from "@/data/hrisAdmin/employeeDirectory";
 import { iconRegistry } from "@/composables/Icon";
-import EmployeeOrgChart from "@/pages/HRISAdmin/components/EmployeeOrgChart.vue";
+import EmployeeFormPage from "@/pages/HRISAdmin/components/EmployeeFormPage.vue";
 import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-quartz.css";
 import "@/lib/mitreka-ui/plugins/aggrid.css";
@@ -13,6 +13,7 @@ import "@/lib/mitreka-ui/plugins/aggrid.css";
 type WorkType = EmployeeProfile["workType"];
 type AttendanceRisk = "Low" | "Medium" | "High";
 type EmploymentType = "Permanent" | "Contract" | "Probation";
+type AppAccessFilter = "all" | "active" | "pending";
 
 type EmployeeRow = EmployeeProfile & {
   no: number;
@@ -33,6 +34,8 @@ type EmployeeRow = EmployeeProfile & {
   attendanceRisk: AttendanceRisk;
   leaveBalance: number;
   directReports: number;
+  hasAttendanceAccess: boolean;
+  invitationSentAt: string | null;
 };
 
 type AuditLogEntry = {
@@ -53,6 +56,12 @@ type EmployeeFormState = {
   email: string;
   phoneNumber: string;
   additionalPhoneNumber: string;
+  emergencyContacts: Array<{
+    name: string;
+    relationship: string;
+    phoneNumber: string;
+    additionalPhoneNumber: string;
+  }>;
   placeOfBirth: string;
   birthDate: string;
   gender: string;
@@ -60,6 +69,33 @@ type EmployeeFormState = {
   bloodType: string;
   religion: string;
   nik: string;
+  threeLetterCode: string;
+  organizationStructure: string;
+  grade: string;
+  pendidikanRows: Array<{
+    strata: string;
+    tahunLulus: string;
+    institusi: string;
+    dokumenUrl: string;
+  }>;
+  sertifikasiRows: Array<{
+    tanggalExpired: string;
+    nama: string;
+    dokumenUrl: string;
+  }>;
+  kelengkapanRows: Array<{
+    dokumen: string;
+    keterangan: string;
+    dokumenUrl: string;
+  }>;
+  referensiRows: Array<{
+    tanggalReferensi: string;
+    posisiPenugasan: string;
+    kerjaStart: string;
+    kerjaEnd: string;
+    pemberiReferensi: string;
+    dokumenUrl: string;
+  }>;
   passportNumber: string;
   passportExpiryDate: string;
   postalCode: string;
@@ -87,17 +123,29 @@ type EmployeeFormState = {
   baseSalary: string;
   payrollSchedule: string;
   inviteEmail: string;
+  inviteMethod: "email" | "whatsapp" | "manual";
+  invitePhone: string;
   inviteMessage: string;
 };
 
 const router = useRouter();
+const route = useRoute();
 const isDark = ref(false);
 const gridApi = ref<any>(null);
 const search = ref("");
-const activeDirectoryView = ref<"directory" | "org-chart">("directory");
 const selectedDepartment = ref("all");
 const selectedStatus = ref<"all" | EmployeeStatus>("all");
 const selectedWorkType = ref<"all" | WorkType>("all");
+const selectedEmploymentType = ref<"all" | EmploymentType>("all");
+const selectedRisk = ref<"all" | AttendanceRisk>("all");
+const selectedAppAccess = ref<AppAccessFilter>("all");
+const draftSearch = ref(search.value);
+const draftDepartment = ref(selectedDepartment.value);
+const draftStatus = ref(selectedStatus.value);
+const draftWorkType = ref(selectedWorkType.value);
+const draftEmploymentType = ref(selectedEmploymentType.value);
+const draftRisk = ref(selectedRisk.value);
+const draftAppAccess = ref(selectedAppAccess.value);
 const recordsVersion = ref(0);
 const deletedEmployeeIds = ref<Set<number>>(new Set());
 const createdEmployees = ref<EmployeeRow[]>([]);
@@ -110,6 +158,8 @@ const auditModalOpen = ref(false);
 const resignModalOpen = ref(false);
 const deleteModalOpen = ref(false);
 const editConfirmModalOpen = ref(false);
+const inviteSuccessModalOpen = ref(false);
+const invitationTargetEmail = ref("");
 const selectedRow = ref<EmployeeRow | null>(null);
 const createStep = ref(1);
 const editStep = ref(1);
@@ -121,6 +171,7 @@ const createEmptyEmployeeForm = (overrides: Partial<EmployeeFormState> = {}): Em
   email: "",
   phoneNumber: "",
   additionalPhoneNumber: "",
+  emergencyContacts: [],
   placeOfBirth: "",
   birthDate: "",
   gender: "Male",
@@ -128,6 +179,13 @@ const createEmptyEmployeeForm = (overrides: Partial<EmployeeFormState> = {}): Em
   bloodType: "",
   religion: "",
   nik: "",
+  threeLetterCode: "MHR",
+  organizationStructure: "Human Resources",
+  grade: "G3",
+  pendidikanRows: [],
+  sertifikasiRows: [],
+  kelengkapanRows: [],
+  referensiRows: [],
   passportNumber: "",
   passportExpiryDate: "",
   postalCode: "",
@@ -155,6 +213,8 @@ const createEmptyEmployeeForm = (overrides: Partial<EmployeeFormState> = {}): Em
   baseSalary: "",
   payrollSchedule: "Monthly",
   inviteEmail: "",
+  inviteMethod: "email",
+  invitePhone: "",
   inviteMessage: "",
   ...overrides,
 });
@@ -318,6 +378,8 @@ const baseRows = computed<EmployeeRow[]>(() =>
         attendanceRisk: deriveAttendanceRisk(item.status, item.workType, item.id),
         leaveBalance: 8 + (item.id % 9),
         directReports: deriveDirectReports(item.title, item.id),
+        hasAttendanceAccess: true,
+        invitationSentAt: null,
       };
       return { ...row, ...(employeeOverrides.value[item.id] ?? {}) };
     }),
@@ -411,9 +473,46 @@ const jobPositionOptions = [
   { value: "Chief People Officer", label: "Chief People Officer" },
 ];
 
+const organizationStructureOptions = [
+  { value: "Human Resources", label: "Human Resources" },
+  { value: "People & Culture", label: "People & Culture" },
+  { value: "Executive Office", label: "Executive Office" },
+  { value: "Talent Acquisition", label: "Talent Acquisition" },
+  { value: "Learning & Development", label: "Learning & Development" },
+  { value: "HR Technology", label: "HR Technology" },
+  { value: "Compensation & Benefit", label: "Compensation & Benefit" },
+  { value: "General Affairs", label: "General Affairs" },
+];
+
+const kelengkapanKeyOptions = [
+  { value: "KTP", label: "KTP" },
+  { value: "NPWP", label: "NPWP" },
+  { value: "CV Asli", label: "CV Asli" },
+  { value: "Ijazah", label: "Ijazah" },
+];
+
 const payrollScheduleOptions = [
   { value: "Monthly", label: "Monthly payroll" },
   { value: "Bi-weekly", label: "Bi-weekly payroll" },
+];
+
+const employmentFilterOptions = [
+  { value: "all", label: "Semua tipe kontrak" },
+  { value: "Permanent", label: "Permanent" },
+  { value: "Contract", label: "Contract" },
+  { value: "Probation", label: "Probation" },
+];
+
+const riskFilterOptions = [
+  { value: "all", label: "Semua attendance risk" },
+  { value: "Low", label: "Low" },
+  { value: "Medium", label: "Medium" },
+  { value: "High", label: "High" },
+];
+const appAccessFilterOptions = [
+  { value: "all", label: "Semua akses aplikasi" },
+  { value: "active", label: "Aktif aplikasi" },
+  { value: "pending", label: "Belum aktif aplikasi" },
 ];
 
 const filteredRows = computed(() =>
@@ -421,54 +520,94 @@ const filteredRows = computed(() =>
     if (selectedDepartment.value !== "all" && item.department !== selectedDepartment.value) return false;
     if (selectedStatus.value !== "all" && item.status !== selectedStatus.value) return false;
     if (selectedWorkType.value !== "all" && item.workType !== selectedWorkType.value) return false;
+    if (selectedEmploymentType.value !== "all" && item.employmentType !== selectedEmploymentType.value) return false;
+    if (selectedRisk.value !== "all" && item.attendanceRisk !== selectedRisk.value) return false;
+    if (selectedAppAccess.value === "active" && !item.hasAttendanceAccess) return false;
+    if (selectedAppAccess.value === "pending" && item.hasAttendanceAccess) return false;
     return true;
   }),
 );
 
-const totalEmployeeCount = computed(() => baseRows.value.length);
-const activeEmployeeCount = computed(() => baseRows.value.filter((item) => item.status === "Active").length);
-const departmentCount = computed(() => new Set(baseRows.value.map((item) => item.department)).size);
-const remoteCoverageCount = computed(() => baseRows.value.filter((item) => item.workType !== "Office").length);
-const currentMonthLabel = computed(() =>
-  new Intl.DateTimeFormat("id-ID", { month: "long", year: "numeric" }).format(new Date("2026-04-01T00:00:00")),
-);
-const newHireCount = computed(() => baseRows.value.filter((item) => item.joinDate.startsWith("2026-04")).length);
-const leavingCount = computed(() => baseRows.value.filter((item) => item.status === "Leave").length);
+const filteredTotalCount = computed(() => filteredRows.value.length);
+const filteredActiveCount = computed(() => filteredRows.value.filter((item) => item.status === "Active").length);
+const filteredProbationCount = computed(() => filteredRows.value.filter((item) => item.status === "Probation").length);
+const filteredLeaveCount = computed(() => filteredRows.value.filter((item) => item.status === "Leave").length);
 
 const statusSummary = computed(() => [
-  { key: "all" as const, label: "Total karyawan", value: totalEmployeeCount.value, tone: "text-primary" },
-  { key: "Active" as const, label: "Active", value: activeEmployeeCount.value, tone: "text-success" },
-  { key: "Probation" as const, label: "Probation", value: baseRows.value.filter((item) => item.status === "Probation").length, tone: "text-warning" },
-  { key: "Leave" as const, label: "Leave", value: baseRows.value.filter((item) => item.status === "Leave").length, tone: "text-error" },
+  { label: "Total karyawan", value: filteredTotalCount.value, icon: "users" },
+  { label: "Active", value: filteredActiveCount.value, icon: "check" },
+  { label: "Probation", value: filteredProbationCount.value, icon: "alert-triangle" },
+  { label: "Leave", value: filteredLeaveCount.value, icon: "logout" },
 ]);
 
 const workModelSummary = computed(() => [
-  { key: "Office" as const, label: "Office", value: baseRows.value.filter((item) => item.workType === "Office").length, tone: "text-info" },
-  { key: "Hybrid" as const, label: "Hybrid", value: baseRows.value.filter((item) => item.workType === "Hybrid").length, tone: "text-primary" },
-  { key: "Remote" as const, label: "Remote", value: baseRows.value.filter((item) => item.workType === "Remote").length, tone: "text-secondary" },
+  { label: "Office", value: filteredRows.value.filter((item) => item.workType === "Office").length, icon: "monitor" },
+  { label: "Hybrid", value: filteredRows.value.filter((item) => item.workType === "Hybrid").length, icon: "repeat" },
+  { label: "Remote", value: filteredRows.value.filter((item) => item.workType === "Remote").length, icon: "map-pin" },
 ]);
 
 const quickHighlights = computed(() => {
   const rows = filteredRows.value;
   return [
-    { label: "Departemen aktif", value: new Set(rows.map((item) => item.department)).size },
-    { label: "Butuh perhatian", value: rows.filter((item) => item.attendanceRisk !== "Low").length },
-    { label: "Team lead / manager", value: rows.filter((item) => item.directReports > 0).length },
-    { label: "Coverage hybrid/remote", value: rows.filter((item) => item.workType !== "Office").length },
+    { label: "Departemen aktif", value: new Set(rows.map((item) => item.department)).size, icon: "layout" },
+    { label: "Butuh perhatian", value: rows.filter((item) => item.attendanceRisk !== "Low").length, icon: "alert-triangle" },
+    { label: "Team lead / manager", value: rows.filter((item) => item.directReports > 0).length, icon: "users" },
+    { label: "Coverage hybrid/remote", value: rows.filter((item) => item.workType !== "Office").length, icon: "trendingUp" },
   ];
 });
 
-watch(search, (value) => {
-  gridApi.value?.setGridOption("quickFilterText", value);
+const hasPendingFilterChanges = computed(() =>
+  draftDepartment.value !== selectedDepartment.value ||
+  draftStatus.value !== selectedStatus.value ||
+  draftWorkType.value !== selectedWorkType.value ||
+  draftEmploymentType.value !== selectedEmploymentType.value ||
+  draftRisk.value !== selectedRisk.value ||
+  draftAppAccess.value !== selectedAppAccess.value ||
+  draftSearch.value !== search.value,
+);
+
+const applyListFilters = () => {
+  selectedDepartment.value = draftDepartment.value;
+  selectedStatus.value = draftStatus.value;
+  selectedWorkType.value = draftWorkType.value;
+  selectedEmploymentType.value = draftEmploymentType.value;
+  selectedRisk.value = draftRisk.value;
+  selectedAppAccess.value = draftAppAccess.value;
+  search.value = draftSearch.value;
+  gridApi.value?.setGridOption("quickFilterText", search.value);
+};
+
+const resetListFilters = () => {
+  draftDepartment.value = "all";
+  draftStatus.value = "all";
+  draftWorkType.value = "all";
+  draftEmploymentType.value = "all";
+  draftRisk.value = "all";
+  draftAppAccess.value = "all";
+  draftSearch.value = "";
+  selectedDepartment.value = "all";
+  selectedStatus.value = "all";
+  selectedWorkType.value = "all";
+  selectedEmploymentType.value = "all";
+  selectedRisk.value = "all";
+  selectedAppAccess.value = "all";
+  search.value = "";
+  gridApi.value?.setGridOption("quickFilterText", "");
+};
+
+const formMode = computed<"create" | "edit" | null>(() => {
+  if (route.path === "/mockup-hris-admin/employee/add") return "create";
+  if (route.path.startsWith("/mockup-hris-admin/employee/") && route.path.endsWith("/edit")) return "edit";
+  return null;
 });
 
-const setStatusFilter = (status: "all" | EmployeeStatus) => {
-  selectedStatus.value = selectedStatus.value === status ? "all" : status;
-};
+const isCreatePage = computed(() => formMode.value === "create");
+const isEditPage = computed(() => formMode.value === "edit");
+const isFormPage = computed(() => formMode.value !== null);
+const editingEmployeeId = computed(() => Number(route.params.employeeId || 0));
+const pageForm = computed(() => (isCreatePage.value ? createForm.value : editForm.value));
 
-const setWorkTypeFilter = (workType: "all" | WorkType) => {
-  selectedWorkType.value = selectedWorkType.value === workType ? "all" : workType;
-};
+const resolveRowById = (id: number) => baseRows.value.find((item) => item.id === id) ?? null;
 
 const escapeHtml = (value: string) =>
   value
@@ -547,14 +686,18 @@ const plainValueRenderer = (params: any) => {
 const iconSvg = (name: keyof typeof iconRegistry) =>
   (iconRegistry[name] ?? "").replace("<svg", '<svg class="h-4 w-4"');
 
-const actionRenderer = () =>
-  `<div class="flex h-full items-center justify-center gap-2">
+const actionRenderer = (params: any) => {
+  const row = params.data as EmployeeRow | undefined;
+  const resignButton = row?.hasAttendanceAccess
+    ? `<button type="button" class="icon-btn icon-btn-solid-secondary icon-btn-xs" data-action="resign" title="Resign">
+      ${iconSvg("logout")}
+    </button>`
+    : "";
+  return `<div class="flex h-full items-center justify-center gap-2">
     <button type="button" class="icon-btn icon-btn-solid-primary icon-btn-xs" data-action="detail" title="Detail">
       ${iconSvg("user")}
     </button>
-    <button type="button" class="icon-btn icon-btn-solid-secondary icon-btn-xs" data-action="resign" title="Resign">
-      ${iconSvg("logout")}
-    </button>
+    ${resignButton}
     <button type="button" class="icon-btn icon-btn-solid-info icon-btn-xs" data-action="audit" title="Audit log">
       ${iconSvg("clipboardClock")}
     </button>
@@ -562,6 +705,7 @@ const actionRenderer = () =>
       ${iconSvg("trash")}
     </button>
   </div>`;
+};
 
 const columnDefs = [
   {
@@ -611,7 +755,7 @@ const columnDefs = [
     sortable: false,
     filter: false,
     suppressHeaderMenuButton: true,
-    cellRenderer: actionRenderer,
+    cellRenderer: (params: any) => actionRenderer(params),
   },
 ];
 
@@ -643,24 +787,52 @@ const openDetailModal = (row: EmployeeRow) => {
   detailModalOpen.value = true;
 };
 
-const openEditModal = (row: EmployeeRow) => {
+const openAttendanceLog = (row: EmployeeRow) => {
+  detailModalOpen.value = false;
+  router.push(`/mockup-hris-admin/attendance/${row.id}`);
+};
+
+const sendInvitation = (row: EmployeeRow) => {
+  const sentAt = new Date().toISOString();
+  employeeOverrides.value = {
+    ...employeeOverrides.value,
+    [row.id]: {
+      ...(employeeOverrides.value[row.id] ?? {}),
+      invitationSentAt: sentAt,
+    },
+  };
+  selectedRow.value = { ...row, invitationSentAt: sentAt };
+  invitationTargetEmail.value = row.email;
+  inviteSuccessModalOpen.value = true;
+};
+
+const hydrateEditFormFromRow = (row: EmployeeRow) => {
   const { firstName, lastName } = splitEmployeeName(row.name);
+  const codeParts = row.employeeCode.split("-");
   selectedRow.value = row;
   editStep.value = 1;
-  returnToDetailOnEditClose.value = true;
-  detailModalOpen.value = false;
   editForm.value = {
     ...createEmptyEmployeeForm({
       firstName,
       lastName,
       email: row.email,
       phoneNumber: row.phone,
+      emergencyContacts: [
+        {
+          name: "Keluarga Terdekat",
+          relationship: "Family",
+          phoneNumber: row.phone,
+          additionalPhoneNumber: "",
+        },
+      ],
       placeOfBirth: "Jakarta",
       birthDate: "1995-01-01",
       maritalStatus: "Single",
       religion: "Islam",
+      threeLetterCode: codeParts[0] || "MHR",
       employeeCode: row.employeeCode,
       department: row.department,
+      organizationStructure: row.department,
       branch: row.branch,
       location: row.location,
       title: row.title,
@@ -671,23 +843,33 @@ const openEditModal = (row: EmployeeRow) => {
       signDate: row.signDate ?? "",
       endDate: row.endDate ?? "",
       status: row.status,
+      grade: row.grade,
       bankName: "BCA",
       bankAccountName: row.name,
       bankAccountNumber: `${1000000000 + row.id}`,
       baseSalary: "15000000",
       inviteEmail: row.email,
+      inviteMethod: "manual",
     }),
     changeReason: "",
   };
-  editModalOpen.value = true;
 };
 
-const openCreateModal = () => {
+const openEditModal = (row: EmployeeRow) => {
+  returnToDetailOnEditClose.value = false;
+  detailModalOpen.value = false;
+  hydrateEditFormFromRow(row);
+  router.push(`/mockup-hris-admin/employee/${row.id}/edit`);
+};
+
+const hydrateCreateForm = () => {
   selectedRow.value = null;
   createStep.value = 1;
   createForm.value = createEmptyEmployeeForm({
     employeeCode: `MHR-${String(baseRows.value.length + 1).padStart(3, "0")}`,
+    threeLetterCode: "MHR",
     department: selectedDepartment.value !== "all" ? selectedDepartment.value : "Human Resources",
+    organizationStructure: selectedDepartment.value !== "all" ? selectedDepartment.value : "Human Resources",
     branch: "Pusat",
     location: "Jakarta HQ",
     title: "",
@@ -696,8 +878,13 @@ const openCreateModal = () => {
     joinDate: "2026-04-06",
     signDate: "2026-03-16",
     status: "Active",
+    inviteMethod: "email",
   });
-  createModalOpen.value = true;
+};
+
+const openCreateModal = () => {
+  hydrateCreateForm();
+  router.push("/mockup-hris-admin/employee/add");
 };
 
 const openAuditModal = (row: EmployeeRow) => {
@@ -721,15 +908,39 @@ const closeDetailModal = () => {
 
 const closeCreateModal = () => {
   createModalOpen.value = false;
+  if (isCreatePage.value) router.push("/mockup-hris-admin/employee");
 };
 
 const closeEditModal = () => {
   editModalOpen.value = false;
+  if (isEditPage.value) {
+    router.push("/mockup-hris-admin/employee");
+    return;
+  }
   if (returnToDetailOnEditClose.value && selectedRow.value) {
     detailModalOpen.value = true;
   }
   returnToDetailOnEditClose.value = false;
 };
+
+watch(
+  () => [formMode.value, editingEmployeeId.value, recordsVersion.value],
+  ([mode, employeeId]) => {
+    if (mode === "create") {
+      hydrateCreateForm();
+      return;
+    }
+    if (mode === "edit") {
+      const row = resolveRowById(Number(employeeId));
+      if (!row) {
+        router.replace("/mockup-hris-admin/employee");
+        return;
+      }
+      hydrateEditFormFromRow(row);
+    }
+  },
+  { immediate: true },
+);
 
 const closeAuditModal = () => {
   auditModalOpen.value = false;
@@ -743,88 +954,133 @@ const closeDeleteModal = () => {
   deleteModalOpen.value = false;
 };
 
+const closeInviteSuccessModal = () => {
+  inviteSuccessModalOpen.value = false;
+};
+
 const closeEditConfirmModal = () => {
   editConfirmModalOpen.value = false;
 };
 
-const saveEditDisabled = computed(() => !editForm.value.changeReason.trim());
+const saveEditDisabled = computed(() => !isEditPage.value && !editForm.value.changeReason.trim());
 
 const createSteps = [
-  { number: 1, title: "Personal data", description: "Basic identity and contact", icon: "user" as const },
-  { number: 2, title: "Employment data", description: "Job and contract setup", icon: "clipboard" as const },
-  { number: 3, title: "Payroll", description: "Salary and bank account", icon: "landmark" as const },
-  { number: 4, title: "Invite employee", description: "Send account activation", icon: "send" as const },
+  { number: 1, icon: "user", title: "Personal data", description: "Basic identity and contact" },
+  { number: 2, icon: "users", title: "Emergency contact", description: "Contact person in urgent case" },
+  { number: 3, icon: "clipboardClock", title: "Employment", description: "Job and contract setup" },
+  { number: 4, icon: "book", title: "Education & Experience", description: "Education, cert, and references" },
+  { number: 5, icon: "hard-drive-download", title: "Payroll", description: "Salary and bank account" },
+];
+const inviteMethodOptions = [
+  { value: "email", label: "Email invite" },
+  { value: "whatsapp", label: "WhatsApp invite" },
+  { value: "manual", label: "Buat akun, kirim manual nanti" },
 ];
 const createPrimaryLabel = computed(() => (createStep.value === 4 ? "Send Invite" : "Next"));
 const createBackDisabled = computed(() => createStep.value === 1);
+const activeCreateStepMeta = computed(() => createSteps[createStep.value - 1]);
 const editPrimaryLabel = computed(() => (editStep.value === 4 ? "Save Changes" : "Next"));
 const editBackDisabled = computed(() => editStep.value === 1);
 const activeEditStepMeta = computed(() => createSteps[editStep.value - 1]);
+const formPageTitle = computed(() => (isCreatePage.value ? "Add Employee" : "Edit Employee"));
+const formPageDescription = computed(() =>
+  isCreatePage.value
+    ? "Buat profile karyawan baru lewat halaman khusus, termasuk strategi invite akun."
+    : "Ubah profile karyawan di halaman terpisah agar review perubahan lebih fokus.",
+);
+
+const pageStep = computed({
+  get: () => (isCreatePage.value ? createStep.value : editStep.value),
+  set: (value: number) => {
+    if (isCreatePage.value) createStep.value = value;
+    else editStep.value = value;
+  },
+});
+const pageStepMeta = computed(() => createSteps[pageStep.value - 1]);
+const pageStepValid = computed(() => (isCreatePage.value ? createStepValid.value : editStepValid.value));
+const pageBackDisabled = computed(() => pageStep.value === 1);
+const pagePrimaryLabel = computed(() => {
+  if (pageStep.value < createSteps.length) return "Next";
+  return isCreatePage.value ? "Simpan & Buat Karyawan" : "Simpan Perubahan";
+});
 const createStepValid = computed(() => {
-  const isStepOneValid = !!(
-    createForm.value.firstName.trim() &&
-    createForm.value.email.trim() &&
-    createForm.value.birthDate &&
-    createForm.value.maritalStatus &&
-    createForm.value.religion
-  );
-  const isStepTwoValid = !!(
-    createForm.value.employeeCode.trim() &&
-    createForm.value.title.trim() &&
-    createForm.value.department.trim() &&
-    createForm.value.joinDate
-  );
-  const isStepThreeValid = !!(
+  if (createStep.value === 1) {
+    return !!(
+      createForm.value.firstName.trim() &&
+      createForm.value.email.trim() &&
+      createForm.value.phoneNumber.trim() &&
+      createForm.value.birthDate &&
+      createForm.value.maritalStatus &&
+      createForm.value.religion &&
+      createForm.value.nik.trim() &&
+      createForm.value.citizenIdAddress.trim() &&
+      createForm.value.postalCode.trim()
+    );
+  }
+  if (createStep.value === 2) {
+    return createForm.value.emergencyContacts.some(
+      (item) => item.name.trim() && item.relationship.trim() && item.phoneNumber.trim(),
+    );
+  }
+  if (createStep.value === 3) {
+    return !!(
+      createForm.value.threeLetterCode.trim() &&
+      createForm.value.organizationStructure.trim() &&
+      createForm.value.title.trim() &&
+      createForm.value.jobLevel.trim() &&
+      createForm.value.branch.trim() &&
+      createForm.value.joinDate
+    );
+  }
+  if (createStep.value === 4) return true;
+  return !!(
     createForm.value.bankName.trim() &&
     createForm.value.bankAccountName.trim() &&
     createForm.value.bankAccountNumber.trim() &&
     createForm.value.baseSalary.trim()
   );
-  const isStepFourValid = !!(createForm.value.inviteEmail.trim() || createForm.value.email.trim());
-
-  if (createStep.value === 1) {
-    return isStepOneValid;
-  }
-  if (createStep.value === 2) {
-    return isStepTwoValid;
-  }
-  if (createStep.value === 3) {
-    return isStepThreeValid;
-  }
-  return isStepOneValid && isStepTwoValid && isStepThreeValid && isStepFourValid;
 });
 const editStepValid = computed(() => {
   if (editStep.value === 1) {
     return !!(
       editForm.value.firstName.trim() &&
       editForm.value.email.trim() &&
+      editForm.value.phoneNumber.trim() &&
       editForm.value.birthDate &&
       editForm.value.maritalStatus &&
-      editForm.value.religion
+      editForm.value.religion &&
+      editForm.value.nik.trim() &&
+      editForm.value.citizenIdAddress.trim() &&
+      editForm.value.postalCode.trim()
     );
   }
   if (editStep.value === 2) {
-    return !!(
-      editForm.value.employeeCode.trim() &&
-      editForm.value.title.trim() &&
-      editForm.value.department.trim() &&
-      editForm.value.joinDate
+    return editForm.value.emergencyContacts.some(
+      (item) => item.name.trim() && item.relationship.trim() && item.phoneNumber.trim(),
     );
   }
   if (editStep.value === 3) {
     return !!(
-      editForm.value.bankName.trim() &&
-      editForm.value.bankAccountName.trim() &&
-      editForm.value.bankAccountNumber.trim() &&
-      editForm.value.baseSalary.trim()
+      editForm.value.threeLetterCode.trim() &&
+      editForm.value.organizationStructure.trim() &&
+      editForm.value.title.trim() &&
+      editForm.value.jobLevel.trim() &&
+      editForm.value.branch.trim() &&
+      editForm.value.joinDate
     );
   }
-  return !!editForm.value.changeReason.trim();
+  if (editStep.value === 4) return true;
+  return !!(
+    editForm.value.bankName.trim() &&
+    editForm.value.bankAccountName.trim() &&
+    editForm.value.bankAccountNumber.trim() &&
+    editForm.value.baseSalary.trim()
+  );
 });
 
 const nextCreateStep = () => {
   if (!createStepValid.value) return;
-  if (createStep.value < 4) createStep.value += 1;
+  if (createStep.value < createSteps.length) createStep.value += 1;
   else submitCreateEmployee();
 };
 
@@ -834,32 +1090,57 @@ const prevCreateStep = () => {
 
 const nextEditStep = () => {
   if (!editStepValid.value) return;
-  if (editStep.value < 4) editStep.value += 1;
-  else editConfirmModalOpen.value = true;
+  if (editStep.value < createSteps.length) editStep.value += 1;
+  else {
+    if (!editForm.value.changeReason.trim()) {
+      editForm.value.changeReason = "Penyesuaian data profile karyawan dari halaman edit.";
+    }
+    if (isEditPage.value) saveEdit();
+    else editConfirmModalOpen.value = true;
+  }
 };
 
 const prevEditStep = () => {
   if (editStep.value > 1) editStep.value -= 1;
 };
 
+const inviteTarget = (form: EmployeeFormState) => {
+  if (form.inviteMethod === "whatsapp") return form.invitePhone.trim() || form.phoneNumber.trim() || "-";
+  if (form.inviteMethod === "manual") return "Manual handover";
+  return form.inviteEmail.trim() || form.email.trim() || "-";
+};
+
+const nextPageStep = () => {
+  if (isCreatePage.value) nextCreateStep();
+  else nextEditStep();
+};
+
+const prevPageStep = () => {
+  if (isCreatePage.value) prevCreateStep();
+  else prevEditStep();
+};
+
 const submitCreateEmployee = () => {
   const nextId = Math.max(0, ...baseRows.value.map((item) => item.id)) + 1;
   const fullName = `${createForm.value.firstName} ${createForm.value.lastName}`.trim();
   const employmentType = createForm.value.employmentType;
+  const codePrefix = createForm.value.threeLetterCode.trim().toUpperCase().slice(0, 3) || "MHR";
+  const employeeCode = `${codePrefix}-${String(nextId).padStart(3, "0")}`;
+  const organizationStructure = createForm.value.organizationStructure.trim() || "Human Resources";
   const created: EmployeeRow = {
     id: nextId,
-    employeeCode: createForm.value.employeeCode,
+    employeeCode,
     name: fullName || `Employee ${nextId}`,
     title: createForm.value.title.trim() || "Staff",
-    department: createForm.value.department.trim() || "Human Resources",
+    department: organizationStructure,
     workType: createForm.value.workType,
     location: createForm.value.location.trim() || "Jakarta HQ",
     status: createForm.value.status,
     no: nextId,
     branch: createForm.value.branch,
-    organization: organizationMap[createForm.value.department.trim() || "Human Resources"] ?? (createForm.value.department.trim() || "Human Resources"),
+    organization: organizationMap[organizationStructure] ?? organizationStructure,
     jobLevel: createForm.value.jobLevel,
-    grade: deriveGrade(employmentType, nextId),
+    grade: createForm.value.grade.trim() || deriveGrade(employmentType, nextId),
     employeeClass: deriveEmployeeClass(createForm.value.workType, nextId),
     email: createForm.value.email.trim() || toEmail(fullName || `Employee ${nextId}`),
     phone: createForm.value.phoneNumber.trim() || toPhone(nextId),
@@ -868,11 +1149,13 @@ const submitCreateEmployee = () => {
     signDate: createForm.value.signDate || addDays(createForm.value.joinDate, -21),
     resignDate: null,
     barcode: `MSI-${String(100 + nextId).padStart(3, "0")}`,
-    manager: deriveManager(createForm.value.department.trim() || "Human Resources", nextId),
+    manager: deriveManager(organizationStructure, nextId),
     employmentType,
     attendanceRisk: deriveAttendanceRisk(createForm.value.status, createForm.value.workType, nextId),
     leaveBalance: 12,
     directReports: deriveDirectReports(createForm.value.title.trim() || "Staff", nextId),
+    hasAttendanceAccess: false,
+    invitationSentAt: null,
   };
 
   createdEmployees.value = [...createdEmployees.value, created];
@@ -883,7 +1166,7 @@ const submitCreateEmployee = () => {
         id: `${nextId}-${Date.now()}`,
         actor: "Admin HRIS",
         changedAt: new Date().toISOString(),
-        reason: `Karyawan baru dibuat dan invite dikirim ke ${createForm.value.inviteEmail.trim() || createForm.value.email.trim()}.`,
+        reason: "Karyawan baru dibuat dari halaman add/edit.",
         changes: [
           { field: "Status record", before: "Belum ada", after: "Karyawan baru dibuat" },
           { field: "Nama", before: "-", after: created.name },
@@ -895,6 +1178,9 @@ const submitCreateEmployee = () => {
 
   recordsVersion.value += 1;
   createModalOpen.value = false;
+  if (isCreatePage.value) {
+    router.push("/mockup-hris-admin/employee");
+  }
 };
 
 const saveEdit = () => {
@@ -904,13 +1190,16 @@ const saveEdit = () => {
   const fullName = `${editForm.value.firstName} ${editForm.value.lastName}`.trim() || row.name;
   const nextEmploymentType = editForm.value.employmentType;
   const nextAttendanceRisk = deriveAttendanceRisk(editForm.value.status, editForm.value.workType, row.id);
+  const codePrefix = editForm.value.threeLetterCode.trim().toUpperCase().slice(0, 3) || row.employeeCode.split("-")[0] || "MHR";
+  const nextEmployeeCode = `${codePrefix}-${String(row.id).padStart(3, "0")}`;
+  const organizationStructure = editForm.value.organizationStructure.trim() || editForm.value.department || row.department;
   const changes = [
-    { field: "Employee code", before: row.employeeCode, after: editForm.value.employeeCode },
+    { field: "Employee code", before: row.employeeCode, after: nextEmployeeCode },
     { field: "Nama", before: row.name, after: fullName },
     { field: "Email", before: row.email, after: editForm.value.email.trim() || row.email },
     { field: "Telepon", before: row.phone, after: editForm.value.phoneNumber.trim() || row.phone },
     { field: "Jabatan", before: row.title, after: editForm.value.title },
-    { field: "Departemen", before: row.department, after: editForm.value.department },
+    { field: "Departemen", before: row.department, after: organizationStructure },
     { field: "Branch", before: row.branch, after: editForm.value.branch },
     { field: "Job level", before: row.jobLevel, after: editForm.value.jobLevel },
     { field: "Model kerja", before: row.workType, after: editForm.value.workType },
@@ -926,24 +1215,24 @@ const saveEdit = () => {
   employeeOverrides.value = {
     ...employeeOverrides.value,
     [row.id]: {
-      employeeCode: editForm.value.employeeCode,
+      employeeCode: nextEmployeeCode,
       name: fullName,
       title: editForm.value.title,
-      department: editForm.value.department,
+      department: organizationStructure,
       workType: editForm.value.workType,
       location: editForm.value.location,
       status: editForm.value.status,
       branch: editForm.value.branch || (branchMap[editForm.value.location] ?? "Pusat"),
-      organization: organizationMap[editForm.value.department] ?? editForm.value.department,
+      organization: organizationMap[organizationStructure] ?? organizationStructure,
       jobLevel: editForm.value.jobLevel || deriveJobLevel(editForm.value.title),
-      grade: deriveGrade(nextEmploymentType, row.id),
+      grade: editForm.value.grade.trim() || deriveGrade(nextEmploymentType, row.id),
       employeeClass: deriveEmployeeClass(editForm.value.workType, row.id),
       joinDate: editForm.value.joinDate,
       signDate: editForm.value.signDate || null,
       endDate: nextEmploymentType === "Permanent" ? null : (editForm.value.endDate || addDays(editForm.value.joinDate, 720)),
       email: editForm.value.email.trim() || toEmail(fullName),
       phone: editForm.value.phoneNumber.trim() || row.phone,
-      manager: deriveManager(editForm.value.department, row.id),
+      manager: deriveManager(organizationStructure, row.id),
       employmentType: nextEmploymentType,
       attendanceRisk: nextAttendanceRisk,
       directReports: deriveDirectReports(editForm.value.title, row.id),
@@ -974,6 +1263,9 @@ const saveEdit = () => {
     ...row,
     ...(employeeOverrides.value[row.id] ?? {}),
   };
+  if (isEditPage.value) {
+    router.push("/mockup-hris-admin/employee");
+  }
 };
 
 const confirmResign = () => {
@@ -1056,7 +1348,7 @@ const onCellClicked = (event: any) => {
   const row = event.data as EmployeeRow | undefined;
   if (!row || !action) return;
   if (action === "detail") openDetailModal(row);
-  if (action === "resign") openResignModal(row);
+  if (action === "resign" && row.hasAttendanceAccess) openResignModal(row);
   if (action === "audit") openAuditModal(row);
   if (action === "delete") openDeleteModal(row);
 };
@@ -1064,147 +1356,168 @@ const onCellClicked = (event: any) => {
 
 <template>
   <div class="flex flex-1 flex-col gap-4">
+    <EmployeeFormPage
+      v-if="isFormPage"
+      :is-create-page="isCreatePage"
+      :form-page-title="formPageTitle"
+      :form-page-description="formPageDescription"
+      :page-step="pageStep"
+      :create-steps="createSteps"
+      :page-step-meta="pageStepMeta"
+      :page-step-valid="pageStepValid"
+      :page-back-disabled="pageBackDisabled"
+      :page-primary-label="pagePrimaryLabel"
+      :page-form="pageForm"
+      :edit-form="editForm"
+      :gender-options="genderOptions"
+      :marital-status-options="maritalStatusOptions"
+      :blood-type-options="bloodTypeOptions"
+      :religion-options="religionOptions"
+      :job-position-options="jobPositionOptions"
+      :organization-structure-options="organizationStructureOptions"
+      :branch-options="branchOptions"
+      :job-level-options="jobLevelOptions"
+      :employment-type-options="employmentTypeOptions"
+      :work-type-options="workTypeOptions"
+      :status-options="statusOptions"
+      :payroll-schedule-options="payrollScheduleOptions"
+      :kelengkapan-key-options="kelengkapanKeyOptions"
+      :invite-method-options="inviteMethodOptions"
+      @go-list="router.push('/mockup-hris-admin/employee')"
+      @step-change="pageStep = $event"
+      @prev-step="prevPageStep"
+      @next-step="nextPageStep"
+    />
+
+    <template v-else>
     <div class="flex flex-col gap-3 lg:flex-row lg:items-start lg:justify-between">
       <PageHeader
         category="Mockup"
         title="Employee List"
         description="Halaman daftar karyawan dulu sebagai entry point admin HRIS, baru lanjut ke detail, transfer, resign, atau edit data."
       />
-      <div class="flex flex-col gap-2 sm:flex-row">
-        <Button variant="outline" color="default" size="sm">
-          <Icon name="hard-drive-download" class="h-4 w-4" />
-          Bulk Update Data
-        </Button>
-        <Button color="primary" size="sm" @click="openCreateModal">
-          <Icon name="plus" class="h-4 w-4" />
-          Add Employee
-        </Button>
-      </div>
     </div>
 
     <Card padding="p-4" class="space-y-4">
-      <div class="flex flex-col gap-3 xl:flex-row xl:items-center xl:justify-between">
-        <div class="flex flex-wrap items-center gap-3">
-          <div class="tabs tabs-pills">
-            <button
-              type="button"
-              class="tab gap-2"
-              :class="{ 'tab-active': activeDirectoryView === 'directory' }"
-              @click="activeDirectoryView = 'directory'"
-            >
-              <Icon name="layout" class="h-4 w-4" />
-              Directory
-            </button>
-            <button
-              type="button"
-              class="tab gap-2"
-              :class="{ 'tab-active': activeDirectoryView === 'org-chart' }"
-              @click="activeDirectoryView = 'org-chart'"
-            >
-              <Icon name="users" class="h-4 w-4" />
-              Org Chart
-            </button>
+      <div class="flex flex-col gap-3">
+        <div class="flex flex-col gap-3 lg:flex-row lg:items-start lg:justify-between">
+          <div class="grid flex-1 gap-3 md:grid-cols-3">
+            <div class="w-full">
+              <SelectDropdown
+                v-model="draftDepartment"
+                :options="departmentOptions"
+                size="sm"
+                variant="outline"
+                color="default"
+              />
+            </div>
+            <div class="w-full">
+              <SelectDropdown
+                v-model="draftStatus"
+                :options="statusOptions"
+                size="sm"
+                variant="outline"
+                color="default"
+              />
+            </div>
+            <div class="w-full">
+              <SelectDropdown
+                v-model="draftWorkType"
+                :options="workTypeOptions"
+                size="sm"
+                variant="outline"
+                color="default"
+              />
+            </div>
+            <div class="w-full">
+              <SelectDropdown
+                v-model="draftEmploymentType"
+                :options="employmentFilterOptions"
+                size="sm"
+                variant="outline"
+                color="default"
+              />
+            </div>
+            <div class="w-full">
+              <SelectDropdown
+                v-model="draftRisk"
+                :options="riskFilterOptions"
+                size="sm"
+                variant="outline"
+                color="default"
+              />
+            </div>
+            <div class="w-full">
+              <SelectDropdown
+                v-model="draftAppAccess"
+                :options="appAccessFilterOptions"
+                size="sm"
+                variant="outline"
+                color="default"
+              />
+            </div>
           </div>
-          <div class="min-w-[210px]">
-            <SelectDropdown
-              v-model="selectedDepartment"
-              :options="departmentOptions"
+        </div>
+        <div class="flex flex-col gap-3 md:flex-row md:items-center">
+          <div class="min-w-[260px] flex-1">
+            <Input
+              v-model="draftSearch"
               size="sm"
-              variant="outline"
-              color="default"
+              placeholder="Search name/employee code..."
+              class="w-full"
+              prefix-icon="search"
+              clearable
             />
           </div>
-        </div>
-        <div class="grid gap-3 md:grid-cols-[220px_220px_minmax(0,280px)]">
-          <SelectDropdown
-            v-model="selectedStatus"
-            :options="statusOptions"
-            size="sm"
-            variant="outline"
-            color="default"
-          />
-          <SelectDropdown
-            v-model="selectedWorkType"
-            :options="workTypeOptions"
-            size="sm"
-            variant="outline"
-            color="default"
-          />
-          <Input
-            v-model="search"
-            size="sm"
-            placeholder="Search..."
-            class="w-full"
-            prefix-icon="search"
-            clearable
-          />
-        </div>
-      </div>
-
-      <div class="overflow-hidden rounded-2xl border border-base-300 bg-base-100">
-        <div class="border-b border-base-300 bg-base-50 px-5 py-3 text-sm font-semibold">
-          Employee data in {{ currentMonthLabel }}
-        </div>
-        <div class="grid gap-4 px-5 py-5 md:grid-cols-[minmax(0,1.35fr)_1fr_1fr_1fr]">
-          <div>
-            <div class="text-xs uppercase tracking-[0.18em] text-base-content/45">View company</div>
-            <div class="mt-2 text-xl font-semibold">PT Mitreka Solusi Indonesia</div>
-          </div>
-          <div>
-            <div class="text-xs uppercase tracking-[0.18em] text-base-content/45">Total employees</div>
-            <div class="mt-2 text-3xl font-semibold">{{ totalEmployeeCount }}</div>
-          </div>
-          <div>
-            <div class="text-xs uppercase tracking-[0.18em] text-base-content/45">New hires</div>
-            <div class="mt-2 text-3xl font-semibold">{{ newHireCount }}</div>
-          </div>
-          <div>
-            <div class="text-xs uppercase tracking-[0.18em] text-base-content/45">Leaving</div>
-            <div class="mt-2 text-3xl font-semibold">{{ leavingCount }}</div>
+          <div class="ml-auto flex items-center gap-2">
+            <Button variant="ghost" color="default" size="sm" @click="resetListFilters">Reset</Button>
+            <Button color="primary" size="sm" :disabled="!hasPendingFilterChanges" @click="applyListFilters">Apply</Button>
+            <Button color="primary" size="sm" @click="openCreateModal">
+              <Icon name="plus" class="h-4 w-4" />
+              Add Employee
+            </Button>
           </div>
         </div>
       </div>
     </Card>
 
-    <template v-if="activeDirectoryView === 'directory'">
-    <Card padding="p-4" class="space-y-4">
-      <div class="grid gap-3 md:grid-cols-2 xl:grid-cols-4">
-        <div v-for="item in quickHighlights" :key="item.label" class="rounded-xl border border-base-300 bg-base-50 px-4 py-3">
-          <div class="text-2xl font-semibold">{{ item.value }}</div>
-          <div class="mt-1 text-xs text-base-content/65">{{ item.label }}</div>
+    <div class="space-y-4">
+      <div class="grid gap-3 md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-6 text-xs text-base-content/70">
+        <div v-for="item in statusSummary" :key="`status-${item.label}`" class="summary-card">
+          <div class="summary-icon">
+            <Icon :name="item.icon" class="h-4 w-4" />
+          </div>
+          <div class="summary-content">
+            <div class="summary-label">{{ item.label }}</div>
+            <div class="summary-value-wrap">
+              <span class="summary-value">{{ item.value }}</span>
+            </div>
+          </div>
+        </div>
+        <div v-for="item in workModelSummary" :key="`work-${item.label}`" class="summary-card">
+          <div class="summary-icon">
+            <Icon :name="item.icon" class="h-4 w-4" />
+          </div>
+          <div class="summary-content">
+            <div class="summary-label">{{ item.label }}</div>
+            <div class="summary-value-wrap">
+              <span class="summary-value">{{ item.value }}</span>
+            </div>
+          </div>
+        </div>
+        <div v-for="item in quickHighlights" :key="`highlight-${item.label}`" class="summary-card">
+          <div class="summary-icon">
+            <Icon :name="item.icon" class="h-4 w-4" />
+          </div>
+          <div class="summary-content">
+            <div class="summary-label">{{ item.label }}</div>
+            <div class="summary-value-wrap">
+              <span class="summary-value">{{ item.value }}</span>
+            </div>
+          </div>
         </div>
       </div>
-      <div class="flex flex-wrap gap-2">
-        <button
-          v-for="item in statusSummary"
-          :key="item.label"
-          type="button"
-          :class="[
-            'rounded-full border px-3 py-1.5 text-xs font-medium transition',
-            selectedStatus === item.key
-              ? 'border-primary bg-primary/10 text-primary'
-              : 'border-base-300 bg-base-100 text-base-content/70 hover:border-primary/30',
-          ]"
-          @click="setStatusFilter(item.key)"
-        >
-          {{ item.label }} Â· {{ item.value }}
-        </button>
-        <button
-          v-for="item in workModelSummary"
-          :key="item.label"
-          type="button"
-          :class="[
-            'rounded-full border px-3 py-1.5 text-xs font-medium transition',
-            selectedWorkType === item.key
-              ? 'border-primary bg-primary/10 text-primary'
-              : 'border-base-300 bg-base-100 text-base-content/70 hover:border-primary/30',
-          ]"
-          @click="setWorkTypeFilter(item.key)"
-        >
-          {{ item.label }} Â· {{ item.value }}
-        </button>
-      </div>
-    </Card>
+    </div>
 
     <Card padding="p-3" class="overflow-hidden">
       <div class="h-[clamp(380px,60dvh,72dvh)] min-h-[440px] w-full">
@@ -1226,15 +1539,6 @@ const onCellClicked = (event: any) => {
         />
       </div>
     </Card>
-    </template>
-
-    <EmployeeOrgChart
-      v-else
-      :all-rows="baseRows"
-      :visible-rows="filteredRows"
-      :department-count="departmentCount"
-      @open-detail="openDetailModal"
-    />
 
     <Modal :open="detailModalOpen" title="Detail Karyawan" size="lg" hide-footer @close="closeDetailModal">
       <div v-if="selectedRow" class="space-y-5">
@@ -1253,9 +1557,25 @@ const onCellClicked = (event: any) => {
             </div>
           </div>
           <div class="flex gap-2">
-            <Button variant="outline" color="default" size="sm" @click="router.push(`/mockup-hris-admin/attendance/${selectedRow.id}`)">
+            <Button
+              v-if="selectedRow.hasAttendanceAccess"
+              variant="outline"
+              color="default"
+              size="sm"
+              @click="openAttendanceLog(selectedRow)"
+            >
               <Icon name="clipboardClock" class="h-4 w-4" />
               Attendance Log
+            </Button>
+            <Button
+              v-else
+              variant="outline"
+              color="default"
+              size="sm"
+              @click="sendInvitation(selectedRow)"
+            >
+              <Icon name="send" class="h-4 w-4" />
+              {{ selectedRow.invitationSentAt ? "Resend Invitation" : "Send Invitation" }}
             </Button>
             <Button color="warning" size="sm" @click="openEditModal(selectedRow)">
               <Icon name="pencil" class="h-4 w-4" />
@@ -1289,24 +1609,39 @@ const onCellClicked = (event: any) => {
 
     <Modal :open="createModalOpen" title="Add Employee" size="lg" @close="closeCreateModal">
       <div class="space-y-5">
-        <div class="rounded-2xl border border-base-300 bg-base-50 p-3">
-          <div class="tabs tabs-pills w-full" style="width: 100%;">
-            <button
-              v-for="step in createSteps"
-              :key="step.number"
-              type="button"
-              class="tab h-auto min-h-[unset] flex-1 justify-start px-4 py-3 text-left"
-              :class="{ 'tab-active': createStep === step.number }"
-              @click="createStep = step.number"
-            >
-              <div class="min-w-0">
-                <div class="flex items-center gap-2 font-semibold">
-                  <Icon :name="step.icon" class="h-4 w-4 shrink-0" />
-                  <span>{{ step.title }}</span>
-                </div>
-                <div class="mt-1 text-xs text-base-content/65">{{ step.description }}</div>
-              </div>
-            </button>
+        <div class="rounded-2xl border border-base-300 bg-base-50 p-4">
+          <div class="flex flex-col items-center gap-4">
+            <div class="flex items-center justify-center gap-2 overflow-x-auto pb-1">
+              <template v-for="(step, index) in createSteps" :key="step.number">
+                <button
+                  type="button"
+                  :disabled="step.number > createStep + 1"
+                  @click="step.number <= createStep + 1 ? (createStep = step.number) : null"
+                  :class="[
+                    'flex h-10 w-10 items-center justify-center rounded-full font-semibold transition-all',
+                    createStep === step.number
+                      ? 'bg-primary text-primary-content ring-4 ring-primary/20'
+                      : createStep > step.number
+                        ? 'bg-success text-success-content cursor-pointer hover:ring-2 hover:ring-success/30'
+                        : 'bg-base-300 text-base-content/50 cursor-not-allowed',
+                  ]"
+                >
+                  <Icon v-if="createStep > step.number" name="check" class="h-4 w-4" />
+                  <span v-else>{{ step.number }}</span>
+                </button>
+                <div
+                  v-if="index < createSteps.length - 1"
+                  :class="[
+                    'h-1 w-10 rounded transition-all md:w-16',
+                    createStep > step.number ? 'bg-success' : 'bg-base-300',
+                  ]"
+                />
+              </template>
+            </div>
+            <div class="text-center">
+              <div class="font-semibold">{{ activeCreateStepMeta.title }}</div>
+              <div class="text-sm text-base-content/60">{{ activeCreateStepMeta.description }}</div>
+            </div>
           </div>
         </div>
 
@@ -1317,7 +1652,7 @@ const onCellClicked = (event: any) => {
           </div>
           <div class="grid gap-4 md:grid-cols-2">
             <div class="space-y-1">
-              <label class="text-sm font-medium">Name <span class="text-error">*</span></label>
+              <label class="text-sm font-medium">Name*</label>
               <Input v-model="createForm.firstName" size="sm" placeholder="First name" class="w-full" />
             </div>
             <div class="space-y-1">
@@ -1325,7 +1660,7 @@ const onCellClicked = (event: any) => {
               <Input v-model="createForm.lastName" size="sm" placeholder="Last name" class="w-full" />
             </div>
             <div class="space-y-1 md:col-span-2">
-              <label class="text-sm font-medium">Email <span class="text-error">*</span></label>
+              <label class="text-sm font-medium">Email*</label>
               <Input v-model="createForm.email" type="email" size="sm" placeholder="name@company.com" class="w-full" />
               <p class="text-xs text-base-content/60">This email is use for log in</p>
             </div>
@@ -1342,7 +1677,7 @@ const onCellClicked = (event: any) => {
               <Input v-model="createForm.placeOfBirth" size="sm" class="w-full" />
             </div>
             <div class="space-y-1">
-              <label class="text-sm font-medium">Birthdate <span class="text-error">*</span></label>
+              <label class="text-sm font-medium">Birthdate*</label>
               <DateTimePicker v-model="createForm.birthDate" picker="date" size="sm" class="w-full" />
             </div>
             <div class="space-y-2">
@@ -1355,7 +1690,7 @@ const onCellClicked = (event: any) => {
               </div>
             </div>
             <div class="space-y-1">
-              <label class="text-sm font-medium">Marital status <span class="text-error">*</span></label>
+              <label class="text-sm font-medium">Marital status*</label>
               <SelectDropdown v-model="createForm.maritalStatus" :options="maritalStatusOptions" size="sm" variant="outline" color="default" />
             </div>
             <div class="space-y-1">
@@ -1363,7 +1698,7 @@ const onCellClicked = (event: any) => {
               <SelectDropdown v-model="createForm.bloodType" :options="bloodTypeOptions" size="sm" variant="outline" color="default" />
             </div>
             <div class="space-y-1">
-              <label class="text-sm font-medium">Religion <span class="text-error">*</span></label>
+              <label class="text-sm font-medium">Religion*</label>
               <SelectDropdown v-model="createForm.religion" :options="religionOptions" size="sm" variant="outline" color="default" />
             </div>
           </div>
@@ -1411,15 +1746,15 @@ const onCellClicked = (event: any) => {
           </div>
           <div class="grid gap-4 md:grid-cols-2">
             <div class="space-y-1">
-              <label class="text-sm font-medium">Employee code <span class="text-error">*</span></label>
+              <label class="text-sm font-medium">Employee code*</label>
               <Input v-model="createForm.employeeCode" size="sm" class="w-full" />
             </div>
             <div class="space-y-1">
-              <label class="text-sm font-medium">Job position <span class="text-error">*</span></label>
+              <label class="text-sm font-medium">Job position*</label>
               <SelectDropdown v-model="createForm.title" :options="jobPositionOptions" size="sm" variant="outline" color="default" />
             </div>
             <div class="space-y-1">
-              <label class="text-sm font-medium">Department <span class="text-error">*</span></label>
+              <label class="text-sm font-medium">Department*</label>
               <Input v-model="createForm.department" size="sm" class="w-full" />
             </div>
             <div class="space-y-1">
@@ -1443,7 +1778,7 @@ const onCellClicked = (event: any) => {
               <SelectDropdown v-model="createForm.workType" :options="workTypeOptions.slice(1)" size="sm" variant="outline" color="default" />
             </div>
             <div class="space-y-1">
-              <label class="text-sm font-medium">Join date <span class="text-error">*</span></label>
+              <label class="text-sm font-medium">Join date*</label>
               <DateTimePicker v-model="createForm.joinDate" picker="date" size="sm" class="w-full" />
             </div>
             <div class="space-y-1">
@@ -1468,15 +1803,15 @@ const onCellClicked = (event: any) => {
           </div>
           <div class="grid gap-4 md:grid-cols-2">
             <div class="space-y-1">
-              <label class="text-sm font-medium">Bank name <span class="text-error">*</span></label>
+              <label class="text-sm font-medium">Bank name*</label>
               <Input v-model="createForm.bankName" size="sm" placeholder="BCA / Mandiri / BNI" class="w-full" />
             </div>
             <div class="space-y-1">
-              <label class="text-sm font-medium">Bank account name <span class="text-error">*</span></label>
+              <label class="text-sm font-medium">Bank account name*</label>
               <Input v-model="createForm.bankAccountName" size="sm" class="w-full" />
             </div>
             <div class="space-y-1">
-              <label class="text-sm font-medium">Bank account number <span class="text-error">*</span></label>
+              <label class="text-sm font-medium">Bank account number*</label>
               <Input v-model="createForm.bankAccountNumber" size="sm" class="w-full" />
             </div>
             <div class="space-y-1">
@@ -1492,7 +1827,7 @@ const onCellClicked = (event: any) => {
               <Input v-model="createForm.bpjsKetenagakerjaan" size="sm" class="w-full" />
             </div>
             <div class="space-y-1">
-              <label class="text-sm font-medium">Base salary <span class="text-error">*</span></label>
+              <label class="text-sm font-medium">Base salary*</label>
               <Input v-model="createForm.baseSalary" size="sm" mask="currency-idr" placeholder="15.000.000" class="w-full" />
             </div>
             <div class="space-y-1">
@@ -1518,7 +1853,7 @@ const onCellClicked = (event: any) => {
               </div>
             </div>
             <div class="space-y-1">
-              <label class="text-sm font-medium">Invite email <span class="text-error">*</span></label>
+              <label class="text-sm font-medium">Invite email*</label>
               <Input v-model="createForm.inviteEmail" type="email" size="sm" :placeholder="createForm.email || 'employee@company.com'" class="w-full" />
             </div>
             <div class="space-y-1">
@@ -1589,7 +1924,7 @@ const onCellClicked = (event: any) => {
           </div>
           <div class="grid gap-4 md:grid-cols-2">
             <div class="space-y-1">
-              <label class="text-sm font-medium">Name <span class="text-error">*</span></label>
+              <label class="text-sm font-medium">Name*</label>
               <Input v-model="editForm.firstName" size="sm" placeholder="First name" class="w-full" />
             </div>
             <div class="space-y-1">
@@ -1597,7 +1932,7 @@ const onCellClicked = (event: any) => {
               <Input v-model="editForm.lastName" size="sm" placeholder="Last name" class="w-full" />
             </div>
             <div class="space-y-1 md:col-span-2">
-              <label class="text-sm font-medium">Email <span class="text-error">*</span></label>
+              <label class="text-sm font-medium">Email*</label>
               <Input v-model="editForm.email" type="email" size="sm" placeholder="name@company.com" class="w-full" />
               <p class="text-xs text-base-content/60">This email is use for log in</p>
             </div>
@@ -1614,7 +1949,7 @@ const onCellClicked = (event: any) => {
               <Input v-model="editForm.placeOfBirth" size="sm" class="w-full" />
             </div>
             <div class="space-y-1">
-              <label class="text-sm font-medium">Birthdate <span class="text-error">*</span></label>
+              <label class="text-sm font-medium">Birthdate*</label>
               <DateTimePicker v-model="editForm.birthDate" picker="date" size="sm" class="w-full" />
             </div>
             <div class="space-y-2">
@@ -1627,7 +1962,7 @@ const onCellClicked = (event: any) => {
               </div>
             </div>
             <div class="space-y-1">
-              <label class="text-sm font-medium">Marital status <span class="text-error">*</span></label>
+              <label class="text-sm font-medium">Marital status*</label>
               <SelectDropdown v-model="editForm.maritalStatus" :options="maritalStatusOptions" size="sm" variant="outline" color="default" />
             </div>
             <div class="space-y-1">
@@ -1635,7 +1970,7 @@ const onCellClicked = (event: any) => {
               <SelectDropdown v-model="editForm.bloodType" :options="bloodTypeOptions" size="sm" variant="outline" color="default" />
             </div>
             <div class="space-y-1">
-              <label class="text-sm font-medium">Religion <span class="text-error">*</span></label>
+              <label class="text-sm font-medium">Religion*</label>
               <SelectDropdown v-model="editForm.religion" :options="religionOptions" size="sm" variant="outline" color="default" />
             </div>
           </div>
@@ -1683,15 +2018,15 @@ const onCellClicked = (event: any) => {
           </div>
           <div class="grid gap-4 md:grid-cols-2">
             <div class="space-y-1">
-              <label class="text-sm font-medium">Employee code <span class="text-error">*</span></label>
+              <label class="text-sm font-medium">Employee code*</label>
               <Input v-model="editForm.employeeCode" size="sm" class="w-full" />
             </div>
             <div class="space-y-1">
-              <label class="text-sm font-medium">Job position <span class="text-error">*</span></label>
+              <label class="text-sm font-medium">Job position*</label>
               <SelectDropdown v-model="editForm.title" :options="jobPositionOptions" size="sm" variant="outline" color="default" />
             </div>
             <div class="space-y-1">
-              <label class="text-sm font-medium">Department <span class="text-error">*</span></label>
+              <label class="text-sm font-medium">Department*</label>
               <Input v-model="editForm.department" size="sm" class="w-full" />
             </div>
             <div class="space-y-1">
@@ -1715,7 +2050,7 @@ const onCellClicked = (event: any) => {
               <SelectDropdown v-model="editForm.workType" :options="workTypeOptions.slice(1)" size="sm" variant="outline" color="default" />
             </div>
             <div class="space-y-1">
-              <label class="text-sm font-medium">Join date <span class="text-error">*</span></label>
+              <label class="text-sm font-medium">Join date*</label>
               <DateTimePicker v-model="editForm.joinDate" picker="date" size="sm" class="w-full" />
             </div>
             <div class="space-y-1">
@@ -1740,15 +2075,15 @@ const onCellClicked = (event: any) => {
           </div>
           <div class="grid gap-4 md:grid-cols-2">
             <div class="space-y-1">
-              <label class="text-sm font-medium">Bank name <span class="text-error">*</span></label>
+              <label class="text-sm font-medium">Bank name*</label>
               <Input v-model="editForm.bankName" size="sm" placeholder="BCA / Mandiri / BNI" class="w-full" />
             </div>
             <div class="space-y-1">
-              <label class="text-sm font-medium">Bank account name <span class="text-error">*</span></label>
+              <label class="text-sm font-medium">Bank account name*</label>
               <Input v-model="editForm.bankAccountName" size="sm" class="w-full" />
             </div>
             <div class="space-y-1">
-              <label class="text-sm font-medium">Bank account number <span class="text-error">*</span></label>
+              <label class="text-sm font-medium">Bank account number*</label>
               <Input v-model="editForm.bankAccountNumber" size="sm" class="w-full" />
             </div>
             <div class="space-y-1">
@@ -1764,7 +2099,7 @@ const onCellClicked = (event: any) => {
               <Input v-model="editForm.bpjsKetenagakerjaan" size="sm" class="w-full" />
             </div>
             <div class="space-y-1">
-              <label class="text-sm font-medium">Base salary <span class="text-error">*</span></label>
+              <label class="text-sm font-medium">Base salary*</label>
               <Input v-model="editForm.baseSalary" size="sm" mask="currency-idr" placeholder="15.000.000" class="w-full" />
             </div>
             <div class="space-y-1">
@@ -1796,7 +2131,7 @@ const onCellClicked = (event: any) => {
               </p>
             </div>
             <div class="space-y-1">
-              <label class="text-sm font-medium">Change reason <span class="text-error">*</span></label>
+              <label class="text-sm font-medium">Change reason*</label>
               <textarea
                 v-model="editForm.changeReason"
                 class="input min-h-28 w-full py-2"
@@ -1892,6 +2227,21 @@ const onCellClicked = (event: any) => {
       </div>
     </Modal>
 
+    <Modal :open="inviteSuccessModalOpen" title="Invitation Sent" size="sm" hide-footer @close="closeInviteSuccessModal">
+      <div class="space-y-4">
+        <p class="text-sm text-base-content/80">
+          Undangan akses berhasil dikirim ke
+          <span class="font-semibold">{{ invitationTargetEmail || "-" }}</span>.
+        </p>
+        <div class="rounded-xl border border-success/30 bg-success/10 p-3 text-sm text-base-content/80">
+          Mohon pengguna cek email secara berkala untuk melanjutkan aktivasi akses aplikasi live attendance.
+        </div>
+        <div class="flex justify-end">
+          <Button color="primary" size="sm" @click="closeInviteSuccessModal">Tutup</Button>
+        </div>
+      </div>
+    </Modal>
+
     <Modal :open="deleteModalOpen" title="Konfirmasi Hapus" size="sm" hide-footer @close="closeDeleteModal">
       <div class="space-y-4">
         <p class="text-sm text-base-content/80">
@@ -1905,6 +2255,53 @@ const onCellClicked = (event: any) => {
         </div>
       </div>
     </Modal>
+    </template>
   </div>
 </template>
+
+<style scoped>
+.summary-card {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 0.75rem;
+  border-radius: 0.5rem;
+  background: var(--color-base-100);
+  border: 1px solid var(--color-base-300);
+  min-width: 0;
+}
+.summary-content {
+  min-width: 0;
+  flex: 1 1 auto;
+}
+.summary-icon {
+  height: 28px;
+  width: 28px;
+  border-radius: 0.5rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: color-mix(in oklch, var(--color-primary), transparent 88%);
+  color: var(--color-primary);
+  flex: 0 0 auto;
+}
+.summary-label {
+  font-size: 0.75rem;
+  opacity: 0.6;
+}
+.summary-value {
+  display: block;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--color-base-content);
+}
+.summary-value-wrap {
+  min-width: 0;
+  width: 100%;
+}
+</style>
 

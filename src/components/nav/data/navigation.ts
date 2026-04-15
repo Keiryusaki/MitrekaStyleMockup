@@ -52,7 +52,8 @@ export const NAV: NavItem[] = [
     children: [
       { id: "live-attendance", label: "Live Attendance", to: "/live-attendance" },
       { id: "hris-attendance", label: "Kehadiran", to: "/mockup-hris-admin/attendance" },
-      { id: "hris-employee", label: "Karyawan", to: "/mockup-hris-admin/employees" },
+      { id: "hris-employee", label: "Karyawan", to: "/mockup-hris-admin/employee" },
+      { id: "hris-approval", label: "Approval", to: "/mockup-hris-admin/approval" },
       { id: "hris-time-off", label: "Cuti/Izin", to: "/mockup-hris-admin/time-off" },
     ],
   },
