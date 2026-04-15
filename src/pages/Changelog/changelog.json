@@ -1,5 +1,27 @@
 [
     {
+        "version":  "2.2.49",
+        "date":  "2026-04-15",
+        "label":  "Patch",
+        "items":  [
+                      {
+                          "type":  "Fixed",
+                          "text":  "DateTimePicker kini auto-reposition saat viewport/modal/container di-scroll, mengikuti posisi trigger agar popup kalender tidak lagi terlihat menggantung."
+                      },
+                      {
+                          "type":  "Fixed",
+                          "text":  "DateTimePicker kini auto-close saat trigger keluar area visible viewport/container, supaya state popup tetap konsisten dengan perilaku SelectDropdown."
+                      },
+                      {
+                          "type":  "Changed",
+                          "text":  "Sinkronisasi package @keiryusaki/mitreka-ui v2.2.49 ke mockup vendor dist."
+                      }
+                  ],
+        "assets":  [
+
+                   ]
+    },
+    {
         "version":  "2.2.48",
         "date":  "2026-04-14",
         "label":  "Patch",
