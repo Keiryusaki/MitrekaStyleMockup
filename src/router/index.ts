@@ -77,7 +77,11 @@ const routes: RouteRecordRaw[] = [
   },
   {
     path: "/live-attendance",
-    component: () => import("@/pages/Mockup/LiveAttendance.vue"),
+    redirect: "/mockup-hris-admin/live-attendance",
+  },
+  {
+    path: "/mockup-hris-admin/live-attendance",
+    component: () => import("@/pages/HRISAdmin/LiveAttendance.vue"),
   },
   {
     path: "/mockup-hris-admin/attendance",

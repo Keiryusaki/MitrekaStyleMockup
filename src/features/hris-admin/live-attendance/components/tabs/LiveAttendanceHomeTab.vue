@@ -1,6 +1,6 @@
 <template>
   <div>
-    <section class="relative overflow-hidden rounded-b-[64px] bg-[#004b8d] px-6 pb-24 pt-[78px] text-white shadow-lg">
+    <section class="relative overflow-hidden rounded-b-[48px] bg-[#004b8d] px-4 pb-20 pt-[78px] text-white shadow-lg">
       <div class="absolute -right-14 -top-14 h-28 w-28 rounded-full bg-white/10 blur-xl"></div>
       <div class="relative z-10 space-y-1">
         <h1 class="text-2xl font-bold tracking-tight">{{ greeting }}, Eka Dian</h1>
@@ -8,7 +8,7 @@
       </div>
     </section>
 
-    <div class="card-glass -mt-16 mb-6 mx-6 rounded-[34px] border border-white/65 bg-white/30 p-6 shadow-[0_16px_34px_rgba(0,75,141,0.14)] backdrop-blur-2xl">
+    <div class="card-glass -mt-14 mb-5 mx-3 rounded-[24px] border border-white/65 bg-white/30 p-4 shadow-[0_14px_28px_-12px_rgba(0,75,141,0.24)] backdrop-blur-2xl">
       <div class="glass-highlight"></div>
       <div class="mb-3 flex items-center justify-between gap-2">
         <div
@@ -37,8 +37,8 @@
       </div>
     </div>
 
-    <div class="px-6">
-      <div class="mb-8 flex flex-col items-center">
+    <div class="px-3">
+      <div class="mb-7 flex flex-col items-center">
         <button
           class="relative flex h-44 w-44 items-center justify-center rounded-full text-white shadow-2xl transition active:scale-95"
           :class="actionButtonClass"
@@ -86,8 +86,8 @@
         </button>
       </div>
 
-      <section class="space-y-4 pb-24">
-        <article class="rounded-3xl border border-[#004b8d]/10 bg-white p-4 shadow-[0_8px_20px_-14px_rgba(0,75,141,0.35)]">
+      <section class="space-y-3.5 pb-24">
+        <article class="rounded-2xl border border-[#004b8d]/10 bg-white p-4 shadow-[0_8px_20px_-14px_rgba(0,75,141,0.35)]">
           <div class="flex items-center justify-between">
             <h3 class="text-[13px] font-black text-slate-800">Catatan Presensi Hari Ini</h3>
             <span
@@ -115,47 +115,60 @@
           </div>
         </article>
 
-        <article class="rounded-3xl border border-[#004b8d]/10 bg-white p-4 shadow-[0_8px_20px_-14px_rgba(0,75,141,0.35)]">
+        <article class="rounded-2xl border border-[#004b8d]/10 bg-white p-4 shadow-[0_8px_20px_-14px_rgba(0,75,141,0.35)]">
           <h3 class="text-[13px] font-black text-slate-800">Menu Pintas</h3>
           <div class="mt-3 grid grid-cols-3 gap-2.5">
-            <button class="flex flex-col items-center gap-1.5 rounded-xl bg-slate-50 py-2 text-[#004b8d]" @click="$emit('openLog')">
-              <Icon name="clipboard" class="h-5 w-5" />
-              <span class="text-[10px] font-black">Log</span>
-            </button>
-            <button class="flex flex-col items-center gap-1.5 rounded-xl bg-slate-50 py-2 text-[#004b8d]" @click="$emit('openLog')">
-              <Icon name="calendar-clock" class="h-5 w-5" />
+            <button class="flex flex-col items-center gap-1.5 rounded-xl border border-slate-200 bg-slate-50 py-2 text-[#004b8d]" @click="$emit('openLog')">
+              <Icon name="clipboardClock" class="h-5 w-5" />
               <span class="text-[10px] font-black">Riwayat</span>
             </button>
-            <button class="flex flex-col items-center gap-1.5 rounded-xl bg-slate-50 py-2 text-[#004b8d]" @click="$emit('navigateTab', 'inbox')">
+            <button class="flex flex-col items-center gap-1.5 rounded-xl border border-slate-200 bg-slate-50 py-2 text-[#004b8d]" @click="$emit('openCalendar')">
+              <Icon name="calendar-days" class="h-5 w-5" />
+              <span class="text-[10px] font-black">Kalender</span>
+            </button>
+            <button class="flex flex-col items-center gap-1.5 rounded-xl border border-slate-200 bg-slate-50 py-2 text-[#004b8d]" @click="$emit('navigateTab', 'inbox')">
               <Icon name="bell" class="h-5 w-5" />
               <span class="text-[10px] font-black">Inbox</span>
             </button>
-            <button class="flex flex-col items-center gap-1.5 rounded-xl bg-slate-50 py-2 text-[#004b8d]" @click="$emit('navigateTab', 'employee')">
+            <button class="flex flex-col items-center gap-1.5 rounded-xl border border-slate-200 bg-slate-50 py-2 text-[#004b8d]" @click="$emit('navigateTab', 'employee')">
               <Icon name="users" class="h-5 w-5" />
               <span class="text-[10px] font-black">Karyawan</span>
             </button>
-            <button class="flex flex-col items-center gap-1.5 rounded-xl bg-slate-50 py-2 text-[#004b8d]" @click="$emit('navigateTab', 'leave')">
+            <button class="flex flex-col items-center gap-1.5 rounded-xl border border-slate-200 bg-slate-50 py-2 text-[#004b8d]" @click="$emit('openRequest')">
               <Icon name="send" class="h-5 w-5" />
-              <span class="text-[10px] font-black">Izin/Cuti</span>
+              <span class="text-[10px] font-black">Permohonan</span>
             </button>
-            <button class="flex flex-col items-center gap-1.5 rounded-xl bg-slate-50 py-2 text-[#004b8d]" @click="$emit('navigateTab', 'account')">
+            <button class="flex flex-col items-center gap-1.5 rounded-xl border border-slate-200 bg-slate-50 py-2 text-[#004b8d]" @click="$emit('navigateTab', 'account')">
               <Icon name="user" class="h-5 w-5" />
               <span class="text-[10px] font-black">Akun</span>
             </button>
           </div>
         </article>
 
-        <article class="rounded-3xl border border-[#004b8d]/10 bg-white p-4 shadow-[0_8px_20px_-14px_rgba(0,75,141,0.35)]">
+        <article class="rounded-2xl border border-[#004b8d]/10 bg-white p-4 shadow-[0_8px_20px_-14px_rgba(0,75,141,0.35)]">
           <h3 class="text-[13px] font-black text-slate-800">Pengumuman</h3>
-          <div class="mt-3 space-y-2">
-            <div class="rounded-2xl border border-slate-200 bg-slate-50 px-3 py-2">
-              <p class="text-[11px] font-black text-slate-700">Info Payroll Februari 2026</p>
-              <p class="mt-0.5 text-[10px] font-bold text-slate-500">Slip gaji tersedia mulai 27 Februari 2026.</p>
-            </div>
-            <div class="rounded-2xl border border-slate-200 bg-slate-50 px-3 py-2">
-              <p class="text-[11px] font-black text-slate-700">Kebijakan Presensi Hybrid</p>
-              <p class="mt-0.5 text-[10px] font-bold text-slate-500">WFH wajib isi catatan aktivitas harian.</p>
-            </div>
+          <div class="mt-3 overflow-hidden rounded-xl border border-slate-200 bg-white divide-y divide-slate-200">
+            <button
+              v-for="item in latestAnnouncements"
+              :key="item.id"
+              class="flex w-full items-center gap-3 px-3 py-2.5 text-left transition hover:bg-slate-50"
+              @click="$emit('openAnnouncementDetail', item.id)"
+            >
+              <div class="min-w-0 flex-1">
+                <p class="truncate text-[11px] font-black text-slate-700">{{ item.title }}</p>
+                <div class="mt-1 flex items-center gap-1.5 text-[10px] font-bold text-slate-500">
+                  <span>by</span>
+                  <img :src="item.creatorAvatar" :alt="item.creatorName" class="h-4 w-4 rounded-full object-cover" />
+                  <span class="truncate">{{ item.creatorName }}</span>
+                </div>
+              </div>
+              <Icon name="chevron-right" class="h-4 w-4 text-slate-400" />
+            </button>
+          </div>
+          <div class="mt-2">
+            <button class="w-full rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-[11px] font-bold text-[#004b8d]" @click="$emit('openAllAnnouncements')">
+              Lihat semua pengumuman
+            </button>
           </div>
         </article>
       </section>
@@ -168,7 +181,13 @@ import { Icon } from "@/composables/Icon";
 
 type AttendanceStatus = "idle" | "in" | "out";
 type AttendanceAction = "in" | "out";
-type TabKey = "home" | "employee" | "inbox" | "leave" | "account";
+type TabKey = "home" | "employee" | "inbox" | "account";
+type AnnouncementPreview = {
+  id: number;
+  title: string;
+  creatorName: string;
+  creatorAvatar: string;
+};
 
 defineProps<{
   greeting: string;
@@ -180,6 +199,7 @@ defineProps<{
   duration: string;
   actionButtonClass: string;
   todayClockNote: { status: string; clockIn: string; clockOut: string };
+  latestAnnouncements: AnnouncementPreview[];
   formatDateShort: (date: Date) => string;
 }>();
 
@@ -188,6 +208,10 @@ defineEmits<{
   initiateAction: [type: AttendanceAction];
   startNewSession: [];
   openLog: [];
+  openCalendar: [];
+  openAnnouncementDetail: [id: number];
+  openAllAnnouncements: [];
+  openRequest: [];
   navigateTab: [tab: TabKey];
 }>();
 </script>

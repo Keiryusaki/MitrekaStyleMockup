@@ -50,7 +50,7 @@ export const NAV: NavItem[] = [
     label: "Mockup HRIS Admin",
     icon: "users",
     children: [
-      { id: "live-attendance", label: "Live Attendance", to: "/live-attendance" },
+      { id: "live-attendance", label: "Live Attendance", to: "/mockup-hris-admin/live-attendance" },
       { id: "hris-attendance", label: "Kehadiran", to: "/mockup-hris-admin/attendance" },
       { id: "hris-employee", label: "Karyawan", to: "/mockup-hris-admin/employee" },
       { id: "hris-approval", label: "Approval", to: "/mockup-hris-admin/approval" },
