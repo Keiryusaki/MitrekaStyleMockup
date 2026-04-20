@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="relative">
     <section class="relative overflow-hidden rounded-b-[48px] bg-[#004b8d] px-4 pb-20 pt-[78px] text-white shadow-lg">
       <div class="absolute -right-14 -top-14 h-28 w-28 rounded-full bg-white/10 blur-xl"></div>
       <div class="relative z-10 space-y-1">
@@ -140,12 +140,15 @@
             </button>
             <button class="flex flex-col items-center gap-1.5 rounded-xl border border-slate-200 bg-slate-50 py-2 text-[#004b8d]" @click="$emit('navigateTab', 'account')">
               <Icon name="user" class="h-5 w-5" />
-              <span class="text-[10px] font-black">Akun</span>
+              <span class="text-[10px] font-black">Pengaturan</span>
             </button>
           </div>
         </article>
 
-        <article class="rounded-2xl border border-[#004b8d]/10 bg-white p-4 shadow-[0_8px_20px_-14px_rgba(0,75,141,0.35)]">
+        <article
+          id="home-announcement-section"
+          class="rounded-2xl border border-[#004b8d]/10 bg-white p-4 shadow-[0_8px_20px_-14px_rgba(0,75,141,0.35)] transition-all duration-300"
+        >
           <h3 class="text-[13px] font-black text-slate-800">Pengumuman</h3>
           <div class="mt-3 overflow-hidden rounded-xl border border-slate-200 bg-white divide-y divide-slate-200">
             <button
@@ -189,7 +192,7 @@ type AnnouncementPreview = {
   creatorAvatar: string;
 };
 
-defineProps<{
+const props = defineProps<{
   greeting: string;
   isInArea: boolean;
   displayTime: { time: string; meridiem: string };
@@ -214,6 +217,7 @@ defineEmits<{
   openRequest: [];
   navigateTab: [tab: TabKey];
 }>();
+
 </script>
 
 <style scoped>
@@ -246,4 +250,5 @@ defineEmits<{
     transform: scale(1.56);
   }
 }
+
 </style>

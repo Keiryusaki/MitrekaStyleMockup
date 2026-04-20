@@ -53,7 +53,29 @@
             </div>
           </header>
 
+          <div id="live-attendance-home-overlay" class="pointer-events-none absolute inset-0 z-[29]">
+            <button
+              v-if="announcementPromptVisible"
+              class="floating-announcement-btn pointer-events-auto absolute bottom-[102px] left-0 z-[34] inline-flex items-center gap-2 rounded-l-none rounded-r-full border border-l-0 border-[#004b8d]/20 bg-white/95 pl-3 pr-2 py-2 text-[#004b8d] shadow-[0_16px_30px_-18px_rgba(0,75,141,0.65)] backdrop-blur transition-all duration-300"
+              :class="announcementPromptClosing ? 'pointer-events-none -translate-x-3 opacity-0' : 'translate-x-0 opacity-100'"
+              @click="scrollToHomeAnnouncements"
+            >
+              <span class="inline-flex h-6 w-6 items-center justify-center rounded-full bg-[#004b8d]/12 text-[#004b8d]">
+                <Icon name="bell" class="h-3.5 w-3.5" />
+              </span>
+              <span class="text-[10px] font-black uppercase tracking-[0.06em]">{{ announcementPromptLabel }}</span>
+              <Icon name="chevron-down" class="floating-announcement-chevron h-4 w-4" />
+              <span
+                class="inline-flex h-5 w-5 items-center justify-center rounded-full text-[#004b8d]/65 transition hover:bg-[#004b8d]/10 hover:text-[#004b8d]"
+                @click.stop="dismissAnnouncementPrompt"
+              >
+                <Icon name="x" class="h-3.5 w-3.5" />
+              </span>
+            </button>
+          </div>
+
           <main
+            ref="homeScrollRootRef"
             class="content-scroll absolute inset-x-0 bottom-0 top-0 z-20 overflow-y-auto pb-2"
             :class="activeTab === 'home' ? '' : 'bg-white'"
           >
@@ -1000,7 +1022,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onBeforeUnmount, ref, watch } from "vue";
+import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from "vue";
 import { useRouter } from "vue-router";
 import {
   DateTimePicker as MitrekaDateTimePicker,
@@ -1370,6 +1392,20 @@ const sortedAnnouncements = computed(() =>
   [...announcements.value].sort((left, right) => right.publishedAt.localeCompare(left.publishedAt))
 );
 const latestAnnouncements = computed(() => sortedAnnouncements.value.slice(0, 5));
+const homeScrollRootRef = ref<HTMLElement | null>(null);
+const announcementPromptDismissed = ref(false);
+const announcementPromptClosing = ref(false);
+const announcementDismissArmed = ref(false);
+let announcementPromptDismissTimer: ReturnType<typeof setTimeout> | null = null;
+let homeAnnouncementObserver: IntersectionObserver | null = null;
+const announcementPromptCount = computed(() => latestAnnouncements.value.length);
+const announcementPromptVisible = computed(
+  () => activeTab.value === "home" && !announcementPromptDismissed.value,
+);
+const announcementPromptLabel = computed(() => {
+  if (announcementPromptCount.value <= 1) return "Pengumuman Baru";
+  return `${announcementPromptCount.value} Pengumuman Baru`;
+});
 const filteredAnnouncements = computed(() => {
   const query = announcementSearch.value.trim().toLowerCase();
   if (!query) return sortedAnnouncements.value;
@@ -1461,6 +1497,62 @@ function backToRequestSheet(): void {
 
 function closeTimeOffForm(): void {
   showTimeOffForm.value = false;
+}
+
+function armAnnouncementDismiss(): void {
+  announcementDismissArmed.value = true;
+}
+
+function dismissAnnouncementPrompt(): void {
+  if (announcementPromptDismissed.value || announcementPromptClosing.value) return;
+  announcementPromptClosing.value = true;
+  if (announcementPromptDismissTimer) clearTimeout(announcementPromptDismissTimer);
+  announcementPromptDismissTimer = setTimeout(() => {
+    announcementPromptDismissed.value = true;
+    announcementPromptClosing.value = false;
+    announcementPromptDismissTimer = null;
+  }, 260);
+}
+
+function scrollToHomeAnnouncements(): void {
+  announcementDismissArmed.value = true;
+  const sectionEl = homeScrollRootRef.value?.querySelector("#home-announcement-section");
+  if (sectionEl instanceof HTMLElement) {
+    sectionEl.scrollIntoView({
+      behavior: "smooth",
+      block: "start",
+    });
+  }
+}
+
+function setupHomeAnnouncementObserver(): void {
+  if (homeAnnouncementObserver) {
+    homeAnnouncementObserver.disconnect();
+    homeAnnouncementObserver = null;
+  }
+
+  const root = homeScrollRootRef.value;
+  if (!root) return;
+  const sectionEl = root.querySelector("#home-announcement-section");
+  if (!(sectionEl instanceof HTMLElement)) return;
+
+  homeAnnouncementObserver = new IntersectionObserver(
+    (entries) => {
+      const [entry] = entries;
+      if (!entry) return;
+      if (!announcementDismissArmed.value) return;
+      if (entry.isIntersecting && entry.intersectionRatio >= 0.95) {
+        dismissAnnouncementPrompt();
+      }
+    },
+    {
+      root,
+      threshold: [0.95],
+      rootMargin: "-58px 0px -88px 0px",
+    },
+  );
+
+  homeAnnouncementObserver.observe(sectionEl);
 }
 
 function openCalendarScreen(): void {
@@ -1874,12 +1966,65 @@ watch(showCalendarScreen, (opened) => {
   }
 });
 
+watch(
+  [activeTab, latestAnnouncements],
+  async ([tab]) => {
+    if (tab !== "home") return;
+    announcementPromptDismissed.value = false;
+    announcementPromptClosing.value = false;
+    announcementDismissArmed.value = false;
+    await nextTick();
+    setupHomeAnnouncementObserver();
+  },
+  { immediate: true }
+);
+
+onMounted(() => {
+  homeScrollRootRef.value?.addEventListener("scroll", armAnnouncementDismiss, { passive: true });
+});
+
 onBeforeUnmount(() => {
+  if (announcementPromptDismissTimer) clearTimeout(announcementPromptDismissTimer);
+  if (homeAnnouncementObserver) {
+    homeAnnouncementObserver.disconnect();
+    homeAnnouncementObserver = null;
+  }
+  homeScrollRootRef.value?.removeEventListener("scroll", armAnnouncementDismiss);
   document.body.classList.remove(fullscreenTimeOffSelectClass);
 });
 </script>
 
 <style scoped>
+.floating-announcement-btn {
+  animation: floatPrompt 2.4s ease-in-out infinite;
+}
+
+.floating-announcement-chevron {
+  animation: chevronBounce 1.05s ease-in-out infinite;
+}
+
+@keyframes floatPrompt {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-4px);
+  }
+}
+
+@keyframes chevronBounce {
+  0%,
+  100% {
+    transform: translateY(0);
+    opacity: 0.72;
+  }
+  50% {
+    transform: translateY(3px);
+    opacity: 1;
+  }
+}
+
 .mobile-nav-fab {
   position: absolute;
   left: 50%;
