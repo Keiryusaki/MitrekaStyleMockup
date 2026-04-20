@@ -1,6 +1,6 @@
 <template>
   <section class="-mx-3 min-h-full bg-white pb-24">
-    <header class="flex h-[56px] items-center bg-[#004b8d] px-4 text-white">
+    <header class="sticky top-0 z-20 flex h-[56px] items-center bg-[#004b8d] px-3 text-white shadow-[0_8px_16px_-12px_rgba(0,75,141,0.8)]">
       <button class="rounded-full p-1.5 transition hover:bg-white/15" @click="$emit('navigateHome')">
         <Icon name="arrow-left" class="h-5 w-5" />
       </button>

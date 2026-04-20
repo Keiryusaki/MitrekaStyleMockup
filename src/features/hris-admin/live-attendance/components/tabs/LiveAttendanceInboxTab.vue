@@ -1,7 +1,7 @@
 <template>
   <section class="-mx-3 min-h-full bg-white pb-24">
     <template v-if="selectedNotificationDetail">
-      <header class="flex h-[56px] items-center bg-[#004b8d] px-4 text-white">
+      <header class="sticky top-0 z-20 flex h-[56px] items-center bg-[#004b8d] px-3 text-white shadow-[0_8px_16px_-12px_rgba(0,75,141,0.8)]">
         <button class="rounded-full p-1.5 transition hover:bg-white/15" @click="selectedNotificationDetail = null">
           <Icon name="arrow-left" class="h-5 w-5" />
         </button>
@@ -11,7 +11,7 @@
 
       <div class="bg-white px-3 pb-5 pt-3">
         <article class="overflow-hidden rounded-2xl border border-slate-200 bg-white">
-          <div class="px-4 py-4">
+          <div class="px-3 py-4">
             <div class="flex items-center gap-3">
               <img :src="selectedNotificationDetail.avatar" :alt="selectedNotificationDetail.sender" class="h-12 w-12 rounded-full object-cover" />
               <div class="min-w-0 flex-1">
@@ -22,13 +22,13 @@
             </div>
           </div>
 
-          <div class="border-y border-slate-200 bg-slate-50 px-4 py-3">
+          <div class="border-y border-slate-200 bg-slate-50 px-3 py-3">
             <p class="text-[11px] font-black uppercase tracking-wide text-slate-500">Ringkasan</p>
             <p class="mt-1 text-[14px] font-black text-slate-800">{{ selectedNotificationDetail.summary }}</p>
             <p class="mt-1 text-[12px] text-slate-600">{{ selectedNotificationDetail.message }}</p>
           </div>
 
-          <div class="space-y-4 px-4 py-4">
+          <div class="space-y-4 px-3 py-4">
             <div>
               <p class="text-[11px] font-semibold text-slate-500">Jenis Pengajuan</p>
               <p class="mt-0.5 text-[14px] font-black text-slate-800">{{ selectedNotificationDetail.requestType }}</p>
@@ -70,7 +70,7 @@
     </template>
 
     <template v-else-if="selectedApprovalRequest">
-      <header class="flex h-[56px] items-center bg-[#004b8d] px-4 text-white">
+      <header class="sticky top-0 z-20 flex h-[56px] items-center bg-[#004b8d] px-3 text-white shadow-[0_8px_16px_-12px_rgba(0,75,141,0.8)]">
         <button class="rounded-full p-1.5 transition hover:bg-white/15" @click="selectedApprovalRequest = null">
           <Icon name="arrow-left" class="h-5 w-5" />
         </button>
@@ -80,7 +80,7 @@
 
       <div class="bg-white px-3 pb-5 pt-3">
         <article class="overflow-hidden rounded-2xl border border-slate-200 bg-white">
-          <div class="px-4 py-4">
+          <div class="px-3 py-4">
             <div class="flex items-center gap-3">
               <img :src="selectedApprovalRequest.avatar" :alt="selectedApprovalRequest.employeeName" class="h-14 w-14 rounded-full object-cover" />
               <div class="min-w-0 flex-1">
@@ -111,7 +111,7 @@
             <img :src="selectedApprovalRequest.photo" :alt="selectedApprovalRequest.employeeName" class="h-52 w-full object-cover" />
           </div>
 
-          <div class="space-y-4 px-4 py-4">
+          <div class="space-y-4 px-3 py-4">
             <div>
               <p class="text-[11px] font-semibold text-slate-500">{{ selectedApprovalRequest.categoryLabel }} request</p>
               <p class="mt-0.5 text-[15px] font-black text-slate-800">{{ selectedApprovalRequest.requestDate }}</p>
@@ -196,7 +196,7 @@
     </template>
 
     <template v-else-if="selectedApprovalCategory">
-      <header class="flex h-[56px] items-center bg-[#004b8d] px-4 text-white">
+      <header class="sticky top-0 z-20 flex h-[56px] items-center bg-[#004b8d] px-3 text-white shadow-[0_8px_16px_-12px_rgba(0,75,141,0.8)]">
         <button class="rounded-full p-1.5 transition hover:bg-white/15" @click="selectedApprovalCategoryId = null">
           <Icon name="arrow-left" class="h-5 w-5" />
         </button>
@@ -204,8 +204,8 @@
         <span class="w-8"></span>
       </header>
 
-      <div class="bg-white px-4 pt-3">
-        <label class="flex items-center gap-2 rounded-full border border-slate-300 bg-white px-4 py-2.5">
+      <div class="bg-white px-3 pt-3">
+        <label class="flex items-center gap-2 rounded-full border border-slate-300 bg-white px-3 py-2.5">
           <Icon name="search" class="h-5 w-5 text-slate-400" />
           <input
             v-model="approvalSearch"
@@ -216,7 +216,7 @@
         </label>
       </div>
 
-      <div class="bg-white px-4 py-4">
+      <div class="bg-white px-3 py-4">
         <div v-if="filteredApprovalByDate.length === 0" class="py-10 text-center">
           <p class="text-[12px] font-semibold text-slate-500">Data approval tidak ditemukan.</p>
         </div>
@@ -261,7 +261,7 @@
     </template>
 
     <template v-else>
-      <header class="flex h-[56px] items-center bg-[#004b8d] px-4 text-white">
+      <header class="sticky top-0 z-20 flex h-[56px] items-center bg-[#004b8d] px-3 text-white shadow-[0_8px_16px_-12px_rgba(0,75,141,0.8)]">
         <button class="rounded-full p-1.5 transition hover:bg-white/15" @click="$emit('navigateHome')">
           <Icon name="arrow-left" class="h-5 w-5" />
         </button>
@@ -294,7 +294,7 @@
         <button
           v-for="item in personalNotifications"
           :key="item.id"
-          class="flex w-full items-start gap-3 border-b border-slate-100 px-4 py-3 text-left transition hover:bg-slate-50"
+          class="flex w-full items-start gap-3 border-b border-slate-100 px-3 py-3 text-left transition hover:bg-slate-50"
           @click="openNotificationDetail(item)"
         >
           <img :src="item.avatar" :alt="item.sender" class="h-11 w-11 rounded-full object-cover" />
@@ -311,7 +311,7 @@
         <button
           v-for="category in approvalCategories"
           :key="category.id"
-          class="flex w-full items-center gap-3 border-b border-slate-100 px-4 py-3 text-left transition hover:bg-slate-50"
+          class="flex w-full items-center gap-3 border-b border-slate-100 px-3 py-3 text-left transition hover:bg-slate-50"
           @click="openApprovalCategory(category.id)"
         >
           <span class="inline-flex h-9 w-9 items-center justify-center rounded-xl" :class="category.bgClass">

@@ -6,6 +6,7 @@ import {
 } from "vue-router";
 import Dashboard from "@/pages/Dashboard.vue";
 import { useLoadingStore } from "@/stores/loading";
+import { isLiveAttendanceAuthenticated } from "@/features/hris-admin/live-attendance/authSession";
 
 const routes: RouteRecordRaw[] = [
   {
@@ -77,11 +78,22 @@ const routes: RouteRecordRaw[] = [
   },
   {
     path: "/live-attendance",
-    redirect: "/mockup-hris-admin/live-attendance",
+    redirect: "/mockup-hris-admin/live-attendance/splash",
+  },
+  {
+    path: "/mockup-hris-admin/live-attendance/splash",
+    component: () => import("@/pages/HRISAdmin/LiveAttendanceSplash.vue"),
+    meta: { layout: "blank" },
+  },
+  {
+    path: "/mockup-hris-admin/live-attendance/login",
+    component: () => import("@/pages/HRISAdmin/LiveAttendanceLogin.vue"),
+    meta: { layout: "blank", liveAttendanceGuestOnly: true },
   },
   {
     path: "/mockup-hris-admin/live-attendance",
     component: () => import("@/pages/HRISAdmin/LiveAttendance.vue"),
+    meta: { liveAttendanceAuth: true },
   },
   {
     path: "/mockup-hris-admin/attendance",
@@ -320,6 +332,20 @@ const router = createRouter({
 
 // Navigation guard: tampilkan block UI SEBELUM navigasi
 router.beforeEach((to, from, next) => {
+  const isLiveAttendanceAuthRoute = Boolean(to.meta.liveAttendanceAuth);
+  const isLiveAttendanceGuestOnlyRoute = Boolean(to.meta.liveAttendanceGuestOnly);
+  const isAuthenticated = isLiveAttendanceAuthenticated();
+
+  if (isLiveAttendanceAuthRoute && !isAuthenticated) {
+    next("/mockup-hris-admin/live-attendance/splash");
+    return;
+  }
+
+  if (isLiveAttendanceGuestOnlyRoute && isAuthenticated) {
+    next("/mockup-hris-admin/live-attendance");
+    return;
+  }
+
   // Skip jika navigasi ke halaman yang sama
   if (to.path !== from.path) {
     const loading = useLoadingStore();

@@ -98,7 +98,11 @@
 
               <LiveAttendanceInboxTab v-else-if="activeTab === 'inbox'" @navigate-home="activeTab = 'home'" />
 
-              <LiveAttendanceAccountTab v-else-if="activeTab === 'account'" @navigate-home="activeTab = 'home'" />
+              <LiveAttendanceAccountTab
+                v-else-if="activeTab === 'account'"
+                @navigate-home="activeTab = 'home'"
+                @logout="handleLogout"
+              />
             </div>
           </main>
 
@@ -111,7 +115,7 @@
             >
               <Icon name="send" class="h-6 w-6" />
             </button>
-            <div class="grid w-full grid-cols-4 items-center gap-1">
+            <div class="grid w-full grid-cols-[1fr_1fr_0.5fr_1fr_1fr] items-center gap-1">
               <button class="mobile-nav-btn" :class="activeTab === 'home' ? 'is-active' : ''" @click="activeTab = 'home'">
                 <Icon name="home" class="h-5 w-5" />
                 <span>Beranda</span>
@@ -120,13 +124,14 @@
                 <Icon name="users" class="h-5 w-5" />
                 <span>Karyawan</span>
               </button>
+              <div aria-hidden="true"></div>
               <button class="mobile-nav-btn" :class="activeTab === 'inbox' ? 'is-active' : ''" @click="activeTab = 'inbox'">
                 <Icon name="bell" class="h-5 w-5" />
                 <span>Inbox</span>
               </button>
               <button class="mobile-nav-btn" :class="activeTab === 'account' ? 'is-active' : ''" @click="activeTab = 'account'">
                 <Icon name="user" class="h-5 w-5" />
-                <span>Akun</span>
+                <span>Pengaturan</span>
               </button>
             </div>
           </nav>
@@ -996,6 +1001,7 @@
 
 <script setup lang="ts">
 import { computed, onBeforeUnmount, ref, watch } from "vue";
+import { useRouter } from "vue-router";
 import {
   DateTimePicker as MitrekaDateTimePicker,
   SelectDropdown as MitrekaSelectDropdown,
@@ -1008,6 +1014,7 @@ import LiveAttendanceEmployeeTab from "@/features/hris-admin/live-attendance/com
 import LiveAttendanceInboxTab from "@/features/hris-admin/live-attendance/components/tabs/LiveAttendanceInboxTab.vue";
 import LiveAttendanceAccountTab from "@/features/hris-admin/live-attendance/components/tabs/LiveAttendanceAccountTab.vue";
 import LiveAttendanceLogPanel from "@/features/hris-admin/live-attendance/components/panels/LiveAttendanceLogPanel.vue";
+import { clearLiveAttendanceAuthenticated } from "@/features/hris-admin/live-attendance/authSession";
 import { useLiveAttendance } from "@/features/hris-admin/live-attendance/useLiveAttendance";
 
 type EmployeeDetail = {
@@ -1220,6 +1227,8 @@ const announcements = ref<AnnouncementItem[]>([
     publishedAt: "2026-04-08",
   },
 ]);
+
+const router = useRouter();
 const showAnnouncementListScreen = ref(false);
 const showAnnouncementDetailDrawer = ref(false);
 const selectedAnnouncement = ref<AnnouncementItem | null>(null);
@@ -1730,6 +1739,11 @@ function handleTimeOffFile(event: Event): void {
 function submitTimeOffRequest(): void {
   showTimeOffForm.value = false;
   activeTab.value = "home";
+}
+
+function handleLogout(): void {
+  clearLiveAttendanceAuthenticated();
+  router.replace("/mockup-hris-admin/live-attendance/login");
 }
 
 function toDateKey(date: Date): string {

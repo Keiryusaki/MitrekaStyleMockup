@@ -1,7 +1,7 @@
 <template>
   <transition name="employee-slide">
     <div v-if="show" class="absolute inset-0 z-50 flex flex-col bg-slate-50">
-      <div class="flex-1 overflow-y-auto px-6 pb-24 pt-5">
+      <div class="flex-1 overflow-y-auto px-3 pb-24 pt-5">
         <div class="mb-4 flex items-center justify-between gap-3">
           <h3 class="text-lg font-bold text-slate-800">Log Kehadiran</h3>
           <div :ref="monthDropdownRef" class="relative">
@@ -30,30 +30,45 @@
           </div>
         </div>
 
-        <div v-for="month in filteredMonthlyLogs" :key="month.monthKey" class="space-y-2">
-          <h4 class="px-1 text-xs font-black uppercase tracking-wider text-slate-500">{{ month.monthLabel }}</h4>
-          <article
-            v-for="item in month.items"
-            :key="item.id"
-            class="rounded-xl border border-[#004b8d]/12 bg-white px-3 py-2.5 shadow-[0_6px_18px_rgba(0,75,141,0.10)]"
-          >
-            <button class="flex w-full items-center justify-between gap-3 text-left" @click="$emit('openLogDetail', item)">
-              <div class="min-w-0 flex-1">
-                <p class="truncate text-[12px] font-black text-[#004b8d]">{{ formatListDate(item.dateKey) }}</p>
-                <p class="mt-0.5 truncate text-[11px] font-bold text-slate-700">
-                  {{ item.firstIn }} - {{ item.lastOut }} <span class="text-slate-400">| {{ item.totalWork }}</span>
-                </p>
-                <p class="mt-1 truncate text-[10px] font-bold uppercase tracking-wide text-slate-400">
-                  {{ sessionMetaSummary(item) }}
-                </p>
-              </div>
-              <Icon name="chevron-right" class="h-4 w-4 text-slate-400" />
-            </button>
-          </article>
+        <div v-if="!filteredMonthlyLogs.some((month) => month.items.length > 0)" class="rounded-2xl border border-dashed border-slate-300 bg-white px-4 py-8 text-center">
+          <p class="text-[12px] font-semibold text-slate-500">Belum ada riwayat untuk filter bulan ini.</p>
+        </div>
+
+        <div
+          v-for="(month, monthIndex) in filteredMonthlyLogs"
+          :key="month.monthKey"
+          :class="monthIndex === 0 ? 'space-y-2' : 'mt-4 space-y-2'"
+        >
+          <template v-if="month.items.length > 0">
+            <h4 class="px-1 text-[10px] font-black uppercase tracking-[0.14em] text-slate-400">{{ month.monthLabel }}</h4>
+            <article class="overflow-hidden rounded-2xl border border-[#004b8d]/10 bg-white shadow-[0_8px_20px_-14px_rgba(0,75,141,0.35)]">
+              <button
+                v-for="item in month.items"
+                :key="item.id"
+                class="log-row-btn"
+                @click="$emit('openLogDetail', item)"
+              >
+                <span class="log-row-icon">
+                  <Icon name="calendar-days" class="h-4 w-4" />
+                </span>
+
+                <span class="min-w-0 flex-1">
+                  <span class="block truncate text-[12px] font-black text-[#004b8d]">{{ formatListDate(item.dateKey) }}</span>
+                  <span class="mt-1 flex flex-wrap items-center gap-1.5">
+                    <span class="log-meta-chip">{{ item.firstIn }} - {{ item.lastOut }}</span>
+                    <span class="log-meta-chip">{{ item.totalWork }}</span>
+                    <span class="log-meta-chip">{{ sessionMetaSummary(item) }}</span>
+                  </span>
+                </span>
+
+                <Icon name="chevron-right" class="h-4 w-4 text-slate-400" />
+              </button>
+            </article>
+          </template>
         </div>
       </div>
 
-      <div class="border-t border-slate-200 bg-white px-4 py-3">
+      <div class="border-t border-slate-200 bg-white px-3 py-3">
         <button class="flex w-full items-center justify-center gap-2 rounded-xl bg-[#004b8d] py-2.5 text-sm font-black text-white" @click="$emit('close')">
           <Icon name="chevron-left" class="h-4 w-4" />
           <span>Kembali</span>
@@ -100,3 +115,45 @@ defineEmits<{
   openLogDetail: [item: LogItem];
 }>();
 </script>
+
+<style scoped>
+.log-row-btn {
+  display: flex;
+  width: 100%;
+  align-items: center;
+  gap: 0.7rem;
+  border-bottom: 1px solid rgb(241 245 249);
+  padding: 0.72rem 0.86rem;
+  text-align: left;
+  transition: background-color 0.15s ease;
+}
+
+.log-row-btn:last-child {
+  border-bottom: 0;
+}
+
+.log-row-btn:hover {
+  background: rgb(248 250 252);
+}
+
+.log-row-icon {
+  display: inline-flex;
+  height: 1.9rem;
+  width: 1.9rem;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: center;
+  border-radius: 0.75rem;
+  background: rgb(59 130 246 / 0.12);
+  color: rgb(0 75 141);
+}
+
+.log-meta-chip {
+  border-radius: 999px;
+  background: rgb(241 245 249);
+  padding: 0.12rem 0.48rem;
+  font-size: 10px;
+  font-weight: 800;
+  color: rgb(71 85 105);
+}
+</style>
