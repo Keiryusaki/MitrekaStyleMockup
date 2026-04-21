@@ -94,7 +94,6 @@ const whoIsOffList = computed(() =>
 const openRequestPage = () => router.push("/mockup-hris-employee/time-off/request");
 const openApprovalRequestPage = () =>
   router.push({ path: "/mockup-hris-employee/time-off/request", query: { tab: "approval" } });
-const openHistoryPage = () => router.push("/mockup-hris-employee/time-off/history");
 
 const initialsOf = (name: string) =>
   name
@@ -122,7 +121,6 @@ const initialsOf = (name: string) =>
         </div>
         <div class="flex flex-wrap gap-2">
           <Button size="sm" color="primary" @click="openRequestPage">Ajukan Cuti/Izin</Button>
-          <Button size="sm" variant="outline" color="default" @click="openHistoryPage">Riwayat Pengajuan</Button>
         </div>
       </div>
       <div class="grid gap-3 md:grid-cols-3">
