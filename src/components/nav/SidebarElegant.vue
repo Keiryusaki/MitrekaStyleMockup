@@ -311,7 +311,25 @@ export default defineComponent({
                                       name: "dot",
                                       class: "w-5 h-5",
                                     }),
-                                    h("span", { class: collapsedFx("font-medium") }, child.label),
+                                    h(
+                                      "span",
+                                      {
+                                        class: collapsedFx(
+                                          "font-medium flex-1 min-w-0 truncate"
+                                        ),
+                                      },
+                                      child.label
+                                    ),
+                                    !props.collapsed &&
+                                      child.badge &&
+                                      h(
+                                        "span",
+                                        {
+                                          class:
+                                            "ml-auto inline-flex items-center rounded-full border border-sky-200 bg-sky-100 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-sky-700",
+                                        },
+                                        child.badge
+                                      ),
                                   ]
                                 );
                               })

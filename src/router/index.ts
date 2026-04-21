@@ -124,6 +124,30 @@ const routes: RouteRecordRaw[] = [
     component: () => import("@/pages/HRISAdmin/TimeOff.vue"),
   },
   {
+    path: "/mockup-hris-employee/dashboard",
+    component: () => import("@/pages/HRISEmployee/Dashboard.vue"),
+  },
+  {
+    path: "/mockup-hris-employee/time-off/request",
+    component: () => import("@/pages/HRISEmployee/TimeOffRequest.vue"),
+  },
+  {
+    path: "/mockup-hris-employee/time-off/history",
+    component: () => import("@/pages/HRISEmployee/TimeOffHistory.vue"),
+  },
+  {
+    path: "/mockup-hris-employee/time-off/detail",
+    component: () => import("@/pages/HRISEmployee/TimeOffDetail.vue"),
+  },
+  {
+    path: "/mockup-hris-employee/time-off/detail/:requestId",
+    component: () => import("@/pages/HRISEmployee/TimeOffDetail.vue"),
+  },
+  {
+    path: "/mockup-hris-employee/profile",
+    component: () => import("@/pages/HRISEmployee/Profile.vue"),
+  },
+  {
     path: "/select-playground",
     component: () => import("@/pages/Mockup/SelectPlayground.vue"),
   },

@@ -15,6 +15,7 @@ export type NavItem = {
   to?: string;
   children?: NavItem[];
   exact?: boolean;
+  badge?: string;
 };
 
 // Data Navigasi
@@ -50,11 +51,49 @@ export const NAV: NavItem[] = [
     label: "Mockup HRIS Admin",
     icon: "users",
     children: [
-      { id: "live-attendance", label: "Live Attendance", to: "/mockup-hris-admin/live-attendance" },
-      { id: "hris-attendance", label: "Kehadiran", to: "/mockup-hris-admin/attendance" },
-      { id: "hris-employee", label: "Karyawan", to: "/mockup-hris-admin/employee" },
-      { id: "hris-approval", label: "Approval", to: "/mockup-hris-admin/approval" },
-      { id: "hris-time-off", label: "Cuti/Izin", to: "/mockup-hris-admin/time-off" },
+      {
+        id: "hris-attendance",
+        label: "Kehadiran",
+        to: "/mockup-hris-admin/attendance",
+      },
+      {
+        id: "hris-employee",
+        label: "Karyawan",
+        to: "/mockup-hris-admin/employee",
+      },
+      {
+        id: "hris-approval",
+        label: "Approval",
+        to: "/mockup-hris-admin/approval",
+      },
+      {
+        id: "hris-time-off",
+        label: "Cuti/Izin",
+        to: "/mockup-hris-admin/time-off",
+      },
+    ],
+  },
+  {
+    id: "mockup-hris-employee",
+    label: "Mockup HRIS Employee",
+    icon: "users",
+    children: [
+      {
+        id: "live-attendance",
+        label: "Live Attendance",
+        to: "/mockup-hris-admin/live-attendance",
+        badge: "Mobile",
+      },
+      {
+        id: "hris-employee-dashboard",
+        label: "Home",
+        to: "/mockup-hris-employee/dashboard",
+      },
+      {
+        id: "hris-employee-time-off-request",
+        label: "Permohonan Cuti/Izin",
+        to: "/mockup-hris-employee/time-off/request",
+      },
     ],
   },
   {
