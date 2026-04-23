@@ -2,6 +2,7 @@
 import { Transition, defineComponent, h } from "vue";
 import { Icon } from "@/composables/Icon"; // Import icon
 import { useSidebar } from "@/composables/useSidebar"; // Import logic
+import type { NavItem } from "@/components/nav/data/navigation";
 
 export default defineComponent({
   name: "SidebarElegant",
@@ -95,6 +96,150 @@ export default defineComponent({
       },
     };
 
+    const hasActiveDescendant = (item: NavItem): boolean =>
+      (item.children ?? []).some((child) => isActive(child) || hasActiveDescendant(child));
+
+    const renderNavItems = (items: NavItem[], depth = 0): any[] =>
+      items.map((item) => {
+        const isNested = depth > 0;
+
+        if (!item.children?.length) {
+          const active = isActive(item);
+          return h(
+            "div",
+            { key: item.id, class: "relative flex-shrink-0" },
+            [
+              active &&
+                h("div", {
+                  class: "absolute -left-[13px] top-1/2 -translate-y-1/2 w-[4px] h-field rounded-r-full sidebar-active-mark",
+                }),
+              h(
+                "a",
+                {
+                  class: [
+                    "relative flex items-center h-field rounded-field cursor-pointer",
+                    "border border-transparent",
+                    isNested ? "pl-3 pr-[.75rem]" : "px-3",
+                    props.collapsed ? "justify-center gap-0 px-2" : "gap-3",
+                    active ? "sidebar-item-active sidebar-item-active-border" : "sidebar-hover",
+                  ],
+                  "aria-current": active ? "page" : undefined,
+                  onClick: () => go(item),
+                  onMouseenter: (e: MouseEvent) => showTip(e, item.label),
+                  onMouseleave: hideTip,
+                },
+                [
+                  h(Icon, {
+                    name: isNested ? "dot" : item.icon || "dot",
+                    class: "w-5 h-5",
+                  }),
+                  h(
+                    "span",
+                    {
+                      class: collapsedFx(
+                        isNested ? "font-medium flex-1 min-w-0 truncate" : "font-medium"
+                      ),
+                    },
+                    item.label
+                  ),
+                  !props.collapsed &&
+                    item.badge &&
+                    h(
+                      "span",
+                      {
+                        class:
+                          "ml-auto inline-flex items-center rounded-full border border-sky-200 bg-sky-100 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-sky-700",
+                      },
+                      item.badge
+                    ),
+                ]
+              ),
+            ]
+          );
+        }
+
+        const open = isGroupOpen(item);
+        const hasActiveChild = hasActiveDescendant(item);
+
+        return h("div", { key: item.id, class: "flex-shrink-0" }, [
+          h(
+            "button",
+            {
+              class: [
+                "relative w-full flex items-center h-field rounded-field flex-shrink-0",
+                "border border-transparent",
+                "transition-colors duration-200 ease-out",
+                isNested ? "pl-3 pr-[.75rem]" : "px-3",
+                props.collapsed ? "justify-center gap-0 px-2" : "gap-3",
+                open ? "sidebar-parent-open" : "sidebar-hover",
+              ],
+              "aria-expanded": open,
+              onClick: () => toggleGroup(item),
+              onMouseenter: (e: MouseEvent) => showTip(e, item.label),
+              onMouseleave: hideTip,
+            },
+            [
+              hasActiveChild &&
+                h("div", {
+                  class: "absolute -left-[13px] top-1/2 -translate-y-1/2 w-[4px] h-field rounded-r-full sidebar-active-mark",
+                }),
+              h(Icon, {
+                name: isNested ? "dot" : item.icon || "dot",
+                class: "w-5 h-5",
+              }),
+              h(
+                "span",
+                {
+                  class: collapsedFx(
+                    isNested
+                      ? "font-medium flex-1 text-left min-w-0 truncate"
+                      : "font-medium flex-1 text-left"
+                  ),
+                },
+                item.label
+              ),
+              h(Icon, {
+                name: "chevron-right",
+                class: [
+                  "w-4 h-4 transition-all duration-200",
+                  open ? "rotate-90" : "",
+                  props.collapsed
+                    ? "max-w-0 opacity-0 -translate-x-1"
+                    : "max-w-4 opacity-100 translate-x-0",
+                ],
+              }),
+            ]
+          ),
+          h(
+            Transition,
+            submenuTransition,
+            {
+              default: () =>
+                open
+                  ? h(
+                      "div",
+                      {
+                        class: [
+                          "relative mt-1 overflow-hidden",
+                          props.collapsed ? "pl-2" : "pl-5",
+                        ],
+                      },
+                      [
+                        h("div", {
+                          class: [
+                            "absolute left-2 top-2 bottom-2 border-l-2 border-gray-200 transition-opacity duration-200",
+                            props.collapsed ? "opacity-0" : "opacity-100",
+                          ],
+                        }),
+                        h("div", { class: "overflow-hidden flex flex-col gap-1" }, renderNavItems(item.children!, depth + 1)),
+                      ]
+                    )
+                  : null,
+            }
+          ),
+        ]);
+      });
+
     // Ini adalah 'return' dari setup() lo yang lama
     return () =>
       h("div", { class: "flex flex-col h-full min-h-0" }, [
@@ -171,176 +316,7 @@ export default defineComponent({
         h(
           "nav",
           { class: "flex flex-col gap-1 p-3 pb-6 flex-1 overflow-y-auto min-h-0" },
-          // Gunakan filteredNav dari composable
-          filteredNav.value.map((item) => {
-            // Item biasa (bukan group)
-            if (!item.children) {
-              const active = isActive(item);
-              return h(
-                "div",
-                { key: item.id, class: "relative flex-shrink-0" },
-                [
-                  // Active indicator mark for items without children
-                  active &&
-                    h("div", {
-                      class: "absolute -left-[13px] top-1/2 -translate-y-1/2 w-[4px] h-field rounded-r-full sidebar-active-mark",
-                    }),
-                  h(
-                    "a",
-                    {
-                      class: [
-                        "relative flex items-center h-field rounded-field cursor-pointer",
-                        "px-3 border border-transparent",
-                        props.collapsed ? "justify-center gap-0 px-2" : "gap-3",
-                        active
-                          ? "sidebar-item-active sidebar-item-active-border"
-                          : "sidebar-hover",
-                      ],
-                      "aria-current": active ? "page" : undefined,
-                      onClick: () => go(item),
-                      onMouseenter: (e: MouseEvent) => showTip(e, item.label),
-                      onMouseleave: hideTip,
-                    },
-                    [
-                      h(Icon, {
-                        name: item.icon || "dot",
-                        class: "w-5 h-5",
-                      }),
-                      h("span", { class: collapsedFx("font-medium") }, item.label),
-                    ]
-                  ),
-                ]
-              );
-            }
-
-            // group
-            const open = isGroupOpen(item);
-            const hasActiveChild = item.children?.some((child) => isActive(child)) ?? false;
-            return h("div", { key: item.id, class: "flex-shrink-0" }, [
-              h(
-                "button",
-                {
-                  class: [
-                    "relative w-full flex items-center h-field rounded-field px-3 flex-shrink-0",
-                    "border border-transparent",
-                    "transition-colors duration-200 ease-out",
-                    props.collapsed ? "justify-center gap-0 px-2" : "gap-3",
-                    open
-                      ? "sidebar-parent-open" // Style Grup Open (soft primary light, soft accent dark)
-                      : "sidebar-hover", // Style Grup Closed (hover)
-                  ],
-                  "aria-expanded": open,
-                  onClick: () => toggleGroup(item),
-                  onMouseenter: (e: MouseEvent) => showTip(e, item.label),
-                  onMouseleave: hideTip,
-                },
-                [
-                  // Active child indicator mark (Discord-style pill) - inside button for correct positioning
-                  hasActiveChild &&
-                    h("div", {
-                      class: "absolute -left-[13px] top-1/2 -translate-y-1/2 w-[4px] h-field rounded-r-full sidebar-active-mark",
-                    }),
-                  h(Icon, {
-                    name: item.icon || "dot",
-                    class: "w-5 h-5",
-                  }),
-                  h(
-                    "span",
-                    { class: collapsedFx("font-medium flex-1 text-left") },
-                    item.label
-                  ),
-                  h(Icon, {
-                    name: "chevron-right",
-                    class: [
-                      "w-4 h-4 transition-all duration-200",
-                      open ? "rotate-90" : "",
-                      props.collapsed ? "max-w-0 opacity-0 -translate-x-1" : "max-w-4 opacity-100 translate-x-0",
-                    ],
-                  }),
-                ]
-              ),
-
-              // Dropdown children
-              h(
-                Transition,
-                submenuTransition,
-                {
-                  default: () =>
-                    open
-                      ? h(
-                          "div",
-                          {
-                            class: [
-                              "relative mt-1 overflow-hidden",
-                              props.collapsed ? "pl-2" : "pl-5",
-                            ],
-                          },
-                          [
-                            h("div", {
-                              class: [
-                                "absolute left-2 top-2 bottom-2 border-l-2 border-gray-200 transition-opacity duration-200",
-                                props.collapsed ? "opacity-0" : "opacity-100",
-                              ],
-                            }),
-                            h(
-                              "div",
-                              { class: "overflow-hidden flex flex-col gap-1" },
-                              item.children!.map((child) => {
-                                const active = isActive(child);
-                                return h(
-                                  "a",
-                                  {
-                                    key: child.id,
-                                    class: [
-                                      "relative flex items-center h-field rounded-field cursor-pointer flex-shrink-0",
-                                      "border border-transparent",
-                                      "pl-3 pr-[.75rem]",
-                                      props.collapsed ? "justify-center gap-0 px-2" : "gap-3",
-                                      active
-                                        ? "sidebar-item-active sidebar-item-active-border" // Style Child Active
-                                        : "sidebar-hover", // Style Child Inactive (hover)
-                                    ],
-                                    "aria-current": active ? "page" : undefined,
-                                    onClick: () => go(child),
-                                    onMouseenter: (e: MouseEvent) =>
-                                      showTip(e, child.label),
-                                    onMouseleave: hideTip,
-                                  },
-                                  [
-                                    h(Icon, {
-                                      name: "dot",
-                                      class: "w-5 h-5",
-                                    }),
-                                    h(
-                                      "span",
-                                      {
-                                        class: collapsedFx(
-                                          "font-medium flex-1 min-w-0 truncate"
-                                        ),
-                                      },
-                                      child.label
-                                    ),
-                                    !props.collapsed &&
-                                      child.badge &&
-                                      h(
-                                        "span",
-                                        {
-                                          class:
-                                            "ml-auto inline-flex items-center rounded-full border border-sky-200 bg-sky-100 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-sky-700",
-                                        },
-                                        child.badge
-                                      ),
-                                  ]
-                                );
-                              })
-                            ),
-                          ]
-                        )
-                      : null,
-                }
-              ),
-            ]);
-          })
+          renderNavItems(filteredNav.value)
         ),
       ]);
   },

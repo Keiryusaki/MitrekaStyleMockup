@@ -34,11 +34,15 @@ export function useSidebar() {
     return current === target || current.startsWith(`${target}/`);
   };
   const isActive = (item: NavItem) => (item.to ? match(item.to, item) : false);
+  const hasActiveDescendant = (item: NavItem): boolean =>
+    (item.children ?? []).some((child) => isActive(child) || hasActiveDescendant(child));
+
   const isGroupOpen = (item: NavItem) => {
     // Auto-expand all groups when searching
     if (searchQuery.value.trim()) return true;
 
-    return ui.openGroups[item.id] ?? false;
+    if (ui.openGroups[item.id] !== undefined) return ui.openGroups[item.id];
+    return hasActiveDescendant(item);
   };
   const toggleGroup = (item: NavItem) => ui.toggleGroup(item.id);
   const go = (item: NavItem) => {
@@ -52,27 +56,29 @@ export function useSidebar() {
     const query = searchQuery.value.toLowerCase().trim();
     if (!query) return NAV;
 
-    return NAV.map((item) => {
-      // If item has children, filter children
-      if (item.children) {
-        const matchingChildren = item.children.filter((child) =>
-          child.label.toLowerCase().includes(query)
-        );
-        // If parent matches or has matching children, include it
-        if (item.label.toLowerCase().includes(query)) {
-          return item; // Return with all children
-        }
-        if (matchingChildren.length > 0) {
-          return { ...item, children: matchingChildren };
-        }
-        return null;
-      }
-      // Regular item - check if label matches
-      if (item.label.toLowerCase().includes(query)) {
+    const filterItem = (item: NavItem): NavItem | null => {
+      const matchedByLabel = item.label.toLowerCase().includes(query);
+
+      if (matchedByLabel) {
         return item;
       }
-      return null;
-    }).filter(Boolean) as NavItem[];
+
+      if (!item.children?.length) {
+        return null;
+      }
+
+      const filteredChildren = item.children
+        .map((child) => filterItem(child))
+        .filter(Boolean) as NavItem[];
+
+      if (!filteredChildren.length) {
+        return null;
+      }
+
+      return { ...item, children: filteredChildren };
+    };
+
+    return NAV.map((item) => filterItem(item)).filter(Boolean) as NavItem[];
   });
 
   const setSearchQuery = (query: string) => {

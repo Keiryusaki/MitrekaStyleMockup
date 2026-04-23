@@ -100,6 +100,14 @@ const routes: RouteRecordRaw[] = [
     component: () => import("@/pages/HRISAdmin/Attendance.vue"),
   },
   {
+    path: "/mockup-hris-admin/company-settings/info",
+    component: () => import("@/pages/HRISAdmin/CompanyInfo.vue"),
+  },
+  {
+    path: "/mockup-hris-admin/company-settings/locations",
+    component: () => import("@/pages/HRISAdmin/OfficeLocations.vue"),
+  },
+  {
     path: "/mockup-hris-admin/attendance/:employeeId",
     component: () => import("@/pages/HRISAdmin/AttendanceEmployeeLog.vue"),
   },

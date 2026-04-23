@@ -52,6 +52,22 @@ export const NAV: NavItem[] = [
     icon: "users",
     children: [
       {
+        id: "hris-company-settings",
+        label: "Company Settings",
+        children: [
+          {
+            id: "hris-company-info",
+            label: "Info",
+            to: "/mockup-hris-admin/company-settings/info",
+          },
+          {
+            id: "hris-office-locations",
+            label: "Location",
+            to: "/mockup-hris-admin/company-settings/locations",
+          },
+        ],
+      },
+      {
         id: "hris-attendance",
         label: "Kehadiran",
         to: "/mockup-hris-admin/attendance",
