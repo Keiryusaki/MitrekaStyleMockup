@@ -1,9 +1,8 @@
-﻿<script setup lang="ts">
+<script setup lang="ts">
 import { computed, nextTick, onBeforeUnmount, ref, watch } from "vue";
 import { Button, Card, Icon, Input, PageHeader, SelectDropdown } from "@/lib/mitreka-ui-dist/vue";
+import { officeLocations } from "./companySettingsState";
 import "leaflet/dist/leaflet.css";
-
-type AttendanceMode = "gps" | "flexible" | "disabled";
 
 const form = ref({
   companyName: "PT Mitreka Solusi Indonesia",
@@ -17,10 +16,6 @@ const form = ref({
   jkkRate: "0.24%",
   kluCode: "62020",
   npwp: "12.345.678.9-101.112",
-  attendanceMode: "gps" as AttendanceMode,
-  attendanceRadius: "120",
-  latitude: "-6.254561",
-  longitude: "106.801883",
 });
 
 const provinceOptions = [
@@ -47,10 +42,13 @@ const cityByProvince: Record<string, Array<{ value: string; label: string }>> = 
 
 const cityOptions = computed(() => cityByProvince[form.value.umkProvince] ?? []);
 
+const hqLocations = computed(() => officeLocations.value.filter((item) => item.type === "HQ"));
+const activeHq = computed(() => hqLocations.value.find((item) => item.status === "Active") ?? hqLocations.value[0] ?? null);
+
 const attendanceSummary = computed(() => {
-  if (form.value.attendanceMode === "disabled") return "Absensi mobile dimatikan untuk HQ.";
-  if (form.value.attendanceMode === "flexible") return "Absensi bisa dilakukan dari lokasi fleksibel tanpa geofence ketat.";
-  return `Absensi GPS aktif dengan radius ${form.value.attendanceRadius || "0"} meter dari titik HQ.`;
+  if (!activeHq.value) return "Belum ada HQ di master Office Locations.";
+  if (activeHq.value.attendanceMode === "Flexible") return "Absensi bisa dilakukan dari lokasi fleksibel tanpa geofence ketat.";
+  return `Absensi GPS aktif dengan radius ${activeHq.value.radius || 0} meter dari titik HQ.`;
 });
 
 const parseCoord = (value: string): number | null => {
@@ -60,8 +58,9 @@ const parseCoord = (value: string): number | null => {
 };
 
 const validLatLng = computed(() => {
-  const lat = parseCoord(form.value.latitude);
-  const lng = parseCoord(form.value.longitude);
+  if (!activeHq.value) return null;
+  const lat = parseCoord(activeHq.value.latitude);
+  const lng = parseCoord(activeHq.value.longitude);
   if (lat === null || lng === null) return null;
   if (lat < -90 || lat > 90 || lng < -180 || lng > 180) return null;
   return { lat, lng };
@@ -74,16 +73,15 @@ const googleMapsUrl = computed(() => {
 });
 
 const mapContainerRef = ref<HTMLElement | null>(null);
-const geolocationError = ref("");
 let leafletLib: any = null;
 let leafletMap: any = null;
 let markerLayer: any = null;
 let radiusLayer: any = null;
 
 const updateMapLayers = (coords: { lat: number; lng: number }) => {
-  if (!leafletMap || !leafletLib) return;
+  if (!leafletMap || !leafletLib || !activeHq.value) return;
 
-  const radius = Number(form.value.attendanceRadius) > 0 ? Number(form.value.attendanceRadius) : 0;
+  const radius = Number(activeHq.value.radius) > 0 ? Number(activeHq.value.radius) : 0;
 
   if (!markerLayer) {
     markerLayer = leafletLib.circleMarker([coords.lat, coords.lng], {
@@ -111,7 +109,7 @@ const updateMapLayers = (coords: { lat: number; lng: number }) => {
   }
 };
 
-const syncMapFromForm = () => {
+const syncMapFromHq = () => {
   const coords = validLatLng.value;
   if (!leafletMap || !coords) return;
   updateMapLayers(coords);
@@ -119,14 +117,14 @@ const syncMapFromForm = () => {
 };
 
 const ensureMapReady = async () => {
-  if (!mapContainerRef.value) return;
+  if (!mapContainerRef.value || !activeHq.value) return;
   if (!leafletLib) {
     leafletLib = await import("leaflet");
   }
 
   if (leafletMap) {
     leafletMap.invalidateSize();
-    syncMapFromForm();
+    syncMapFromHq();
     return;
   }
 
@@ -140,48 +138,8 @@ const ensureMapReady = async () => {
     })
     .addTo(leafletMap);
 
-  leafletMap.on("click", (event: any) => {
-    const lat = Number(event.latlng.lat.toFixed(6));
-    const lng = Number(event.latlng.lng.toFixed(6));
-    form.value.latitude = String(lat);
-    form.value.longitude = String(lng);
-    updateMapLayers({ lat, lng });
-  });
-
   updateMapLayers(fallback);
 };
-
-const useCurrentLocation = () => {
-  geolocationError.value = "";
-  if (!navigator.geolocation) {
-    geolocationError.value = "Browser tidak mendukung geolocation.";
-    return;
-  }
-
-  navigator.geolocation.getCurrentPosition(
-    (position) => {
-      const lat = Number(position.coords.latitude.toFixed(6));
-      const lng = Number(position.coords.longitude.toFixed(6));
-      form.value.latitude = String(lat);
-      form.value.longitude = String(lng);
-      if (leafletMap) {
-        updateMapLayers({ lat, lng });
-        leafletMap.setView([lat, lng], 16);
-      }
-    },
-    () => {
-      geolocationError.value = "Lokasi gagal diambil. Pastikan izin lokasi sudah diberikan.";
-    },
-    { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 },
-  );
-};
-
-watch(
-  () => [form.value.latitude, form.value.longitude, form.value.attendanceRadius],
-  () => {
-    syncMapFromForm();
-  },
-);
 
 const destroyMap = () => {
   if (!leafletMap) return;
@@ -205,14 +163,15 @@ const handleSave = () => {
 };
 
 watch(
-  () => form.value.attendanceMode,
-  async (mode) => {
-    if (mode !== "gps") {
+  () => [activeHq.value?.id, activeHq.value?.latitude, activeHq.value?.longitude, activeHq.value?.radius, activeHq.value?.attendanceMode],
+  async () => {
+    if (!activeHq.value || activeHq.value.attendanceMode !== "GPS") {
       destroyMap();
       return;
     }
     await nextTick();
     await ensureMapReady();
+    syncMapFromHq();
   },
   { immediate: true, flush: "post" },
 );
@@ -223,7 +182,7 @@ watch(
     <PageHeader
       category="Mockup HRIS Admin"
       title="Company Settings - Info"
-      description="Konfigurasi data perusahaan pusat (HQ) yang menjadi referensi default untuk payroll, compliance, dan attendance location di aplikasi mobile."
+      description="Konfigurasi data perusahaan pusat (HQ) untuk payroll dan compliance. Titik absensi HQ mengikuti master Office Locations agar tidak terjadi duplikasi setting."
     />
 
     <Card padding="p-5" class="space-y-5">
@@ -287,39 +246,53 @@ watch(
     </Card>
 
     <Card padding="p-5" class="space-y-5">
-      <div>
-        <h2 class="text-lg font-semibold">HQ Attendance Point</h2>
-        <p class="text-sm text-base-content/65">Dipakai sebagai lokasi absensi utama saat karyawan clock-in dari mobile app.</p>
+      <div class="flex flex-wrap items-start justify-between gap-3">
+        <div>
+          <h2 class="text-lg font-semibold">HQ Attendance Point</h2>
+          <p class="text-sm text-base-content/65">Sumber data diambil dari master Office Locations untuk mencegah duplikasi HQ.</p>
+        </div>
+        <RouterLink to="/mockup-hris-admin/company-settings/locations" class="btn btn-outline btn-sm">
+          Kelola di Office Locations
+        </RouterLink>
       </div>
 
-      <div class="grid gap-4 md:grid-cols-3">
-        <label class="inline-flex items-center gap-2 rounded-xl border border-base-300 bg-base-50 px-3 py-2">
-          <input v-model="form.attendanceMode" value="disabled" type="radio" class="radio radio-primary radio-sm" />
-          <span class="text-sm">Tidak digunakan</span>
-        </label>
-        <label class="inline-flex items-center gap-2 rounded-xl border border-base-300 bg-base-50 px-3 py-2">
-          <input v-model="form.attendanceMode" value="flexible" type="radio" class="radio radio-primary radio-sm" />
-          <span class="text-sm">Flexible location</span>
-        </label>
-        <label class="inline-flex items-center gap-2 rounded-xl border border-base-300 bg-base-50 px-3 py-2">
-          <input v-model="form.attendanceMode" value="gps" type="radio" class="radio radio-primary radio-sm" />
-          <span class="text-sm">GPS geofence</span>
-        </label>
-      </div>
-
-      <div class="grid gap-4 md:grid-cols-3">
+      <div v-if="hqLocations.length" class="grid gap-4 md:grid-cols-2">
+        <div class="space-y-1">
+          <label class="text-sm font-medium">HQ aktif</label>
+          <Input :model-value="activeHq?.name || '-'" size="sm" class="w-full" disabled />
+        </div>
+        <div class="space-y-1">
+          <label class="text-sm font-medium">Entity</label>
+          <Input :model-value="activeHq?.linkedEntity || '-'" size="sm" class="w-full" disabled />
+        </div>
+        <div class="space-y-1 md:col-span-2">
+          <label class="text-sm font-medium">Alamat HQ</label>
+          <Input :model-value="activeHq?.address || '-'" size="sm" class="w-full" disabled />
+        </div>
+        <div class="space-y-1">
+          <label class="text-sm font-medium">Mode attendance</label>
+          <Input :model-value="activeHq?.attendanceMode || '-'" size="sm" class="w-full" disabled />
+        </div>
         <div class="space-y-1">
           <label class="text-sm font-medium">Radius (meter)</label>
-          <Input v-model="form.attendanceRadius" size="sm" type="number" class="w-full" />
+          <Input :model-value="String(activeHq?.radius ?? '-')" size="sm" class="w-full" disabled />
         </div>
         <div class="space-y-1">
           <label class="text-sm font-medium">Latitude</label>
-          <Input v-model="form.latitude" size="sm" class="w-full" />
+          <Input :model-value="activeHq?.latitude || '-'" size="sm" class="w-full" disabled />
         </div>
         <div class="space-y-1">
           <label class="text-sm font-medium">Longitude</label>
-          <Input v-model="form.longitude" size="sm" class="w-full" />
+          <Input :model-value="activeHq?.longitude || '-'" size="sm" class="w-full" disabled />
         </div>
+        <div class="rounded-xl border border-base-300 bg-base-100 p-3 text-sm text-base-content/85 md:col-span-2">
+          Total HQ tersimpan: <span class="font-semibold">{{ hqLocations.length }}</span>. Detail yang ditampilkan adalah HQ dengan status
+          <span class="font-semibold">Active</span>.
+        </div>
+      </div>
+
+      <div v-else class="rounded-xl border border-warning/40 bg-warning/10 p-4 text-sm text-base-content">
+        Belum ada data HQ di Office Locations. Tambahkan lokasi dengan tipe <span class="font-semibold">HQ</span> terlebih dulu.
       </div>
 
       <div class="rounded-xl border border-info/30 bg-info/10 p-3 text-sm text-base-content/85">
@@ -329,23 +302,18 @@ watch(
 
       <div class="rounded-2xl border border-base-300 bg-base-100 p-4">
         <div class="mb-2 flex flex-wrap items-center justify-between gap-2">
-          <div class="text-sm font-medium">Map HQ location (interactive)</div>
-          <div class="flex items-center gap-2">
-            <Button variant="outline" size="sm" color="default" @click="useCurrentLocation">
-              <Icon name="map-pin" class="h-4 w-4" />
-              Gunakan lokasi saya
-            </Button>
-            <a :href="googleMapsUrl" target="_blank" rel="noopener noreferrer" class="btn btn-ghost btn-sm">Buka Google Maps</a>
-          </div>
+          <div class="text-sm font-medium">Map HQ location (sinkron dari Office Locations)</div>
+          <a :href="googleMapsUrl" target="_blank" rel="noopener noreferrer" class="btn btn-ghost btn-sm">Buka Google Maps</a>
         </div>
-        <div v-if="form.attendanceMode === 'gps'" ref="mapContainerRef" class="h-72 w-full overflow-hidden rounded-xl border border-base-300" />
+        <div
+          v-if="activeHq && activeHq.attendanceMode === 'GPS'"
+          ref="mapContainerRef"
+          class="h-72 w-full overflow-hidden rounded-xl border border-base-300"
+        />
         <div v-else class="flex h-52 items-center justify-center rounded-xl border border-dashed border-base-300 bg-base-50 text-sm text-base-content/60">
-          Aktifkan mode GPS geofence untuk menggunakan map koordinat.
+          Pilih HQ mode GPS geofence di halaman Office Locations untuk menampilkan map.
         </div>
-        <div class="mt-2 text-xs text-base-content/70">Klik area map untuk set `latitude` dan `longitude` HQ.</div>
-        <div v-if="geolocationError" class="mt-2 rounded-lg border border-warning/40 bg-warning/10 px-3 py-2 text-xs text-warning-content">
-          {{ geolocationError }}
-        </div>
+        <div class="mt-2 text-xs text-base-content/70">Map di halaman ini read-only. Perubahan titik dilakukan dari menu Office Locations.</div>
       </div>
 
       <div class="flex justify-end">

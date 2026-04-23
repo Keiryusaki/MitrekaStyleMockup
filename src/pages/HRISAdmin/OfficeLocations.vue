@@ -2,78 +2,11 @@
 import { computed, nextTick, onBeforeUnmount, ref, watch } from "vue";
 import { AgGridSurface, Button, Card, Icon, Input, Modal, PageHeader, SelectDropdown } from "@/lib/mitreka-ui-dist/vue";
 import { iconRegistry } from "@/composables/Icon";
+import { officeLocations, type OfficeLocation, type OfficeStatus, type OfficeType } from "./companySettingsState";
 import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-quartz.css";
 import "@/lib/mitreka-ui/plugins/aggrid.css";
 import "leaflet/dist/leaflet.css";
-
-type OfficeType = "HQ" | "Branch" | "Client Site";
-type AttendanceMode = "GPS" | "Flexible";
-type OfficeStatus = "Active" | "Inactive";
-
-type OfficeLocation = {
-  id: number;
-  name: string;
-  type: OfficeType;
-  linkedEntity: string;
-  address: string;
-  latitude: string;
-  longitude: string;
-  radius: number;
-  attendanceMode: AttendanceMode;
-  status: OfficeStatus;
-};
-
-const locations = ref<OfficeLocation[]>([
-  {
-    id: 1,
-    name: "Mitreka HQ - Jakarta",
-    type: "HQ",
-    linkedEntity: "PT Mitreka Solusi Indonesia",
-    address: "Jl. Mampang Prapatan Raya No.12, Jakarta Selatan",
-    latitude: "-6.254561",
-    longitude: "106.801883",
-    radius: 120,
-    attendanceMode: "GPS",
-    status: "Active",
-  },
-  {
-    id: 2,
-    name: "Branch Bandung",
-    type: "Branch",
-    linkedEntity: "Cabang Bandung",
-    address: "Jl. Ir. H. Juanda No.140, Bandung",
-    latitude: "-6.902475",
-    longitude: "107.618736",
-    radius: 100,
-    attendanceMode: "GPS",
-    status: "Active",
-  },
-  {
-    id: 3,
-    name: "Client Site - PT Arunika Digital",
-    type: "Client Site",
-    linkedEntity: "PT Arunika Digital",
-    address: "Kawasan Sudirman Business District, Jakarta Pusat",
-    latitude: "-6.214821",
-    longitude: "106.821021",
-    radius: 80,
-    attendanceMode: "GPS",
-    status: "Active",
-  },
-  {
-    id: 4,
-    name: "Client Site - Global Energi Plant",
-    type: "Client Site",
-    linkedEntity: "PT Global Energi",
-    address: "Kawasan Industri Rungkut, Surabaya",
-    latitude: "-7.335941",
-    longitude: "112.768845",
-    radius: 150,
-    attendanceMode: "Flexible",
-    status: "Inactive",
-  },
-]);
 
 const search = ref("");
 const selectedType = ref<"all" | OfficeType>("all");
@@ -95,6 +28,7 @@ const statusOptions = [
 
 const manageModalOpen = ref(false);
 const editingId = ref<number | null>(null);
+const hqRuleMessage = ref("");
 const form = ref<OfficeLocation>({
   id: 0,
   name: "",
@@ -109,7 +43,7 @@ const form = ref<OfficeLocation>({
 });
 
 const filteredLocations = computed(() =>
-  locations.value.filter((item) => {
+  officeLocations.value.filter((item) => {
     if (selectedType.value !== "all" && item.type !== selectedType.value) return false;
     if (selectedStatus.value !== "all" && item.status !== selectedStatus.value) return false;
     return true;
@@ -117,9 +51,9 @@ const filteredLocations = computed(() =>
 );
 
 const stats = computed(() => [
-  { label: "Total lokasi", value: locations.value.length, icon: "map-pin" },
-  { label: "Lokasi aktif", value: locations.value.filter((item) => item.status === "Active").length, icon: "check" },
-  { label: "Client site", value: locations.value.filter((item) => item.type === "Client Site").length, icon: "layout" },
+  { label: "Total lokasi", value: officeLocations.value.length, icon: "map-pin" },
+  { label: "Lokasi aktif", value: officeLocations.value.filter((item) => item.status === "Active").length, icon: "check" },
+  { label: "Client site", value: officeLocations.value.filter((item) => item.type === "Client Site").length, icon: "layout" },
 ]);
 
 const resetForm = () => {
@@ -150,29 +84,118 @@ const openEditModal = (item: OfficeLocation) => {
 };
 
 const closeModal = () => {
+  hqRuleMessage.value = "";
   manageModalOpen.value = false;
 };
 
 const saveLocation = () => {
+  hqRuleMessage.value = "";
   const payload = { ...form.value };
+  const baseRows = officeLocations.value.map((item) => ({ ...item }));
+
+  const mergedRows =
+    editingId.value === null
+      ? [{ ...payload, id: Math.max(...baseRows.map((item) => item.id), 0) + 1 }, ...baseRows]
+      : baseRows.map((item) => (item.id === editingId.value ? payload : item));
+
+  let nextRows = mergedRows;
+  const candidateHQ = nextRows.find((item) => item.id === (editingId.value === null ? nextRows[0]?.id : editingId.value));
+  if (candidateHQ?.type === "HQ" && candidateHQ.status === "Active") {
+    nextRows = nextRows.map((item) => {
+      if (item.type !== "HQ") return item;
+      if (item.id === candidateHQ.id) return item;
+      return { ...item, status: "Inactive" };
+    });
+  }
+
+  const allHQ = nextRows.filter((item) => item.type === "HQ");
+  if (allHQ.length > 0 && !allHQ.some((item) => item.status === "Active")) {
+    hqRuleMessage.value = "Harus ada minimal 1 HQ dengan status Active.";
+    return;
+  }
+
   if (editingId.value === null) {
-    const nextId = Math.max(...locations.value.map((item) => item.id), 0) + 1;
-    locations.value = [{ ...payload, id: nextId }, ...locations.value];
+    officeLocations.value = nextRows;
   } else {
-    locations.value = locations.value.map((item) => (item.id === editingId.value ? payload : item));
+    officeLocations.value = nextRows;
   }
   manageModalOpen.value = false;
 };
 
 const toggleStatusById = (id: number) => {
-  locations.value = locations.value.map((item) =>
+  hqRuleMessage.value = "";
+  const target = officeLocations.value.find((item) => item.id === id);
+  if (!target) return;
+
+  if (target.type !== "HQ") {
+    officeLocations.value = officeLocations.value.map((item) =>
+      item.id === id
+        ? {
+            ...item,
+            status: item.status === "Active" ? "Inactive" : "Active",
+          }
+        : item,
+    );
+    return;
+  }
+
+  if (target.status === "Inactive") {
+    officeLocations.value = officeLocations.value.map((item) => {
+      if (item.type !== "HQ") return item;
+      if (item.id === id) return { ...item, status: "Active" };
+      return { ...item, status: "Inactive" };
+    });
+    return;
+  }
+
+  const totalActiveHQ = officeLocations.value.filter((item) => item.type === "HQ" && item.status === "Active").length;
+  if (totalActiveHQ <= 1) {
+    hqRuleMessage.value = "Minimal harus ada 1 HQ dengan status Active.";
+    return;
+  }
+
+  officeLocations.value = officeLocations.value.map((item) =>
     item.id === id
       ? {
           ...item,
-          status: item.status === "Active" ? "Inactive" : "Active",
+          status: "Inactive",
         }
       : item,
   );
+};
+
+const deleteLocationById = (id: number) => {
+  hqRuleMessage.value = "";
+  const target = officeLocations.value.find((item) => item.id === id);
+  if (!target) return;
+
+  const confirmed = window.confirm(`Hapus lokasi "${target.name}"?`);
+  if (!confirmed) return;
+
+  if (target.type !== "HQ") {
+    officeLocations.value = officeLocations.value.filter((item) => item.id !== id);
+    return;
+  }
+
+  const remainingHQ = officeLocations.value.filter((item) => item.type === "HQ" && item.id !== id);
+  if (remainingHQ.length === 0) {
+    hqRuleMessage.value = "HQ terakhir tidak bisa dihapus. Sisakan minimal 1 HQ.";
+    return;
+  }
+
+  let nextRows = officeLocations.value.filter((item) => item.id !== id);
+  if (target.status === "Active") {
+    const nextActiveHqId = remainingHQ.find((item) => item.status === "Active")?.id ?? remainingHQ[0].id;
+    nextRows = nextRows.map((item) => {
+      if (item.type !== "HQ") return item;
+      if (item.id === nextActiveHqId) return { ...item, status: "Active" };
+      return { ...item, status: "Inactive" };
+    });
+    const activeHQ = nextRows.find((item) => item.id === nextActiveHqId);
+    hqRuleMessage.value = `HQ aktif dihapus. "${activeHQ?.name ?? "HQ lain"}" otomatis jadi Active.`;
+  }
+
+  officeLocations.value = nextRows;
 };
 
 const saveDisabled = computed(() => !form.value.name.trim() || !form.value.address.trim());
@@ -371,7 +394,16 @@ const locationCellRenderer = (params: any) => {
 };
 
 const typeCellRenderer = (params: any) => {
-  const value = params.value as string;
+  const value = params.value as OfficeType | undefined;
+  if (value === "HQ") {
+    return `<span class="badge border border-primary/30 bg-primary/15 text-primary">HQ</span>`;
+  }
+  if (value === "Branch") {
+    return `<span class="badge border border-info/35 bg-info/15 text-info">Branch</span>`;
+  }
+  if (value === "Client Site") {
+    return `<span class="badge border border-warning/35 bg-warning/15 text-warning">Client Site</span>`;
+  }
   return `<span class="badge badge-ghost">${escapeHtml(value || "-")}</span>`;
 };
 
@@ -394,6 +426,9 @@ const actionRenderer = () =>
     <button type="button" class="icon-btn icon-btn-solid-info icon-btn-xs" data-action="toggle" title="Toggle status">
       ${iconSvg("repeat")}
     </button>
+    <button type="button" class="icon-btn icon-btn-solid-error icon-btn-xs" data-action="delete" title="Hapus lokasi">
+      ${iconSvg("trash")}
+    </button>
   </div>`;
 
 const onCellClicked = (event: any) => {
@@ -407,6 +442,7 @@ const onCellClicked = (event: any) => {
 
   if (action === "edit") openEditModal(row);
   if (action === "toggle") toggleStatusById(row.id);
+  if (action === "delete") deleteLocationById(row.id);
 };
 
 const columnDefs = [
@@ -455,7 +491,7 @@ const columnDefs = [
   {
     headerName: "Action",
     colId: "actions",
-    width: 120,
+    width: 160,
     pinned: "right",
     lockPinned: true,
     sortable: false,
@@ -616,7 +652,7 @@ const gridOptions: any = {
             </div>
             <div ref="mapContainerRef" class="h-72 w-full overflow-hidden rounded-xl border border-base-300" />
             <div class="text-xs text-base-content/70">Klik area map untuk set `latitude` dan `longitude`.</div>
-            <div v-if="geolocationError" class="rounded-lg border border-warning/40 bg-warning/10 px-3 py-2 text-xs text-warning-content">
+            <div v-if="geolocationError" class="rounded-lg border border-warning/40 bg-warning/10 px-3 py-2 text-xs text-base-content">
               {{ geolocationError }}
             </div>
           </div>
@@ -624,6 +660,13 @@ const gridOptions: any = {
 
         <div class="rounded-xl border border-info/30 bg-info/10 p-3 text-sm text-base-content/85">
           Lokasi dengan status <span class="font-semibold">Active</span> akan ikut muncul di mobile app saat proses clock-in.
+        </div>
+        <div class="rounded-xl border border-base-300 bg-base-100 p-3 text-sm text-base-content/85">
+          Untuk tipe <span class="font-semibold">HQ</span>, kamu bisa simpan lebih dari satu lokasi, tapi sistem menjaga hanya satu HQ yang berstatus
+          <span class="font-semibold">Active</span>.
+        </div>
+        <div v-if="hqRuleMessage" class="rounded-xl border border-warning/40 bg-warning/10 p-3 text-sm text-base-content">
+          {{ hqRuleMessage }}
         </div>
       </div>
       <template #footer>
