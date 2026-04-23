@@ -559,6 +559,98 @@ export const codeThemePresets: CodeThemePreset[] = [
       },
     }),
   },
+  {
+    id: "hris-1",
+    name: "HRIS-1",
+    draft: normalizeThemeDraft({
+      light: {
+        colors: {
+          primary: "#0d9488",
+          secondary: "#ecfeff",
+          accent: "#fbbf24",
+          info: "#0ea5e9",
+          success: "#16a34a",
+          warning: "#f59e0b",
+          error: "#ef4444",
+          neutral: "#1f2937",
+        },
+        base: {
+          base100: "#ffffff",
+          base200: "#f8fafc",
+          base300: "#f1f5f9",
+          baseContent: "#0f172a",
+        },
+        layout: {
+          usePrimaryForLayout: false,
+          topbarBg: "#0f766e",
+          topbarText: "#ffffff",
+          sidebarBg: "#ffffff",
+          sidebarText: "#334155",
+        },
+        sidebar: {
+          hoverBg: "rgba(13, 148, 136, 0.12)",
+          activeBg: "#0f766e",
+          activeText: "#ecfeff",
+          activeBorder: "#14b8a6",
+          openBg: "rgba(13, 148, 136, 0.18)",
+          openText: "#0f766e",
+          activeMark: "#14b8a6",
+        },
+        link: {
+          color: "#0f766e",
+          hover: "#115e59",
+          visited: "#155e75",
+        },
+        radius: {
+          field: "0.5rem",
+          box: "0.5rem",
+        },
+      },
+      dark: {
+        colors: {
+          primary: "#14b8a6",
+          secondary: "#0f172a",
+          accent: "#fbbf24",
+          info: "#38bdf8",
+          success: "#22c55e",
+          warning: "#fb923c",
+          error: "#f87171",
+          neutral: "#1e293b",
+        },
+        base: {
+          base100: "#0f172a",
+          base200: "#111827",
+          base300: "#1e293b",
+          baseContent: "#f8fafc",
+        },
+        layout: {
+          usePrimaryForLayout: false,
+          topbarBg: "#115e59",
+          topbarText: "#ffffff",
+          sidebarBg: "#0f172a",
+          sidebarText: "#e2e8f0",
+        },
+        sidebar: {
+          hoverBg: "rgba(20, 184, 166, 0.16)",
+          activeBg: "rgba(13, 148, 136, 0.22)",
+          activeText: "#ecfeff",
+          activeBorder: "#2dd4bf",
+          openBg: "rgba(20, 184, 166, 0.28)",
+          openText: "#ecfeff",
+          activeMark: "#2dd4bf",
+        },
+        link: {
+          color: "#5eead4",
+          hover: "#99f6e4",
+          visited: "#67e8f9",
+        },
+        radius: {
+          field: "0.5rem",
+          box: "0.5rem",
+        },
+      },
+    }),
+  },
 ];
 
 export function getCodeThemePresetById(id: string): CodeThemePreset | null {
