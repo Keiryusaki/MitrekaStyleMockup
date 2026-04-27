@@ -87,7 +87,7 @@
             "
             @click="$emit('toggleTransport')"
           >
-            <Icon name="truck" class="h-5 w-5" />
+            <Icon name="car" class="h-5 w-5" />
           </button>
         </div>
 

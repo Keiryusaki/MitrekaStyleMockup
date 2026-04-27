@@ -835,7 +835,7 @@
                   <template v-if="item.type === 'transport'">
                     <div class="flex items-center justify-between text-xs font-black">
                       <span class="inline-flex items-center gap-1.5 uppercase tracking-wide text-amber-600">
-                        <Icon name="truck" class="h-3.5 w-3.5" />
+                        <Icon name="car" class="h-3.5 w-3.5" />
                         {{ item.label }}
                       </span>
                       <span class="text-slate-600">{{ item.start }} - {{ item.end }}</span>
