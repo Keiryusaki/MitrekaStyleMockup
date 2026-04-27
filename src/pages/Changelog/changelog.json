@@ -1,5 +1,27 @@
 [
     {
+        "version":  "2.2.50",
+        "date":  "2026-04-27",
+        "label":  "Patch",
+        "items":  [
+                      {
+                          "type":  "Added",
+                          "text":  "MultiSelect menambahkan prop baru `sortMode` dengan opsi `selected-then-label` (default), `selected-then-original`, dan `original` untuk kontrol urutan option sesuai kebutuhan use case."
+                      },
+                      {
+                          "type":  "Changed",
+                          "text":  "Mode `sortMode=original` direkomendasikan untuk pilihan berurutan seperti Working Days agar urutan option tetap stabil dan tidak naik ke atas saat dipilih."
+                      },
+                      {
+                          "type":  "Changed",
+                          "text":  "Sinkronisasi package @keiryusaki/mitreka-ui v2.2.50 (stable) ke mockup vendor dist."
+                      }
+                  ],
+        "assets":  [
+
+                   ]
+    },
+    {
         "version":  "2.2.49",
         "date":  "2026-04-15",
         "label":  "Patch",
