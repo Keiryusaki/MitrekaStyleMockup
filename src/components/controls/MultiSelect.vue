@@ -5,6 +5,7 @@ import { useSelectMulti, type SelectOption } from "@/composables/useSelect";
 
 type Size = "xs" | "sm" | "md" | "lg" | "xl";
 type DisplayMode = "stacked" | "inline-compact";
+type SortMode = "selected-then-label" | "selected-then-original" | "original";
 
 const props = withDefaults(
   defineProps<{
@@ -16,9 +17,11 @@ const props = withDefaults(
     disabled?: boolean;
     size?: Size;
     displayMode?: DisplayMode;
+    sortMode?: SortMode;
   }>(),
   {
     displayMode: "stacked",
+    sortMode: "selected-then-label",
   }
 );
 const emit = defineEmits(["update:modelValue", "change"]);
@@ -193,12 +196,25 @@ const isTriggerVisible = () => {
 const collator = new Intl.Collator(undefined, { sensitivity: "base", numeric: true });
 const isSelectedValue = (value: string | number) =>
   model.value.some((v) => String(v) === String(value));
+const optionOrder = computed(() => {
+  const map = new Map<string, number>();
+  filtered.value.forEach((option, idx) => {
+    map.set(String(option.value), idx);
+  });
+  return map;
+});
 
 const sortedFiltered = computed(() => {
+  const sortMode = props.sortMode ?? "selected-then-label";
   return [...filtered.value].sort((a, b) => {
     const aSelected = isSelectedValue(a.value as string | number);
     const bSelected = isSelectedValue(b.value as string | number);
-    if (aSelected !== bSelected) return aSelected ? -1 : 1;
+    if (sortMode !== "original" && aSelected !== bSelected) return aSelected ? -1 : 1;
+    if (sortMode !== "selected-then-label") {
+      const left = optionOrder.value.get(String(a.value)) ?? Number.MAX_SAFE_INTEGER;
+      const right = optionOrder.value.get(String(b.value)) ?? Number.MAX_SAFE_INTEGER;
+      if (left !== right) return left - right;
+    }
     return collator.compare(a.label, b.label);
   });
 });

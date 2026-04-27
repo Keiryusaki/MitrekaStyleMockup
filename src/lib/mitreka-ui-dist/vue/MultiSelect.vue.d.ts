@@ -2,6 +2,7 @@ import { SelectOption } from '../composables/useSelect';
 
 type Size = "xs" | "sm" | "md" | "lg" | "xl";
 type DisplayMode = "stacked" | "inline-compact";
+type SortMode = "selected-then-label" | "selected-then-original" | "original";
 declare const _default: import('vue').DefineComponent<import('vue').ExtractPropTypes<__VLS_WithDefaults<__VLS_TypePropsToRuntimeProps<{
     modelValue: Array<string | number>;
     options?: SelectOption[];
@@ -11,8 +12,10 @@ declare const _default: import('vue').DefineComponent<import('vue').ExtractPropT
     disabled?: boolean;
     size?: Size;
     displayMode?: DisplayMode;
+    sortMode?: SortMode;
 }>, {
     displayMode: string;
+    sortMode: string;
 }>>, {}, {}, {}, {}, import('vue').ComponentOptionsMixin, import('vue').ComponentOptionsMixin, {
     "update:modelValue": (...args: any[]) => void;
     change: (...args: any[]) => void;
@@ -25,13 +28,16 @@ declare const _default: import('vue').DefineComponent<import('vue').ExtractPropT
     disabled?: boolean;
     size?: Size;
     displayMode?: DisplayMode;
+    sortMode?: SortMode;
 }>, {
     displayMode: string;
+    sortMode: string;
 }>>> & Readonly<{
     "onUpdate:modelValue"?: ((...args: any[]) => any) | undefined;
     onChange?: ((...args: any[]) => any) | undefined;
 }>, {
     displayMode: DisplayMode;
+    sortMode: SortMode;
 }, {}, {}, {}, string, import('vue').ComponentProvideOptions, true, {}, any>;
 export default _default;
 type __VLS_NonUndefinedable<T> = T extends undefined ? never : T;
