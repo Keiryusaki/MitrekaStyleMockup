@@ -39,42 +39,61 @@
 
     <div class="px-3">
       <div class="mb-7 flex flex-col items-center">
-        <button
-          class="relative flex h-44 w-44 items-center justify-center rounded-full text-white shadow-2xl transition active:scale-95"
-          :class="actionButtonClass"
-          :disabled="status === 'out'"
-          @click="$emit('initiateAction', status === 'in' ? 'out' : 'in')"
-        >
-          <span
-            v-if="status !== 'out'"
-            class="pulse-ring pulse-ring-1 absolute inset-0 rounded-full"
-            :class="status === 'idle' ? 'bg-emerald-400 shadow-[0_0_34px_rgba(16,185,129,0.78)]' : 'bg-rose-400 shadow-[0_0_34px_rgba(244,63,94,0.75)]'"
-          ></span>
-          <span
-            v-if="status !== 'out'"
-            class="pulse-ring pulse-ring-2 absolute inset-0 rounded-full"
-            :class="status === 'idle' ? 'bg-emerald-300 shadow-[0_0_40px_rgba(52,211,153,0.72)]' : 'bg-rose-300 shadow-[0_0_40px_rgba(251,113,133,0.7)]'"
-          ></span>
+        <div class="relative">
+          <button
+            class="relative flex h-44 w-44 items-center justify-center rounded-full text-white shadow-2xl transition active:scale-95"
+            :class="actionButtonClass"
+            :disabled="status === 'out'"
+            @click="$emit('initiateAction', status === 'in' ? 'out' : 'in')"
+          >
+            <span
+              v-if="status !== 'out'"
+              class="pulse-ring pulse-ring-1 absolute inset-0 rounded-full"
+              :class="status === 'idle' ? 'bg-emerald-400 shadow-[0_0_34px_rgba(16,185,129,0.78)]' : 'bg-rose-400 shadow-[0_0_34px_rgba(244,63,94,0.75)]'"
+            ></span>
+            <span
+              v-if="status !== 'out'"
+              class="pulse-ring pulse-ring-2 absolute inset-0 rounded-full"
+              :class="status === 'idle' ? 'bg-emerald-300 shadow-[0_0_40px_rgba(52,211,153,0.72)]' : 'bg-rose-300 shadow-[0_0_40px_rgba(251,113,133,0.7)]'"
+            ></span>
 
-          <div v-if="status === 'idle'" class="relative z-10 text-center">
-            <div class="mx-auto mb-2 inline-flex rounded-full bg-white/20 p-4">
-              <Icon name="calendar-clock" class="h-10 w-10" />
+            <div v-if="status === 'idle'" class="relative z-10 text-center">
+              <div class="mx-auto mb-2 inline-flex rounded-full bg-white/20 p-4">
+                <Icon name="calendar-clock" class="h-10 w-10" />
+              </div>
+              <span class="text-lg font-black uppercase tracking-wider">Masuk</span>
             </div>
-            <span class="text-lg font-black uppercase tracking-wider">Masuk</span>
-          </div>
 
-          <div v-else-if="status === 'in'" class="relative z-10 text-center">
-            <div class="mx-auto mb-2 inline-flex rounded-full bg-white/20 p-4">
-              <Icon name="logout" class="h-10 w-10" />
+            <div v-else-if="status === 'in'" class="relative z-10 text-center">
+              <div class="mx-auto mb-2 inline-flex rounded-full bg-white/20 p-4">
+                <Icon name="logout" class="h-10 w-10" />
+              </div>
+              <span class="text-lg font-black uppercase tracking-wider">Pulang</span>
             </div>
-            <span class="text-lg font-black uppercase tracking-wider">Pulang</span>
-          </div>
 
-          <div v-else class="relative z-10 text-center text-slate-400">
-            <Icon name="circle-check-big" class="mx-auto mb-2 h-10 w-10" />
-            <span class="text-lg font-black uppercase tracking-wider">Selesai</span>
-          </div>
-        </button>
+            <div v-else class="relative z-10 text-center text-slate-400">
+              <Icon name="circle-check-big" class="mx-auto mb-2 h-10 w-10" />
+              <span class="text-lg font-black uppercase tracking-wider">Selesai</span>
+            </div>
+          </button>
+
+          <button
+            v-if="status !== 'in'"
+            class="absolute -right-4 bottom-3 inline-flex h-12 w-12 items-center justify-center rounded-full border text-white shadow-lg transition active:scale-95"
+            :class="
+              isTransportActive
+                ? 'border-amber-200 bg-gradient-to-b from-amber-500 to-orange-500 shadow-[0_14px_24px_-14px_rgba(249,115,22,0.9)]'
+                : 'border-[#0b6dbc] bg-gradient-to-b from-[#1f86db] to-[#005fb3] text-white shadow-[0_14px_24px_-14px_rgba(0,95,179,0.95)]'
+            "
+            @click="$emit('toggleTransport')"
+          >
+            <Icon name="truck" class="h-5 w-5" />
+          </button>
+        </div>
+
+        <p v-if="status !== 'in' && isTransportActive" class="mt-3 rounded-full border border-amber-100 bg-amber-50 px-3 py-1 text-[10px] font-black uppercase tracking-[0.05em] text-amber-700">
+          OTW aktif {{ transportDuration || "00:00:00" }}
+        </p>
 
         <button
           v-if="status === 'out'"
@@ -201,6 +220,8 @@ const props = defineProps<{
   status: AttendanceStatus;
   duration: string;
   actionButtonClass: string;
+  isTransportActive: boolean;
+  transportDuration: string;
   todayClockNote: { status: string; clockIn: string; clockOut: string };
   latestAnnouncements: AnnouncementPreview[];
   formatDateShort: (date: Date) => string;
@@ -209,6 +230,7 @@ const props = defineProps<{
 defineEmits<{
   openMap: [];
   initiateAction: [type: AttendanceAction];
+  toggleTransport: [];
   startNewSession: [];
   openLog: [];
   openCalendar: [];

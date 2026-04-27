@@ -89,11 +89,14 @@
               :status="status"
               :duration="duration"
               :action-button-class="actionButtonClass"
+              :is-transport-active="isTransportActive"
+              :transport-duration="transportDuration"
               :today-clock-note="todayClockNote"
               :latest-announcements="latestAnnouncements"
               :format-date-short="formatDateShort"
               @open-map="showMapModal = true"
               @initiate-action="initiateAction"
+              @toggle-transport="toggleTransportStatus"
               @start-new-session="startNewSession"
               @open-log="showLogPanel = true"
               @open-calendar="openCalendarScreen"
@@ -809,10 +812,10 @@
 
           <div
             v-if="showLogDetail && selectedLogEntry"
-            class="absolute inset-0 z-[60] flex items-center justify-center bg-slate-900/70 p-5 backdrop-blur-sm"
+            class="absolute inset-0 z-[60] flex items-start justify-center overflow-y-auto bg-slate-900/70 px-5 py-4 backdrop-blur-sm"
             @click="closeLogDetail"
           >
-            <div class="w-full max-w-sm rounded-3xl bg-white p-5 shadow-2xl" @click.stop>
+            <div class="max-h-full w-full max-w-sm overflow-y-auto rounded-3xl bg-white p-5 shadow-2xl" @click.stop>
               <div class="mb-4 flex items-center justify-between">
                 <div>
                   <p class="text-[11px] font-black uppercase tracking-wider text-slate-400">Detail Kehadiran</p>
@@ -825,62 +828,75 @@
 
               <div class="space-y-3">
                 <div
-                  v-for="(session, idx) in selectedLogEntry.sessions"
-                  :key="`${selectedLogEntry.id}-${idx}`"
+                  v-for="(item, idx) in selectedLogTimeline"
+                  :key="`${selectedLogEntry.id}-${item.type}-${idx}-${item.start}`"
                   class="rounded-2xl border border-slate-200 bg-slate-50 p-3"
                 >
-                  <div class="flex items-center justify-between text-xs font-black uppercase">
-                    <span class="text-slate-500">Sesi {{ idx + 1 }}</span>
-                    <span class="text-emerald-600">In {{ session.in }}</span>
-                    <span class="text-rose-500">Out {{ session.out }}</span>
-                  </div>
+                  <template v-if="item.type === 'transport'">
+                    <div class="flex items-center justify-between text-xs font-black">
+                      <span class="inline-flex items-center gap-1.5 uppercase tracking-wide text-amber-600">
+                        <Icon name="truck" class="h-3.5 w-3.5" />
+                        {{ item.label }}
+                      </span>
+                      <span class="text-slate-600">{{ item.start }} - {{ item.end }}</span>
+                    </div>
+                    <p class="mt-2 text-[11px] font-bold text-slate-500">{{ item.from }} -> {{ item.to }}</p>
+                  </template>
 
-                  <div class="mt-2 space-y-2">
-                    <div class="rounded-xl border border-slate-200 bg-white p-2">
-                      <p class="mb-1 text-[10px] font-black uppercase tracking-wide text-emerald-700">Bukti Masuk</p>
-                      <div class="grid grid-cols-2 gap-2">
-                        <div class="relative h-20 overflow-hidden rounded-lg border border-slate-200 bg-slate-100">
-                          <div class="map-grid absolute inset-0"></div>
-                          <div class="absolute left-1/2 top-1/2 h-12 w-12 -translate-x-1/2 -translate-y-1/2 rounded-full border border-dashed border-[#004b8d]/35 bg-[#004b8d]/10"></div>
-                          <div class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
-                            <span class="block h-2 w-2 rounded-full bg-[#004b8d] shadow-[0_0_10px_rgba(0,75,141,0.4)]"></span>
+                  <template v-else>
+                    <div class="flex items-center justify-between text-xs font-black uppercase">
+                      <span class="text-slate-500">Sesi {{ item.sessionIndex }}</span>
+                      <span class="text-emerald-600">In {{ item.start }}</span>
+                      <span class="text-rose-500">Out {{ item.end }}</span>
+                    </div>
+
+                    <div class="mt-2 space-y-2">
+                      <div class="rounded-xl border border-slate-200 bg-white p-2">
+                        <p class="mb-1 text-[10px] font-black uppercase tracking-wide text-emerald-700">Bukti Masuk</p>
+                        <div class="grid grid-cols-2 gap-2">
+                          <div class="relative h-20 overflow-hidden rounded-lg border border-slate-200 bg-slate-100">
+                            <div class="map-grid absolute inset-0"></div>
+                            <div class="absolute left-1/2 top-1/2 h-12 w-12 -translate-x-1/2 -translate-y-1/2 rounded-full border border-dashed border-[#004b8d]/35 bg-[#004b8d]/10"></div>
+                            <div class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
+                              <span class="block h-2 w-2 rounded-full bg-[#004b8d] shadow-[0_0_10px_rgba(0,75,141,0.4)]"></span>
+                            </div>
+                            <span class="absolute h-2.5 w-2.5 rounded-full border border-white bg-rose-500 shadow-sm" :class="mapMarkerClass(item.locationIn)"></span>
+                            <p class="absolute bottom-1 left-1 rounded bg-white/85 px-1 py-0.5 text-[9px] font-black text-slate-600">
+                              {{ shortLocation(item.locationIn) }}
+                            </p>
                           </div>
-                          <span class="absolute h-2.5 w-2.5 rounded-full border border-white bg-rose-500 shadow-sm" :class="mapMarkerClass(session.locationIn)"></span>
-                          <p class="absolute bottom-1 left-1 rounded bg-white/85 px-1 py-0.5 text-[9px] font-black text-slate-600">
-                            {{ shortLocation(session.locationIn) }}
-                          </p>
+                          <div class="overflow-hidden rounded-lg border border-slate-200 bg-slate-100">
+                            <img :src="item.faceShotIn" alt="Face check in" class="h-20 w-full object-cover" />
+                          </div>
                         </div>
-                        <div class="overflow-hidden rounded-lg border border-slate-200 bg-slate-100">
-                          <img :src="session.faceShotIn" alt="Face check in" class="h-20 w-full object-cover" />
+                      </div>
+
+                      <div class="rounded-xl border border-slate-200 bg-white p-2">
+                        <p class="mb-1 text-[10px] font-black uppercase tracking-wide text-rose-600">Bukti Pulang</p>
+                        <div class="grid grid-cols-2 gap-2">
+                          <div class="relative h-20 overflow-hidden rounded-lg border border-slate-200 bg-slate-100">
+                            <div class="map-grid absolute inset-0"></div>
+                            <div class="absolute left-1/2 top-1/2 h-12 w-12 -translate-x-1/2 -translate-y-1/2 rounded-full border border-dashed border-[#004b8d]/35 bg-[#004b8d]/10"></div>
+                            <div class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
+                              <span class="block h-2 w-2 rounded-full bg-[#004b8d] shadow-[0_0_10px_rgba(0,75,141,0.4)]"></span>
+                            </div>
+                            <span class="absolute h-2.5 w-2.5 rounded-full border border-white bg-rose-500 shadow-sm" :class="mapMarkerClass(item.locationOut)"></span>
+                            <p class="absolute bottom-1 left-1 rounded bg-white/85 px-1 py-0.5 text-[9px] font-black text-slate-600">
+                              {{ shortLocation(item.locationOut) }}
+                            </p>
+                          </div>
+                          <div class="overflow-hidden rounded-lg border border-slate-200 bg-slate-100">
+                            <img :src="item.faceShotOut" alt="Face check out" class="h-20 w-full object-cover" />
+                          </div>
                         </div>
                       </div>
                     </div>
 
-                    <div class="rounded-xl border border-slate-200 bg-white p-2">
-                      <p class="mb-1 text-[10px] font-black uppercase tracking-wide text-rose-600">Bukti Pulang</p>
-                      <div class="grid grid-cols-2 gap-2">
-                        <div class="relative h-20 overflow-hidden rounded-lg border border-slate-200 bg-slate-100">
-                          <div class="map-grid absolute inset-0"></div>
-                          <div class="absolute left-1/2 top-1/2 h-12 w-12 -translate-x-1/2 -translate-y-1/2 rounded-full border border-dashed border-[#004b8d]/35 bg-[#004b8d]/10"></div>
-                          <div class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
-                            <span class="block h-2 w-2 rounded-full bg-[#004b8d] shadow-[0_0_10px_rgba(0,75,141,0.4)]"></span>
-                          </div>
-                          <span class="absolute h-2.5 w-2.5 rounded-full border border-white bg-rose-500 shadow-sm" :class="mapMarkerClass(session.locationOut)"></span>
-                          <p class="absolute bottom-1 left-1 rounded bg-white/85 px-1 py-0.5 text-[9px] font-black text-slate-600">
-                            {{ shortLocation(session.locationOut) }}
-                          </p>
-                        </div>
-                        <div class="overflow-hidden rounded-lg border border-slate-200 bg-slate-100">
-                          <img :src="session.faceShotOut" alt="Face check out" class="h-20 w-full object-cover" />
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-
-                  <p v-if="session.note" class="mt-2 rounded-lg border border-amber-100 bg-amber-50 px-2 py-1 text-[11px] italic text-amber-700">
-                    "{{ session.note }}"
-                  </p>
-                  <p v-else class="mt-2 text-[11px] text-slate-400">Tanpa catatan</p>
+                    <p v-if="item.note" class="mt-2 rounded-lg border border-amber-100 bg-amber-50 px-2 py-1 text-[11px] italic text-amber-700">
+                      "{{ item.note }}"
+                    </p>
+                    <p v-else class="mt-2 text-[11px] text-slate-400">Tanpa catatan</p>
+                  </template>
                 </div>
               </div>
             </div>
@@ -1100,6 +1116,26 @@ type AnnouncementItem = {
   creatorAvatar: string;
   publishedAt: string;
 };
+type SessionTimelineItem = {
+  type: "session";
+  start: string;
+  end: string;
+  sessionIndex: number;
+  note: string;
+  locationIn: string;
+  locationOut: string;
+  faceShotIn: string;
+  faceShotOut: string;
+};
+type TransportTimelineItem = {
+  type: "transport";
+  start: string;
+  end: string;
+  label: string;
+  from: string;
+  to: string;
+};
+type LogTimelineItem = SessionTimelineItem | TransportTimelineItem;
 
 const showCalendarScreen = ref(false);
 const calendarMonthDropdownOpen = ref(false);
@@ -1879,6 +1915,13 @@ function formatAnnouncementDate(value: string): string {
   });
 }
 
+function timeTextToMinutes(value: string): number {
+  const normalized = value.trim().replace(".", ":");
+  const [hh, mm] = normalized.split(":").map(Number);
+  if (Number.isNaN(hh) || Number.isNaN(mm)) return 0;
+  return hh * 60 + mm;
+}
+
 const {
   isFullscreen,
   status,
@@ -1902,6 +1945,8 @@ const {
   showEmployeeFilterModal,
   employeeFilter,
   employeeRoleFilter,
+  isTransportActive,
+  transportDuration,
   greeting,
   displayTime,
   displaySeconds,
@@ -1924,6 +1969,7 @@ const {
   submitNote,
   closeNoteModal,
   startNewSession,
+  toggleTransportStatus,
   openLogDetail,
   closeLogDetail,
   handleRefreshLocation,
@@ -1932,6 +1978,87 @@ const {
   mapMarkerClass,
   shortLocation,
 } = useLiveAttendance();
+
+const selectedLogTimeline = computed<LogTimelineItem[]>(() => {
+  const entry = selectedLogEntry.value;
+  if (!entry) return [];
+
+  const sessionItems: SessionTimelineItem[] = entry.sessions.map((session, index) => ({
+    type: "session",
+    start: session.in,
+    end: session.out,
+    sessionIndex: index + 1,
+    note: session.note,
+    locationIn: session.locationIn,
+    locationOut: session.locationOut,
+    faceShotIn: session.faceShotIn,
+    faceShotOut: session.faceShotOut,
+  }));
+  const transportItems: TransportTimelineItem[] = (entry.transports ?? []).map((transport) => ({
+    type: "transport",
+    start: transport.start,
+    end: transport.end,
+    label: transport.label,
+    from: transport.locationStart,
+    to: transport.locationEnd,
+  }));
+  const sortedTransports = [...transportItems].sort((left, right) => {
+    const startDiff = timeTextToMinutes(left.start) - timeTextToMinutes(right.start);
+    if (startDiff !== 0) return startDiff;
+    return timeTextToMinutes(left.end) - timeTextToMinutes(right.end);
+  });
+  const gapCount = Math.max(0, sessionItems.length - 1);
+  const gapBuckets: TransportTimelineItem[][] = Array.from({ length: gapCount }, () => []);
+  const unresolved: TransportTimelineItem[] = [];
+
+  for (const transport of sortedTransports) {
+    const transportStart = timeTextToMinutes(transport.start);
+    const transportEnd = timeTextToMinutes(transport.end);
+    let assigned = false;
+
+    for (let gapIndex = 0; gapIndex < gapCount; gapIndex += 1) {
+      const currentSession = sessionItems[gapIndex];
+      const nextSession = sessionItems[gapIndex + 1];
+      if (!currentSession || !nextSession) continue;
+
+      const sessionOut = timeTextToMinutes(currentSession.end);
+      const nextSessionIn = timeTextToMinutes(nextSession.start);
+      const insideGap = transportStart >= sessionOut && transportEnd <= nextSessionIn;
+      const notExactBoundaryTie = transportStart > sessionOut || transportEnd < nextSessionIn;
+      if (!insideGap || !notExactBoundaryTie) continue;
+
+      gapBuckets[gapIndex]?.push(transport);
+      assigned = true;
+      break;
+    }
+
+    if (!assigned) {
+      unresolved.push(transport);
+    }
+  }
+
+  if (gapCount > 0 && unresolved.length > 0) {
+    const gapFillOrder = gapBuckets
+      .map((bucket, index) => ({ index, count: bucket.length }))
+      .sort((left, right) => left.count - right.count)
+      .map((item) => item.index);
+
+    unresolved.forEach((transport, idx) => {
+      const targetIndex = gapFillOrder[idx] ?? gapFillOrder[gapFillOrder.length - 1] ?? 0;
+      gapBuckets[targetIndex]?.push(transport);
+    });
+  }
+
+  const timeline: LogTimelineItem[] = [];
+  sessionItems.forEach((session, index) => {
+    timeline.push(session);
+    if (index < gapCount) {
+      timeline.push(...(gapBuckets[index] ?? []));
+    }
+  });
+
+  return timeline;
+});
 
 const fullscreenTimeOffSelectClass = "la-fullscreen-timeoff-open";
 

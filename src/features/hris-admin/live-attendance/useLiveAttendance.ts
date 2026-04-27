@@ -17,6 +17,14 @@ type SessionLog = {
   faceShotOut: string;
 };
 
+type TransportLog = {
+  start: string;
+  end: string;
+  label: string;
+  locationStart: string;
+  locationEnd: string;
+};
+
 type LiveClockInMeta = {
   scanIn: string;
   locationIn: string;
@@ -31,6 +39,7 @@ type AttendanceEntry = {
   lastOut: string;
   totalWork: string;
   sessions: SessionLog[];
+  transports: TransportLog[];
 };
 
 type EmployeeStatus = "onsite" | "wfh" | "off";
@@ -83,8 +92,12 @@ export function useLiveAttendance() {
   const showEmployeeFilterModal = ref(false);
   const employeeFilter = ref<"all" | EmployeeStatus>("all");
   const employeeRoleFilter = ref("all");
+  const isTransportActive = ref(false);
+  const transportStartTime = ref<Date | null>(null);
+  const transportStartLocation = ref<string | null>(null);
 
   const attendanceData = ref<AttendanceEntry[]>(createSeedAttendance());
+  const transportLogsByDate = ref<Record<string, TransportLog[]>>(indexTransportLogs(attendanceData.value));
   const employeeData = ref<EmployeeItem[]>([
     {
       id: 1,
@@ -245,6 +258,10 @@ export function useLiveAttendance() {
   });
 
   const displaySeconds = computed(() => String(currentTime.value.getSeconds()).padStart(2, "0"));
+  const transportDuration = computed(() => {
+    if (!isTransportActive.value || !transportStartTime.value) return "";
+    return formatDuration(Math.max(0, currentTime.value.getTime() - transportStartTime.value.getTime()));
+  });
 
   const actionButtonClass = computed(() => {
     if (status.value === "idle") {
@@ -431,6 +448,7 @@ export function useLiveAttendance() {
       const outMapShot = mapSnapshotByLocation(location, i + 1);
       const inFaceShot = faceSnapshotBySeed(faceSeed);
       const outFaceShot = faceSnapshotBySeed(faceSeed + 1);
+      const secondLocation = location === "Office Sudirman" ? "Onsite Client - Astra Tower" : "Office Sudirman";
       const sessions: SessionLog[] = isOneSessionDay
         ? [
             {
@@ -458,7 +476,7 @@ export function useLiveAttendance() {
               locationOut: location,
               mapShotIn: inMapShot,
               faceShotIn: inFaceShot,
-              mapShotOut: outMapShot,
+              mapShotOut: mapSnapshotByLocation(location, i + 1),
               faceShotOut: outFaceShot,
             },
             {
@@ -467,12 +485,23 @@ export function useLiveAttendance() {
               note: sessionNote,
               scanIn: mockScanResults[(i + 2) % mockScanResults.length] ?? "Face Match 97%",
               scanOut: mockScanResults[(i + 3) % mockScanResults.length] ?? "Face Match 97%",
-              locationIn: location,
-              locationOut: location,
-              mapShotIn: mapSnapshotByLocation(location, i + 2),
+              locationIn: secondLocation,
+              locationOut: secondLocation,
+              mapShotIn: mapSnapshotByLocation(secondLocation, i + 2),
               faceShotIn: faceSnapshotBySeed(faceSeed + 2),
-              mapShotOut: mapSnapshotByLocation(location, i + 3),
+              mapShotOut: mapSnapshotByLocation(secondLocation, i + 3),
               faceShotOut: faceSnapshotBySeed(faceSeed + 3),
+            },
+          ];
+      const transports: TransportLog[] = isOneSessionDay
+        ? []
+        : [
+            {
+              start: noonOut,
+              end: noonIn,
+              label: "Working transport",
+              locationStart: location,
+              locationEnd: secondLocation,
             },
           ];
 
@@ -485,6 +514,7 @@ export function useLiveAttendance() {
         lastOut: sessions[sessions.length - 1]?.out ?? lastOut,
         totalWork: totalWorkText(sessions),
         sessions,
+        transports,
       });
 
       idCounter += 1;
@@ -509,7 +539,9 @@ export function useLiveAttendance() {
 
   function sessionMetaSummary(item: AttendanceEntry): string {
     const sessionCount = item.sessions.length;
-    return `${sessionCount} sesi`;
+    const transportCount = item.transports.length;
+    if (transportCount === 0) return `${sessionCount} sesi`;
+    return `${sessionCount} sesi | ${transportCount} transport`;
   }
 
   function toTime(date: Date): string {
@@ -525,9 +557,17 @@ export function useLiveAttendance() {
   }
 
   function minutesBetween(startTime: string, endTime: string): number {
-    const [startH, startM] = startTime.split(":").map(Number);
-    const [endH, endM] = endTime.split(":").map(Number);
-    return endH * 60 + endM - (startH * 60 + startM);
+    const startMinutes = timeToMinutes(startTime);
+    const endMinutes = timeToMinutes(endTime);
+    if (Number.isNaN(startMinutes) || Number.isNaN(endMinutes)) return 0;
+    return endMinutes - startMinutes;
+  }
+
+  function timeToMinutes(value: string): number {
+    const normalized = value.trim().replace(".", ":");
+    const [hh, mm] = normalized.split(":").map(Number);
+    if (Number.isNaN(hh) || Number.isNaN(mm)) return NaN;
+    return hh * 60 + mm;
   }
 
   function totalWorkText(sessions: SessionLog[]): string {
@@ -598,12 +638,25 @@ export function useLiveAttendance() {
     showFaceModal.value = false;
 
     if (type === "in") {
+      const now = new Date();
+      if (isTransportActive.value && transportStartTime.value) {
+        appendTransportLog(
+          transportStartTime.value,
+          now,
+          transportStartLocation.value ?? currentLocationLabel(),
+          currentLocationLabel(),
+        );
+        isTransportActive.value = false;
+        transportStartTime.value = null;
+        transportStartLocation.value = null;
+      }
+
       const inMeta: LiveClockInMeta = {
         scanIn: buildScanResult(),
         locationIn: currentLocationLabel(),
       };
       status.value = "in";
-      clockInTime.value = new Date();
+      clockInTime.value = now;
       liveClockInMeta.value = inMeta;
       duration.value = "00:00:00";
     } else {
@@ -651,6 +704,7 @@ export function useLiveAttendance() {
       entry.firstIn = entry.sessions[0].in;
       entry.lastOut = newSession.out;
       entry.totalWork = totalWorkText(entry.sessions);
+      entry.transports = sortTransportLogs(transportLogsByDate.value[dateKey] ?? entry.transports);
       attendanceData.value = [entry, ...attendanceData.value.filter((_, idx) => idx !== foundIndex)];
       return;
     }
@@ -664,9 +718,70 @@ export function useLiveAttendance() {
       lastOut: newSession.out,
       totalWork: totalWorkText([newSession]),
       sessions: [newSession],
+      transports: sortTransportLogs(transportLogsByDate.value[dateKey] ?? []),
     };
 
     attendanceData.value = [newEntry, ...attendanceData.value];
+  }
+
+  function toggleTransportStatus(): void {
+    if (status.value === "in") return;
+
+    if (isTransportActive.value) {
+      const endTime = new Date(currentTime.value);
+      if (transportStartTime.value) {
+        appendTransportLog(
+          transportStartTime.value,
+          endTime,
+          transportStartLocation.value ?? currentLocationLabel(),
+          currentLocationLabel(),
+        );
+      }
+      isTransportActive.value = false;
+      transportStartTime.value = null;
+      transportStartLocation.value = null;
+      return;
+    }
+
+    isTransportActive.value = true;
+    transportStartTime.value = new Date(currentTime.value);
+    transportStartLocation.value = currentLocationLabel();
+  }
+
+  function appendTransportLog(start: Date, end: Date, locationStart: string, locationEnd: string): void {
+    const dateKey = toDateKey(start);
+    const newLog: TransportLog = {
+      start: toTime(start),
+      end: toTime(end),
+      label: "Working transport",
+      locationStart,
+      locationEnd,
+    };
+    const nextLogs = sortTransportLogs([...(transportLogsByDate.value[dateKey] ?? []), newLog]);
+    transportLogsByDate.value = {
+      ...transportLogsByDate.value,
+      [dateKey]: nextLogs,
+    };
+
+    const foundIndex = attendanceData.value.findIndex((item) => item.dateKey === dateKey);
+    if (foundIndex >= 0) {
+      const entry = attendanceData.value[foundIndex];
+      entry.transports = nextLogs;
+      attendanceData.value = [entry, ...attendanceData.value.filter((_, idx) => idx !== foundIndex)];
+    }
+  }
+
+  function indexTransportLogs(entries: AttendanceEntry[]): Record<string, TransportLog[]> {
+    const indexed: Record<string, TransportLog[]> = {};
+    for (const entry of entries) {
+      if (!entry.transports.length) continue;
+      indexed[entry.dateKey] = sortTransportLogs(entry.transports);
+    }
+    return indexed;
+  }
+
+  function sortTransportLogs(logs: TransportLog[]): TransportLog[] {
+    return [...logs].sort((left, right) => timeToMinutes(left.start) - timeToMinutes(right.start));
   }
 
   function startNewSession(): void {
@@ -788,6 +903,8 @@ export function useLiveAttendance() {
     showEmployeeFilterModal,
     employeeFilter,
     employeeRoleFilter,
+    isTransportActive,
+    transportDuration,
     greeting,
     displayTime,
     displaySeconds,
@@ -810,6 +927,7 @@ export function useLiveAttendance() {
     submitNote,
     closeNoteModal,
     startNewSession,
+    toggleTransportStatus,
     openLogDetail,
     closeLogDetail,
     handleRefreshLocation,
