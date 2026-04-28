@@ -2,6 +2,7 @@ import { computed, onBeforeUnmount, onMounted, ref, watch } from "vue";
 
 type AttendanceStatus = "idle" | "in" | "out";
 type AttendanceAction = "in" | "out";
+type AreaMode = "dalam" | "luar" | "irisan";
 
 type SessionLog = {
   in: string;
@@ -81,6 +82,10 @@ export function useLiveAttendance() {
   const isRefreshing = ref(false);
   const pendingAction = ref<AttendanceAction | null>(null);
   const isInArea = ref(true);
+  const areaMode = ref<AreaMode>("dalam");
+  const showLocationPicker = ref(false);
+  const selectedClockInLocation = ref<string | null>(null);
+  const overlappingLocations = ref<string[]>(["Wisma Mampang", "Gedung Graha Mampang"]);
   const note = ref("");
   const activeTab = ref<"home" | "employee" | "inbox" | "leave" | "account">("home");
   const showLogPanel = ref(false);
@@ -97,6 +102,11 @@ export function useLiveAttendance() {
   const transportStartLocation = ref<string | null>(null);
 
   const attendanceData = ref<AttendanceEntry[]>(createSeedAttendance());
+
+  watch(areaMode, (mode) => {
+    isInArea.value = mode !== "luar";
+  }, { immediate: true });
+
   const transportLogsByDate = ref<Record<string, TransportLog[]>>(indexTransportLogs(attendanceData.value));
   const employeeData = ref<EmployeeItem[]>([
     {
@@ -264,6 +274,9 @@ export function useLiveAttendance() {
   });
 
   const actionButtonClass = computed(() => {
+    if (status.value === "idle" && isTransportActive.value) {
+      return "cursor-not-allowed bg-slate-200 text-slate-400 shadow-none";
+    }
     if (status.value === "idle") {
       return "bg-gradient-to-b from-emerald-600 to-emerald-700 hover:from-emerald-700 hover:to-emerald-800 shadow-[0_18px_30px_-14px_rgba(5,150,105,0.72)]";
     }
@@ -365,6 +378,39 @@ export function useLiveAttendance() {
     };
   });
 
+  const todayWorkDuration = computed(() => {
+    const today = new Date(currentTime.value);
+    const todayKey = toDateKey(today);
+    const todayEntry = attendanceData.value.find((item) => item.dateKey === todayKey);
+
+    let workMinutes = 0;
+    let transportMinutes = 0;
+
+    if (todayEntry) {
+      workMinutes = todayEntry.sessions.reduce((sum, s) => {
+        const diff = minutesBetween(s.in, s.out);
+        return sum + Math.max(1, diff);
+      }, 0);
+      transportMinutes = (todayEntry.transports ?? []).reduce((sum, t) => {
+        const diff = minutesBetween(t.start, t.end);
+        return sum + Math.max(1, diff);
+      }, 0);
+    }
+
+    if (status.value === "in" && clockInTime.value) {
+      const activeMinutes = Math.max(1, Math.floor((currentTime.value.getTime() - clockInTime.value.getTime()) / 60000));
+      workMinutes += activeMinutes;
+    }
+    if (isTransportActive.value && transportStartTime.value) {
+      const activeTransport = Math.max(1, Math.floor((currentTime.value.getTime() - transportStartTime.value.getTime()) / 60000));
+      transportMinutes += activeTransport;
+    }
+
+    const totalMinutes = workMinutes + transportMinutes;
+    const fmt = (m: number) => `${String(Math.floor(m / 60)).padStart(2, "0")}:${String(m % 60).padStart(2, "0")}`;
+    return { work: fmt(workMinutes), transport: fmt(transportMinutes), total: fmt(totalMinutes) };
+  });
+
   const clockTimer = setInterval(() => {
     const now = new Date();
     currentTime.value = now;
@@ -392,7 +438,7 @@ export function useLiveAttendance() {
   });
 
   watch(
-    [isFullscreen, showLogPanel, showMapModal, showNoteModal, showFaceModal, showEmployeeFilterModal, showLogDetail],
+    [isFullscreen, showLogPanel, showMapModal, showNoteModal, showFaceModal, showEmployeeFilterModal, showLogDetail, showLocationPicker],
     (states) => {
       const shouldLockBody = states.some(Boolean);
       document.body.classList.toggle("overflow-hidden", shouldLockBody);
@@ -411,7 +457,7 @@ export function useLiveAttendance() {
       "",
     ];
     const mockScanResults = ["Face Match 99%", "Face Match 98%", "Face Match 97%", "Face Match 96%"];
-    const workLocations = ["Office Sudirman", "Onsite Client - Astra Tower", "WFH - Rumah"];
+    const workLocations = ["Wisma Mampang", "Onsite Client - Astra Tower", "WFH - Rumah"];
 
     const entries: AttendanceEntry[] = [];
     let idCounter = 1;
@@ -438,8 +484,8 @@ export function useLiveAttendance() {
       const noonIn = `13:${String((i * 4) % 12).padStart(2, "0")}`;
       const lastOutHour = i % 9 === 0 ? 18 : 17;
       const lastOut = `${String(lastOutHour).padStart(2, "0")}:${String(4 + outMinuteOffset).padStart(2, "0")}`;
-      const location = workLocations[i % workLocations.length] ?? "Office Sudirman";
-      const isOutsideOffice = location !== "Office Sudirman";
+      const location = workLocations[i % workLocations.length] ?? "Wisma Mampang";
+      const isOutsideOffice = location !== "Wisma Mampang";
       const sessionNote = isOutsideOffice ? mockNotes[i % mockNotes.length] ?? "" : "";
 
       const isOneSessionDay = i % 3 !== 0;
@@ -448,7 +494,7 @@ export function useLiveAttendance() {
       const outMapShot = mapSnapshotByLocation(location, i + 1);
       const inFaceShot = faceSnapshotBySeed(faceSeed);
       const outFaceShot = faceSnapshotBySeed(faceSeed + 1);
-      const secondLocation = location === "Office Sudirman" ? "Onsite Client - Astra Tower" : "Office Sudirman";
+      const secondLocation = location === "Wisma Mampang" ? "Onsite Client - Astra Tower" : "Wisma Mampang";
       const sessions: SessionLog[] = isOneSessionDay
         ? [
             {
@@ -579,11 +625,11 @@ export function useLiveAttendance() {
 
   function mapSnapshotByLocation(location: string, seed: number): string {
     const centerByLocation: Record<string, string> = {
-      "Office Sudirman": "-6.2088,106.8456",
+      "Wisma Mampang": "-6.2467,106.8310",
       "Onsite Client - Astra Tower": "-6.1928,106.8217",
       "WFH - Rumah": "-6.2297,106.8294",
     };
-    const center = centerByLocation[location] ?? "-6.2088,106.8456";
+    const center = centerByLocation[location] ?? "-6.2467,106.8310";
     return `https://staticmap.openstreetmap.de/staticmap.php?center=${center}&zoom=15&size=320x220&markers=${center},red-pushpin&maptype=mapnik&seed=${seed}`;
   }
 
@@ -602,11 +648,18 @@ export function useLiveAttendance() {
 
   function initiateAction(type: AttendanceAction): void {
     if (status.value === "out") return;
+    if (type === "in" && isTransportActive.value) return;
 
     pendingAction.value = type;
 
     if (!isInArea.value) {
       showNoteModal.value = true;
+      return;
+    }
+
+    if (type === "in" && areaMode.value === "irisan") {
+      selectedClockInLocation.value = null;
+      showLocationPicker.value = true;
       return;
     }
 
@@ -631,6 +684,18 @@ export function useLiveAttendance() {
   function closeNoteModal(): void {
     showNoteModal.value = false;
     note.value = "";
+    pendingAction.value = null;
+  }
+
+  function submitLocationPicker(): void {
+    if (!selectedClockInLocation.value || !pendingAction.value) return;
+    showLocationPicker.value = false;
+    showFaceAndProcess(pendingAction.value);
+  }
+
+  function closeLocationPicker(): void {
+    showLocationPicker.value = false;
+    selectedClockInLocation.value = null;
     pendingAction.value = null;
   }
 
@@ -833,6 +898,10 @@ export function useLiveAttendance() {
       pendingAction.value = null;
       return;
     }
+    if (showLocationPicker.value) {
+      closeLocationPicker();
+      return;
+    }
     if (showNoteModal.value) {
       closeNoteModal();
       return;
@@ -864,7 +933,8 @@ export function useLiveAttendance() {
   }
 
   function currentLocationLabel(): string {
-    return isInArea.value ? "Office Sudirman" : "Luar Area (dengan catatan)";
+    if (selectedClockInLocation.value) return selectedClockInLocation.value;
+    return isInArea.value ? "Wisma Mampang" : "Luar Area (dengan catatan)";
   }
 
   function mapMarkerClass(location: string): string {
@@ -876,7 +946,7 @@ export function useLiveAttendance() {
   function shortLocation(location: string): string {
     if (location.includes("Client")) return "Onsite Client";
     if (location.includes("WFH") || location.includes("Rumah")) return "WFH";
-    if (location.includes("Sudirman")) return "Office";
+    if (location.includes("Mampang")) return "Wisma Mampang";
     return "Lokasi";
   }
 
@@ -893,6 +963,10 @@ export function useLiveAttendance() {
     isRefreshing,
     pendingAction,
     isInArea,
+    areaMode,
+    showLocationPicker,
+    selectedClockInLocation,
+    overlappingLocations,
     note,
     activeTab,
     showLogPanel,
@@ -919,6 +993,7 @@ export function useLiveAttendance() {
     offTodayEmployees,
     filteredEmployees,
     todayClockNote,
+    todayWorkDuration,
     resetEmployeeFilter,
     formatDateShort,
     formatListDate,
@@ -926,6 +1001,8 @@ export function useLiveAttendance() {
     initiateAction,
     submitNote,
     closeNoteModal,
+    submitLocationPicker,
+    closeLocationPicker,
     startNewSession,
     toggleTransportStatus,
     openLogDetail,

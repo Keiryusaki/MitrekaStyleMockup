@@ -4,7 +4,8 @@
       <div class="absolute -right-14 -top-14 h-28 w-28 rounded-full bg-white/10 blur-xl"></div>
       <div class="relative z-10 space-y-1">
         <h1 class="text-2xl font-bold tracking-tight">{{ greeting }}, Eka Dian</h1>
-        <p class="text-sm text-white/75">Absen tepat waktu, pulang tenang.</p>
+        <p class="text-[13px] font-medium text-white/85">{{ jobPosition }}</p>
+        <p class="text-[13px] text-white/65">{{ workModel }} · {{ shift }}</p>
       </div>
     </section>
 
@@ -13,10 +14,10 @@
       <div class="mb-3 flex items-center justify-between gap-2">
         <div
           class="inline-flex items-center gap-2 rounded-full border px-3 py-1 text-[10px] font-black uppercase"
-          :class="isInArea ? 'border-emerald-100 bg-emerald-50 text-emerald-600' : 'border-amber-100 bg-amber-50 text-amber-600'"
+          :class="areaMode === 'luar' ? 'border-amber-100 bg-amber-50 text-amber-600' : areaMode === 'irisan' ? 'border-sky-100 bg-sky-50 text-sky-600' : 'border-emerald-100 bg-emerald-50 text-emerald-600'"
         >
           <Icon name="send" class="h-3 w-3" />
-          <span>{{ isInArea ? "Office Sudirman" : "Di luar area" }}</span>
+          <span>{{ areaMode === 'luar' ? 'Di luar area' : areaMode === 'irisan' ? 'Irisan area' : 'Wisma Mampang' }}</span>
         </div>
         <button class="text-[10px] font-bold text-[#004b8d] underline" @click="$emit('openMap')">Lihat map</button>
       </div>
@@ -43,21 +44,28 @@
           <button
             class="relative flex h-44 w-44 items-center justify-center rounded-full text-white shadow-2xl transition active:scale-95"
             :class="actionButtonClass"
-            :disabled="status === 'out'"
+            :disabled="status === 'out' || (status === 'idle' && isTransportActive)"
             @click="$emit('initiateAction', status === 'in' ? 'out' : 'in')"
           >
             <span
-              v-if="status !== 'out'"
+              v-if="status !== 'out' && !(status === 'idle' && isTransportActive)"
               class="pulse-ring pulse-ring-1 absolute inset-0 rounded-full"
               :class="status === 'idle' ? 'bg-emerald-400 shadow-[0_0_34px_rgba(16,185,129,0.78)]' : 'bg-rose-400 shadow-[0_0_34px_rgba(244,63,94,0.75)]'"
             ></span>
             <span
-              v-if="status !== 'out'"
+              v-if="status !== 'out' && !(status === 'idle' && isTransportActive)"
               class="pulse-ring pulse-ring-2 absolute inset-0 rounded-full"
               :class="status === 'idle' ? 'bg-emerald-300 shadow-[0_0_40px_rgba(52,211,153,0.72)]' : 'bg-rose-300 shadow-[0_0_40px_rgba(251,113,133,0.7)]'"
             ></span>
 
-            <div v-if="status === 'idle'" class="relative z-10 text-center">
+            <div v-if="status === 'idle' && isTransportActive" class="relative z-10 text-center text-slate-400">
+              <div class="mx-auto mb-2 inline-flex rounded-full bg-slate-300/30 p-4">
+                <Icon name="car" class="h-10 w-10" />
+              </div>
+              <span class="text-sm font-black uppercase leading-tight tracking-wider">Dalam<br/>Perjalanan</span>
+            </div>
+
+            <div v-else-if="status === 'idle'" class="relative z-10 text-center">
               <div class="mx-auto mb-2 inline-flex rounded-full bg-white/20 p-4">
                 <Icon name="calendar-clock" class="h-10 w-10" />
               </div>
@@ -68,7 +76,7 @@
               <div class="mx-auto mb-2 inline-flex rounded-full bg-white/20 p-4">
                 <Icon name="logout" class="h-10 w-10" />
               </div>
-              <span class="text-lg font-black uppercase tracking-wider">Pulang</span>
+              <span class="text-lg font-black uppercase tracking-wider">Keluar</span>
             </div>
 
             <div v-else class="relative z-10 text-center text-slate-400">
@@ -108,7 +116,7 @@
       <section class="space-y-3.5 pb-24">
         <article class="rounded-2xl border border-[#004b8d]/10 bg-white p-4 shadow-[0_8px_20px_-14px_rgba(0,75,141,0.35)]">
           <div class="flex items-center justify-between">
-            <h3 class="text-[13px] font-black text-slate-800">Catatan Presensi Hari Ini</h3>
+            <h3 class="text-[13px] font-black text-slate-800">Catatan Waktu Kerja</h3>
             <span
               class="rounded-full px-2 py-0.5 text-[10px] font-black uppercase"
               :class="
@@ -122,14 +130,18 @@
               {{ todayClockNote.status }}
             </span>
           </div>
-          <div class="mt-3 grid grid-cols-2 gap-2">
+          <div class="mt-3 grid grid-cols-3 gap-2">
             <div class="rounded-2xl border border-slate-200 bg-slate-50 px-3 py-2">
-              <p class="text-[10px] font-black uppercase text-slate-400">Jam Masuk</p>
-              <p class="mt-1 text-sm font-black text-slate-700">{{ todayClockNote.clockIn || "--:--" }}</p>
+              <p class="text-[10px] font-black uppercase text-slate-400">Work</p>
+              <p class="mt-1 text-sm font-black text-slate-700">{{ todayWorkDuration.work }}</p>
             </div>
             <div class="rounded-2xl border border-slate-200 bg-slate-50 px-3 py-2">
-              <p class="text-[10px] font-black uppercase text-slate-400">Jam Pulang</p>
-              <p class="mt-1 text-sm font-black text-slate-700">{{ todayClockNote.clockOut || "--:--" }}</p>
+              <p class="text-[10px] font-black uppercase text-slate-400">Transport</p>
+              <p class="mt-1 text-sm font-black text-slate-700">{{ todayWorkDuration.transport }}</p>
+            </div>
+            <div class="rounded-2xl border border-[#004b8d]/20 bg-[#004b8d]/5 px-3 py-2">
+              <p class="text-[10px] font-black uppercase text-[#004b8d]/60">Total</p>
+              <p class="mt-1 text-sm font-black text-[#004b8d]">{{ todayWorkDuration.total }}</p>
             </div>
           </div>
         </article>
@@ -213,7 +225,11 @@ type AnnouncementPreview = {
 
 const props = defineProps<{
   greeting: string;
+  jobPosition: string;
+  workModel: string;
+  shift: string;
   isInArea: boolean;
+  areaMode: string;
   displayTime: { time: string; meridiem: string };
   displaySeconds: string;
   currentTime: Date;
@@ -223,6 +239,7 @@ const props = defineProps<{
   isTransportActive: boolean;
   transportDuration: string;
   todayClockNote: { status: string; clockIn: string; clockOut: string };
+  todayWorkDuration: { work: string; transport: string; total: string };
   latestAnnouncements: AnnouncementPreview[];
   formatDateShort: (date: Date) => string;
 }>();

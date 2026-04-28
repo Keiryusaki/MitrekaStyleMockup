@@ -41,14 +41,38 @@
             <div class="topbar-glass flex h-[58px] items-center justify-between px-4">
               <img :src="mitrekaLogo" alt="Mitreka" class="relative z-[1] h-9 w-auto max-w-[188px] object-contain" />
 
-              <div class="flex shrink-0 items-center gap-2">
+              <div class="relative flex shrink-0 items-center gap-2">
                 <button
-                  class="rounded-lg border px-2 py-1 text-[10px] font-bold transition"
-                  :class="isInArea ? 'border-emerald-400 bg-emerald-500 text-white' : 'border-amber-400 bg-amber-500 text-white'"
-                  @click="isInArea = !isInArea"
+                  ref="simBtnRef"
+                  class="inline-flex items-center gap-1.5 rounded-lg border px-2.5 py-1 text-[10px] font-bold transition"
+                  :class="areaMode === 'dalam' ? 'border-emerald-400 bg-emerald-500 text-white' : areaMode === 'luar' ? 'border-amber-400 bg-amber-500 text-white' : 'border-sky-400 bg-sky-500 text-white'"
+                  @click="toggleSimDropdown"
                 >
-                  Simulasi: {{ isInArea ? "DALAM" : "LUAR" }}
+                  <span>Simulasi: {{ areaMode === 'dalam' ? 'DALAM' : areaMode === 'luar' ? 'LUAR' : 'IRISAN' }}</span>
+                  <Icon name="chevron-down" class="h-3 w-3 transition" :class="simDropdownOpen ? 'rotate-180' : ''" />
                 </button>
+                <Teleport to="body">
+                  <div v-if="simDropdownOpen" class="fixed inset-0 z-[9998]" @click="simDropdownOpen = false"></div>
+                  <div
+                    v-if="simDropdownOpen"
+                    class="fixed z-[9999] w-[168px] overflow-hidden rounded-2xl border border-slate-200 bg-white p-1.5 shadow-xl"
+                    :style="simDropdownPos"
+                  >
+                    <button
+                      v-for="opt in simOptions"
+                      :key="opt.value"
+                      class="flex w-full items-center gap-2 rounded-xl px-3 py-2 text-left text-[11px] font-bold transition"
+                      :class="areaMode === opt.value ? 'bg-[#004b8d]/10 text-[#004b8d]' : 'text-slate-600 hover:bg-slate-50'"
+                      @click="areaMode = opt.value; simDropdownOpen = false"
+                    >
+                      <span
+                        class="inline-block h-2 w-2 rounded-full"
+                        :class="opt.value === 'dalam' ? 'bg-emerald-500' : opt.value === 'luar' ? 'bg-amber-500' : 'bg-sky-500'"
+                      ></span>
+                      <span>{{ opt.label }}</span>
+                    </button>
+                  </div>
+                </Teleport>
               </div>
             </div>
           </header>
@@ -82,7 +106,11 @@
             <LiveAttendanceHomeTab
               v-if="activeTab === 'home'"
               :greeting="greeting"
+              job-position="UX/UI and Product Design"
+              work-model="Remote"
+              shift="Shift Pagi (09.00-17.00 WIB)"
               :is-in-area="isInArea"
+              :area-mode="areaMode"
               :display-time="displayTime"
               :display-seconds="displaySeconds"
               :current-time="currentTime"
@@ -92,6 +120,7 @@
               :is-transport-active="isTransportActive"
               :transport-duration="transportDuration"
               :today-clock-note="todayClockNote"
+              :today-work-duration="todayWorkDuration"
               :latest-announcements="latestAnnouncements"
               :format-date-short="formatDateShort"
               @open-map="showMapModal = true"
@@ -797,7 +826,44 @@
             </div>
           </div>
 
-          <div v-if="showFaceModal" class="absolute inset-0 z-50 flex items-center justify-center bg-slate-900/80 p-6">
+          <div v-if="showLocationPicker" class="absolute inset-0 z-50 flex items-center justify-center bg-slate-900/60 p-6 backdrop-blur-sm">
+            <div class="w-full max-w-xs rounded-[32px] bg-white p-6 shadow-2xl">
+              <h3 class="text-lg font-black text-slate-800">Pilih Lokasi</h3>
+              <p class="mt-1 text-[11px] font-bold uppercase text-slate-400">Irisan terdeteksi</p>
+              <p class="mt-4 text-xs text-slate-600">Posisi Anda berada di area irisan. Pilih lokasi untuk clock in:</p>
+              <div class="mt-4 space-y-2">
+                <button
+                  v-for="loc in overlappingLocations"
+                  :key="loc"
+                  class="w-full rounded-2xl border px-4 py-3 text-left text-xs font-bold transition"
+                  :class="selectedClockInLocation === loc ? 'border-[#004b8d] bg-[#004b8d]/10 text-[#004b8d]' : 'border-slate-200 bg-slate-50 text-slate-700 hover:border-slate-300'"
+                  @click="selectedClockInLocation = loc"
+                >
+                  <div class="flex items-center gap-2">
+                    <span
+                      class="inline-flex h-4 w-4 items-center justify-center rounded-full border-2"
+                      :class="selectedClockInLocation === loc ? 'border-[#004b8d] bg-[#004b8d]' : 'border-slate-300'"
+                    >
+                      <span v-if="selectedClockInLocation === loc" class="h-1.5 w-1.5 rounded-full bg-white"></span>
+                    </span>
+                    <span>{{ loc }}</span>
+                  </div>
+                </button>
+              </div>
+              <div class="mt-5 flex gap-2">
+                <button class="flex-1 rounded-xl py-2 text-xs font-bold text-slate-500" @click="closeLocationPicker">Batal</button>
+                <button
+                  class="flex-1 rounded-xl bg-[#004b8d] py-2 text-xs font-black text-white disabled:opacity-50"
+                  :disabled="!selectedClockInLocation"
+                  @click="submitLocationPicker"
+                >
+                  Lanjut Scan
+                </button>
+              </div>
+            </div>
+          </div>
+
+                    <div v-if="showFaceModal" class="absolute inset-0 z-50 flex items-center justify-center bg-slate-900/80 p-6">
             <div class="w-full max-w-xs rounded-[32px] bg-white p-8 text-center shadow-2xl">
               <div class="relative mx-auto mb-6 flex h-40 w-40 items-center justify-center rounded-full border border-slate-200 bg-slate-50">
                 <Icon name="user" class="h-16 w-16 text-[#004b8d]/20" />
@@ -872,7 +938,7 @@
                       </div>
 
                       <div class="rounded-xl border border-slate-200 bg-white p-2">
-                        <p class="mb-1 text-[10px] font-black uppercase tracking-wide text-rose-600">Bukti Pulang</p>
+                        <p class="mb-1 text-[10px] font-black uppercase tracking-wide text-rose-600">Bukti Keluar</p>
                         <div class="grid grid-cols-2 gap-2">
                           <div class="relative h-20 overflow-hidden rounded-lg border border-slate-200 bg-slate-100">
                             <div class="map-grid absolute inset-0"></div>
@@ -1935,6 +2001,10 @@ const {
   isRefreshing,
   pendingAction,
   isInArea,
+  areaMode,
+  showLocationPicker,
+  selectedClockInLocation,
+  overlappingLocations,
   note,
   activeTab,
   showLogPanel,
@@ -1961,6 +2031,7 @@ const {
   offTodayEmployees,
   filteredEmployees,
   todayClockNote,
+  todayWorkDuration,
   resetEmployeeFilter,
   formatDateShort,
   formatListDate,
@@ -1968,6 +2039,8 @@ const {
   initiateAction,
   submitNote,
   closeNoteModal,
+  submitLocationPicker,
+  closeLocationPicker,
   startNewSession,
   toggleTransportStatus,
   openLogDetail,
@@ -1978,6 +2051,30 @@ const {
   mapMarkerClass,
   shortLocation,
 } = useLiveAttendance();
+
+const simDropdownOpen = ref(false);
+const simBtnRef = ref<HTMLElement | null>(null);
+const simDropdownPos = ref<Record<string, string>>({});
+const simOptions = [
+  { value: "dalam" as const, label: "Dalam Area" },
+  { value: "luar" as const, label: "Luar Area" },
+  { value: "irisan" as const, label: "Irisan" },
+];
+
+function toggleSimDropdown(): void {
+  if (simDropdownOpen.value) {
+    simDropdownOpen.value = false;
+    return;
+  }
+  if (simBtnRef.value) {
+    const rect = simBtnRef.value.getBoundingClientRect();
+    simDropdownPos.value = {
+      top: `${rect.bottom + 6}px`,
+      right: `${window.innerWidth - rect.right}px`,
+    };
+  }
+  simDropdownOpen.value = true;
+}
 
 const selectedLogTimeline = computed<LogTimelineItem[]>(() => {
   const entry = selectedLogEntry.value;
