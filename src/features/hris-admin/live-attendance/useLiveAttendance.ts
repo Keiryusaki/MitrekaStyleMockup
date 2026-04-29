@@ -1,6 +1,6 @@
 import { computed, onBeforeUnmount, onMounted, ref, watch } from "vue";
 
-type AttendanceStatus = "idle" | "in" | "out";
+type AttendanceStatus = "idle" | "in";
 type AttendanceAction = "in" | "out";
 type AreaMode = "dalam" | "luar" | "irisan";
 
@@ -280,10 +280,7 @@ export function useLiveAttendance() {
     if (status.value === "idle") {
       return "bg-gradient-to-b from-emerald-600 to-emerald-700 hover:from-emerald-700 hover:to-emerald-800 shadow-[0_18px_30px_-14px_rgba(5,150,105,0.72)]";
     }
-    if (status.value === "in") {
-      return "bg-gradient-to-b from-rose-600 to-rose-700 hover:from-rose-700 hover:to-rose-800 shadow-[0_18px_30px_-14px_rgba(225,29,72,0.68)]";
-    }
-    return "cursor-not-allowed bg-slate-200 text-slate-400 shadow-none";
+    return "bg-gradient-to-b from-rose-600 to-rose-700 hover:from-rose-700 hover:to-rose-800 shadow-[0_18px_30px_-14px_rgba(225,29,72,0.68)]";
   });
 
   const monthlyLogs = computed(() => {
@@ -647,7 +644,6 @@ export function useLiveAttendance() {
   }
 
   function initiateAction(type: AttendanceAction): void {
-    if (status.value === "out") return;
     if (type === "in" && isTransportActive.value) return;
 
     pendingAction.value = type;
@@ -732,7 +728,7 @@ export function useLiveAttendance() {
         upsertAttendance(start, clockOut, note.value.trim(), liveClockInMeta.value);
       }
 
-      status.value = "out";
+      status.value = "idle";
       clockInTime.value = null;
       liveClockInMeta.value = null;
       duration.value = "00:00:00";
@@ -847,11 +843,6 @@ export function useLiveAttendance() {
 
   function sortTransportLogs(logs: TransportLog[]): TransportLog[] {
     return [...logs].sort((left, right) => timeToMinutes(left.start) - timeToMinutes(right.start));
-  }
-
-  function startNewSession(): void {
-    status.value = "idle";
-    duration.value = "00:00:00";
   }
 
   function openLogDetail(item: AttendanceEntry): void {
@@ -1003,7 +994,6 @@ export function useLiveAttendance() {
     closeNoteModal,
     submitLocationPicker,
     closeLocationPicker,
-    startNewSession,
     toggleTransportStatus,
     openLogDetail,
     closeLogDetail,

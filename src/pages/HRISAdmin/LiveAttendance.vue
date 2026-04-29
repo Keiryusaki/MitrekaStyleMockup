@@ -126,7 +126,6 @@
               @open-map="showMapModal = true"
               @initiate-action="initiateAction"
               @toggle-transport="toggleTransportStatus"
-              @start-new-session="startNewSession"
               @open-log="showLogPanel = true"
               @open-calendar="openCalendarScreen"
               @open-announcement-detail="openAnnouncementDetailById"
@@ -2041,7 +2040,6 @@ const {
   closeNoteModal,
   submitLocationPicker,
   closeLocationPicker,
-  startNewSession,
   toggleTransportStatus,
   openLogDetail,
   closeLogDetail,

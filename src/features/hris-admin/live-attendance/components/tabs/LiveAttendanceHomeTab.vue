@@ -44,18 +44,16 @@
           <button
             class="relative flex h-44 w-44 items-center justify-center rounded-full text-white shadow-2xl transition active:scale-95"
             :class="actionButtonClass"
-            :disabled="status === 'out' || (status === 'idle' && isTransportActive)"
+            :disabled="status === 'idle' && isTransportActive"
             @click="$emit('initiateAction', status === 'in' ? 'out' : 'in')"
           >
             <span
-              v-if="status !== 'out' && !(status === 'idle' && isTransportActive)"
-              class="pulse-ring pulse-ring-1 absolute inset-0 rounded-full"
-              :class="status === 'idle' ? 'bg-emerald-400 shadow-[0_0_34px_rgba(16,185,129,0.78)]' : 'bg-rose-400 shadow-[0_0_34px_rgba(244,63,94,0.75)]'"
+              v-if="status === 'idle' && !isTransportActive"
+              class="pulse-ring pulse-ring-1 absolute inset-0 rounded-full bg-emerald-400 shadow-[0_0_34px_rgba(16,185,129,0.78)]"
             ></span>
             <span
-              v-if="status !== 'out' && !(status === 'idle' && isTransportActive)"
-              class="pulse-ring pulse-ring-2 absolute inset-0 rounded-full"
-              :class="status === 'idle' ? 'bg-emerald-300 shadow-[0_0_40px_rgba(52,211,153,0.72)]' : 'bg-rose-300 shadow-[0_0_40px_rgba(251,113,133,0.7)]'"
+              v-if="status === 'idle' && !isTransportActive"
+              class="pulse-ring pulse-ring-2 absolute inset-0 rounded-full bg-emerald-300 shadow-[0_0_40px_rgba(52,211,153,0.72)]"
             ></span>
 
             <div v-if="status === 'idle' && isTransportActive" class="relative z-10 text-center text-slate-400">
@@ -78,11 +76,6 @@
               </div>
               <span class="text-lg font-black uppercase tracking-wider">Keluar</span>
             </div>
-
-            <div v-else class="relative z-10 text-center text-slate-400">
-              <Icon name="circle-check-big" class="mx-auto mb-2 h-10 w-10" />
-              <span class="text-lg font-black uppercase tracking-wider">Selesai</span>
-            </div>
           </button>
 
           <button
@@ -102,15 +95,6 @@
         <p v-if="status !== 'in' && isTransportActive" class="mt-3 rounded-full border border-amber-100 bg-amber-50 px-3 py-1 text-[10px] font-black uppercase tracking-[0.05em] text-amber-700">
           OTW aktif {{ transportDuration || "00:00:00" }}
         </p>
-
-        <button
-          v-if="status === 'out'"
-          class="mt-5 inline-flex items-center gap-2 rounded-2xl border border-slate-200 bg-white px-6 py-3 font-bold text-[#004b8d]"
-          @click="$emit('startNewSession')"
-        >
-          <Icon name="plus" class="h-5 w-5" />
-          <span>Sesi Baru</span>
-        </button>
       </div>
 
       <section class="space-y-3.5 pb-24">
@@ -213,7 +197,7 @@
 <script setup lang="ts">
 import { Icon } from "@/composables/Icon";
 
-type AttendanceStatus = "idle" | "in" | "out";
+type AttendanceStatus = "idle" | "in";
 type AttendanceAction = "in" | "out";
 type TabKey = "home" | "employee" | "inbox" | "account";
 type AnnouncementPreview = {
@@ -248,7 +232,6 @@ defineEmits<{
   openMap: [];
   initiateAction: [type: AttendanceAction];
   toggleTransport: [];
-  startNewSession: [];
   openLog: [];
   openCalendar: [];
   openAnnouncementDetail: [id: number];
