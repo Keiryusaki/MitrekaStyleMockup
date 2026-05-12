@@ -190,3 +190,23 @@ SOP packaging aman (tanpa delete by filter):
 3) Generate zip dari staging.
 4) Validasi isi zip (tidak boleh ada node_modules/dist/public/downloads/scripts jika tidak perlu).
 5) Baru replace artifact final + update manifest.
+
+Catatan update Mockup Gantt WBS (2026-05-12):
+1) Dark mode Gantt sudah diselaraskan untuk 3 selector:
+   - `.dark`
+   - `:root[data-theme="mitrekadark"]`
+   - `[data-theme="mitrekadark"]`
+2) Timeline sekarang support interaksi MVP:
+   - drag bar = geser jadwal
+   - resize kiri/kanan = ubah start/end
+   - snap per slot sesuai mode view
+3) Stabilitas drag ditambah:
+   - pointer capture
+   - cleanup on pointercancel/blur
+   - threshold 6px anti accidental drag
+   - `Esc` saat drag = cancel dan rollback tanggal
+4) Scroll vertikal sekarang dua arah:
+   - scroll timeline -> tasklist ikut
+   - scroll tasklist -> timeline ikut
+5) Dokumentasi detail progress ada di:
+   - `docs/gantt-wbs-planner-progress.md`
