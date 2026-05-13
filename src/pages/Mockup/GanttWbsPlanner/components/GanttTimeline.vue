@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, onBeforeUnmount } from "vue";
+import { computed, onBeforeUnmount, ref } from "vue";
 import type { FlattenedTask, TimeSlot, PhaseColor } from "../types";
 import { rangeForTask } from "../utils";
 
@@ -11,12 +11,17 @@ const props = defineProps<{
   todayColumn: number | null;
   rowHeight: number;
   hoveredTaskId?: number | null;
+  editableSummaryBars?: boolean;
 }>();
 
 const emit = defineEmits<{
   hover: [id: number];
   unhover: [];
   taskDateChange: [payload: { id: number; start: Date; end: Date }];
+  taskDateCommit: [payload: { id: number; fromStart: Date; fromEnd: Date; toStart: Date; toEnd: Date }];
+  timelineDropTask: [payload: { taskId: number; slotIndex: number }];
+  unscheduleTask: [taskId: number];
+  editTask: [taskId: number];
 }>();
 
 type DragMode = "move" | "resize-start" | "resize-end";
@@ -33,6 +38,11 @@ type DragState = {
 
 let dragState: DragState | null = null;
 const DRAG_THRESHOLD_PX = 6;
+const dragTooltip = ref<{ x: number; y: number; text: string } | null>(null);
+
+function formatDateLabel(date: Date): string {
+  return date.toLocaleDateString("en-US", { month: "short", day: "2-digit", year: "numeric" });
+}
 
 function timelineColumns() {
   return `repeat(${props.slots.length}, ${props.slotSize}px)`;
@@ -44,6 +54,18 @@ function taskBarStyle(task: FlattenedTask) {
   return {
     gridColumn: `${range.start} / span ${task.kind === "milestone" ? 1 : Math.max(1, range.span)}`,
   };
+}
+
+function onTimelineDrop(event: DragEvent) {
+  const taskIdRaw = event.dataTransfer?.getData("application/x-gantt-task-id");
+  if (!taskIdRaw) return;
+  const taskId = Number(taskIdRaw);
+  if (!Number.isFinite(taskId)) return;
+  const target = event.currentTarget as HTMLElement;
+  const rect = target.getBoundingClientRect();
+  const x = event.clientX - rect.left;
+  const slotIndex = clamp(Math.floor(x / props.slotSize), 0, props.slots.length - 1);
+  emit("timelineDropTask", { taskId, slotIndex });
 }
 
 function getTaskRange(task: FlattenedTask) {
@@ -72,6 +94,7 @@ function clamp(n: number, min: number, max: number) {
 }
 
 function startDrag(task: FlattenedTask, mode: DragMode, event: PointerEvent) {
+  if (task.kind === "summary" && props.editableSummaryBars === false) return;
   const range = getTaskRange(task);
   if (!range || !props.slots.length) return;
   event.preventDefault();
@@ -122,6 +145,11 @@ function onPointerMove(event: PointerEvent) {
   const startSlot = props.slots[nextStart];
   const endSlot = props.slots[nextEnd];
   if (!task || !startSlot || !endSlot) return;
+  dragTooltip.value = {
+    x: event.clientX,
+    y: event.clientY,
+    text: `${formatDateLabel(startSlot.start)} - ${formatDateLabel(endSlot.end)}`,
+  };
 
   emit("taskDateChange", {
     id: task.id,
@@ -141,6 +169,22 @@ function onKeyDown(event: KeyboardEvent) {
 }
 
 function stopDrag() {
+  if (dragState) {
+    const task = props.tasks.find((item) => item.id === dragState?.taskId);
+    if (task) {
+      const changed = task.startDate.getTime() !== dragState.originalStart.getTime() || task.endDate.getTime() !== dragState.originalEnd.getTime();
+      if (changed) {
+        emit("taskDateCommit", {
+          id: task.id,
+          fromStart: new Date(dragState.originalStart),
+          fromEnd: new Date(dragState.originalEnd),
+          toStart: new Date(task.startDate),
+          toEnd: new Date(task.endDate),
+        });
+      }
+    }
+  }
+  dragTooltip.value = null;
   dragState = null;
   window.removeEventListener("pointermove", onPointerMove);
   window.removeEventListener("pointerup", stopDrag);
@@ -155,7 +199,10 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <div class="gantt-timeline-container" :style="{ left: `${leftPanelWidth}px`, width: `${slots.length * slotSize}px` }">
+  <div class="gantt-timeline-container" :style="{ left: `${leftPanelWidth}px`, width: `${slots.length * slotSize}px` }" @dragover.prevent @drop.prevent="onTimelineDrop">
+    <div v-if="dragTooltip" class="gantt-drag-tooltip" :style="{ left: `${dragTooltip.x + 12}px`, top: `${dragTooltip.y - 30}px` }">
+      {{ dragTooltip.text }}
+    </div>
     <!-- Grid lines (vertical per slot + horizontal per row) -->
     <div class="gantt-grid-lines">
       <!-- Vertical lines per day/slot -->
@@ -185,20 +232,23 @@ onBeforeUnmount(() => {
       @mouseleave="emit('unhover')"
     >
       <!-- Milestone -->
-      <div v-if="task.kind === 'milestone'" :class="barClass(task)" :style="taskBarStyle(task)" @pointerdown="startDrag(task, 'move', $event)">
+      <div v-if="task.kind === 'milestone'" :class="barClass(task)" :style="taskBarStyle(task)" @pointerdown="startDrag(task, 'move', $event)" @dblclick.stop="emit('editTask', task.id)">
+        <button type="button" class="gantt-bar-remove" title="Remove from timeline" @pointerdown.stop @click.stop="emit('unscheduleTask', task.id)">x</button>
         <span class="gantt-milestone-diamond"></span>
         <span class="gantt-bar-label-outside">{{ task.name }}</span>
       </div>
 
       <!-- Summary bar -->
-      <div v-else-if="task.kind === 'summary'" :class="barClass(task)" :style="taskBarStyle(task)" @pointerdown="startDrag(task, 'move', $event)">
+      <div v-else-if="task.kind === 'summary'" :class="barClass(task)" :style="taskBarStyle(task)" @pointerdown="startDrag(task, 'move', $event)" @dblclick.stop="emit('editTask', task.id)">
+        <button type="button" class="gantt-bar-remove" title="Remove from timeline" @pointerdown.stop @click.stop="emit('unscheduleTask', task.id)">x</button>
         <span class="gantt-handle gantt-handle-start" @pointerdown.stop="startDrag(task, 'resize-start', $event)"></span>
         <span class="gantt-handle gantt-handle-end" @pointerdown.stop="startDrag(task, 'resize-end', $event)"></span>
         <span class="gantt-bar-label-outside gantt-label-summary">{{ task.name }}</span>
       </div>
 
       <!-- Task bar -->
-      <div v-else :class="barClass(task)" :style="taskBarStyle(task)" @pointerdown="startDrag(task, 'move', $event)">
+      <div v-else :class="barClass(task)" :style="taskBarStyle(task)" @pointerdown="startDrag(task, 'move', $event)" @dblclick.stop="emit('editTask', task.id)">
+        <button type="button" class="gantt-bar-remove" title="Remove from timeline" @pointerdown.stop @click.stop="emit('unscheduleTask', task.id)">x</button>
         <span class="gantt-handle gantt-handle-start" @pointerdown.stop="startDrag(task, 'resize-start', $event)"></span>
         <span class="gantt-handle gantt-handle-end" @pointerdown.stop="startDrag(task, 'resize-end', $event)"></span>
         <div class="gantt-progress-fill" :style="progressStyle(task)"></div>
@@ -214,6 +264,20 @@ onBeforeUnmount(() => {
   position: absolute;
   top: 0;
   height: 100%;
+}
+
+.gantt-drag-tooltip {
+  position: fixed;
+  z-index: 60;
+  pointer-events: none;
+  background: rgba(15, 23, 42, 0.95);
+  color: #f8fafc;
+  font-size: 0.65rem;
+  font-weight: 600;
+  padding: 4px 8px;
+  border-radius: 6px;
+  box-shadow: 0 6px 18px rgba(2, 6, 23, 0.35);
+  white-space: nowrap;
 }
 
 .gantt-grid-lines {
@@ -281,6 +345,30 @@ onBeforeUnmount(() => {
 
 .gantt-bar:active {
   cursor: grabbing;
+}
+
+.gantt-bar-remove {
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  width: 14px;
+  height: 14px;
+  border: none;
+  border-radius: 999px;
+  background: #ef4444;
+  color: #fff;
+  font-size: 0.62rem;
+  line-height: 14px;
+  text-align: center;
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity 120ms ease;
+  z-index: 3;
+}
+
+.gantt-bar:hover .gantt-bar-remove,
+.gantt-milestone:hover .gantt-bar-remove {
+  opacity: 1;
 }
 
 .gantt-bar-summary {
@@ -397,6 +485,7 @@ onBeforeUnmount(() => {
   background: #16a34a;
   border: 1.5px solid #fff;
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.15);
+  z-index: 8;
 }
 
 .gantt-bar-label-outside {
@@ -492,6 +581,12 @@ onBeforeUnmount(() => {
   background: #132035;
 }
 
+:global(.dark) .gantt-drag-tooltip,
+:global(:root[data-theme="mitrekadark"]) .gantt-drag-tooltip {
+  background: rgba(30, 41, 59, 0.97);
+  color: #f1f5f9;
+}
+
 :global([data-theme="mitrekadark"] .gantt-vline) {
   border-right-color: rgba(71, 85, 105, 0.55);
 }
@@ -512,5 +607,9 @@ onBeforeUnmount(() => {
 }
 :global([data-theme="mitrekadark"] .gantt-track.is-hovered) {
   background: #132035;
+}
+:global([data-theme="mitrekadark"] .gantt-drag-tooltip) {
+  background: rgba(30, 41, 59, 0.97);
+  color: #f1f5f9;
 }
 </style>

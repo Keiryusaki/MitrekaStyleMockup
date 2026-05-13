@@ -3,7 +3,7 @@ import { Icon } from "@/composables/Icon";
 import { Tooltip } from "@/lib/mitreka-ui-dist/vue";
 import type { FlattenedTask, TimeSlot } from "../types";
 
-defineProps<{
+const props = defineProps<{
   task: FlattenedTask;
   rowIndex: number;
   slots: TimeSlot[];
@@ -17,6 +17,10 @@ const emit = defineEmits<{
   toggleExpand: [id: number];
   toggleCheck: [id: number];
   openResource: [task: FlattenedTask];
+  addTask: [task: FlattenedTask];
+  editTask: [task: FlattenedTask];
+  rowDragStart: [taskId: number];
+  rowDropOn: [taskId: number];
 }>();
 
 function indentStyle(depth: number) {
@@ -24,7 +28,9 @@ function indentStyle(depth: number) {
 }
 
 function formatDate(dateStr: string) {
+  if (!dateStr) return "-";
   const d = new Date(dateStr);
+  if (Number.isNaN(d.getTime())) return "-";
   return d.toLocaleDateString("en-US", { day: "2-digit", month: "short" });
 }
 
@@ -34,10 +40,24 @@ function progressBarColor(task: FlattenedTask) {
   if (task.progress >= 80) return "#16a34a";
   return "#3b82f6";
 }
+
+function onDragStart(event: DragEvent) {
+  event.dataTransfer?.setData("application/x-gantt-task-id", String(props.task.id));
+  if (event.dataTransfer) event.dataTransfer.effectAllowed = "move";
+  emit("rowDragStart", props.task.id);
+}
 </script>
 
 <template>
-  <div class="gantt-task-row" :class="{ 'is-summary-row': task.kind === 'summary', 'is-hovered': isHovered }">
+  <div
+    class="gantt-task-row"
+    :class="{ 'is-summary-row': task.kind === 'summary', 'is-hovered': isHovered }"
+    draggable="true"
+    @dragstart="onDragStart"
+    @dragover.prevent
+    @drop.prevent="emit('rowDropOn', task.id)"
+    @dblclick="emit('editTask', task)"
+  >
     <!-- Left panel -->
     <div class="gantt-left-cell">
       <div class="gantt-left-grid">
@@ -82,9 +102,14 @@ function progressBarColor(task: FlattenedTask) {
         </div>
 
         <!-- Resource button -->
-        <button type="button" class="gantt-resource-btn" @click="emit('openResource', task)">
-          <Icon name="user" class="w-3.5 h-3.5" />
-        </button>
+        <div class="gantt-row-actions">
+          <button type="button" class="icon-btn icon-btn-solid-info icon-btn-xs gantt-row-action-btn" title="Manage resource" @click="emit('openResource', task)">
+            <Icon name="user" class="w-3.5 h-3.5" />
+          </button>
+          <button type="button" class="icon-btn icon-btn-solid-success icon-btn-xs gantt-row-action-btn is-add" title="Add child task" @click="emit('addTask', task)">
+            <Icon name="plus" class="w-3.5 h-3.5" />
+          </button>
+        </div>
       </div>
     </div>
   </div>
@@ -125,7 +150,7 @@ function progressBarColor(task: FlattenedTask) {
 .gantt-left-grid {
   width: 100%;
   display: grid;
-  grid-template-columns: 28px 24px 1fr 62px 62px 36px 28px;
+  grid-template-columns: 28px 24px 1fr 62px 62px 36px 54px;
   gap: 0.3rem;
   align-items: center;
 }
@@ -260,23 +285,31 @@ function progressBarColor(task: FlattenedTask) {
   min-width: 22px;
 }
 
-.gantt-resource-btn {
-  display: flex;
+.gantt-row-actions {
+  display: inline-flex;
   align-items: center;
-  justify-content: center;
-  width: 18px;
-  height: 18px;
-  border: 1px solid #e2e8f0;
-  background: #fff;
-  color: #64748b;
-  border-radius: 50%;
-  cursor: pointer;
+  gap: 0.2rem;
 }
 
-.gantt-resource-btn:hover {
-  background: #f1f5f9;
-  color: #334155;
-  border-color: #cbd5e1;
+.gantt-row-actions .gantt-row-action-btn {
+  opacity: 0;
+}
+
+.gantt-task-row:hover .gantt-row-actions .gantt-row-action-btn {
+  opacity: 1;
+}
+
+.gantt-row-actions .gantt-row-action-btn.is-add {
+  opacity: 1;
+}
+
+.gantt-row-actions .gantt-row-action-btn {
+  width: 20px;
+  height: 20px;
+}
+
+.gantt-row-actions .gantt-row-action-btn:first-child {
+  opacity: 1;
 }
 
 :global(.dark) .gantt-task-row,
@@ -337,20 +370,6 @@ function progressBarColor(task: FlattenedTask) {
   background: #334155;
 }
 
-:global(.dark) .gantt-resource-btn,
-:global(:root[data-theme="mitrekadark"]) .gantt-resource-btn {
-  border-color: #475569;
-  background: #111827;
-  color: #94a3b8;
-}
-
-:global(.dark) .gantt-resource-btn:hover,
-:global(:root[data-theme="mitrekadark"]) .gantt-resource-btn:hover {
-  background: #1e293b;
-  color: #e2e8f0;
-  border-color: #64748b;
-}
-
 :global([data-theme="mitrekadark"] .gantt-task-row) {
   background: #0f172a;
   border-bottom-color: rgba(51, 65, 85, 0.9);
@@ -386,14 +405,5 @@ function progressBarColor(task: FlattenedTask) {
 :global([data-theme="mitrekadark"] .gantt-progress-bar-bg) {
   background: #334155;
 }
-:global([data-theme="mitrekadark"] .gantt-resource-btn) {
-  border-color: #475569;
-  background: #111827;
-  color: #94a3b8;
-}
-:global([data-theme="mitrekadark"] .gantt-resource-btn:hover) {
-  background: #1e293b;
-  color: #e2e8f0;
-  border-color: #64748b;
-}
 </style>
+

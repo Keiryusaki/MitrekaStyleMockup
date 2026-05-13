@@ -9,6 +9,11 @@ defineProps<{
   gridColumns: string;
   leftPanelWidth: number;
   showToolbarOnly?: boolean;
+  allowSummaryEdit?: boolean;
+}>();
+const emit = defineEmits<{
+  addRootTask: [];
+  toggleSummaryEdit: [];
 }>();
 
 const searchQuery = ref("");
@@ -34,6 +39,10 @@ const activeTab = ref<"gantt" | "workload">("gantt");
         </button>
       </div>
       <div class="gantt-toolbar-right">
+        <button type="button" class="gantt-action-btn" @click="emit('addRootTask')">+ Root Task</button>
+        <button type="button" class="gantt-action-btn" :class="{ 'is-active': allowSummaryEdit }" @click="emit('toggleSummaryEdit')">
+          Summary Edit: {{ allowSummaryEdit ? "On" : "Off" }}
+        </button>
         <div class="gantt-search">
           <Icon name="search" class="w-3.5 h-3.5 text-slate-400" />
           <input v-model="searchQuery" type="text" placeholder="Search tasks..." class="gantt-search-input" />
@@ -135,6 +144,26 @@ const activeTab = ref<"gantt" | "workload">("gantt");
 
 .gantt-toolbar-right {
   margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.gantt-action-btn {
+  border: 1px solid rgba(148, 163, 184, 0.45);
+  background: rgba(15, 23, 42, 0.35);
+  color: #e2e8f0;
+  border-radius: 0.45rem;
+  padding: 0.34rem 0.6rem;
+  font-size: 0.68rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.gantt-action-btn.is-active {
+  background: rgba(14, 165, 233, 0.22);
+  border-color: rgba(56, 189, 248, 0.75);
+  color: #e0f2fe;
 }
 
 .gantt-search {
@@ -209,7 +238,7 @@ const activeTab = ref<"gantt" | "workload">("gantt");
 
 .gantt-col-headers {
   display: grid;
-  grid-template-columns: 28px 24px 1fr 62px 62px 36px 28px;
+  grid-template-columns: 28px 24px 1fr 62px 62px 36px 54px;
   gap: 0.3rem;
   align-items: center;
   font-size: 0.64rem;
@@ -275,3 +304,4 @@ const activeTab = ref<"gantt" | "workload">("gantt");
   background: linear-gradient(180deg, rgba(254, 242, 242, 0.82), rgba(255, 255, 255, 0.92));
 }
 </style>
+

@@ -137,6 +137,7 @@ export function buildSlots(mode: ViewMode, start: Date, end: Date, marker: Date)
 
 // Task utilities
 export function rangeForTask(task: FlattenedTask, timeSlots: TimeSlot[]): { start: number; span: number } | null {
+  if (!task.isScheduled) return null;
   const active = timeSlots
     .map((slot, index) => ({ slot, index }))
     .filter(({ slot }) => task.endDate >= slot.start && task.startDate <= slot.end);
@@ -158,8 +159,9 @@ export function flattenTasks(tasks: GanttTask[], expandedIds: Set<number>): Flat
       ...task,
       depth: 0,
       childrenCount: 0,
-      startDate: startOfDay(new Date(task.start)),
-      endDate: endOfDay(new Date(task.end)),
+      startDate: startOfDay(new Date(task.start || "1970-01-01")),
+      endDate: endOfDay(new Date(task.end || "1970-01-01")),
+      isScheduled: Boolean(task.start && task.end),
     });
     childrenMap.set(task.parentId, list);
   });

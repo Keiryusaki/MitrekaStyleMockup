@@ -15,27 +15,30 @@ const svgContainer = ref<SVGSVGElement | null>(null);
 const taskPositions = ref<Map<number, TaskBarPosition>>(new Map());
 
 function buildDependencyPath(from: TaskBarPosition, to: TaskBarPosition): string {
-  // Dot di tengah kolom tanggal end source -> turun -> belok kanan ke kiri target
+  // Dot di tengah kolom tanggal end source -> route ke start target.
+  // Endpoint panah selalu ke center bar target supaya kepala panah tetap sejajar row.
   const halfSlot = props.slotSize / 2;
-  const fromX = from.left + from.width - halfSlot; // tengah kolom end date
-  const fromY = from.top + from.height; // bottom bar (posisi dot)
+  const fromX = from.left + from.width - halfSlot + 0.5; // center dot source (task bar end dot)
+  const fromIsAbove = from.top + from.height / 2 <= to.top + to.height / 2;
+  const fromY = from.top + from.height - 0.5; // center dot vertical (dot is near bottom edge)
   const toX = to.left; // kiri target = start date
-  const toY = to.top + to.height / 2; // vertical center target
+  const toY = to.top + to.height / 2;
+  const arrowEndX = toX - 2; // tarik sedikit sebelum edge target agar tidak overlap ke dot/bar
 
   if (fromY === toY) {
-    return `M ${fromX} ${fromY} L ${toX} ${toY}`;
+    return `M ${fromX} ${fromY} L ${arrowEndX} ${toY}`;
   }
 
-  const padding = 12; // Jarak aman di sebelah kiri target
+  const padding = 12; // jarak aman di kiri target
 
   if (fromX <= toX - padding) {
-    // Normal: source dot di sebelah kiri target start, cukup turun lalu ke kanan
-    return `M ${fromX} ${fromY} L ${fromX} ${toY} L ${toX} ${toY}`;
+    // Normal: source dot di kiri target, cukup naik/turun lalu ke kanan
+    return `M ${fromX} ${fromY} L ${fromX} ${toY} L ${arrowEndX} ${toY}`;
   } else {
-    // Overlap (Weekly/Monthly view): source dot sejajar atau di kanan target start
-    // Turun ke gap antar bar, belok kiri melewati start, turun ke target, lalu ke kanan
-    const gapY = fromY + 8; // Turun 8px ke celah antar baris
-    return `M ${fromX} ${fromY} L ${fromX} ${gapY} L ${toX - padding} ${gapY} L ${toX - padding} ${toY} L ${toX} ${toY}`;
+    // Overlap (weekly/monthly): source sejajar/di kanan target start
+    // Route ke kiri dulu, lalu menyesuaikan arah vertikal ke target.
+    const gapY = fromIsAbove ? fromY + 8 : fromY - 8;
+    return `M ${fromX} ${fromY} L ${fromX} ${gapY} L ${toX - padding} ${gapY} L ${toX - padding} ${toY} L ${arrowEndX} ${toY}`;
   }
 }
 
@@ -114,8 +117,8 @@ watch(
     }"
   >
     <defs>
-      <marker id="arrowhead" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto">
-        <polygon points="0 0, 6 3, 0 6" fill="#94a3b8" />
+      <marker id="arrowhead" markerUnits="userSpaceOnUse" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
+        <polygon points="0 0, 8 4, 0 8" fill="#94a3b8" />
       </marker>
     </defs>
 

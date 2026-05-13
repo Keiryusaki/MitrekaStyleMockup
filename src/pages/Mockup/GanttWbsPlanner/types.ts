@@ -5,8 +5,11 @@ export type ResourceTone = "slate" | "teal" | "amber" | "rose" | "indigo";
 export type PhaseColor = "green" | "gray" | "pink" | "orange" | "blue";
 
 export type Resource = {
+  employeeId?: string;
   role: string;
-  tone: ResourceTone;
+  tone?: ResourceTone;
+  allocation?: number;
+  isPic?: boolean;
 };
 
 export type TaskDependency = {
@@ -36,6 +39,7 @@ export type FlattenedTask = GanttTask & {
   childrenCount: number;
   startDate: Date;
   endDate: Date;
+  isScheduled: boolean;
 };
 
 export type TimeSlot = {
