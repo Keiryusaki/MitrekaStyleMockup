@@ -147,6 +147,7 @@ export const NAV: NavItem[] = [
       { id: "collapse", label: "Collapse", to: "/collapse" },
       { id: "accordion", label: "Accordion", to: "/accordion" },
       { id: "avatar", label: "Avatar", to: "/avatar" },
+      { id: "gantt", label: "Gantt Chart", to: "/gantt" },
       { id: "table", label: "Table", to: "/table" },
       { id: "tree-list", label: "TreeList", to: "/tree-list" },
       { id: "datatable", label: "DataTable", to: "/datatable" },

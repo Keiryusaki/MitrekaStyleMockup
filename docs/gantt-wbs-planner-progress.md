@@ -1,8 +1,9 @@
 # Gantt WBS Planner - Progress Log
 
-**Last update:** 2026-05-13 (v3)  
+**Last update:** 2026-06-03 (v4)  
 **Page:** `http://localhost:5178/MitrekaStyleMockup/#/gantt-wbs-planner`  
-**Route source:** `src/pages/Mockup/GanttWbsPlanner.vue`
+**Route source:** `src/pages/Mockup/GanttWbsPlanner.vue` (thin wrapper)  
+**Component source:** `src/components/gantt/` (reusable `<GanttChart>`)
 
 ---
 
@@ -172,6 +173,22 @@
 - `Batal` and `Update/Add Task` remain grouped on right side.
 - Footer width handling fixed so left-right separation renders consistently in modal.
 
+### 21) Promote to Reusable Component (Refactor)
+- Extracted the gantt engine from the page into `src/components/gantt/` as `<GanttChart>`.
+- Page (`GanttWbsPlanner.vue`) is now a thin wrapper: owns demo data, renders `PageHeader`, view-mode switch, and summary stats.
+- Decoupled from mock data — now driven by props:
+  - `tasks` (supports `v-model:tasks`), `employees`, `today`, `view`
+  - `leftPanelWidth`, `rowHeight`, `enableUndoShortcut`, `defaultExpandedIds`, `defaultCheckedIds`
+- Emits for host persistence:
+  - `update:tasks` (full list, two-way)
+  - `change` (discriminated: `create` / `update` / `delete` / `reschedule` / `resources`)
+- Hardcoded employee directory moved to `demo/ganttData.ts` (`ganttEmployees`).
+- `today` marker no longer hardcoded inside engine (default `new Date()`, demo passes fixed date).
+- Left-panel width now a single source of truth (prop + CSS var `--gantt-left-width`), no more JS/CSS duplication.
+- Undo `Ctrl/Cmd+Z` global listener now opt-out via `enableUndoShortcut`.
+- Default expanded rows now derived (all `summary` tasks) instead of hardcoded ids.
+- Public entry: `src/components/gantt/index.ts` (`GanttChart` + types + select utils).
+
 ---
 
 ## Current Interaction Rules
@@ -184,15 +201,18 @@
 
 ---
 
-## Files Touched in This Iteration
+## File Layout (after componentization)
 
-- `src/pages/Mockup/GanttWbsPlanner.vue`
-- `src/pages/Mockup/GanttWbsPlanner/components/GanttTaskRow.vue`
-- `src/pages/Mockup/GanttWbsPlanner/components/GanttTimeline.vue`
-- `src/pages/Mockup/GanttWbsPlanner/components/GanttDependencyLines.vue`
-- `src/pages/Mockup/GanttWbsPlanner/components/GanttHeader.vue`
-- `src/pages/Mockup/GanttWbsPlanner/types.ts`
-- `src/pages/Mockup/GanttWbsPlanner/utils.ts`
+- `src/pages/Mockup/GanttWbsPlanner.vue` — thin page wrapper (route entry)
+- `src/components/gantt/GanttChart.vue` — reusable engine (props/emits)
+- `src/components/gantt/index.ts` — public exports
+- `src/components/gantt/types.ts`
+- `src/components/gantt/utils.ts`
+- `src/components/gantt/components/GanttHeader.vue`
+- `src/components/gantt/components/GanttTaskRow.vue`
+- `src/components/gantt/components/GanttTimeline.vue`
+- `src/components/gantt/components/GanttDependencyLines.vue`
+- `src/components/gantt/demo/ganttData.ts` — demo fixtures (`ganttTasks`, `ganttEmployees`)
 
 ---
 

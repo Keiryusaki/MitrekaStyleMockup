@@ -152,7 +152,7 @@ import { version } from "../../package.json";
 const appVersion = version;
 
 const stats = [
-  { icon: "box" as IconName, value: "40+", label: "Komponen" },
+  { icon: "box" as IconName, value: "41+", label: "Komponen" },
   { icon: "palette" as IconName, value: "2", label: "Tema" },
   { icon: "component" as IconName, value: "Vue 3", label: "Framework" },
   { icon: "star" as IconName, value: "TS", label: "TypeScript" },
@@ -174,10 +174,10 @@ const quickLinks = [
 ];
 
 const recentUpdates = [
-  { title: "Accordion & Collapse components", date: "30 Dec 2024", color: "bg-green-500" },
-  { title: "Avatar & AvatarGroup", date: "24 Dec 2024", color: "bg-blue-500" },
-  { title: "Modal dengan backdrop blur", date: "22 Dec 2024", color: "bg-purple-500" },
-  { title: "Toast notification system", date: "23 Dec 2024", color: "bg-amber-500" },
+  { title: "Gantt package stable 2.3.1", date: "22 Jun 2026", color: "bg-green-500" },
+  { title: "Bundled style export untuk Vue consumers", date: "22 Jun 2026", color: "bg-blue-500" },
+  { title: "Consumer test page now imports package styles", date: "22 Jun 2026", color: "bg-purple-500" },
+  { title: "Changelog dan What's New disinkronkan", date: "22 Jun 2026", color: "bg-amber-500" },
 ];
 
 const gettingStartedSteps = [

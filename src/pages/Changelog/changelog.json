@@ -1,5 +1,27 @@
 [
     {
+        "version":  "2.3.1",
+        "date":  "2026-06-22",
+        "label":  "Stable",
+        "items":  [
+                      {
+                          "type":  "Added",
+                          "text":  "Vue `GanttChart` sekarang tersedia dari `@keiryusaki/mitreka-ui/vue` untuk consumer dan docs package-based."
+                      },
+                      {
+                          "type":  "Added",
+                          "text":  "Package mengekspor `./style.css` sehingga consumer bisa mengambil bundled component styles langsung dari `@keiryusaki/mitreka-ui/style.css`."
+                      },
+                      {
+                          "type":  "Changed",
+                          "text":  "Gantt consumer QA dan docs kini merujuk ke stylesheet package yang dipublish, bukan lagi source lokal."
+                      }
+                  ],
+        "assets":  [
+
+                   ]
+    },
+    {
         "version":  "2.2.50",
         "date":  "2026-04-27",
         "label":  "Patch",

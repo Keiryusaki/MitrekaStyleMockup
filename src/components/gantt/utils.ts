@@ -1,4 +1,4 @@
-import type { ViewMode, TimeSlot, FlattenedTask, GanttTask } from "./types";
+import type { ViewMode, TimeSlot, FlattenedTask, GanttTask, GanttEmployee, DependencyViolation, ResourceOverAllocation } from "./types";
 
 // Date utilities
 export function startOfDay(date: Date): Date {
@@ -55,6 +55,13 @@ export function endOfYear(date: Date): Date {
 
 export function weekOfMonth(date: Date): number {
   return Math.ceil(date.getDate() / 7);
+}
+
+export function formatDateYmd(date: Date): string {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
+  return `${year}-${month}-${day}`;
 }
 
 // Slot utilities
@@ -202,4 +209,100 @@ export function calculateDependencyPath(
 
   // Z-shaped connector for different rows
   return `M ${fromX} ${fromY} L ${midX} ${fromY} L ${midX} ${toY} L ${toX} ${toY}`;
+}
+
+// Validation utilities
+
+/**
+ * Finds finish-to-start dependency violations: a scheduled task whose start
+ * falls on/before a predecessor's end date. `gapDays` is negative (overlap).
+ */
+export function findDependencyViolations(tasks: GanttTask[]): DependencyViolation[] {
+  const byId = new Map(tasks.map((task) => [task.id, task]));
+  const out: DependencyViolation[] = [];
+  for (const task of tasks) {
+    if (!task.start || !task.end) continue;
+    const taskStart = startOfDay(new Date(task.start));
+    for (const depId of task.dependencies ?? []) {
+      const pred = byId.get(depId);
+      if (!pred || !pred.start || !pred.end) continue;
+      const predEnd = startOfDay(new Date(pred.end));
+      if (predEnd >= taskStart) {
+        const gapDays = Math.round((taskStart.getTime() - predEnd.getTime()) / 86400000);
+        out.push({
+          taskId: task.id,
+          taskName: task.name,
+          predecessorId: pred.id,
+          predecessorName: pred.name,
+          gapDays,
+        });
+      }
+    }
+  }
+  return out;
+}
+
+/**
+ * Finds employees whose concurrent allocation (sum of overlapping scheduled
+ * tasks) peaks above 100%. Summary roll-up bars are excluded to avoid double
+ * counting. Returns the peak day and the tasks active at that peak.
+ */
+export function findResourceOverAllocations(tasks: GanttTask[], employees: GanttEmployee[] = []): ResourceOverAllocation[] {
+  const employeeName = new Map(employees.map((emp) => [emp.id, emp.name]));
+  const byEmp = new Map<string, Array<{ start: Date; end: Date; allocation: number; taskId: number }>>();
+
+  for (const task of tasks) {
+    if (task.kind === "summary" || !task.start || !task.end) continue;
+    const start = startOfDay(new Date(task.start));
+    const end = startOfDay(new Date(task.end));
+    for (const res of task.resources) {
+      if (!res.employeeId) continue;
+      const list = byEmp.get(res.employeeId) ?? [];
+      list.push({ start, end, allocation: res.allocation ?? 100, taskId: task.id });
+      byEmp.set(res.employeeId, list);
+    }
+  }
+
+  const out: ResourceOverAllocation[] = [];
+  for (const [employeeId, segments] of byEmp) {
+    const events: Array<{ t: number; delta: number; taskId: number }> = [];
+    for (const seg of segments) {
+      events.push({ t: seg.start.getTime(), delta: seg.allocation, taskId: seg.taskId });
+      // end is inclusive, so the load drops the day after.
+      events.push({ t: seg.end.getTime() + 86400000, delta: -seg.allocation, taskId: seg.taskId });
+    }
+    // Process additions before removals at the same instant.
+    events.sort((a, b) => a.t - b.t || b.delta - a.delta);
+
+    let running = 0;
+    let peak = 0;
+    let peakTime = 0;
+    let peakTasks: number[] = [];
+    const active = new Set<number>();
+    for (const ev of events) {
+      if (ev.delta > 0) {
+        active.add(ev.taskId);
+        running += ev.delta;
+        if (running > peak) {
+          peak = running;
+          peakTime = ev.t;
+          peakTasks = [...active];
+        }
+      } else {
+        running += ev.delta;
+        active.delete(ev.taskId);
+      }
+    }
+
+    if (peak > 100) {
+      out.push({
+        employeeId,
+        employeeName: employeeName.get(employeeId) ?? employeeId,
+        date: formatDateYmd(new Date(peakTime)),
+        totalAllocation: peak,
+        taskIds: peakTasks,
+      });
+    }
+  }
+  return out;
 }

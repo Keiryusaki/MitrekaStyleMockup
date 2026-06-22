@@ -1,16 +1,23 @@
 <script setup lang="ts">
 import { ref } from "vue";
 import { Icon } from "@/composables/Icon";
-import type { TimeSlot } from "../types";
+import { defaultGanttLabels } from "../types";
+import type { TimeSlot, GanttLabels } from "../types";
 
-defineProps<{
-  monthGroups: Array<{ label: string; span: number }>;
-  slots: TimeSlot[];
-  gridColumns: string;
-  leftPanelWidth: number;
-  showToolbarOnly?: boolean;
-  allowSummaryEdit?: boolean;
-}>();
+withDefaults(
+  defineProps<{
+    monthGroups: Array<{ label: string; span: number }>;
+    slots: TimeSlot[];
+    gridColumns: string;
+    leftPanelWidth: number;
+    showToolbarOnly?: boolean;
+    allowSummaryEdit?: boolean;
+    labels?: GanttLabels;
+  }>(),
+  {
+    labels: () => defaultGanttLabels,
+  }
+);
 const emit = defineEmits<{
   addRootTask: [];
   toggleSummaryEdit: [];
@@ -25,27 +32,27 @@ const activeTab = ref<"gantt" | "workload">("gantt");
     <!-- Toolbar: Title + Tabs + Search (only show when showToolbarOnly=true or when not specified) -->
     <div v-if="showToolbarOnly !== false" class="gantt-toolbar">
       <div class="gantt-toolbar-left">
-        <h3 class="gantt-toolbar-title">Work Breakdown Structure</h3>
-        <span class="gantt-toolbar-subtitle">read only from generated on 09 Aug 2100</span>
+        <h3 class="gantt-toolbar-title">{{ labels.toolbarTitle }}</h3>
+        <span class="gantt-toolbar-subtitle">{{ labels.toolbarSubtitle }}</span>
       </div>
       <div class="gantt-toolbar-center">
         <button type="button" class="gantt-tab" :class="{ 'is-active': activeTab === 'gantt' }" @click="activeTab = 'gantt'">
           <Icon name="bar-chart-2" class="w-3.5 h-3.5" />
-          Gantt
+          {{ labels.tabGantt }}
         </button>
         <button type="button" class="gantt-tab" :class="{ 'is-active': activeTab === 'workload' }" @click="activeTab = 'workload'">
           <Icon name="users" class="w-3.5 h-3.5" />
-          Workload
+          {{ labels.tabWorkload }}
         </button>
       </div>
       <div class="gantt-toolbar-right">
-        <button type="button" class="gantt-action-btn" @click="emit('addRootTask')">+ Root Task</button>
+        <button type="button" class="gantt-action-btn" @click="emit('addRootTask')">{{ labels.addRootTask }}</button>
         <button type="button" class="gantt-action-btn" :class="{ 'is-active': allowSummaryEdit }" @click="emit('toggleSummaryEdit')">
-          Summary Edit: {{ allowSummaryEdit ? "On" : "Off" }}
+          {{ allowSummaryEdit ? labels.summaryEditOn : labels.summaryEditOff }}
         </button>
         <div class="gantt-search">
           <Icon name="search" class="w-3.5 h-3.5 text-slate-400" />
-          <input v-model="searchQuery" type="text" placeholder="Search tasks..." class="gantt-search-input" />
+          <input v-model="searchQuery" type="text" :placeholder="labels.searchPlaceholder" class="gantt-search-input" />
         </div>
       </div>
     </div>

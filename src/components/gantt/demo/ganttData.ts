@@ -1,6 +1,40 @@
-import type { GanttTask } from "../types";
+import type { GanttTask, GanttEmployee } from "../types";
 
-export const ganttTasks: GanttTask[] = [
+// The sample plan below is authored around this anchor date (the original "today").
+// At module load we shift every task date by the gap between the anchor and the real
+// current day, so the demo always lands on today — the today marker keeps sitting just
+// after the Research phase, exactly like the design, and never goes stale.
+const DESIGN_ANCHOR = "2026-08-09";
+const DAY_MS = 24 * 60 * 60 * 1000;
+
+function ymdToUtcMs(ymd: string): number {
+  const [y, m, d] = ymd.split("-").map(Number);
+  return Date.UTC(y, m - 1, d);
+}
+
+const now = new Date();
+const shiftDays = Math.round(
+  (Date.UTC(now.getFullYear(), now.getMonth(), now.getDate()) - ymdToUtcMs(DESIGN_ANCHOR)) / DAY_MS
+);
+
+function shiftDate(ymd: string): string {
+  const [y, m, d] = ymd.split("-").map(Number);
+  const t = new Date(Date.UTC(y, m - 1, d + shiftDays));
+  const mm = String(t.getUTCMonth() + 1).padStart(2, "0");
+  const dd = String(t.getUTCDate()).padStart(2, "0");
+  return `${t.getUTCFullYear()}-${mm}-${dd}`;
+}
+
+export const ganttEmployees: GanttEmployee[] = [
+  { id: "emp-pm-01", name: "Rina Putri", role: "Product Manager" },
+  { id: "emp-ui-01", name: "Aditya Pratama", role: "UI/UX Designer" },
+  { id: "emp-fe-01", name: "Kevin Saputra", role: "Frontend Developer" },
+  { id: "emp-be-01", name: "Nabila Sari", role: "Backend Developer" },
+  { id: "emp-qa-01", name: "Hendra Wijaya", role: "QA Engineer" },
+  { id: "emp-ba-01", name: "Salsa Maharani", role: "Business Analyst" },
+];
+
+const rawTasks: GanttTask[] = [
   {
     id: 1,
     parentId: null,
@@ -442,3 +476,10 @@ export const ganttTasks: GanttTask[] = [
     dependencies: [29],
   },
 ];
+
+// Shift the whole plan onto the current date so the demo (and its today marker) stays real-time.
+export const ganttTasks: GanttTask[] = rawTasks.map((task) => ({
+  ...task,
+  start: shiftDate(task.start),
+  end: shiftDate(task.end),
+}));
