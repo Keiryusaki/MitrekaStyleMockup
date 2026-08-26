@@ -3,6 +3,61 @@ export type TaskKind = "summary" | "task" | "milestone";
 export type TaskStatus = "on-track" | "at-risk" | "done";
 export type ResourceTone = "slate" | "teal" | "amber" | "rose" | "indigo";
 export type PhaseColor = "green" | "gray" | "pink" | "orange" | "blue";
+export type PlanningMode = "schedule" | "sprint";
+export type BarColorMode = "phase" | "sprint" | "status" | "custom";
+export type DependencyDisplayMode = "all" | "selected" | "hidden";
+export type ResourceLabelMode = "none" | "nickname" | "name" | "avatar";
+export type TaskSource = "template" | "user";
+export type GanttPhase = "discovery" | "research" | "analysis" | "design" | "development" | "testing" | "release" | "closure" | "general";
+
+export type GanttPhaseDefinition = {
+  id: GanttPhase;
+  label: string;
+  color: string;
+};
+
+export const ganttPhaseCatalog: GanttPhaseDefinition[] = [
+  { id: "discovery", label: "Discovery", color: "#16a34a" },
+  { id: "research", label: "Research", color: "#0d9488" },
+  { id: "analysis", label: "Analysis", color: "#64748b" },
+  { id: "design", label: "Design", color: "#db2777" },
+  { id: "development", label: "Development", color: "#2563eb" },
+  { id: "testing", label: "Testing", color: "#f59e0b" },
+  { id: "release", label: "Release", color: "#ea580c" },
+  { id: "closure", label: "Closure", color: "#475569" },
+  { id: "general", label: "General", color: "#0ea5e9" },
+];
+
+export type GanttTaskDependency = {
+  predecessorId: number;
+  type: "finish-to-start";
+  lagDays?: number;
+};
+
+export type GanttSprint = {
+  id: string;
+  name: string;
+  start: string;
+  end: string;
+  color?: string;
+};
+
+export type SprintScheduleValidation = {
+  taskId: number;
+  assignedSprintId?: string;
+  crossedSprintIds: string[];
+  carryOverDays: number;
+  entirelyOutsideAssignedSprint: boolean;
+  hasIssue: boolean;
+  message: string;
+};
+
+export type TaskLock = {
+  delete?: boolean;
+  move?: boolean;
+  rename?: boolean;
+  reparent?: boolean;
+};
 
 export type Resource = {
   employeeId?: string;
@@ -16,6 +71,7 @@ export type Resource = {
 export type GanttEmployee = {
   id: string;
   name: string;
+  nickname?: string;
   role: string;
 };
 
@@ -120,7 +176,7 @@ export type GanttLabels = {
 /** Default labels (current Indonesian/English mix). Spread + override for i18n. */
 export const defaultGanttLabels: GanttLabels = {
   toolbarTitle: "Work Breakdown Structure",
-  toolbarSubtitle: "read only from generated on 09 Aug 2100",
+  toolbarSubtitle: "Reusable schedule and sprint planning component",
   tabGantt: "Gantt",
   tabWorkload: "Workload",
   addRootTask: "+ Root Task",
@@ -179,7 +235,17 @@ export type GanttTask = {
   end: string;
   resources: Resource[];
   phaseColor?: PhaseColor;
-  dependencies?: number[];
+  phaseId?: GanttPhase;
+  color?: string;
+  sprintId?: string;
+  source?: TaskSource;
+  lock?: TaskLock;
+  dependencies?: Array<number | GanttTaskDependency>;
+  effort?: {
+    value: number;
+    unit: "hours" | "person-days" | "story-points";
+  };
+  weight?: number;
 };
 
 export type FlattenedTask = GanttTask & {
@@ -213,4 +279,7 @@ export type DependencyLine = {
   from: TaskBarPosition;
   to: TaskBarPosition;
   path: string;
+  type: "finish-to-start";
+  lagDays?: number;
+  title: string;
 };

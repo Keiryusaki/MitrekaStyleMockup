@@ -7,7 +7,11 @@ export {
   buildSlots,
   flattenTasks,
   slotPixelWidth,
+  addDays,
   formatDateYmd,
   findDependencyViolations,
   findResourceOverAllocations,
+  findSprintForDate,
+  validateTaskSprintSchedule,
+  validateSprintSchedules,
 } from "./utils";

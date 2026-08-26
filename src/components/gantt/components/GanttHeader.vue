@@ -21,10 +21,14 @@ withDefaults(
 const emit = defineEmits<{
   addRootTask: [];
   toggleSummaryEdit: [];
+  search: [query: string];
 }>();
 
 const searchQuery = ref("");
-const activeTab = ref<"gantt" | "workload">("gantt");
+
+function onSearchInput() {
+  emit("search", searchQuery.value);
+}
 </script>
 
 <template>
@@ -36,13 +40,9 @@ const activeTab = ref<"gantt" | "workload">("gantt");
         <span class="gantt-toolbar-subtitle">{{ labels.toolbarSubtitle }}</span>
       </div>
       <div class="gantt-toolbar-center">
-        <button type="button" class="gantt-tab" :class="{ 'is-active': activeTab === 'gantt' }" @click="activeTab = 'gantt'">
+        <button type="button" class="gantt-tab is-active">
           <Icon name="bar-chart-2" class="w-3.5 h-3.5" />
           {{ labels.tabGantt }}
-        </button>
-        <button type="button" class="gantt-tab" :class="{ 'is-active': activeTab === 'workload' }" @click="activeTab = 'workload'">
-          <Icon name="users" class="w-3.5 h-3.5" />
-          {{ labels.tabWorkload }}
         </button>
       </div>
       <div class="gantt-toolbar-right">
@@ -52,7 +52,7 @@ const activeTab = ref<"gantt" | "workload">("gantt");
         </button>
         <div class="gantt-search">
           <Icon name="search" class="w-3.5 h-3.5 text-slate-400" />
-          <input v-model="searchQuery" type="text" :placeholder="labels.searchPlaceholder" class="gantt-search-input" />
+          <input v-model="searchQuery" type="text" :placeholder="labels.searchPlaceholder" class="gantt-search-input" @input="onSearchInput" />
         </div>
       </div>
     </div>

@@ -1,4 +1,4 @@
-import type { ViewMode, TimeSlot, FlattenedTask, GanttTask, GanttEmployee, DependencyViolation, ResourceOverAllocation } from "./types";
+import type { ViewMode, TimeSlot, FlattenedTask, GanttTask, GanttEmployee, DependencyViolation, ResourceOverAllocation, GanttTaskDependency, GanttSprint, SprintScheduleValidation } from "./types";
 
 // Date utilities
 export function startOfDay(date: Date): Date {
@@ -190,6 +190,21 @@ export function flattenTasks(tasks: GanttTask[], expandedIds: Set<number>): Flat
   return output;
 }
 
+// Dependency utilities
+export function normalizeDependencies(dependencies: GanttTask["dependencies"]): GanttTaskDependency[] {
+  return (dependencies ?? [])
+    .map((dep) => (typeof dep === "number" ? { predecessorId: dep, type: "finish-to-start" as const } : dep))
+    .filter((dep): dep is GanttTaskDependency => Number.isFinite(dep.predecessorId) && dep.type === "finish-to-start");
+}
+
+export function isDependencyRelated(taskId: number, activeTaskId: number | null, tasks: GanttTask[]): boolean {
+  if (activeTaskId === null) return true;
+  if (taskId === activeTaskId) return true;
+  const activeTask = tasks.find((task) => task.id === activeTaskId);
+  if (normalizeDependencies(activeTask?.dependencies).some((dep) => dep.predecessorId === taskId)) return true;
+  return tasks.some((task) => task.id === taskId && normalizeDependencies(task.dependencies).some((dep) => dep.predecessorId === activeTaskId));
+}
+
 // Dependency line calculation
 export function calculateDependencyPath(
   fromTask: { left: number; width: number; top: number; height: number },
@@ -211,6 +226,63 @@ export function calculateDependencyPath(
   return `M ${fromX} ${fromY} L ${midX} ${fromY} L ${midX} ${toY} L ${toX} ${toY}`;
 }
 
+// Sprint validation utilities
+export function findSprintForDate(date: Date, sprints: GanttSprint[]): GanttSprint | undefined {
+  const normalized = startOfDay(date).getTime();
+  return sprints.find((sprint) => normalized >= startOfDay(new Date(sprint.start)).getTime() && normalized <= endOfDay(new Date(sprint.end)).getTime());
+}
+
+export function validateTaskSprintSchedule(task: GanttTask, sprints: GanttSprint[]): SprintScheduleValidation {
+  const base: SprintScheduleValidation = {
+    taskId: task.id,
+    assignedSprintId: task.sprintId,
+    crossedSprintIds: [],
+    carryOverDays: 0,
+    entirelyOutsideAssignedSprint: false,
+    hasIssue: false,
+    message: task.sprintId ? "" : "No Sprint",
+  };
+  if (!task.sprintId || task.kind === "summary" || !task.start || !task.end) return base;
+  const assigned = sprints.find((sprint) => sprint.id === task.sprintId);
+  if (!assigned) return { ...base, hasIssue: true, message: "Committed sprint not found." };
+
+  const taskStart = startOfDay(new Date(task.start));
+  const taskEnd = startOfDay(new Date(task.end));
+  const sprintStart = startOfDay(new Date(assigned.start));
+  const sprintEnd = startOfDay(new Date(assigned.end));
+  const overlapsAssigned = taskEnd >= sprintStart && taskStart <= sprintEnd;
+  const insideAssigned = taskStart >= sprintStart && taskEnd <= sprintEnd;
+  if (insideAssigned) return base;
+
+  const crossedSprintIds = sprints
+    .filter((sprint) => taskEnd >= startOfDay(new Date(sprint.start)) && taskStart <= endOfDay(new Date(sprint.end)) && sprint.id !== assigned.id)
+    .map((sprint) => sprint.id);
+
+  if (!overlapsAssigned) {
+    return {
+      ...base,
+      crossedSprintIds,
+      entirelyOutsideAssignedSprint: true,
+      hasIssue: true,
+      message: "Task is scheduled outside its committed sprint.",
+    };
+  }
+
+  const carryOverDays = Math.max(0, Math.round((taskEnd.getTime() - sprintEnd.getTime()) / 86400000));
+  const targetSprint = crossedSprintIds[0] ? sprints.find((sprint) => sprint.id === crossedSprintIds[0]) : undefined;
+  return {
+    ...base,
+    crossedSprintIds,
+    carryOverDays,
+    hasIssue: carryOverDays > 0 || crossedSprintIds.length > 0,
+    message: carryOverDays > 0 ? `Carry-over to ${targetSprint?.name ?? "next sprint"} · ${carryOverDays} days` : "Task starts before its committed sprint.",
+  };
+}
+
+export function validateSprintSchedules(tasks: GanttTask[], sprints: GanttSprint[]): SprintScheduleValidation[] {
+  return tasks.map((task) => validateTaskSprintSchedule(task, sprints)).filter((item) => item.hasIssue || item.message === "No Sprint");
+}
+
 // Validation utilities
 
 /**
@@ -223,8 +295,8 @@ export function findDependencyViolations(tasks: GanttTask[]): DependencyViolatio
   for (const task of tasks) {
     if (!task.start || !task.end) continue;
     const taskStart = startOfDay(new Date(task.start));
-    for (const depId of task.dependencies ?? []) {
-      const pred = byId.get(depId);
+    for (const dep of normalizeDependencies(task.dependencies)) {
+      const pred = byId.get(dep.predecessorId);
       if (!pred || !pred.start || !pred.end) continue;
       const predEnd = startOfDay(new Date(pred.end));
       if (predEnd >= taskStart) {

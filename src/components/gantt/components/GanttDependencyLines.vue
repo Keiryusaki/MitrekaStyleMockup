@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed, ref, onMounted, watch } from "vue";
-import type { FlattenedTask, TimeSlot, TaskBarPosition, DependencyLine } from "../types";
-import { rangeForTask } from "../utils";
+import type { DependencyDisplayMode, FlattenedTask, TimeSlot, TaskBarPosition, DependencyLine } from "../types";
+import { normalizeDependencies, rangeForTask } from "../utils";
 
 const props = defineProps<{
   tasks: FlattenedTask[];
@@ -9,6 +9,8 @@ const props = defineProps<{
   slotSize: number;
   leftPanelWidth: number;
   rowHeight: number;
+  activeTaskId?: number | null;
+  displayMode?: DependencyDisplayMode;
 }>();
 
 const svgContainer = ref<SVGSVGElement | null>(null);
@@ -43,23 +45,33 @@ function buildDependencyPath(from: TaskBarPosition, to: TaskBarPosition): string
 }
 
 const dependencyLines = computed<DependencyLine[]>(() => {
+  if (props.displayMode === "hidden") return [];
   const lines: DependencyLine[] = [];
 
   props.tasks.forEach((task) => {
-    if (!task.dependencies || task.dependencies.length === 0) return;
+    const dependencies = normalizeDependencies(task.dependencies);
+    if (!dependencies.length) return;
 
     const toPos = taskPositions.value.get(task.id);
     if (!toPos) return;
 
-    task.dependencies.forEach((depId) => {
-      const fromTask = props.tasks.find((t) => t.id === depId);
+    dependencies.forEach((dep) => {
+      const fromTask = props.tasks.find((t) => t.id === dep.predecessorId);
       if (!fromTask) return;
+      if (props.displayMode === "selected" && props.activeTaskId !== task.id && props.activeTaskId !== fromTask.id) return;
 
-      const fromPos = taskPositions.value.get(depId);
+      const fromPos = taskPositions.value.get(dep.predecessorId);
       if (!fromPos) return;
 
       const path = buildDependencyPath(fromPos, toPos);
-      lines.push({ from: fromPos, to: toPos, path });
+      lines.push({
+        from: fromPos,
+        to: toPos,
+        path,
+        type: dep.type,
+        lagDays: dep.lagDays,
+        title: `${fromTask.name} → ${task.name} · Finish to Start`,
+      });
     });
   });
 
@@ -123,7 +135,17 @@ watch(
     </defs>
 
     <g v-for="(line, index) in dependencyLines" :key="`dep-${index}`">
-      <path :d="line.path" class="dependency-line" marker-end="url(#arrowhead)" />
+      <path
+        :d="line.path"
+        class="dependency-line"
+        :class="{
+          'is-active': activeTaskId === line.from.task.id || activeTaskId === line.to.task.id,
+          'is-dimmed': activeTaskId !== null && activeTaskId !== undefined && activeTaskId !== line.from.task.id && activeTaskId !== line.to.task.id,
+        }"
+        marker-end="url(#arrowhead)"
+      >
+        <title>{{ line.title }}</title>
+      </path>
     </g>
   </svg>
 </template>
@@ -144,12 +166,17 @@ watch(
   opacity: 0.8;
 }
 
-:global(.dark) .dependency-line,
-:global(:root[data-theme="mitrekadark"]) .dependency-line {
-  stroke: #64748b;
-  opacity: 0.9;
+.dependency-line.is-active {
+  stroke: #2563eb;
+  stroke-width: 2.2;
+  opacity: 1;
 }
 
+.dependency-line.is-dimmed {
+  opacity: 0.22;
+}
+
+:global(.dark .dependency-line),
 :global([data-theme="mitrekadark"] .dependency-line) {
   stroke: #64748b;
   opacity: 0.9;

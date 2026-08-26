@@ -1,6 +1,6 @@
 import { computed, reactive, ref, watch, type ComputedRef, type Ref } from "vue";
 import type { GanttTask, GanttEmployee, GanttChangeEvent, FlattenedTask, Resource, GanttValidation } from "../types";
-import { startOfDay, endOfDay, flattenTasks, findDependencyViolations, findResourceOverAllocations } from "../utils";
+import { startOfDay, endOfDay, flattenTasks, findDependencyViolations, findResourceOverAllocations, normalizeDependencies } from "../utils";
 
 export type UseGanttStateOptions = {
   /** Getter for the source task list (e.g. `() => props.tasks`). */
@@ -61,7 +61,7 @@ function cloneTasks(list: GanttTask[]): GanttTask[] {
   return list.map((task) => ({
     ...task,
     resources: task.resources.map((resource) => ({ ...resource })),
-    dependencies: task.dependencies ? [...task.dependencies] : undefined,
+    dependencies: task.dependencies ? normalizeDependencies(task.dependencies).map((dep) => ({ ...dep })) : undefined,
   }));
 }
 
@@ -80,6 +80,7 @@ export function useGanttState(opts: UseGanttStateOptions): UseGanttStateReturn {
     (val) => {
       syncingFromProp = true;
       tasksState.value = cloneTasks(val);
+      val.filter((task) => task.kind === "summary").forEach((task) => expandedIds.add(task.id));
     },
     { deep: true }
   );
@@ -101,6 +102,7 @@ export function useGanttState(opts: UseGanttStateOptions): UseGanttStateReturn {
   const checkedTaskIds = reactive(
     new Set<number>(opts.defaultCheckedIds?.() ?? opts.source().filter((task) => task.status === "done").map((task) => task.id))
   );
+  const preCheckSnapshot = reactive(new Map<number, { status: GanttTask["status"]; progress: number }>());
   const taskHistory = ref<Array<{ id: number; fromStart: string; fromEnd: string; toStart: string; toEnd: string }>>([]);
 
   const employeeLookup = computed(() => new Map(opts.employees().map((item) => [item.id, item])));
@@ -137,8 +139,18 @@ export function useGanttState(opts: UseGanttStateOptions): UseGanttStateReturn {
   }
 
   function toggleTaskCheck(id: number) {
-    if (checkedTaskIds.has(id)) checkedTaskIds.delete(id);
-    else checkedTaskIds.add(id);
+    const task = tasksState.value.find((item) => item.id === id);
+    if (!task) return;
+    if (checkedTaskIds.has(id)) {
+      checkedTaskIds.delete(id);
+      const previous = preCheckSnapshot.get(id);
+      preCheckSnapshot.delete(id);
+      updateTask(id, previous ? { status: previous.status, progress: previous.progress } : { status: "on-track", progress: 0 });
+    } else {
+      preCheckSnapshot.set(id, { status: task.status, progress: task.progress });
+      checkedTaskIds.add(id);
+      updateTask(id, { status: "done", progress: 100 });
+    }
   }
 
   function nextTaskId() {
@@ -170,12 +182,12 @@ export function useGanttState(opts: UseGanttStateOptions): UseGanttStateReturn {
 
     tasksState.value = tasksState.value.map((task) => {
       if (!siblingIds.includes(task.id)) return task;
-      const preservedExternalDeps = (task.dependencies ?? []).filter((dep) => !siblingIds.includes(dep));
+      const preservedExternalDeps = normalizeDependencies(task.dependencies).filter((dep) => !siblingIds.includes(dep.predecessorId));
       const currentIndex = siblingIds.indexOf(task.id);
       if (currentIndex <= 0) {
         return { ...task, dependencies: preservedExternalDeps };
       }
-      return { ...task, dependencies: [...preservedExternalDeps, siblingIds[currentIndex - 1]] };
+      return { ...task, dependencies: [...preservedExternalDeps, { predecessorId: siblingIds[currentIndex - 1], type: "finish-to-start" as const }] };
     });
   }
 
@@ -197,22 +209,25 @@ export function useGanttState(opts: UseGanttStateOptions): UseGanttStateReturn {
   }
 
   function removeTask(taskId: number) {
+    const root = tasksState.value.find((task) => task.id === taskId);
+    if (!root || root.lock?.delete) return;
     const idsToRemove = new Set<number>([taskId]);
     let changed = true;
     while (changed) {
       changed = false;
       tasksState.value.forEach((item) => {
-        if (item.parentId !== null && idsToRemove.has(item.parentId) && !idsToRemove.has(item.id)) {
+        if (item.parentId !== null && idsToRemove.has(item.parentId) && !idsToRemove.has(item.id) && !item.lock?.delete) {
           idsToRemove.add(item.id);
           changed = true;
         }
       });
     }
     tasksState.value = tasksState.value
+      .map((item) => (idsToRemove.has(item.parentId ?? -1) && item.lock?.delete ? { ...item, parentId: null } : item))
       .filter((item) => !idsToRemove.has(item.id))
       .map((item) => ({
         ...item,
-        dependencies: (item.dependencies ?? []).filter((dep) => !idsToRemove.has(dep)),
+        dependencies: normalizeDependencies(item.dependencies).filter((dep) => !idsToRemove.has(dep.predecessorId)),
       }));
     opts.onChange({ type: "delete", id: taskId });
   }
@@ -224,6 +239,9 @@ export function useGanttState(opts: UseGanttStateOptions): UseGanttStateReturn {
     if (sourceIndex < 0 || targetIndex < 0) return;
     const next = [...tasksState.value];
     const [moved] = next.splice(sourceIndex, 1);
+    if (moved.lock?.move) return;
+    const target = tasksState.value[targetIndex];
+    if (!target || target.parentId !== moved.parentId) return;
     next.splice(targetIndex, 0, moved);
     tasksState.value = next;
     rechainDependenciesWithinParent(moved.parentId);

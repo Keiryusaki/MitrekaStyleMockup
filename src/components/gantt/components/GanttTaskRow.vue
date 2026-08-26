@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { onBeforeUnmount, onMounted, ref } from "vue";
 import { Icon } from "@/composables/Icon";
 import { Tooltip } from "@/lib/mitreka-ui-dist/vue";
 import type { FlattenedTask, TimeSlot } from "../types";
@@ -11,6 +12,9 @@ const props = defineProps<{
   expandedIds: Set<number>;
   checked: boolean;
   isHovered?: boolean;
+  canDelete?: boolean;
+  canMove?: boolean;
+  canRename?: boolean;
 }>();
 
 const emit = defineEmits<{
@@ -19,9 +23,35 @@ const emit = defineEmits<{
   openResource: [task: FlattenedTask];
   addTask: [task: FlattenedTask];
   editTask: [task: FlattenedTask];
+  removeFromTimeline: [task: FlattenedTask];
+  deleteTask: [task: FlattenedTask];
   rowDragStart: [taskId: number];
   rowDropOn: [taskId: number];
 }>();
+
+const menuOpen = ref(false);
+const menuRootRef = ref<HTMLElement | null>(null);
+
+function toggleMenu() {
+  menuOpen.value = !menuOpen.value;
+}
+
+function closeMenu() {
+  menuOpen.value = false;
+}
+
+function onDocumentPointerDown(event: PointerEvent) {
+  if (!menuOpen.value) return;
+  if (menuRootRef.value && !menuRootRef.value.contains(event.target as Node)) closeMenu();
+}
+
+onMounted(() => document.addEventListener("pointerdown", onDocumentPointerDown));
+onBeforeUnmount(() => document.removeEventListener("pointerdown", onDocumentPointerDown));
+
+function runMenuAction(action: () => void) {
+  closeMenu();
+  action();
+}
 
 function indentStyle(depth: number) {
   return { paddingLeft: `${depth * 16}px` };
@@ -42,6 +72,10 @@ function progressBarColor(task: FlattenedTask) {
 }
 
 function onDragStart(event: DragEvent) {
+  if (props.canMove === false || props.task.lock?.move) {
+    event.preventDefault();
+    return;
+  }
   event.dataTransfer?.setData("application/x-gantt-task-id", String(props.task.id));
   if (event.dataTransfer) event.dataTransfer.effectAllowed = "move";
   emit("rowDragStart", props.task.id);
@@ -52,7 +86,7 @@ function onDragStart(event: DragEvent) {
   <div
     class="gantt-task-row"
     :class="{ 'is-summary-row': task.kind === 'summary', 'is-hovered': isHovered }"
-    draggable="true"
+    :draggable="canMove !== false && !task.lock?.move"
     @dragstart="onDragStart"
     @dragover.prevent
     @drop.prevent="emit('rowDropOn', task.id)"
@@ -62,7 +96,7 @@ function onDragStart(event: DragEvent) {
     <div class="gantt-left-cell">
       <div class="gantt-left-grid">
         <!-- Row number -->
-        <span class="gantt-row-num">{{ rowIndex }}</span>
+        <span class="gantt-row-num" :title="task.lock?.move ? 'Movement locked' : 'Drag to reorder siblings'">{{ rowIndex }}</span>
 
         <!-- Checkbox -->
         <button type="button" class="gantt-checkbox-button" :class="{ 'is-checked': checked }" @click="emit('toggleCheck', task.id)">
@@ -79,6 +113,7 @@ function onDragStart(event: DragEvent) {
           </button>
 
           <span v-if="task.kind === 'milestone'" class="gantt-milestone-icon"></span>
+          <Icon v-if="task.lock?.delete || task.lock?.rename || task.lock?.move" name="lock" class="w-3 h-3 text-slate-400" />
 
           <Tooltip :text="task.name" position="top" class="flex-1 min-w-0">
             <div class="gantt-task-name" :class="{ 'is-summary': task.kind === 'summary' }">
@@ -101,14 +136,44 @@ function onDragStart(event: DragEvent) {
           <span class="gantt-progress-text">{{ task.progress }}%</span>
         </div>
 
-        <!-- Resource button -->
-        <div class="gantt-row-actions">
-          <button type="button" class="icon-btn icon-btn-solid-info icon-btn-xs gantt-row-action-btn" title="Manage resource" @click="emit('openResource', task)">
-            <Icon name="user" class="w-3.5 h-3.5" />
+        <!-- Row action menu -->
+        <div class="gantt-row-actions" ref="menuRootRef">
+          <button
+            type="button"
+            class="icon-btn icon-btn-ghost icon-btn-xs gantt-row-action-btn gantt-row-menu-trigger"
+            :class="{ 'is-open': menuOpen }"
+            title="Task actions"
+            @click="toggleMenu"
+          >
+            <Icon name="ellipsis" class="w-3.5 h-3.5" />
           </button>
-          <button type="button" class="icon-btn icon-btn-solid-success icon-btn-xs gantt-row-action-btn is-add" title="Add child task" @click="emit('addTask', task)">
-            <Icon name="plus" class="w-3.5 h-3.5" />
-          </button>
+          <div v-if="menuOpen" class="gantt-row-menu">
+            <button v-if="!task.lock?.rename" type="button" class="gantt-row-menu-item" @click="runMenuAction(() => emit('editTask', task))">
+              <Icon name="edit" class="w-3.5 h-3.5" /> Edit task
+            </button>
+            <button type="button" class="gantt-row-menu-item" @click="runMenuAction(() => emit('addTask', task))">
+              <Icon name="plus" class="w-3.5 h-3.5" /> Add child
+            </button>
+            <button type="button" class="gantt-row-menu-item" @click="runMenuAction(() => emit('openResource', task))">
+              <Icon name="user" class="w-3.5 h-3.5" /> Manage resources
+            </button>
+            <button
+              v-if="task.isScheduled && canMove !== false && !task.lock?.move"
+              type="button"
+              class="gantt-row-menu-item"
+              @click="runMenuAction(() => emit('removeFromTimeline', task))"
+            >
+              <Icon name="x-circle" class="w-3.5 h-3.5" /> Remove from timeline
+            </button>
+            <button
+              v-if="canDelete !== false && !task.lock?.delete"
+              type="button"
+              class="gantt-row-menu-item is-danger"
+              @click="runMenuAction(() => emit('deleteTask', task))"
+            >
+              <Icon name="trash" class="w-3.5 h-3.5" /> Delete task
+            </button>
+          </div>
         </div>
       </div>
     </div>
@@ -117,7 +182,7 @@ function onDragStart(event: DragEvent) {
 
 <style scoped>
 .gantt-task-row {
-  height: 32px;
+  height: var(--gantt-row-height, 32px);
   display: flex;
   align-items: center;
   border-bottom: 1px solid rgba(226, 232, 240, 0.85);
@@ -286,6 +351,7 @@ function onDragStart(event: DragEvent) {
 }
 
 .gantt-row-actions {
+  position: relative;
   display: inline-flex;
   align-items: center;
   gap: 0.2rem;
@@ -293,115 +359,133 @@ function onDragStart(event: DragEvent) {
 
 .gantt-row-actions .gantt-row-action-btn {
   opacity: 0;
-}
-
-.gantt-task-row:hover .gantt-row-actions .gantt-row-action-btn {
-  opacity: 1;
-}
-
-.gantt-row-actions .gantt-row-action-btn.is-add {
-  opacity: 1;
-}
-
-.gantt-row-actions .gantt-row-action-btn {
   width: 20px;
   height: 20px;
 }
 
-.gantt-row-actions .gantt-row-action-btn:first-child {
+.gantt-task-row:hover .gantt-row-actions .gantt-row-action-btn,
+.gantt-row-actions .gantt-row-menu-trigger.is-open {
   opacity: 1;
 }
 
-:global(.dark) .gantt-task-row,
-:global(:root[data-theme="mitrekadark"]) .gantt-task-row {
-  background: #0f172a;
-  border-bottom-color: rgba(51, 65, 85, 0.9);
+.gantt-row-menu {
+  position: absolute;
+  top: calc(100% + 2px);
+  right: 0;
+  z-index: 20;
+  min-width: 172px;
+  padding: 0.25rem;
+  background: #fff;
+  border: 1px solid #e2e8f0;
+  border-radius: 0.5rem;
+  box-shadow: 0 8px 20px rgba(15, 23, 42, 0.14);
+  display: flex;
+  flex-direction: column;
 }
 
-:global(.dark) .gantt-task-row:hover,
-:global(:root[data-theme="mitrekadark"]) .gantt-task-row:hover {
-  background: #132035;
+.gantt-row-menu-item {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.32rem 0.5rem;
+  border: none;
+  background: transparent;
+  border-radius: 0.35rem;
+  font-size: 0.7rem;
+  font-weight: 500;
+  color: #334155;
+  text-align: left;
+  cursor: pointer;
+  white-space: nowrap;
 }
 
-:global(.dark) .gantt-task-row.is-summary-row,
-:global(:root[data-theme="mitrekadark"]) .gantt-task-row.is-summary-row {
-  background: #111827;
+.gantt-row-menu-item:hover {
+  background: #f1f5f9;
 }
 
-:global(.dark) .gantt-row-num,
-:global(:root[data-theme="mitrekadark"]) .gantt-row-num {
-  color: #64748b;
+.gantt-row-menu-item.is-danger {
+  color: #dc2626;
 }
 
-:global(.dark) .gantt-checkbox-empty,
-:global(:root[data-theme="mitrekadark"]) .gantt-checkbox-empty {
-  border-color: #475569;
+.gantt-row-menu-item.is-danger:hover {
+  background: #fee2e2;
 }
 
-:global(.dark) .gantt-toggle,
-:global(:root[data-theme="mitrekadark"]) .gantt-toggle {
-  color: #94a3b8;
+:global(.dark .gantt-row-menu),
+:global([data-theme="mitrekadark"] .gantt-row-menu) {
+  background: #1e293b;
+  border-color: #334155;
 }
 
-:global(.dark) .gantt-toggle:hover,
-:global(:root[data-theme="mitrekadark"]) .gantt-toggle:hover {
-  background: #334155;
-}
-
-:global(.dark) .gantt-task-name,
-:global(:root[data-theme="mitrekadark"]) .gantt-task-name {
+:global(.dark .gantt-row-menu-item),
+:global([data-theme="mitrekadark"] .gantt-row-menu-item) {
   color: #e2e8f0;
 }
 
-:global(.dark) .gantt-task-name.is-summary,
-:global(:root[data-theme="mitrekadark"]) .gantt-task-name.is-summary {
-  color: #f1f5f9;
-}
-
-:global(.dark) .gantt-date,
-:global(.dark) .gantt-progress-text,
-:global(:root[data-theme="mitrekadark"]) .gantt-date,
-:global(:root[data-theme="mitrekadark"]) .gantt-progress-text {
-  color: #94a3b8;
-}
-
-:global(.dark) .gantt-progress-bar-bg,
-:global(:root[data-theme="mitrekadark"]) .gantt-progress-bar-bg {
+:global(.dark .gantt-row-menu-item:hover),
+:global([data-theme="mitrekadark"] .gantt-row-menu-item:hover) {
   background: #334155;
 }
 
+:global(.dark .gantt-row-menu-item.is-danger:hover),
+:global([data-theme="mitrekadark"] .gantt-row-menu-item.is-danger:hover) {
+  background: rgba(220, 38, 38, 0.2);
+}
+
+:global(.dark .gantt-task-row),
 :global([data-theme="mitrekadark"] .gantt-task-row) {
   background: #0f172a;
   border-bottom-color: rgba(51, 65, 85, 0.9);
 }
+
+:global(.dark .gantt-task-row:hover),
 :global([data-theme="mitrekadark"] .gantt-task-row:hover) {
   background: #132035;
 }
+
+:global(.dark .gantt-task-row.is-summary-row),
 :global([data-theme="mitrekadark"] .gantt-task-row.is-summary-row) {
   background: #111827;
 }
+
+:global(.dark .gantt-row-num),
 :global([data-theme="mitrekadark"] .gantt-row-num) {
   color: #64748b;
 }
+
+:global(.dark .gantt-checkbox-empty),
 :global([data-theme="mitrekadark"] .gantt-checkbox-empty) {
   border-color: #475569;
 }
+
+:global(.dark .gantt-toggle),
 :global([data-theme="mitrekadark"] .gantt-toggle) {
   color: #94a3b8;
 }
+
+:global(.dark .gantt-toggle:hover),
 :global([data-theme="mitrekadark"] .gantt-toggle:hover) {
   background: #334155;
 }
+
+:global(.dark .gantt-task-name),
 :global([data-theme="mitrekadark"] .gantt-task-name) {
   color: #e2e8f0;
 }
+
+:global(.dark .gantt-task-name.is-summary),
 :global([data-theme="mitrekadark"] .gantt-task-name.is-summary) {
   color: #f1f5f9;
 }
+
+:global(.dark .gantt-date),
+:global(.dark .gantt-progress-text),
 :global([data-theme="mitrekadark"] .gantt-date),
 :global([data-theme="mitrekadark"] .gantt-progress-text) {
   color: #94a3b8;
 }
+
+:global(.dark .gantt-progress-bar-bg),
 :global([data-theme="mitrekadark"] .gantt-progress-bar-bg) {
   background: #334155;
 }

@@ -25,13 +25,22 @@ function shiftDate(ymd: string): string {
   return `${t.getUTCFullYear()}-${mm}-${dd}`;
 }
 
+function phaseIdFromColor(color: GanttTask["phaseColor"]): GanttTask["phaseId"] {
+  if (color === "green") return "research";
+  if (color === "pink") return "design";
+  if (color === "blue") return "development";
+  if (color === "orange") return "release";
+  if (color === "gray") return "analysis";
+  return "general";
+}
+
 export const ganttEmployees: GanttEmployee[] = [
-  { id: "emp-pm-01", name: "Rina Putri", role: "Product Manager" },
-  { id: "emp-ui-01", name: "Aditya Pratama", role: "UI/UX Designer" },
-  { id: "emp-fe-01", name: "Kevin Saputra", role: "Frontend Developer" },
-  { id: "emp-be-01", name: "Nabila Sari", role: "Backend Developer" },
-  { id: "emp-qa-01", name: "Hendra Wijaya", role: "QA Engineer" },
-  { id: "emp-ba-01", name: "Salsa Maharani", role: "Business Analyst" },
+  { id: "emp-pm-01", name: "Rina Putri", nickname: "RP", role: "Product Manager" },
+  { id: "emp-ui-01", name: "Aditya Pratama", nickname: "AD", role: "UI/UX Designer" },
+  { id: "emp-fe-01", name: "Kevin Saputra", nickname: "KS", role: "Frontend Developer" },
+  { id: "emp-be-01", name: "Nabila Sari", nickname: "NS", role: "Backend Developer" },
+  { id: "emp-qa-01", name: "Hendra Wijaya", nickname: "HW", role: "QA Engineer" },
+  { id: "emp-ba-01", name: "Salsa Maharani", nickname: "SM", role: "Business Analyst" },
 ];
 
 const rawTasks: GanttTask[] = [
@@ -482,4 +491,12 @@ export const ganttTasks: GanttTask[] = rawTasks.map((task) => ({
   ...task,
   start: shiftDate(task.start),
   end: shiftDate(task.end),
+  resources: task.resources.map((resource, index) => {
+    const employee = ganttEmployees[index % ganttEmployees.length];
+    return { ...resource, employeeId: employee.id, allocation: resource.allocation ?? 60, isPic: index === 0 };
+  }),
+  phaseId: task.phaseId ?? phaseIdFromColor(task.phaseColor),
+  dependencies: task.dependencies?.map((predecessorId) => (typeof predecessorId === "number" ? { predecessorId, type: "finish-to-start" as const } : predecessorId)),
+  effort: task.kind === "task" ? { value: Math.max(2, Math.round((ymdToUtcMs(task.end) - ymdToUtcMs(task.start)) / DAY_MS) + 1), unit: "person-days" } : undefined,
+  weight: task.kind === "task" ? 1 : undefined,
 }));
