@@ -170,6 +170,11 @@ const routes: RouteRecordRaw[] = [
     meta: { hideBreadcrumbs: true },
   },
   {
+    path: "/task-manager",
+    component: () => import("@/pages/Mockup/TaskManager.vue"),
+    meta: { layout: "blank", hideBreadcrumbs: true, title: "Task Manager Mockup" },
+  },
+  {
     path: "/methodology-processes",
     component: () => import("@/pages/Mockup/MethodologyProcesses.vue"),
   },

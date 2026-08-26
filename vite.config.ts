@@ -18,5 +18,8 @@ export default defineConfig({
     },
     dedupe: ["ag-grid-community", "ag-grid-vue3"],
   },
+  server: {
+    allowedHosts: [".trycloudflare.com"],
+  },
   base: "/MitrekaStyleMockup/",
 });

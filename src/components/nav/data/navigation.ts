@@ -40,6 +40,7 @@ export const NAV: NavItem[] = [
       { id: "select-playground", label: "Select Playground", to: "/select-playground" },
       { id: "dashboard-finance", label: "Dashboard Finance", to: "/dashboard-finance" },
       { id: "taskflow-workspace", label: "TaskFlow WorkSPace", to: "/taskflow-workspace" },
+      { id: "task-manager", label: "Task Manager", to: "/task-manager", badge: "New" },
       { id: "methodology-processes", label: "Methodology Processes", to: "/methodology-processes" },
       { id: "daily-routine-checklist", label: "Daily Routine Checklist", to: "/daily-routine-checklist" },
       { id: "gantt-wbs-planner", label: "Gantt WBS Planner", to: "/gantt-wbs-planner" },
